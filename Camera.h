@@ -31,12 +31,10 @@ public:
 	Camera();
 	~Camera();
 
-	POINT mLastMousePos;
+	void cameraUpdate(float delta);
+	void moveEvent(float deltaTime, float speed);
 
-	//PLane for frustum
-	//Plane Frustum[6];
-	BoundingFrustum testFrust;
-	XMFLOAT3 FrustumCorners[8];
+	POINT mLastMousePos;
 
 	// Get/Set Camera Properties
 	XMVECTOR GetPositionXM()const;
@@ -88,19 +86,15 @@ public:
 	// Update View Matrix after every frame 
 	void UpdateViewMatrix();
 
-	void OnMouseMove(WPARAM btnState, int x, int y); // Update mouse movement after every frame
-
+	
 
 	//hightMap
-	bool Collotion();
+	bool Collision();
 //	XMFLOAT3 GetHeightPosition()const;
 
 	float GetX()const; 
 	float GetZ()const; 
 
-	void BoundingFrustumCreate();
-	//void CreateFrustum();
-	void createInverseView();
 
 
 private:

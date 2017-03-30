@@ -4,6 +4,7 @@
 // Constructor and destructor
 Camera::Camera() {
 	
+
 }
 
 Camera::~Camera() {
@@ -11,9 +12,61 @@ Camera::~Camera() {
 	
 }
 
-bool Camera::Collotion()
+void Camera::cameraUpdate(float delta)
 {
-	bool collition = false; 
+
+	//--------MOVEMENT MOUSE--------------
+	POINT p;
+	GetCursorPos(&p);
+
+	if (MK_LBUTTON) {
+
+		// Make each pixel to correspond to a quarter of a degree
+
+		float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x - mLastMousePos.x));
+
+		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - mLastMousePos.y));
+
+		Pitch(dy);
+		RotateY(dx);
+	}
+
+	mLastMousePos.x = p.x;
+	mLastMousePos.y = p.y;
+	//_--------MOVEMENT KEYS-----------------------
+
+	float moveSpeed = 5.0f;
+	moveEvent(delta, moveSpeed);
+}
+
+void Camera::moveEvent(float deltaTime, float speed)
+{
+	if (GetAsyncKeyState('W') & 0x8000) {
+
+		Walk(speed * deltaTime);
+	}
+
+	if (GetAsyncKeyState('S') & 0x8000) {
+
+		Walk(-speed * deltaTime);
+	}
+
+	if (GetAsyncKeyState('A') & 0x8000) {
+
+		Strafe(-speed * deltaTime);
+	}
+
+	if (GetAsyncKeyState('D') & 0x8000) {
+
+		Strafe(speed * deltaTime);
+	}
+}
+
+
+//---------FLYTTA DETTA--------------------
+bool Camera::Collision()
+{
+	bool collision = false; 
 	float CAMx; 
 	float CAMz;
 
@@ -24,12 +77,15 @@ bool Camera::Collotion()
 	{
 		if (CAMz >= -31.5&& CAMz <= 31.5)
 		{
-			collition = true; 
+			collision = true; 
 		}
 	}
 	
-	return collition; 
+	return collision; 
 }
+//------------------------------------------
+
+
 
 // Get/Set Camera Properties
 XMVECTOR Camera::GetPositionXM()const {
@@ -304,21 +360,4 @@ void Camera::UpdateViewMatrix() {
 	mView(3, 3) = 1.0f;
 }
 
-void Camera::OnMouseMove(WPARAM btnState, int x, int y) {
-
-	if ((btnState & MK_LBUTTON) != 0) {
-
-		// Make each pixel to correspond to a quarter of a degree
-
-		float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
-
-		float dy = XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
-
-		Pitch(dy);
-		RotateY(dx);
-	}
-
-	mLastMousePos.x = x;
-	mLastMousePos.y = y;
-}
 

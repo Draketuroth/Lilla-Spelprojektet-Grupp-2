@@ -30,7 +30,7 @@ bool WindowInitialize(HWND &windowHandle) {
 	windowClass.lpszMenuName = NULL;	// The window has no menu 
 	windowClass.lpszClassName = L"WindowClass";	// Name for the window class
 
-	if (RegisterClassEx(&windowClass) == 0) {
+	if (!RegisterClassEx(&windowClass)) {
 
 		// If registration of the window class fails, then the window can't be created. The WindowInitialize function returns false and 
 		// sends an error message to the console as a string
@@ -46,7 +46,7 @@ bool WindowInitialize(HWND &windowHandle) {
 	windowHandle = CreateWindow(
 
 		L"WindowClass",			// The name of the previously defined window class (Wide string, 16 bit)
-		L"TA15 Krigare",		// Text to display at the window title bar (Wide string, 16 bit)
+		L"Litet Spel Projekt",		// Text to display at the window title bar (Wide string, 16 bit)
 		WS_OVERLAPPEDWINDOW,	//The window style is an overlapped window. An overlapped window has a title bar and a border.
 		CW_USEDEFAULT,			// The window's x position in pixels from the monitor's upper left corner
 		CW_USEDEFAULT,			// The window's y position in pixels from the monitor's upper left corner
