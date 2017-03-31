@@ -12,7 +12,7 @@ class CharacterBase
 {
 public:
 	CharacterBase();
-	CharacterBase(const bool alive, const float health, const float movementspeed, const int unitID, const float damage);
+	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID);
 	~CharacterBase();
 
 
@@ -24,8 +24,6 @@ public:
 	void setUnitID(const int newUnitID);
 	bool getAlive()const;
 	void setAlive(const bool newAlive);
-	int getDamage()const;
-	void setDamage(const int damage);
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
@@ -37,7 +35,6 @@ private:
 	float movementSpeed;
 	int unitID;
 	bool alive;
-	int damage;
 	XMFLOAT3 position;
 
 	ID3D11Buffer* vertexBuffer;
