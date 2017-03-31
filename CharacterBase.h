@@ -16,16 +16,16 @@ public:
 	~CharacterBase();
 
 
-	float getHealth()const;
-	void setHealth(const float newHealth);
+	int getHealth()const;
+	void setHealth(const int newHealth);
 	float getMovementSpeed()const;
 	void setMovementSpeed(const float newMSpeed);
 	int getUnitID()const;
 	void setUnitID(const int newUnitID);
 	bool getAlive()const;
 	void setAlive(const bool newAlive);
-	float getDamage()const;
-	void setDamage(const float damage);
+	int getDamage()const;
+	void setDamage(const int damage);
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
@@ -33,12 +33,15 @@ public:
 	
 private:
 
-	float health;
+	int health;
 	float movementSpeed;
 	int unitID;
 	bool alive;
-	float damage;
-	XMFLOAT3 Position;
+	int damage;
+	XMFLOAT3 position;
+
+	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* indexBuffer;
 };
 
 

@@ -19,8 +19,6 @@ void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gVertexBuffer);
 	SAFE_RELEASE(gConstantBuffer);
-	SAFE_RELEASE(cubeVertexBuffer);
-	SAFE_RELEASE(cubeIndexBuffer);
 	SAFE_RELEASE(depthStencil);
 	SAFE_RELEASE(depthState);
 	SAFE_RELEASE(depthView);
@@ -59,44 +57,7 @@ bool BufferComponents::CreateVertexBuffer(ID3D11Device* &gDevice) {
 		1.0f, 1.0f    //v6 uv coordinates
 	};
 
-	TriangleVertex cubeVertices[24] =
-	{
-		//Front face
-		-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		1.0, -1.0f, -1.0f, 1.0f, 1.0f,
-
-		// Back face
-		1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
-
-		// Left face
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-
-		// Right face
-		1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
-
-		// Top face
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
-
-		// Bottom face
-		1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
-	};
+	
 
 	D3D11_BUFFER_DESC bufferDesc;
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
@@ -116,78 +77,116 @@ bool BufferComponents::CreateVertexBuffer(ID3D11Device* &gDevice) {
 	}
 
 	//----------CUBE-------------------------
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	//TriangleVertex cubeVertices[24] =
+	//{
+	//	//Front face
+	//	-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+	//	1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+	//	-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+	//	1.0, -1.0f, -1.0f, 1.0f, 1.0f,
 
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(cubeVertices);
+	//	// Back face
+	//	1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+	//	-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+	//	1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+	//	-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
 
-	ZeroMemory(&data, sizeof(data));
-	data.pSysMem = cubeVertices;
-	hr = gDevice->CreateBuffer(&bufferDesc, &data, &cubeVertexBuffer);
+	//	// Left face
+	//	-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+	//	-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+	//	-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+	//	-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
 
-	if (FAILED(hr)) {
+	//	// Right face
+	//	1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+	//	1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+	//	1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+	//	1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
 
-		return false;
-	}
+	//	// Top face
+	//	-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+	//	1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+	//	-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
+	//	1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
 
-	// Create Indices
-	unsigned int indices[36] = {
+	//	// Bottom face
+	//	1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+	//	-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+	//	1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+	//	-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
+	//};
+	//ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
-		// Front face
-		0,1,2,
-		2,1,3,
+	//memset(&bufferDesc, 0, sizeof(bufferDesc));
+	//bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	//bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	//bufferDesc.ByteWidth = sizeof(cubeVertices);
 
-		// Back face
+	//ZeroMemory(&data, sizeof(data));
+	//data.pSysMem = cubeVertices;
+	//hr = gDevice->CreateBuffer(&bufferDesc, &data, &cubeVertexBuffer);
 
-		4,5,6,
-		6,5,7,
+	//if (FAILED(hr)) {
 
-		// Left face
+	//	return false;
+	//}
 
-		8,9,10,
-		10,9,11,
+	//// Create Indices
+	//unsigned int indices[36] = {
 
-		// Right face
+	//	// Front face
+	//	0,1,2,
+	//	2,1,3,
 
-		12,13,14,
-		14,13,15,
+	//	// Back face
 
-		// Top face
+	//	4,5,6,
+	//	6,5,7,
 
-		16,17,18,
-		18,17,19,
+	//	// Left face
 
-		// Bottom face
+	//	8,9,10,
+	//	10,9,11,
 
-		20,21,22,
-		22,21,23 };
+	//	// Right face
 
-	// Create the buffer description
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	//	12,13,14,
+	//	14,13,15,
 
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(indices);
-	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = 0;
+	//	// Top face
 
-	// Set the subresource data
+	//	16,17,18,
+	//	18,17,19,
 
-	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = indices;
-	initData.SysMemPitch = 0;
-	initData.SysMemSlicePitch = 0;
+	//	// Bottom face
 
-	// Create the buffer
+	//	20,21,22,
+	//	22,21,23 };
 
-	hr = gDevice->CreateBuffer(&bufferDesc, &initData, &cubeIndexBuffer);
+	//// Create the buffer description
+	//ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
-	if (FAILED(hr)) {
+	//bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	//bufferDesc.ByteWidth = sizeof(indices);
+	//bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	//bufferDesc.CPUAccessFlags = 0;
+	//bufferDesc.MiscFlags = 0;
 
-		return false;
-	}
+	//// Set the subresource data
+
+	//D3D11_SUBRESOURCE_DATA initData;
+	//initData.pSysMem = indices;
+	//initData.SysMemPitch = 0;
+	//initData.SysMemSlicePitch = 0;
+
+	//// Create the buffer
+
+	//hr = gDevice->CreateBuffer(&bufferDesc, &initData, &cubeIndexBuffer);
+
+	//if (FAILED(hr)) {
+
+	//	return false;
+	//}
 
 	return true;
 }

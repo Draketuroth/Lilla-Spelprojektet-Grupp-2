@@ -128,8 +128,10 @@
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="GraphicComponents.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainCharacter.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="TextureComponents.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -139,8 +141,10 @@
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="GraphicComponents.h" />
     <ClInclude Include="MacroDefinitions.h" />
+    <ClInclude Include="MainCharacter.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="TextureComponents.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="VertexType.h" />
     <ClInclude Include="WICTextureLoader.h" />
     <ClInclude Include="Window.h" />

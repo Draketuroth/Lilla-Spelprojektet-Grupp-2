@@ -24,12 +24,12 @@ CharacterBase::~CharacterBase()
 
 }
 
-float CharacterBase::getHealth()const
+int CharacterBase::getHealth()const
 {
 	return this->health;
 }
 
-void CharacterBase::setHealth(const float newHealth)
+void CharacterBase::setHealth(const int newHealth)
 {
 	this->health = newHealth;
 }
@@ -64,24 +64,24 @@ void CharacterBase::setAlive(const bool newAlive)
 	this->alive = newAlive;
 }
 
-float CharacterBase::getDamage()const
+int CharacterBase::getDamage()const
 {
 	return this->damage;
 }
 
-void CharacterBase::setDamage(const float damage)
+void CharacterBase::setDamage(const int damage)
 {
 	this->damage = damage;
 }
 
 XMFLOAT3 CharacterBase::getPos()const
 {
-	return this->Position;
+	return this->position;
 }
 
 void CharacterBase::setPos(const XMFLOAT3 newPos)
 {
-	this->Position = newPos;
+	this->position = newPos;
 }
 
 string CharacterBase::toString()

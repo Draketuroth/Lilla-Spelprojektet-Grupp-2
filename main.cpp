@@ -24,6 +24,8 @@
 
 #include "Render.h" 
 
+#include "Timer.h"
+
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
@@ -43,11 +45,13 @@ GraphicComponents gHandler;
 BufferComponents bHandler;
 TextureComponents tHandler;
 
+Timer timer;
+
 //----------------------------------------------------------------------------------------------------------------------------------//
 // FORWARD DECLARATIONS
 //----------------------------------------------------------------------------------------------------------------------------------//
 int RunApplication();
-void keyEvent(float deltaTime, float speed);
+
 
 int main() {
 
@@ -109,16 +113,7 @@ int RunApplication() {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
-	// Storing the counts per second
-	__int64 countsPerSecond = 0;
-	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSecond);
-	float secondsPerCount = 1.0f / countsPerSecond;
-
-	// Initialize the previous time
-	__int64 previousTime = 0;
-	QueryPerformanceCounter((LARGE_INTEGER*)&previousTime);
-
-
+	timer.initialize();
 
 	//----------------GAME LOOP----------------------------
 	while (windowMessage.message != WM_QUIT) {
@@ -137,17 +132,10 @@ int RunApplication() {
 			// DELTA TIMING
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
-			// Capture the current count
-			__int64 currentTime = 0;
-			QueryPerformanceCounter((LARGE_INTEGER*)&currentTime);
+			float deltaTime = timer.getDeltaTime();
 
-			// Calculate the deltaTime
-			float deltaTime = ((currentTime - previousTime) * secondsPerCount);
 			//update camera
 			mCam.cameraUpdate(deltaTime);
-
-			//This just shows the FPS
-			showFPS(windowHandle, deltaTime, bHandler);
 
 			//----------------------------------------------------------------------------------------------------------------------------------//
 			// CAMERA UPDATE
@@ -199,7 +187,7 @@ int RunApplication() {
 
 			gHandler.gSwapChain->Present(0, 0); // Change front and back buffer
 
-			previousTime = currentTime;
+			timer.updateCurretTime();
 
 		}
 
@@ -213,4 +201,5 @@ int RunApplication() {
 
 	return 0;
 }
+
 
