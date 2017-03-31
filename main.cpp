@@ -128,19 +128,10 @@ int RunApplication() {
 
 		else {
 
-			//----------------------------------------------------------------------------------------------------------------------------------//
-			// DELTA TIMING
-			//----------------------------------------------------------------------------------------------------------------------------------//
-
 			float deltaTime = timer.getDeltaTime();
 
 			//update camera
 			mCam.cameraUpdate(deltaTime);
-
-			//----------------------------------------------------------------------------------------------------------------------------------//
-			// CAMERA UPDATE
-			//----------------------------------------------------------------------------------------------------------------------------------//
-
 			mCam.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
 			XMMATRIX tCameraViewProj = XMMatrixTranspose(mCam.ViewProj());	// Camera View Projection Matrix

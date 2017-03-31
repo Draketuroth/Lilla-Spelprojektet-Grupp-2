@@ -6,13 +6,10 @@ class MainCharacter: public CharacterBase
 {
 private:
 	Timer timer;
-	float deltaTime;
 
 public:
 	MainCharacter();
 	~MainCharacter();
-
-	void setDeltaTime();
 
 	void update();
 	void movement();
