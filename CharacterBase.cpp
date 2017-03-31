@@ -9,7 +9,7 @@ CharacterBase::CharacterBase()
 	this->alive = true;
 }
 
-CharacterBase::CharacterBase(const bool alive, const float health, const float movemenstpeed, const int unitID)
+CharacterBase::CharacterBase(const bool alive, const int health, const float movemenstpeed, const int unitID)
 {
 	this->health = health;
 	this->movementSpeed = movemenstpeed;
