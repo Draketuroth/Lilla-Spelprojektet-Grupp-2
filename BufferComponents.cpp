@@ -19,6 +19,8 @@ void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gVertexBuffer);
 	SAFE_RELEASE(gConstantBuffer);
+	SAFE_RELEASE(cubeVertexBuffer);
+	SAFE_RELEASE(cubeIndexBuffer);
 	SAFE_RELEASE(depthStencil);
 	SAFE_RELEASE(depthState);
 	SAFE_RELEASE(depthView);
@@ -57,6 +59,45 @@ bool BufferComponents::CreateVertexBuffer(ID3D11Device* &gDevice) {
 		1.0f, 1.0f    //v6 uv coordinates
 	};
 
+	TriangleVertex cubeVertices[24] =
+	{
+		//Front face
+		-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		1.0, -1.0f, -1.0f, 1.0f, 1.0f,
+
+		// Back face
+		1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
+
+		// Left face
+		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+
+		// Right face
+		1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
+
+		// Top face
+		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+
+		// Bottom face
+		1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
+	};
+
 	D3D11_BUFFER_DESC bufferDesc;
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
@@ -68,6 +109,80 @@ bool BufferComponents::CreateVertexBuffer(ID3D11Device* &gDevice) {
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = triangleVertices;
 	hr = gDevice->CreateBuffer(&bufferDesc, &data, &gVertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	//----------CUBE-------------------------
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(cubeVertices);
+
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = cubeVertices;
+	hr = gDevice->CreateBuffer(&bufferDesc, &data, &cubeVertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	// Create Indices
+	unsigned int indices[36] = {
+
+		// Front face
+		0,1,2,
+		2,1,3,
+
+		// Back face
+
+		4,5,6,
+		6,5,7,
+
+		// Left face
+
+		8,9,10,
+		10,9,11,
+
+		// Right face
+
+		12,13,14,
+		14,13,15,
+
+		// Top face
+
+		16,17,18,
+		18,17,19,
+
+		// Bottom face
+
+		20,21,22,
+		22,21,23 };
+
+	// Create the buffer description
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(indices);
+	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+
+	// Set the subresource data
+
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = indices;
+	initData.SysMemPitch = 0;
+	initData.SysMemSlicePitch = 0;
+
+	// Create the buffer
+
+	hr = gDevice->CreateBuffer(&bufferDesc, &initData, &cubeIndexBuffer);
 
 	if (FAILED(hr)) {
 
@@ -94,7 +209,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice, Camera &mCam
 	// Using the following method, the matrix can be computed from the world position of the camera (eye), a global up vector, and a 
 	// target point.
 
-	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 2));
+	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 4));
 	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 1));
 	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&XMFLOAT3(0, 1, 0));
 	

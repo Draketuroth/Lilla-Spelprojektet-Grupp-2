@@ -38,4 +38,14 @@ void RenderStandard(GraphicComponents &gHandler, BufferComponents &bHandler, Tex
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 
 	gHandler.gDeviceContext->Draw(6, 0);
+
+	ID3D11ShaderResourceView* nullSRV = nullptr;
+
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
+
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.cubeVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.cubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	gHandler.gDeviceContext->DrawIndexed(36, 0, 0);
+
+
 }

@@ -47,6 +47,7 @@ TextureComponents tHandler;
 // FORWARD DECLARATIONS
 //----------------------------------------------------------------------------------------------------------------------------------//
 int RunApplication();
+void keyEvent(float deltaTime, float speed);
 
 int main() {
 
@@ -117,6 +118,9 @@ int RunApplication() {
 	__int64 previousTime = 0;
 	QueryPerformanceCounter((LARGE_INTEGER*)&previousTime);
 
+
+
+	//----------------GAME LOOP----------------------------
 	while (windowMessage.message != WM_QUIT) {
 
 		if (PeekMessage(&windowMessage, NULL, NULL, NULL, PM_REMOVE)) {
@@ -134,41 +138,15 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			// Capture the current count
-
 			__int64 currentTime = 0;
 			QueryPerformanceCounter((LARGE_INTEGER*)&currentTime);
 
-			// Calculate the delta time
-
+			// Calculate the deltaTime
 			float deltaTime = ((currentTime - previousTime) * secondsPerCount);
+			//update camera
+			mCam.cameraUpdate(deltaTime);
 
-			float speed = 10.0f;
-
-			if (GetAsyncKeyState('W') & 0x8000) {
-
-				mCam.Walk(speed * deltaTime);
-			}
-
-			if (GetAsyncKeyState('S') & 0x8000) {
-
-				mCam.Walk(-speed * deltaTime);
-			}
-
-			if (GetAsyncKeyState('A') & 0x8000) {
-
-				mCam.Strafe(-speed * deltaTime);
-			}
-
-			if (GetAsyncKeyState('D') & 0x8000) {
-
-				mCam.Strafe(speed * deltaTime);
-			}
-
-			POINT p;
-			GetCursorPos(&p);
-
-			mCam.OnMouseMove(WM_LBUTTONDOWN, p.x, p.y);
-
+			//This just shows the FPS
 			showFPS(windowHandle, deltaTime, bHandler);
 
 			//----------------------------------------------------------------------------------------------------------------------------------//
