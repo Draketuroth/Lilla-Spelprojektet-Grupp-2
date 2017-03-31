@@ -6,6 +6,7 @@
 // Philip Velandria, Jonathan Sundberg, Linnea Vajda, Fredrik Linde
 //----------------------------------------------------------------------------------------------------------------------------------//
 
+
 #include <windows.h>
 
 #include <d3d11.h>	
@@ -21,7 +22,7 @@
 #include "BufferComponents.h"
 #include "TextureComponents.h"
 
-#include "Render.h"
+#include "Render.h" 
 
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")

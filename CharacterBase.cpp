@@ -74,6 +74,16 @@ void CharacterBase::setDamage(const float damage)
 	this->damage = damage;
 }
 
+XMFLOAT3 CharacterBase::getPos()const
+{
+	return this->Position;
+}
+
+void CharacterBase::setPos(const XMFLOAT3 newPos)
+{
+	this->Position = newPos;
+}
+
 string CharacterBase::toString()
 {
 	stringstream toString;
