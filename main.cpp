@@ -46,7 +46,6 @@ TextureComponents tHandler;
 // FORWARD DECLARATIONS
 //----------------------------------------------------------------------------------------------------------------------------------//
 int RunApplication();
-void keyEvent(float deltaTime, float speed);
 
 int main() {
 

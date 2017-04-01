@@ -1,2 +1,3 @@
-﻿  Render.cpp
-  Demo.vcxproj -> C:\Users\halo15\Documents\Visual Studio 2017\Projects\ProjektGrupp2\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe
+﻿  DeferredBuffersClass.cpp
+c:\users\fredrik\source\repos\lilla-spelprojektet-grupp-2\deferredbuffersclass.cpp(116): warning C4715: 'DeferredBuffersClass::Initialize': not all control paths return a value
+  Demo.vcxproj -> C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe

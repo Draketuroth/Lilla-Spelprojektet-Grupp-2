@@ -125,6 +125,8 @@
   <ItemGroup>
     <ClCompile Include="BufferComponents.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DeferredBuffersClass.cpp" />
+    <ClCompile Include="DeferredShaderClass.cpp" />
     <ClCompile Include="GraphicComponents.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Render.cpp" />
@@ -135,6 +137,8 @@
   <ItemGroup>
     <ClInclude Include="BufferComponents.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DeferredBuffersClass.h" />
+    <ClInclude Include="DeferredShaderClass.h" />
     <ClInclude Include="GraphicComponents.h" />
     <ClInclude Include="MacroDefinitions.h" />
     <ClInclude Include="Render.h" />
