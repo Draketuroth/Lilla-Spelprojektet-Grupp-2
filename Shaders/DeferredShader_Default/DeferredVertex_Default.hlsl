@@ -1,26 +1,20 @@
-//----------------------------------------------------------------------------------------------------------------------------------//
-// Vertex Shader DirectX11
-//
-// Philip Velandria, Jonathan Sundberg, Linnea Vajda, Fredrik Linde
-//----------------------------------------------------------------------------------------------------------------------------------//
 
-// The vertex shader is now only responsible for passing data and doesn't manipulate it any further
 
 struct VS_IN
 {
-	float3 Pos : POSITION;
+	float4 Pos : POSITION;
 	float2 Tex : TEXCOORD;
+	float3 Normal : NORMAL;
 };
 
 struct VS_OUT
 {
-	float3 Pos : POSITION;
+	float4 Pos : POSITION;
 	float2 Tex : TEXCOORD;
+	float3 Normal : NORMAL;
 };
 
-//-----------------------------------------------------------------------------------------
-// VertexShader: VSScene
-//-----------------------------------------------------------------------------------------
+
 VS_OUT VS_main(VS_IN input)
 {
 	VS_OUT output = (VS_OUT)0;
@@ -28,6 +22,8 @@ VS_OUT VS_main(VS_IN input)
 	output.Pos = input.Pos;
 
 	output.Tex = input.Tex;
+
+	output.Normal = input.Normal;
 
 	return output;
 }

@@ -133,5 +133,14 @@
     <FxCompile Include="Shaders\StandardShaders\Vertex.hlsl">
       <Filter>Source Files\HLSL\StandardShaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\DeferredShader_Default\DeferredFragment_Default.hlsl">
+      <Filter>Source Files\HLSL\DeferredShader_Default</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DeferredShader_Default\DeferredVertex_Default.hlsl">
+      <Filter>Source Files\HLSL\DeferredShader_Default</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DeferredShader_Default\DeferredGeometry_Default.hlsl">
+      <Filter>Source Files\HLSL\DeferredShader_Default</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

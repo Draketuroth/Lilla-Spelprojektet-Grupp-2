@@ -21,9 +21,11 @@ public:
 
 	void ReleaseAll();
 
-	bool InitializeShader(ID3D11Device* gDevice, HWND hwnd, WCHAR* vsFileName, WCHAR*);
+	bool InitializeShader(ID3D11Device* gDevice);
+	void RenderShader(ID3D11DeviceContext* gDeviceContext, int indexCount);
 
 	ID3D11VertexShader* d_vertexShader;
+	ID3D11GeometryShader* d_geometryShader;
 	ID3D11PixelShader* d_pixelShader;
 	ID3D11InputLayout* d_layout;
 };
