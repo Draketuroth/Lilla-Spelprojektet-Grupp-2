@@ -46,14 +46,14 @@
     <Filter Include="Source Files\HLSL\StandardShaders">
       <UniqueIdentifier>{ab6384ef-2b56-4501-be6d-d8b3b8178836}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Characters">
-      <UniqueIdentifier>{1313facb-4aa8-4cfa-9c89-02357dd99e63}</UniqueIdentifier>
+    <Filter Include="Header Files\Deferred Renderer">
+      <UniqueIdentifier>{118584c7-334b-4de3-b483-185368df9cc0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Characters">
-      <UniqueIdentifier>{9a987a6c-d808-4450-9965-a1cdfc852d93}</UniqueIdentifier>
+    <Filter Include="Source Files\Deferred Renderer">
+      <UniqueIdentifier>{81ccada0-36f2-4186-a0d2-6fad0b3f45a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Global">
-      <UniqueIdentifier>{31782d8b-51ca-4f12-a3d6-cce37c1fd8ff}</UniqueIdentifier>
+    <Filter Include="Source Files\HLSL\DeferredShader_Default">
+      <UniqueIdentifier>{fa934e68-dc32-419e-8461-46cf20535760}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,14 +81,11 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterBase.cpp">
-      <Filter>Source Files\Characters</Filter>
+    <ClCompile Include="DeferredBuffersClass.cpp">
+      <Filter>Source Files\Deferred Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="MainCharacter.cpp">
-      <Filter>Source Files\Characters</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Source Files\Global</Filter>
+    <ClCompile Include="DeferredShaderClass.cpp">
+      <Filter>Source Files\Deferred Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,14 +116,11 @@
     <ClInclude Include="Window.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
-    <ClInclude Include="MainCharacter.h">
-      <Filter>Header Files\Characters</Filter>
+    <ClInclude Include="DeferredBuffersClass.h">
+      <Filter>Header Files\Deferred Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterBase.h">
-      <Filter>Header Files\Characters</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Header Files\Global</Filter>
+    <ClInclude Include="DeferredShaderClass.h">
+      <Filter>Header Files\Deferred Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +132,15 @@
     </FxCompile>
     <FxCompile Include="Shaders\StandardShaders\Vertex.hlsl">
       <Filter>Source Files\HLSL\StandardShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DeferredShader_Default\DeferredFragment_Default.hlsl">
+      <Filter>Source Files\HLSL\DeferredShader_Default</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DeferredShader_Default\DeferredVertex_Default.hlsl">
+      <Filter>Source Files\HLSL\DeferredShader_Default</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DeferredShader_Default\DeferredGeometry_Default.hlsl">
+      <Filter>Source Files\HLSL\DeferredShader_Default</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

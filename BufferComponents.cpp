@@ -5,10 +5,6 @@ BufferComponents::BufferComponents() {
 
 	gVertexBuffer = nullptr;	
 	gConstantBuffer = nullptr;	
-
-	depthStencil = nullptr;
-	depthState = nullptr;	
-	depthView = nullptr;
 }
 
 BufferComponents::~BufferComponents() {
@@ -20,8 +16,9 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gVertexBuffer);
 	SAFE_RELEASE(gConstantBuffer);
 	SAFE_RELEASE(depthStencil);
-	SAFE_RELEASE(depthState);
 	SAFE_RELEASE(depthView);
+	SAFE_RELEASE(depthState);
+
 }
 
 void BufferComponents::SetupScene(ID3D11Device* &gDevice, Camera &mCam) {

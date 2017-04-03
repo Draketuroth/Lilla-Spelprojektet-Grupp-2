@@ -34,7 +34,6 @@ public:
 	bool CreateSwapChainAndDevice(HWND &windowHandle);	// Function to create the graphic device responsible for interactions with the graphic card and the swap chain to switch between back & front buffer
 
 	bool CreateStandardShaders();
-
 	bool CreateDepthStencil(BufferComponents &bHandler);
 	void SetViewport();		// Functions to define the properties of our viewport
 
