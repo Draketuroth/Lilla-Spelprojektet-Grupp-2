@@ -1,10 +1,6 @@
 
-#include "GraphicComponents.h"
-#include "BufferComponents.h"
-#include "TextureComponents.h"
+#include "SceneContainer.h"
 
+void Render(SceneContainer &sceneContainer);
 
-void Render(GraphicComponents &gHandler, BufferComponents &bHandler, TextureComponents &tHandler);
-
-
-void RenderStandard(GraphicComponents &gHandler, BufferComponents &bHandler, TextureComponents &tHandler);
+void RenderStandard(SceneContainer &sceneContainer);

@@ -93,6 +93,9 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files\Global</Filter>
     </ClCompile>
+    <ClCompile Include="SceneContainer.cpp">
+      <Filter>Source Files\Global</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BufferComponents.h">
@@ -129,6 +132,9 @@
       <Filter>Header Files\Deferred Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
+      <Filter>Header Files\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneContainer.h">
       <Filter>Header Files\Global</Filter>
     </ClInclude>
   </ItemGroup>

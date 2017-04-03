@@ -7,20 +7,7 @@
 //----------------------------------------------------------------------------------------------------------------------------------//
 
 
-#include <windows.h>
-
-#include <d3d11.h>	
-#include <d3dcompiler.h>	
-
-#include <iostream>
-#include <Windows.h>
-#include "Camera.h"
-#include "WICTextureLoader.h"
-#include "Window.h"
-
-#include "GraphicComponents.h"
-#include "BufferComponents.h"
-#include "TextureComponents.h"
+#include "SceneContainer.h"
 
 #include "Render.h" 
 
@@ -41,9 +28,12 @@ Camera mCam;
 //----------------------------------------------------------------------------------------------------------------------------------//
 // PIPELINE COMPONENTS
 //----------------------------------------------------------------------------------------------------------------------------------//
-GraphicComponents gHandler;
-BufferComponents bHandler;
-TextureComponents tHandler;
+SceneContainer sceneContainer;
+//GraphicComponents gHandler;
+//BufferComponents bHandler;
+//TextureComponents tHandler;
+
+
 
 Timer timer;
 
@@ -70,27 +60,7 @@ int main() {
 			MB_OK);
 	}
 
-	// If also DirectX cannot be initialized on startup, nothing can be drawn to the screen. We use MessageBox again to display the error. 
-	if (!gHandler.InitalizeDirect3DContext(windowHandle, bHandler)) {
-
-		MessageBox(
-			NULL,
-			L"CRITICAL ERROR: DirectX couldn't be initialized\nClosing application...",
-			L"ERROR",
-			MB_OK);
-	}
-
-
-	bHandler.SetupScene(gHandler.gDevice, mCam);
-
-	if (!tHandler.CreateTexture(gHandler.gDevice)) {
-
-		MessageBox(
-			NULL,
-			L"CRITICAL ERROR: Textures couldn't be initialized\nClosing application...",
-			L"ERROR",
-			MB_OK);
-	}
+	sceneContainer.initialize(windowHandle, mCam);
 
 	return RunApplication();
 }
@@ -144,7 +114,7 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			// Here we disable GPU access to the vertex buffer data so I can change it on the CPU side and update it by sending it back when finished
-			gHandler.gDeviceContext->Map(bHandler.gConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
 			// We create a pointer to the constant buffer containing the world matrix that requires to be multiplied with the rotation matrix
 
@@ -154,25 +124,25 @@ int RunApplication() {
 			// constructed to rotate the triangles around the y-axis
 
 			// Both matrices must recieve the same treatment from the rotation matrix, no matter if we want to preserve its original space or not
-			cBufferPointer->worldViewProj = (bHandler.tWorldMatrix  * tCameraViewProj);
-			cBufferPointer->matrixWorld = bHandler.tWorldMatrix;
-			cBufferPointer->matrixView = bHandler.tWorldMatrix * tCameraView;
+			cBufferPointer->worldViewProj = (sceneContainer.bHandler.tWorldMatrix  * tCameraViewProj);
+			cBufferPointer->matrixWorld = sceneContainer.bHandler.tWorldMatrix;
+			cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
 			cBufferPointer->matrixProjection = tCameraProjection;
 
 			cBufferPointer->cameraPos = mCam.GetPosition();
 
 			// At last we have to reenable GPU access to the vertex buffer data
-			gHandler.gDeviceContext->Unmap(bHandler.gConstantBuffer, 0);
+			sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gConstantBuffer, 0);
 
 			//----------------------------------------------------------------------------------------------------------------------------------//
 			// RENDER
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			// Now we can render using the new updated buffers on the GPU
-			Render(gHandler, bHandler, tHandler);
+			Render(sceneContainer);
 
 			// When everythig has been drawn out, finish by presenting the final result on the screen by swapping between the back and front buffers
-			gHandler.gSwapChain->Present(0, 0); // Change front and back buffer
+			sceneContainer.gHandler.gSwapChain->Present(0, 0); // Change front and back buffer
 
 			timer.updateCurretTime();
 
@@ -180,9 +150,7 @@ int RunApplication() {
 
 	}
 
-	gHandler.ReleaseAll();
-	bHandler.ReleaseAll();
-	tHandler.ReleaseAll();
+	sceneContainer.releaseAll();
 
 	DestroyWindow(windowHandle);
 
