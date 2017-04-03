@@ -1,11 +1,11 @@
 #pragma once
 #include "CharacterBase.h"
-#include "Timer.h"
 
 class MainCharacter: public CharacterBase
 {
 private:
 	Timer timer;
+	Camera camera;
 
 public:
 	MainCharacter();
@@ -16,7 +16,9 @@ public:
 
 	void keyEvent();
 
-	void walk(float d);
-	void strafe(float d);
+	void walkZ(float deltaTime);
+	void walkX(float deltaTime);
+
+	void rotate();
 };
 

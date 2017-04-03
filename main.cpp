@@ -107,6 +107,8 @@ int RunApplication() {
 
 	SetCapture(windowHandle);
 
+	SetCursorPos(WIDTH / 2, HEIGHT / 2);
+
 	mCam.mLastMousePos.x = 0;
 	mCam.mLastMousePos.y = 0;
 
