@@ -1,11 +1,14 @@
 #pragma once
 #include "CharacterBase.h"
 
+
 class MainCharacter: public CharacterBase
 {
 private:
 	Timer timer;
 	Camera camera;
+
+	
 
 public:
 	MainCharacter();

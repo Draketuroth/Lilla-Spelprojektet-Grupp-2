@@ -43,8 +43,8 @@ void RenderStandard(GraphicComponents &gHandler, BufferComponents &bHandler, Tex
 
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
 
-	/*gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.cubeVertexBuffer, &vertexSize, &offset);
-	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.cubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	/*gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.vertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	gHandler.gDeviceContext->DrawIndexed(36, 0, 0);*/
 
 

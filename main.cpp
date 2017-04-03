@@ -127,7 +127,6 @@ int RunApplication() {
 		}
 
 		// If there are no messages to handle, the application will continue by running a frame
-
 		else {
 
 			float deltaTime = timer.getDeltaTime();
@@ -145,7 +144,6 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			// Here we disable GPU access to the vertex buffer data so I can change it on the CPU side and update it by sending it back when finished
-
 			gHandler.gDeviceContext->Map(bHandler.gConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
 			// We create a pointer to the constant buffer containing the world matrix that requires to be multiplied with the rotation matrix
@@ -156,7 +154,6 @@ int RunApplication() {
 			// constructed to rotate the triangles around the y-axis
 
 			// Both matrices must recieve the same treatment from the rotation matrix, no matter if we want to preserve its original space or not
-
 			cBufferPointer->worldViewProj = (bHandler.tWorldMatrix  * tCameraViewProj);
 			cBufferPointer->matrixWorld = bHandler.tWorldMatrix;
 			cBufferPointer->matrixView = bHandler.tWorldMatrix * tCameraView;
@@ -165,7 +162,6 @@ int RunApplication() {
 			cBufferPointer->cameraPos = mCam.GetPosition();
 
 			// At last we have to reenable GPU access to the vertex buffer data
-
 			gHandler.gDeviceContext->Unmap(bHandler.gConstantBuffer, 0);
 
 			//----------------------------------------------------------------------------------------------------------------------------------//
@@ -173,11 +169,9 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			// Now we can render using the new updated buffers on the GPU
-
 			Render(gHandler, bHandler, tHandler);
 
 			// When everythig has been drawn out, finish by presenting the final result on the screen by swapping between the back and front buffers
-
 			gHandler.gSwapChain->Present(0, 0); // Change front and back buffer
 
 			timer.updateCurretTime();

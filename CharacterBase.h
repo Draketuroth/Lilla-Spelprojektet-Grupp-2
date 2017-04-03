@@ -6,6 +6,7 @@
 #include <DirectXMath.h>
 #include "Timer.h"
 #include "Camera.h"
+#include "VertexType.h"
 
 using namespace std;
 using namespace DirectX;
@@ -28,6 +29,8 @@ public:
 	void setAlive(const bool newAlive);
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
+
+	bool createVertexBuffer(ID3D11Device* &graphicDevice);
 
 	string toString();
 	
