@@ -24,17 +24,20 @@ public:
 	ID3D11RenderTargetView* gBackbufferRTV;	// Render Target View
 
 	ID3D11InputLayout* gVertexLayout;
-
 	ID3D11VertexShader* gVertexShader;	
 	ID3D11PixelShader* gPixelShader;	
 	ID3D11GeometryShader* gGeometryShader;
 
-	bool InitalizeDirect3DContext(HWND &windowHandle, BufferComponents &bHandler);	// Function called to initalize the necessary components, as listen below
-	bool CreateRenderTargetView(BufferComponents &bHandler);	// We require a render target view for rendering and we create this by taking the back buffer from the swap chain
+	ID3D11Texture2D* depthStencil;	// Depth-stencil texture
+	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
+	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture
+
+	bool InitalizeDirect3DContext(HWND &windowHandle);	// Function called to initalize the necessary components, as listen below
+	bool CreateDepthStencil();
+	bool CreateRenderTargetView();	// We require a render target view for rendering and we create this by taking the back buffer from the swap chain
 	bool CreateSwapChainAndDevice(HWND &windowHandle);	// Function to create the graphic device responsible for interactions with the graphic card and the swap chain to switch between back & front buffer
 
 	bool CreateStandardShaders();
-	bool CreateDepthStencil(BufferComponents &bHandler);
 	void SetViewport();		// Functions to define the properties of our viewport
 
 };

@@ -1,14 +1,2 @@
-﻿  compilation object save succeeded; see C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Fragment.cso
-  BufferComponents.cpp
-  Camera.cpp
-  DeferredBuffersClass.cpp
-  DeferredShaderClass.cpp
-  GraphicComponents.cpp
-  Render.cpp
-  SceneContainer.cpp
-  TextureComponents.cpp
-  Timer.cpp
-  Window.cpp
-  main.cpp
-  Generating Code...
+﻿  SceneContainer.cpp
   Demo.vcxproj -> C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe

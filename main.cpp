@@ -11,8 +11,6 @@
 
 #include "Render.h" 
 
-#include "Timer.h"
-
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
@@ -29,11 +27,6 @@ Camera mCam;
 // PIPELINE COMPONENTS
 //----------------------------------------------------------------------------------------------------------------------------------//
 SceneContainer sceneContainer;
-//GraphicComponents gHandler;
-//BufferComponents bHandler;
-//TextureComponents tHandler;
-
-
 
 Timer timer;
 
@@ -139,7 +132,7 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			// Now we can render using the new updated buffers on the GPU
-			Render(sceneContainer);
+			render(sceneContainer);
 
 			// When everythig has been drawn out, finish by presenting the final result on the screen by swapping between the back and front buffers
 			sceneContainer.gHandler.gSwapChain->Present(0, 0); // Change front and back buffer

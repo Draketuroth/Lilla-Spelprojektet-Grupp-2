@@ -20,31 +20,35 @@ GraphicComponents::~GraphicComponents() {
 
 void GraphicComponents::ReleaseAll() {
 
-	SAFE_RELEASE(gBackbufferRTV);
 	SAFE_RELEASE(gSwapChain);
 	SAFE_RELEASE(gDevice);
 	SAFE_RELEASE(gDeviceContext);
+	SAFE_RELEASE(gBackbufferRTV);
 
 	SAFE_RELEASE(gVertexLayout);
 	SAFE_RELEASE(gVertexShader);
 	SAFE_RELEASE(gPixelShader);
 	SAFE_RELEASE(gGeometryShader);
 
+	SAFE_RELEASE(depthStencil);
+	SAFE_RELEASE(depthView);
+	SAFE_RELEASE(depthState);
+
 }
 
-bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle, BufferComponents &bHandler) {
+bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 
 	if (!CreateSwapChainAndDevice(windowHandle)) {
 
 		return false;
 	}
 
-	if (!CreateDepthStencil(bHandler)) {
+	if (!CreateDepthStencil()){
 
 		return false;
 	}
 
-	if (!CreateRenderTargetView(bHandler)) {
+	if (!CreateRenderTargetView()) {
 
 		return false;
 	}
@@ -122,7 +126,100 @@ bool GraphicComponents::CreateSwapChainAndDevice(HWND &windowHandle) {
 	return true;
 }
 
-bool GraphicComponents::CreateRenderTargetView(BufferComponents &bHandler){
+bool GraphicComponents::CreateDepthStencil()
+{
+	HRESULT hr;
+
+	// Depth Texture
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	// THe depth buffer texture is used to store the distance of each fragment to the camera
+
+	D3D11_TEXTURE2D_DESC descDepth;
+	descDepth.Width = WIDTH;
+	descDepth.Height = HEIGHT;
+	descDepth.MipLevels = 1;
+	descDepth.ArraySize = 1;
+	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	descDepth.SampleDesc.Count = 1;
+	descDepth.SampleDesc.Quality = 0;
+	descDepth.Usage = D3D11_USAGE_DEFAULT;
+	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	descDepth.CPUAccessFlags = 0;
+	descDepth.MiscFlags = 0;
+
+	hr = gDevice->CreateTexture2D(&descDepth, nullptr, &depthStencil);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+
+	// Depth View Description
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	// Create depth view description. A depth-stencil-view interface process a texture resource during the depth-stencil testing.
+	D3D11_DEPTH_STENCIL_VIEW_DESC dViewDesc;
+	dViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+	dViewDesc.Texture2D.MipSlice = 0;
+	dViewDesc.Flags = 0;
+
+	//Create depth stencil view
+	hr = gDevice->CreateDepthStencilView(depthStencil, &dViewDesc, &depthView);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	// Depth State Description
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	D3D11_DEPTH_STENCIL_DESC stencilDesc;
+
+	// Depth test
+	stencilDesc.DepthEnable = true;
+	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	// Stencil test
+	stencilDesc.StencilEnable = true;
+	stencilDesc.StencilReadMask = 0xFF;
+	stencilDesc.StencilWriteMask = 0xFF;
+
+	// Stencil operations if the pixel is facing forward
+
+	stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// Stencil operations if the pixel is facing backward
+
+	stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// Create Depth State
+	hr = gDevice->CreateDepthStencilState(&stencilDesc, &depthState);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	return true;
+
+}
+
+bool GraphicComponents::CreateRenderTargetView(){
 
 	// CreateRenderTargetView function is responsible for:
 	// - Giving us the back buffer from the created swap chain
@@ -150,8 +247,8 @@ bool GraphicComponents::CreateRenderTargetView(BufferComponents &bHandler){
 
 	backBuffer->Release();
 	
-	gDeviceContext->OMSetDepthStencilState(bHandler.depthState, 1);
-	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, bHandler.depthView);
+	gDeviceContext->OMSetDepthStencilState(depthState, 1);
+	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, depthView);
 
 	return true;
 }
@@ -303,97 +400,4 @@ bool GraphicComponents::CreateStandardShaders() {
 	gsBlob->Release();
 
 	return true;
-}
-
-bool GraphicComponents::CreateDepthStencil(BufferComponents &bHandler)
-{
-	HRESULT hr;
-
-	// Depth Texture
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	// THe depth buffer texture is used to store the distance of each fragment to the camera
-
-	D3D11_TEXTURE2D_DESC descDepth;
-	descDepth.Width = WIDTH;
-	descDepth.Height = HEIGHT;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	descDepth.SampleDesc.Count = 1;
-	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-	
-	hr = gDevice->CreateTexture2D(&descDepth, nullptr, &bHandler.depthStencil);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-
-	// Depth View Description
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	// Create depth view description. A depth-stencil-view interface process a texture resource during the depth-stencil testing.
-	D3D11_DEPTH_STENCIL_VIEW_DESC dViewDesc;
-	dViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	dViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-	dViewDesc.Texture2D.MipSlice = 0;
-	dViewDesc.Flags = 0;
-
-	//Create depth stencil view
-	hr = gDevice->CreateDepthStencilView(bHandler.depthStencil, &dViewDesc, &bHandler.depthView);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	// Depth State Description
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	D3D11_DEPTH_STENCIL_DESC stencilDesc;
-
-	// Depth test
-	stencilDesc.DepthEnable = true;
-	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-
-	// Stencil test
-	stencilDesc.StencilEnable = true;
-	stencilDesc.StencilReadMask = 0xFF;
-	stencilDesc.StencilWriteMask = 0xFF;
-
-	// Stencil operations if the pixel is facing forward
-
-	stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-	// Stencil operations if the pixel is facing backward
-
-	stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-	// Create Depth State
-	hr = gDevice->CreateDepthStencilState(&stencilDesc, &bHandler.depthState);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	return true;
-
 }

@@ -1,6 +1,6 @@
 
 #include "SceneContainer.h"
 
-void Render(SceneContainer &sceneContainer);
+void clear(SceneContainer &sceneContainer);
 
-void RenderStandard(SceneContainer &sceneContainer);
+void render(SceneContainer &sceneContainer);

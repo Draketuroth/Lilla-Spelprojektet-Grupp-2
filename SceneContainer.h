@@ -16,11 +16,11 @@
 #include "BufferComponents.h"
 #include "TextureComponents.h"
 
+#include "MainCharacter.h"
+
 class SceneContainer {
 
 private:
-
-
 
 
 public:
@@ -36,6 +36,9 @@ public:
 	BufferComponents bHandler;
 	TextureComponents tHandler;
 
+	MainCharacter character;
+
+	void drawPlane();
 };
 
 

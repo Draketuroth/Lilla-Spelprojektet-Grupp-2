@@ -58,6 +58,12 @@
     <Filter Include="Source Files\Global">
       <UniqueIdentifier>{0ee67af2-cc6a-4f6f-8d87-f61be31ddedd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Character">
+      <UniqueIdentifier>{5d3e005c-a269-453c-bbaf-a747c80a3b78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Character">
+      <UniqueIdentifier>{1cbf2cb9-c791-4e11-bdc3-3c9975885a5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -95,6 +101,12 @@
     </ClCompile>
     <ClCompile Include="SceneContainer.cpp">
       <Filter>Source Files\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterBase.cpp">
+      <Filter>Source Files\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="MainCharacter.cpp">
+      <Filter>Source Files\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +148,12 @@
     </ClInclude>
     <ClInclude Include="SceneContainer.h">
       <Filter>Header Files\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterBase.h">
+      <Filter>Header Files\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="MainCharacter.h">
+      <Filter>Header Files\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

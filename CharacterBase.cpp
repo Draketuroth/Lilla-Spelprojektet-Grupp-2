@@ -22,6 +22,12 @@ CharacterBase::~CharacterBase()
 	//Safe release
 }
 
+void CharacterBase::releaseAll() {
+
+	SAFE_RELEASE(vertexBuffer);
+	SAFE_RELEASE(indexBuffer);
+}
+
 int CharacterBase::getHealth()const
 {
 	return this->health;
@@ -67,7 +73,7 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 	this->position = newPos;
 }
 
-bool CharacterBase::createVertexBuffer(ID3D11Device* &graphicDevice)
+bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 {
 	//----------CUBE-------------------------
 	HRESULT hr;
@@ -187,6 +193,20 @@ bool CharacterBase::createVertexBuffer(ID3D11Device* &graphicDevice)
 	}
 
 	return true;
+}
+
+void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
+
+	ID3D11ShaderResourceView* nullSRV = nullptr;
+
+	graphicDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+
+	graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
+	graphicDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	graphicDeviceContext->DrawIndexed(36, 0, 0);
 }
 
 string CharacterBase::toString()

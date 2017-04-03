@@ -8,6 +8,8 @@
 #include "Camera.h"
 #include "VertexType.h"
 
+#include "MacroDefinitions.h"
+
 using namespace std;
 using namespace DirectX;
 
@@ -18,6 +20,7 @@ public:
 	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID);
 	~CharacterBase();
 
+	void releaseAll();
 
 	int getHealth()const;
 	void setHealth(const int newHealth);
@@ -30,7 +33,9 @@ public:
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
-	bool createVertexBuffer(ID3D11Device* &graphicDevice);
+	bool createBuffers(ID3D11Device* &graphicDevice);
+
+	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
 	string toString();
 	

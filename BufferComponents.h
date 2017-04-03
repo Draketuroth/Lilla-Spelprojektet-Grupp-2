@@ -36,16 +36,12 @@ public:
 	XMMATRIX transformMatrix;
 	XMMATRIX tWorldMatrix;
 
-	ID3D11Buffer* gVertexBuffer;	// Vertex buffer
+	ID3D11Buffer* planeVertexBuffer;	// Vertex buffer
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
-
-	ID3D11Texture2D* depthStencil;	// Depth-stencil texture
-	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
-	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture
 
 	void SetupScene(ID3D11Device* &gDevice, Camera &mCam);
 
-	bool CreateVertexBuffer(ID3D11Device* &gDevice);
+	bool CreatePlaneVertexBuffer(ID3D11Device* &gDevice);
 	bool CreateConstantBuffer(ID3D11Device* &gDevice, Camera &mCam);
 
 };
