@@ -1,3 +1,2 @@
-﻿  DeferredBuffersClass.cpp
-c:\users\fredrik\source\repos\lilla-spelprojektet-grupp-2\deferredbuffersclass.cpp(116): warning C4715: 'DeferredBuffersClass::Initialize': not all control paths return a value
+﻿  compilation object save succeeded; see C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Fragment.cso
   Demo.vcxproj -> C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe

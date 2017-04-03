@@ -55,6 +55,9 @@
     <Filter Include="Source Files\HLSL\DeferredShader_Default">
       <UniqueIdentifier>{fa934e68-dc32-419e-8461-46cf20535760}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Global">
+      <UniqueIdentifier>{0ee67af2-cc6a-4f6f-8d87-f61be31ddedd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="DeferredShaderClass.cpp">
       <Filter>Source Files\Deferred Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files\Global</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="DeferredShaderClass.h">
       <Filter>Header Files\Deferred Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files\Global</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
