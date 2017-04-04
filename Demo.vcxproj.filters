@@ -78,9 +78,6 @@
     <ClCompile Include="TextureComponents.cpp">
       <Filter>Source Files\Pipeline Components</Filter>
     </ClCompile>
-    <ClCompile Include="Render.cpp">
-      <Filter>Source Files\Pipeline Components</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
@@ -121,9 +118,6 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Render.h">
-      <Filter>Header Files\Pipeline Components</Filter>
     </ClInclude>
     <ClInclude Include="WICTextureLoader.h">
       <Filter>Header Files\DirectXTex</Filter>
