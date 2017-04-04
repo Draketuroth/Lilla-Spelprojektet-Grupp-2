@@ -15,6 +15,17 @@ using namespace DirectX;
 
 class CharacterBase
 {
+private:
+
+	int health;
+	float movementSpeed;
+	int unitID;
+	bool alive;
+	XMFLOAT3 position;
+
+	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* indexBuffer;
+
 public:
 	CharacterBase();
 	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID);
@@ -39,19 +50,6 @@ public:
 
 	string toString();
 	
-private:
 
-	int health;
-	float movementSpeed;
-	int unitID;
-	bool alive;
-	XMFLOAT3 position;
-
-	ID3D11Buffer* vertexBuffer;
-	ID3D11Buffer* indexBuffer;
 };
-
-
-
-
 #endif

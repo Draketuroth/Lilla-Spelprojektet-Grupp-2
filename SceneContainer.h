@@ -39,6 +39,9 @@ public:
 	MainCharacter character;
 
 	void drawPlane();
+	
+	void clear();
+	void render();
 };
 
 

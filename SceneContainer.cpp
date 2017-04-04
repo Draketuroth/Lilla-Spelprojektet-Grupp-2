@@ -80,3 +80,18 @@ void SceneContainer::drawPlane() {
 	gHandler.gDeviceContext->Draw(6, 0);
 
 }
+
+void SceneContainer::clear()
+{
+	// clear the back buffer to a deep blue
+	float clearColor[] = { 0, 0, 1, 1 };	// Back buffer clear color as an array of floats (rgba)
+	gHandler.gDeviceContext->ClearRenderTargetView(gHandler.gBackbufferRTV, clearColor);	// Clear the render target view using the specified color
+	gHandler.gDeviceContext->ClearDepthStencilView(gHandler.depthView, D3D11_CLEAR_DEPTH, 1.0f, 0);	// Clear the depth stencil view
+}
+void SceneContainer::render()
+{
+	clear();
+	
+	drawPlane();
+	character.draw(gHandler.gDeviceContext);
+}

@@ -17,10 +17,10 @@ MainCharacter::~MainCharacter()
 void MainCharacter::update()
 {
 	//HÄR UPPDATERAS MOVEMENT, ANIMATION...
-	//playIdleAnimation(); ?
+	//Om den inte rör sig, spela idleAnimation
 	keyEvent();
 
-	//draw(); ?
+	//dess draw() körs via CharacterBase draw()
 }
 void MainCharacter::movement()
 {

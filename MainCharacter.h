@@ -8,8 +8,6 @@ private:
 	Timer timer;
 	Camera camera;
 
-	
-
 public:
 	MainCharacter();
 	~MainCharacter();
