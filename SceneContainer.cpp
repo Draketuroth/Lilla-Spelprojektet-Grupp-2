@@ -88,10 +88,14 @@ void SceneContainer::clear()
 	gHandler.gDeviceContext->ClearRenderTargetView(gHandler.gBackbufferRTV, clearColor);	// Clear the render target view using the specified color
 	gHandler.gDeviceContext->ClearDepthStencilView(gHandler.depthView, D3D11_CLEAR_DEPTH, 1.0f, 0);	// Clear the depth stencil view
 }
-void SceneContainer::render()
+void SceneContainer::renderScene()
 {
-	clear();
-	
 	drawPlane();
+}
+void SceneContainer::renderCharacters()
+{
+	//we clear in here since characters are rendered before the scene
+	//Characters need to be rendered first since they will be moving
+	clear();
 	character.draw(gHandler.gDeviceContext);
 }

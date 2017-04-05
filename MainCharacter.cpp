@@ -16,11 +16,10 @@ MainCharacter::~MainCharacter()
 
 void MainCharacter::update()
 {
-	//HÄR UPPDATERAS MOVEMENT, ANIMATION...
-	//Om den inte rör sig, spela idleAnimation
-	keyEvent();
+	movement();
 
-	//dess draw() körs via CharacterBase draw()
+	//draw() happens in SceneContainer, 
+	//characters are rendered before the rest of the scene
 }
 void MainCharacter::movement()
 {
@@ -58,9 +57,10 @@ void MainCharacter::keyEvent()
 }
 
 //--------- Changing the character's position --------------
+
 //Strafe
 void MainCharacter::walkX(float deltaTime) {
-
+	//the camera will be locked, and will not rotate so we can use the camera's right as x-axis
 	XMFLOAT3 right = camera.GetRight();
 
 	//Will be locked on the x-axis.
@@ -78,18 +78,14 @@ void MainCharacter::walkX(float deltaTime) {
 	//Position
 	XMVECTOR p = XMLoadFloat3(&position);
 	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, r, p));
+	
+	//setPos(position);
 
-
-	/*mPosition += deltaTime * mRight
-	//If creating a vector from a single scalar variable, we use VectorReplicate
-	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR r = XMLoadFloat3(&mRight);
-	XMVECTOR p = XMLoadFloat3(&mPosition);
-	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));*/
 }
 //Walk
 void MainCharacter::walkZ(float deltaTime) {
 
+	//Instead of getLook, we should get the z-axis.
 	XMFLOAT3 forward = camera.GetLook();
 
 	XMFLOAT3 position = getPos();
@@ -104,6 +100,8 @@ void MainCharacter::walkZ(float deltaTime) {
 	//Position
 	XMVECTOR p = XMLoadFloat3(&position);
 	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, f, p));
+
+	//setPos(position);
 }
 //Rotate character
 void MainCharacter::rotate()

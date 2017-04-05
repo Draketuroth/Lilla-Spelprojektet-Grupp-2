@@ -206,7 +206,7 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 
 	graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 	graphicDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	graphicDeviceContext->DrawIndexed(36, 0, 0);
+	graphicDeviceContext->DrawIndexed(36, 0, 0);	
 }
 
 string CharacterBase::toString()
