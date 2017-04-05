@@ -279,7 +279,7 @@ bool GraphicComponents::CreateStandardShaders() {
 		nullptr,
 		"VS_main",
 		"vs_5_0",
-		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG,
+		D3DCOMPILE_DEBUG,
 		0,
 		&vsBlob,
 		&vsErrorBlob
@@ -310,7 +310,7 @@ bool GraphicComponents::CreateStandardShaders() {
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 
@@ -334,7 +334,7 @@ bool GraphicComponents::CreateStandardShaders() {
 		nullptr,
 		"PS_main",
 		"ps_5_0",
-		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG,
+		D3DCOMPILE_DEBUG,
 		0,
 		&psBlob,
 		&psErrorBlob
@@ -371,7 +371,7 @@ bool GraphicComponents::CreateStandardShaders() {
 		nullptr,
 		"GS_main",
 		"gs_5_0",
-		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG,
+		D3DCOMPILE_DEBUG,
 		0,
 		&gsBlob,
 		&gsErrorBlob

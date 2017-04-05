@@ -48,7 +48,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	ID3D11Texture2D* texture = nullptr;
 
 	CoInitialize(NULL);
-	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\chess.jpg", NULL, &standardResource, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &standardResource, 1024);
 
 	if (SUCCEEDED(hr) && texture != 0) {
 

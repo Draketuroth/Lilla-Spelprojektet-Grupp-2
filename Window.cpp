@@ -110,7 +110,7 @@ LRESULT CALLBACK WindowProcedure(HWND windowHandle, UINT message, WPARAM wParam,
 		if (wParam == VK_ESCAPE) {
 
 			PostQuitMessage(0);
-			break;	
+			break;
 		}
 
 	default:

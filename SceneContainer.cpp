@@ -35,7 +35,14 @@ bool SceneContainer::initialize(HWND &windowHandle, Camera &mCam) {
 			MB_OK);
 	}
 
-	bHandler.SetupScene(gHandler.gDevice, mCam);
+	if (!bHandler.SetupScene(gHandler.gDevice, mCam)) {
+
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Primitives couldn't be initialized\nClosing application...",
+			L"ERROR",
+			MB_OK);
+	}
 
 	if (!tHandler.CreateTexture(gHandler.gDevice)) {
 
@@ -81,6 +88,36 @@ void SceneContainer::drawPlane() {
 
 }
 
+void SceneContainer::drawPlatforms() {
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
+	gHandler.gDeviceContext->PSSetSamplers(1, 1, &tHandler.texSampler);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
+
+	for (int i = 0; i < bHandler.nrOfCubes; i++) {
+
+		if (bHandler.cubeObjects[i].renderCheck == true) {
+
+			gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.cubeObjects[i].gCubeVertexBuffer, &vertexSize, &offset);
+
+			gHandler.gDeviceContext->DrawIndexed(36, 0, 0);
+
+		}
+
+	}
+}
+
 void SceneContainer::clear()
 {
 	// clear the back buffer to a deep blue
@@ -88,10 +125,14 @@ void SceneContainer::clear()
 	gHandler.gDeviceContext->ClearRenderTargetView(gHandler.gBackbufferRTV, clearColor);	// Clear the render target view using the specified color
 	gHandler.gDeviceContext->ClearDepthStencilView(gHandler.depthView, D3D11_CLEAR_DEPTH, 1.0f, 0);	// Clear the depth stencil view
 }
+
 void SceneContainer::render()
 {
 	clear();
 	
-	drawPlane();
+	//drawPlane();
+
+	drawPlatforms();
+
 	character.draw(gHandler.gDeviceContext);
 }

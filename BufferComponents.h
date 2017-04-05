@@ -23,6 +23,15 @@ struct GS_CONSTANT_BUFFER {
 
 };
 
+struct CubeObjects {
+
+	XMMATRIX objectWorldMatrix;
+	ID3D11Buffer* gCubeVertexBuffer;;
+	BoundingBox bbox;
+	bool renderCheck;
+};
+
+
 class BufferComponents {
 
 public:
@@ -39,9 +48,21 @@ public:
 	ID3D11Buffer* planeVertexBuffer;	// Vertex buffer
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
 
-	void SetupScene(ID3D11Device* &gDevice, Camera &mCam);
+	ID3D11Buffer* gCylinderBuffer;
+	ID3D11Buffer* gCylinderIndexBuffer;
+
+	ID3D11Buffer* gCubeIndexBuffer;
+
+	CubeObjects cubeObjects[CUBECAPACITY];
+	int nrOfCubes;
+
+	bool SetupScene(ID3D11Device* &gDevice, Camera &mCam);
 
 	bool CreatePlaneVertexBuffer(ID3D11Device* &gDevice);
+	bool CreateCubeVertices(ID3D11Device* &gDevice);
+	bool CreateCubeIndices(ID3D11Device* &gDevice);
+	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes);
+	float RandomNumber(float Minimum, float Maximum);
 	bool CreateConstantBuffer(ID3D11Device* &gDevice, Camera &mCam);
 
 };

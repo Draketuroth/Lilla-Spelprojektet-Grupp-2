@@ -1,2 +1,10 @@
-﻿  main.cpp
-  Demo.vcxproj -> C:\Users\halo15\Documents\Visual Studio 2017\Projects\ProjektGrupp2\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe
+﻿  BufferComponents.cpp
+  CharacterBase.cpp
+  GraphicComponents.cpp
+  SceneContainer.cpp
+  TextureComponents.cpp
+  Window.cpp
+  main.cpp
+  Generating Code...
+c:\users\fredrik\source\repos\lilla-spelprojektet-grupp-2\buffercomponents.cpp(326): warning C4715: 'BufferComponents::DrawCubeRow': not all control paths return a value
+  Demo.vcxproj -> C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe
