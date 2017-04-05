@@ -23,37 +23,43 @@ void MainCharacter::update()
 }
 void MainCharacter::movement()
 {
-	//Check if character is going to move
-	keyEvent();
-	//check if the character should rotate
-	rotate();
+	float deltaTime = timer.getDeltaTime();
+	XMFLOAT3 direction = getWalkDirection();
+
+	direction.x *= deltaTime;
+	direction.y *= deltaTime;
+	direction.z *= deltaTime;
+
+	move(direction);
+
+
 }
 
-void MainCharacter::keyEvent()
+XMFLOAT3 MainCharacter::getWalkDirection()
 {
+	XMFLOAT3 direction = { 0,0,0 };
+
 	if (GetAsyncKeyState('W') & 0x8000) {
 
-		walkZ(getMovementSpeed() * timer.getDeltaTime());
-		//animation
+		direction.z += 1.0;
 	}
 
 	if (GetAsyncKeyState('S') & 0x8000) {
 
-		walkZ(-getMovementSpeed() * timer.getDeltaTime());
-		//animation
+		direction.z -= 1.0;
 	}
 
 	if (GetAsyncKeyState('A') & 0x8000) {
 
-		walkX(-getMovementSpeed() * timer.getDeltaTime());
-		//animation
+		direction.x += 1.0;
 	}
 
 	if (GetAsyncKeyState('D') & 0x8000) {
 
-		walkX(getMovementSpeed() * timer.getDeltaTime());
-		//animation
+		direction.x -= 1.0;
 	}
+
+	return direction;
 }
 
 //--------- Changing the character's position --------------
@@ -79,14 +85,14 @@ void MainCharacter::walkX(float deltaTime) {
 	XMVECTOR p = XMLoadFloat3(&position);
 	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, r, p));
 	
-	//setPos(position);
+	//set position?
 
 }
 //Walk
 void MainCharacter::walkZ(float deltaTime) {
 
 	//Instead of getLook, we should get the z-axis.
-	XMFLOAT3 forward = camera.GetLook();
+	XMFLOAT3 forward = { 0, 0, 1 };
 
 	XMFLOAT3 position = getPos();
 	position.x += deltaTime * forward.x;
@@ -101,7 +107,7 @@ void MainCharacter::walkZ(float deltaTime) {
 	XMVECTOR p = XMLoadFloat3(&position);
 	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, f, p));
 
-	//setPos(position);
+	//how to set the position?
 }
 //Rotate character
 void MainCharacter::rotate()
