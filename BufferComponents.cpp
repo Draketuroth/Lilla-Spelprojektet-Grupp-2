@@ -32,23 +32,23 @@ bool BufferComponents::CreatePlaneVertexBuffer(ID3D11Device* &gDevice) {
 	TriangleVertex triangleVertices[6] =
 	{
 
-		-0.5f, -0.5f, 5.0f,	//v1 position	(LEFT BOTTOM)
-		0.0f, 1.0f,	//v1 uv coordinates
+		-1.0f, -1.0f, 0.0f,	//v1 position	(LEFT BOTTOM)
+		 0.0f,  1.0f,	//v1 uv coordinates
 
-		-0.5f, 0.5f, 5.0f,	//v2 position	(LEFT TOP)
-		0.0f, 0.0f,	//v2 uv coordinates
+		-1.0f,  1.0f, 0.0f,	//v2 position	(LEFT TOP)
+		 0.0f,  0.0f,	//v2 uv coordinates
 
-		0.5f, 0.5f, 5.0f, //v3 position	(RIGHT TOP)
-		1.0f, 0.0f,	//v3 uv coordinates
+		 1.0f,  1.0f, 0.0f, //v3 position	(RIGHT TOP)
+		 1.0f,  0.0f,	//v3 uv coordinates
 
-		-0.5f, -0.5f, 5.0f,	//v4 pos position	(LEFT BOTTOM)
-		0.0f, 1.0f,	//v4 uv coordinates
+		-1.0f, -1.0f, 0.0f,	//v4 pos position	(LEFT BOTTOM)
+		 0.0f,  1.0f,	//v4 uv coordinates
 
-		0.5f, 0.5f, 5.0f,	//v5 position	(RIGHT TOP)
-		1.0f, 0.0f,	//v5 uv coordinates
+		 1.0f,  1.0f, 0.0f,	//v5 position	(RIGHT TOP)
+		 1.0f,  0.0f,	//v5 uv coordinates
 
-		0.5f, -0.5f, 5.0f,  //v6 position	(RIGHT BOTTOM)
-		1.0f, 1.0f    //v6 uv coordinates
+		 1.0f, -1.0f, 0.0f,  //v6 position	(RIGHT BOTTOM)
+		 1.0f,  1.0f    //v6 uv coordinates
 	};
 
 	
@@ -90,7 +90,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice, Camera &mCam
 	// Using the following method, the matrix can be computed from the world position of the camera (eye), a global up vector, and a 
 	// target point.
 
-	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 4));
+	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, -2));
 	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 1));
 	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&XMFLOAT3(0, 1, 0));
 	

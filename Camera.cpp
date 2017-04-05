@@ -16,23 +16,23 @@ void Camera::cameraUpdate(float delta)
 {
 
 	//--------MOVEMENT MOUSE--------------
-	//POINT p;
-	//GetCursorPos(&p);
+	POINT p;
+	GetCursorPos(&p);
 
-	//if (MK_LBUTTON) {
+	if (MK_LBUTTON) {
 
-	//	// Make each pixel to correspond to a quarter of a degree
+		// Make each pixel to correspond to a quarter of a degree
 
-	//	float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x - mLastMousePos.x));
+		/*float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x - mLastMousePos.x));
 
-	//	float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - mLastMousePos.y));
+		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - mLastMousePos.y));
 
-	//	Pitch(dy);
-	//	RotateY(dx);
-	//}
+		Pitch(dy);
+		RotateY(dx);*/
+	}
 
-	//mLastMousePos.x = p.x;
-	//mLastMousePos.y = p.y;
+	mLastMousePos.x = p.x;
+	mLastMousePos.y = p.y;
 
 	//_--------MOVEMENT KEYS-----------------------
 
@@ -42,22 +42,22 @@ void Camera::cameraUpdate(float delta)
 
 void Camera::moveEvent(float deltaTime, float speed)
 {
-	if (GetAsyncKeyState('W') & 0x8000) {
+	if (GetAsyncKeyState(VK_UP) & 0x8000) {
 
 		Walk(speed * deltaTime);
 	}
 
-	if (GetAsyncKeyState('S') & 0x8000) {
+	if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
 
 		Walk(-speed * deltaTime);
 	}
 
-	if (GetAsyncKeyState('A') & 0x8000) {
+	if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
 
 		Strafe(-speed * deltaTime);
 	}
 
-	if (GetAsyncKeyState('D') & 0x8000) {
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
 
 		Strafe(speed * deltaTime);
 	}
