@@ -19,17 +19,19 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gConstantBuffer);
 	SAFE_RELEASE(gCubeIndexBuffer);
 
+	SAFE_RELEASE(gPlayerTransformBuffer);
+
 	/*SAFE_RELEASE(gCylinderBuffer);
 	SAFE_RELEASE(gCylinderIndexBuffer);*/
 
-	for (int i = 0; i < CUBECAPACITY; i++) {
+	for (int i = 0; i < nrOfCubes; i++) {
 
 		SAFE_RELEASE(cubeObjects[i].gCubeVertexBuffer);
 	}
 
 }
 
-bool BufferComponents::SetupScene(ID3D11Device* &gDevice, Camera &mCam) {
+bool BufferComponents::SetupScene(ID3D11Device* &gDevice) {
 
 	CreatePlaneVertexBuffer(gDevice);
 
@@ -43,7 +45,15 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, Camera &mCam) {
 		return false;
 	}
 
-	CreateConstantBuffer(gDevice, mCam);
+	if (!CreateConstantBuffer(gDevice)) {
+
+		return false;
+	}
+
+	if (!CreatePlayerTransformBuffer(gDevice)) {
+
+		return false;
+	}
 
 	return true;
 
@@ -323,6 +333,8 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		nrOfCubes++;
 
 	}
+
+	return true;
 }
 
 float BufferComponents::RandomNumber(float Minimum, float Maximum) {
@@ -330,7 +342,7 @@ float BufferComponents::RandomNumber(float Minimum, float Maximum) {
 	return ((float(rand()) / float(RAND_MAX)) * (Maximum - Minimum)) + Minimum;
 }
 
-bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice, Camera &mCam) {	// Function to create the constant buffer
+bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Function to create the constant buffer
 
 	HRESULT hr;
 
@@ -348,11 +360,10 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice, Camera &mCam
 	// target point.
 
 	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 4));
-	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 1));
+	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&XMFLOAT3(0, 1, 0));
 	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&XMFLOAT3(0, 1, 0));
 	
 	XMMATRIX viewMatrix = XMMatrixLookAtLH(eyePos, lookAt, up);
-	mCam.LookAt(eyePos, lookAt, up);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -368,7 +379,6 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice, Camera &mCam
 	float farPlane = FARPLANE;
 
 	XMMATRIX projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
-	mCam.SetLens(fov, aspectRatio, nearPlane, farPlane);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -414,6 +424,39 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice, Camera &mCam
 	// Finally after creating description and subresource data, we create the constant buffer
 
 	hr = gDevice->CreateBuffer(&constBufferDesc, &constData, &gConstantBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
+bool BufferComponents::CreatePlayerTransformBuffer(ID3D11Device* &gDevice) {
+
+	HRESULT hr;
+
+	PLAYER_TRANSFORM pTransformData;
+
+	pTransformData.matrixW = XMMatrixIdentity();
+	pTransformData.matrixWVP = XMMatrixIdentity();
+
+	D3D11_BUFFER_DESC playerBufferDesc;
+	ZeroMemory(&playerBufferDesc, sizeof(playerBufferDesc));
+	playerBufferDesc.ByteWidth = sizeof(GS_CONSTANT_BUFFER);
+	playerBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	playerBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	playerBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	playerBufferDesc.MiscFlags = 0;
+	playerBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA constData;
+	constData.pSysMem = &pTransformData;
+	constData.SysMemPitch = 0;
+	constData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&playerBufferDesc, &constData, &gPlayerTransformBuffer);
 
 	if (FAILED(hr)) {
 

@@ -24,7 +24,18 @@ void SceneContainer::releaseAll() {
 	character.releaseAll();
 }
 
-bool SceneContainer::initialize(HWND &windowHandle, Camera &mCam) {
+bool SceneContainer::initialize(HWND &windowHandle) {
+
+	if (!WindowInitialize(windowHandle)) {
+
+		// If the window cannot be created during startup, it's more known as a terminal error
+		// The MessageBox function will display a message and inform us of the problem
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Window couldn't be initialized, investigate window initializr function\nClosing application...",
+			L"ERROR",
+			MB_OK);
+	}
 
 	if (!gHandler.InitalizeDirect3DContext(windowHandle)) {
 
@@ -35,7 +46,7 @@ bool SceneContainer::initialize(HWND &windowHandle, Camera &mCam) {
 			MB_OK);
 	}
 
-	if (!bHandler.SetupScene(gHandler.gDevice, mCam)) {
+	if (!bHandler.SetupScene(gHandler.gDevice)) {
 
 		MessageBox(
 			NULL,
@@ -90,20 +101,22 @@ void SceneContainer::drawPlane() {
 
 void SceneContainer::drawPlatforms() {
 
-	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetShader(gHandler.gPlatformGeometryShader, nullptr, 0);
 
-	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
 	gHandler.gDeviceContext->PSSetSamplers(1, 1, &tHandler.texSampler);
+
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	UINT32 vertexSize = sizeof(TriangleVertex);
 	UINT32 offset = 0;
 	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gPlatformLayout);
 
 	for (int i = 0; i < bHandler.nrOfCubes; i++) {
 
@@ -129,10 +142,17 @@ void SceneContainer::clear()
 void SceneContainer::render()
 {
 	clear();
-	
-	//drawPlane();
 
 	drawPlatforms();
 
+	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
+	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
+	gHandler.gDeviceContext->PSSetSamplers(1, 1, &tHandler.texSampler);
+	
 	character.draw(gHandler.gDeviceContext);
 }

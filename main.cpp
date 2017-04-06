@@ -19,7 +19,6 @@ using namespace std;
 // WINDOW HANDLE AND CAMERA
 //----------------------------------------------------------------------------------------------------------------------------------//
 HWND windowHandle;
-Camera mCam;
 
 //----------------------------------------------------------------------------------------------------------------------------------//
 // PIPELINE COMPONENTS
@@ -40,18 +39,7 @@ int main() {
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
 
-	if (!WindowInitialize(windowHandle)) {
-
-		// If the window cannot be created during startup, it's more known as a terminal error
-		// The MessageBox function will display a message and inform us of the problem
-		MessageBox(
-			NULL,
-			L"CRITICAL ERROR: Window couldn't be initialized, investigate window initializr function\nClosing application...",
-			L"ERROR",
-			MB_OK);
-	}
-
-	sceneContainer.initialize(windowHandle, mCam);
+	sceneContainer.initialize(windowHandle);
 
 	return RunApplication();
 }
@@ -70,11 +58,10 @@ int RunApplication() {
 
 	SetCursorPos(WIDTH / 2, HEIGHT / 2);
 
-	mCam.mLastMousePos.x = 0;
-	mCam.mLastMousePos.y = 0;
-
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
+	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	timer.initialize();
 
@@ -93,12 +80,14 @@ int RunApplication() {
 			float deltaTime = timer.getDeltaTime();
 
 			//update camera
-			mCam.cameraUpdate(deltaTime);
-			mCam.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
+			sceneContainer.character.camera.cameraUpdate(deltaTime);
+			sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-			XMMATRIX tCameraViewProj = XMMatrixTranspose(mCam.ViewProj());	// Camera View Projection Matrix
-			XMMATRIX tCameraProjection = XMMatrixTranspose(mCam.Proj());
-			XMMATRIX tCameraView = XMMatrixTranspose(mCam.View());		// Camera View Matrix
+			sceneContainer.character.update();
+
+			XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());	// Camera View Projection Matrix
+			XMMATRIX tCameraProjection = XMMatrixTranspose(sceneContainer.character.camera.Proj());
+			XMMATRIX tCameraView = XMMatrixTranspose(sceneContainer.character.camera.View());		// Camera View Matrix
 
 			//----------------------------------------------------------------------------------------------------------------------------------//
 			// CONSTANT BUFFER UPDATE
@@ -120,10 +109,25 @@ int RunApplication() {
 			cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
 			cBufferPointer->matrixProjection = tCameraProjection;
 
-			cBufferPointer->cameraPos = mCam.GetPosition();
+			cBufferPointer->cameraPos = sceneContainer.character.camera.GetPosition();
 
 			// At last we have to reenable GPU access to the vertex buffer data
 			sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gConstantBuffer, 0);
+
+			//----------------------------------------------------------------------------------------------------------------------------------//
+			// CHARACTER TRANSFORM BUFFER UPDATE
+			//----------------------------------------------------------------------------------------------------------------------------------//
+
+			sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gPlayerTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &playerMappedResource);
+
+			PLAYER_TRANSFORM* playerTransformPointer = (PLAYER_TRANSFORM*)playerMappedResource.pData;
+
+			XMMATRIX tCharacterTranslation = sceneContainer.character.tPlayerTranslation;
+
+			playerTransformPointer->matrixW = tCharacterTranslation;
+			playerTransformPointer->matrixWVP = tCharacterTranslation * tCameraViewProj;
+
+			sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gPlayerTransformBuffer, 0);
 
 			//----------------------------------------------------------------------------------------------------------------------------------//
 			// RENDER

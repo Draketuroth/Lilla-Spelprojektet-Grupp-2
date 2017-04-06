@@ -30,7 +30,7 @@ public:
 
 	void releaseAll();
 
-	bool initialize(HWND &windowHandle, Camera &mCam);
+	bool initialize(HWND &windowHandle);
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;

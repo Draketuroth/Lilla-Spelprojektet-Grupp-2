@@ -6,7 +6,6 @@ class MainCharacter: public CharacterBase
 {
 private:
 	Timer timer;
-	Camera camera;
 
 public:
 	MainCharacter();
@@ -21,5 +20,10 @@ public:
 	void walkX(float deltaTime);
 
 	void rotate();
+
+	void UpdateWorldMatrix();
+
+	Camera camera;
+	XMMATRIX tPlayerTranslation;
 };
 

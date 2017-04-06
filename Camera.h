@@ -9,6 +9,8 @@
 #include <iostream>
 #include <DirectXCollision.h>
 
+#include "MacroDefinitions.h"
+
 // Necessary lib files kan be linked here, but also be added by going to:
 // Properties->Linker->Input->Additional Dependencies
 #pragma comment (lib, "d3d11.lib")

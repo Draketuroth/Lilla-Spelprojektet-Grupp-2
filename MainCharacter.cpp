@@ -18,10 +18,14 @@ void MainCharacter::update()
 {
 	//HÄR UPPDATERAS MOVEMENT, ANIMATION...
 	//Om den inte rör sig, spela idleAnimation
-	keyEvent();
+	movement();
+
+	// Uppdatera världsmatrisen för spelarobjektet
+	UpdateWorldMatrix();
 
 	//dess draw() körs via CharacterBase draw()
 }
+
 void MainCharacter::movement()
 {
 	//Check if character is going to move
@@ -86,6 +90,7 @@ void MainCharacter::walkX(float deltaTime) {
 	XMVECTOR r = XMLoadFloat3(&mRight);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));*/
+
 }
 //Walk
 void MainCharacter::walkZ(float deltaTime) {
@@ -104,6 +109,7 @@ void MainCharacter::walkZ(float deltaTime) {
 	//Position
 	XMVECTOR p = XMLoadFloat3(&position);
 	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, f, p));
+	
 }
 //Rotate character
 void MainCharacter::rotate()
@@ -133,4 +139,11 @@ void MainCharacter::rotate()
 	//The mouse position is the new Point?
 	camera.mLastMousePos.x = p.x;
 	camera.mLastMousePos.y = p.y;
+}
+
+void MainCharacter::UpdateWorldMatrix() {
+
+	XMFLOAT3 newPos = getPos();
+
+	tPlayerTranslation = XMMatrixTranspose( XMMatrixTranslation(newPos.x, newPos.y, newPos.z) );
 }

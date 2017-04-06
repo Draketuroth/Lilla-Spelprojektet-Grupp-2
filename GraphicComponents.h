@@ -28,6 +28,11 @@ public:
 	ID3D11PixelShader* gPixelShader;	
 	ID3D11GeometryShader* gGeometryShader;
 
+	ID3D11InputLayout* gPlatformLayout;
+	ID3D11VertexShader* gPlatformVertexShader;
+	ID3D11PixelShader* gPlatformPixelShader;
+	ID3D11GeometryShader* gPlatformGeometryShader;
+
 	ID3D11Texture2D* depthStencil;	// Depth-stencil texture
 	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
 	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture
@@ -38,6 +43,7 @@ public:
 	bool CreateSwapChainAndDevice(HWND &windowHandle);	// Function to create the graphic device responsible for interactions with the graphic card and the swap chain to switch between back & front buffer
 
 	bool CreateStandardShaders();
+	bool CreatePlatformShaders();
 	void SetViewport();		// Functions to define the properties of our viewport
 
 };

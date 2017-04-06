@@ -4,7 +4,39 @@
 // Constructor and destructor
 Camera::Camera() {
 	
+	XMMATRIX worldMatrix = XMMatrixIdentity();
+	//----------------------------------------------------------------------------------------------------------------------------------//
 
+	// The view matrix is used to to transform an object's vertices from world space to view space, written in Row major.
+	// Using the following method, the matrix can be computed from the world position of the camera (eye), a global up vector, and a 
+	// target point.
+
+	XMFLOAT3 eyePosF = { 0, 5, -1 };
+	XMFLOAT3 lookAtF = { 0, -1, 1 };
+	XMFLOAT3 upF = { 0, 1, 0 };
+
+	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&eyePosF);
+	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&lookAtF);
+	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&upF);
+
+	XMMATRIX viewMatrix = XMMatrixLookAtLH(eyePos, lookAt, up);
+	LookAt(eyePos, lookAt, up);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	// The projection matrix is the actual camera we are looking through when viewing the world with its far and near clipping plane.
+	// It's important to create this since we need it to link between view space and clip space
+
+	float fov = PI * 0.45f;		// We recieve the field of view in radians by multiplying with PI
+
+	float aspectRatio = float(WIDTH) / HEIGHT;		// Using the already defined macros for the width and height of the viewport
+
+	float nearPlane = NEARPLANE;
+
+	float farPlane = FARPLANE;
+
+	XMMATRIX projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
+	SetLens(fov, aspectRatio, nearPlane, farPlane);
 }
 
 Camera::~Camera() {
@@ -16,23 +48,23 @@ void Camera::cameraUpdate(float delta)
 {
 
 	//--------MOVEMENT MOUSE--------------
-	POINT p;
-	GetCursorPos(&p);
+	//POINT p;
+	//GetCursorPos(&p);
 
-	if (MK_LBUTTON) {
+	//if (MK_LBUTTON) {
 
-		// Make each pixel to correspond to a quarter of a degree
+	//	 //Make each pixel to correspond to a quarter of a degree
 
-		float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x - mLastMousePos.x));
+	//	float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x - mLastMousePos.x));
 
-		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - mLastMousePos.y));
+	//	float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - mLastMousePos.y));
 
-		Pitch(dy);
-		RotateY(dx);
-	}
+	//	Pitch(dy);
+	//	RotateY(dx);
+	//}
 
-	mLastMousePos.x = p.x;
-	mLastMousePos.y = p.y;
+	//mLastMousePos.x = p.x;
+	//mLastMousePos.y = p.y;
 
 	//_--------MOVEMENT KEYS-----------------------
 
@@ -42,22 +74,22 @@ void Camera::cameraUpdate(float delta)
 
 void Camera::moveEvent(float deltaTime, float speed)
 {
-	if (GetAsyncKeyState('W') & 0x8000) {
+	if (GetAsyncKeyState(VK_UP) & 0x8000) {
 
 		Walk(speed * deltaTime);
 	}
 
-	if (GetAsyncKeyState('S') & 0x8000) {
+	if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
 
 		Walk(-speed * deltaTime);
 	}
 
-	if (GetAsyncKeyState('A') & 0x8000) {
+	if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
 
 		Strafe(-speed * deltaTime);
 	}
 
-	if (GetAsyncKeyState('D') & 0x8000) {
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
 
 		Strafe(speed * deltaTime);
 	}
@@ -277,10 +309,12 @@ void Camera::Strafe(float d) {
 
 void Camera::Walk(float d) {
 
+	XMFLOAT3 y = { 0, 0, 1 };
+
 	// mPosition += deltaTime * mLook
 	// If creating a vector from a single scalar variable, we use VectorReplicate
 	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR l = XMLoadFloat3(&mLook);
+	XMVECTOR l = XMLoadFloat3(&y);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));
 }

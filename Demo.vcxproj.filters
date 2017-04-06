@@ -64,6 +64,9 @@
     <Filter Include="Source Files\Character">
       <UniqueIdentifier>{1cbf2cb9-c791-4e11-bdc3-3c9975885a5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\CubeShaders">
+      <UniqueIdentifier>{aabe989c-cdcb-4633-9406-2d59c4f83b96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -168,6 +171,15 @@
     </FxCompile>
     <FxCompile Include="Shaders\DeferredShader_Default\DeferredGeometry_Default.hlsl">
       <Filter>Source Files\HLSL\DeferredShader_Default</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\CubeShaders\CubeFragment.hlsl">
+      <Filter>Source Files\HLSL\CubeShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\CubeShaders\CubeGeometry.hlsl">
+      <Filter>Source Files\HLSL\CubeShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\CubeShaders\CubeVertex.hlsl">
+      <Filter>Source Files\HLSL\CubeShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -17,6 +17,12 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 	float4 cameraPos;
 };
 
+cbuffer PLAYER_TRANSFORM : register(b1) {
+
+	matrix matrixW;
+	matrix matrixWVP;
+}
+
 struct GS_IN
 {
 	float3 Pos : POSITION;
@@ -59,16 +65,16 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 	for (i = 0; i < 3; i++)
 	{
 		// To store and calculate the World position for output to the pixel shader, the input position must be multiplied with the World matrix
-		float3 worldPosition = mul(float4(input[i].Pos, 1.0f), matrixWorld).xyz;
+		float3 worldPosition = mul(float4(input[i].Pos, 1.0f), matrixW).xyz;
 		output.WPos = worldPosition;
 
 		// To store and calculate the WorldViewProj, the input position must be multiplied with the WorldViewProj matrix
 
-		output.Pos = mul(float4(input[i].Pos.xyz, 1.0f), worldViewProj);
+		output.Pos = mul(float4(input[i].Pos.xyz, 1.0f), matrixWVP);
 
 		// For the normal to properly work and to later be used correctly when creating the basic diffuse shading, it's required to be computed in world coordinates
 
-		output.Norm = mul(float4(normalAB, 1.0f), matrixWorld);
+		output.Norm = mul(float4(normalAB, 1.0f), worldPosition);
 
 		output.Tex = input[i].Tex;
 
