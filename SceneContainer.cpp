@@ -107,7 +107,7 @@ void SceneContainer::drawPlatforms() {
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
-	gHandler.gDeviceContext->PSSetSamplers(1, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
@@ -139,13 +139,16 @@ void SceneContainer::clear()
 	gHandler.gDeviceContext->ClearDepthStencilView(gHandler.depthView, D3D11_CLEAR_DEPTH, 1.0f, 0);	// Clear the depth stencil view
 }
 
-void SceneContainer::render()
+void SceneContainer::renderScene() {
+
+	drawPlatforms();
+}
+
+void SceneContainer::renderCharacters()
 {
 	//we clear in here since characters are rendered before the scene
 	//Characters need to be rendered first since they will be moving
 	clear();
-
-	drawPlatforms();
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -154,7 +157,16 @@ void SceneContainer::render()
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
-	gHandler.gDeviceContext->PSSetSamplers(1, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+
+	ID3D11Buffer* nullBuffer = { nullptr };
+	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 	
 	character.draw(gHandler.gDeviceContext);
 }
