@@ -12,6 +12,9 @@
 #include "WICTextureLoader.h"
 #include "Window.h"
 
+#include "DeferredBuffersClass.h"
+#include "DeferredShaderClass.h"
+
 #include "GraphicComponents.h"
 #include "BufferComponents.h"
 #include "TextureComponents.h"
@@ -35,6 +38,9 @@ public:
 	GraphicComponents gHandler;
 	BufferComponents bHandler;
 	TextureComponents tHandler;
+
+	DeferredBuffersClass deferredObject;
+	DeferredShaderClass deferredShaders;
 
 	MainCharacter character;
 

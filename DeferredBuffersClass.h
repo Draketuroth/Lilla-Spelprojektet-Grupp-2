@@ -6,9 +6,28 @@
 #include <DirectXMath.h>
 #include <iostream>
 
+#include <vector>
+#include "VertexType.h"
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
 #include "MacroDefinitions.h"
 
 #define BUFFER_COUNT 2
+
+struct MTL_STRUCT
+{
+
+	XMFLOAT4 Kd;
+	XMFLOAT4 Ka;
+	XMFLOAT4 Tf;
+	XMFLOAT4 Ks;
+	float Ni;
+	float Illum;
+	XMFLOAT2 padding;
+};
 
 using namespace std;
 using namespace DirectX;
@@ -35,6 +54,7 @@ public:
 
 	bool Initialize(ID3D11Device* gDevice);
 	bool SetupResources(ID3D11Device* gDevice);
+	bool CreateDeferredBuffer(ID3D11Device* &gDevice);
 	bool CreateDepthStencil(ID3D11Device* gDevice);
 	void CreateViewport();
 
@@ -43,6 +63,12 @@ public:
 
 	ID3D11ShaderResourceView* GetShaderResourceView(int);
 
+	bool fileFound;
+	vector<OBJStruct> ImportStruct;
+	MTL_STRUCT MTLConstantData;
+	wstring OBJTexturePath;
+
+	ID3D11Buffer* gDeferredBuffer;
 
 };
 

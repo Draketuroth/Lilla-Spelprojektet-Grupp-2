@@ -8,6 +8,9 @@
 #include "MacroDefinitions.h"
 #include "Camera.h"
 #include "VertexType.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include <vector>
 
 using namespace DirectX;
@@ -63,7 +66,6 @@ public:
 	int nrOfCubes;
 
 	bool SetupScene(ID3D11Device* &gDevice);
-
 	bool CreatePlaneVertexBuffer(ID3D11Device* &gDevice);
 	bool CreateCubeVertices(ID3D11Device* &gDevice);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);

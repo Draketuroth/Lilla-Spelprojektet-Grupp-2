@@ -22,6 +22,9 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	character.releaseAll();
+
+	deferredObject.ReleaseAll();
+	deferredShaders.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -63,6 +66,25 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"ERROR",
 			MB_OK);
 	}
+
+	if (!deferredObject.Initialize(gHandler.gDevice)) {
+
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Deferred buffer couldn't be initialized\nClosing application...",
+			L"ERROR",
+			MB_OK);
+	}
+
+	if (!deferredShaders.InitializeShader(gHandler.gDevice)) {
+
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Deferred shader couldn't be initialized\nClosing application...",
+			L"ERROR",
+			MB_OK);
+	}
+
 
 	character.createBuffers(gHandler.gDevice);
 
