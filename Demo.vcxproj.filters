@@ -67,6 +67,9 @@
     <Filter Include="Source Files\HLSL\CubeShaders">
       <UniqueIdentifier>{aabe989c-cdcb-4633-9406-2d59c4f83b96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\LightShaders">
+      <UniqueIdentifier>{2d9bddc7-44d5-40f9-a954-e8b5158fe4e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -107,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="MainCharacter.cpp">
       <Filter>Source Files\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="LightShaderClass.cpp">
+      <Filter>Source Files\Deferred Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +158,9 @@
     <ClInclude Include="MainCharacter.h">
       <Filter>Header Files\Character</Filter>
     </ClInclude>
+    <ClInclude Include="LightShaderClass.h">
+      <Filter>Header Files\Deferred Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\StandardShaders\Fragment.hlsl">
@@ -180,6 +189,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\CubeShaders\CubeVertex.hlsl">
       <Filter>Source Files\HLSL\CubeShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LightShaders\LightPS.hlsl">
+      <Filter>Source Files\HLSL\LightShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LightShaders\LightVS.hlsl">
+      <Filter>Source Files\HLSL\LightShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
