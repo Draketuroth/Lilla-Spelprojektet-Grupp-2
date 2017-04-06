@@ -35,6 +35,11 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gPlatformPixelShader);
 	SAFE_RELEASE(gPlatformGeometryShader);
 
+	SAFE_RELEASE(gDeferredLayout);
+	SAFE_RELEASE(gDeferredVertexShader);
+	SAFE_RELEASE(gDeferredPixelShader);
+	SAFE_RELEASE(gDeferredGeometryShader);
+
 	SAFE_RELEASE(depthStencil);
 	SAFE_RELEASE(depthView);
 	SAFE_RELEASE(depthState);
@@ -66,6 +71,11 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 	}
 
 	if (!CreatePlatformShaders()) {
+
+		return false;
+	}
+
+	if (!CreateDeferredShaders()) {
 
 		return false;
 	}
@@ -540,6 +550,143 @@ bool GraphicComponents::CreatePlatformShaders() {
 	if (FAILED(hr)) {
 
 		cout << "Cube Geometry Shader Error: Geometry Shader could not be created" << endl;
+		return false;
+	}
+
+	gsBlob->Release();
+
+	return true;
+}
+
+bool GraphicComponents::CreateDeferredShaders() {
+
+	HRESULT hr;
+
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* vsErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\DeferredShader_Default\\DeferredVertex_Default.hlsl",
+		nullptr,
+		nullptr,
+		"VS_main",
+		"vs_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&vsBlob,
+		&vsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Deferred Vertex Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
+
+		if (vsErrorBlob) {
+
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer());
+			vsErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gDeferredVertexShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Deferred Vertex Shader Error: Vertex Shader could not be created" << endl;
+		return false;
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
+
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+
+	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gDeferredLayout);
+
+	if (FAILED(hr)) {
+
+		cout << "Deferred Vertex Shader Error: Shader Input Layout could not be created" << endl;
+	}
+
+	vsBlob->Release();
+
+
+	ID3DBlob* psBlob = nullptr;
+	ID3DBlob* psErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\DeferredShader_Default\\DeferredFragment_Default.hlsl",
+		nullptr,
+		nullptr,
+		"PS_main",
+		"ps_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&psBlob,
+		&psErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Deferred Fragment Shader Error: Fragment Shader could not be compiled or loaded from file" << endl;
+
+		if (psErrorBlob) {
+
+			OutputDebugStringA((char*)psErrorBlob->GetBufferPointer());
+			psErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gDeferredPixelShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Cube Pixel Shader Error: Pixel Shader could not be created" << endl;
+		return false;
+	}
+
+	psBlob->Release();
+
+	ID3DBlob* gsBlob = nullptr;
+	ID3DBlob* gsErrorBlob = nullptr;
+	hr = D3DCompileFromFile(
+		L"Shaders\\DeferredShader_Default\\DeferredGeometry_Default.hlsl",
+		nullptr,
+		nullptr,
+		"GS_main",
+		"gs_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&gsBlob,
+		&gsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Geometry Shader Error: Geometry Shader could not be compiled or loaded from file" << endl;
+
+		if (gsErrorBlob) {
+
+			OutputDebugStringA((char*)gsBlob->GetBufferPointer());
+			gsErrorBlob->Release();
+		}
+
+	}
+
+	hr = gDevice->CreateGeometryShader(gsBlob->GetBufferPointer(), gsBlob->GetBufferSize(), nullptr, &gDeferredGeometryShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Deferred Geometry Shader Error: Geometry Shader could not be created" << endl;
 		return false;
 	}
 

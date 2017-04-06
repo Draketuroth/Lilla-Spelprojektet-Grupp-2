@@ -49,6 +49,7 @@ public:
 
 	bool CreateStandardShaders();
 	bool CreatePlatformShaders();
+	bool CreateDeferredShaders();
 	void SetViewport();		// Functions to define the properties of our viewport
 
 };
