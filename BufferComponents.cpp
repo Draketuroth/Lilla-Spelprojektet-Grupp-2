@@ -21,9 +21,6 @@ void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gPlayerTransformBuffer);
 
-	/*SAFE_RELEASE(gCylinderBuffer);
-	SAFE_RELEASE(gCylinderIndexBuffer);*/
-
 	for (int i = 0; i < nrOfCubes; i++) {
 
 		SAFE_RELEASE(cubeObjects[i].gCubeVertexBuffer);
@@ -359,9 +356,13 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	// Using the following method, the matrix can be computed from the world position of the camera (eye), a global up vector, and a 
 	// target point.
 
-	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 4));
-	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&XMFLOAT3(0, 1, 0));
-	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&XMFLOAT3(0, 1, 0));
+	XMFLOAT3 eyeV = { 0, 0, 4 };
+	XMFLOAT3 lookV = { 0, 1, 0 };
+	XMFLOAT3 upV = { 0, 1, 0 };
+
+	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&eyeV);
+	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&lookV);
+	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&upV);
 	
 	XMMATRIX viewMatrix = XMMatrixLookAtLH(eyePos, lookAt, up);
 

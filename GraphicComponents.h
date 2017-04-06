@@ -33,6 +33,11 @@ public:
 	ID3D11PixelShader* gPlatformPixelShader;
 	ID3D11GeometryShader* gPlatformGeometryShader;
 
+	ID3D11InputLayout* gDeferredLayout;
+	ID3D11VertexShader* gDeferredVertexShader;
+	ID3D11PixelShader* gDeferredPixelShader;
+	ID3D11GeometryShader* gDeferredGeometryShader;
+
 	ID3D11Texture2D* depthStencil;	// Depth-stencil texture
 	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
 	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture

@@ -8,6 +8,7 @@
 #include "MacroDefinitions.h"
 #include "Camera.h"
 #include "VertexType.h"
+#include <vector>
 
 using namespace DirectX;
 
@@ -36,7 +37,6 @@ struct CubeObjects {
 	BoundingBox bbox;
 	bool renderCheck;
 };
-
 
 class BufferComponents {
 
@@ -69,6 +69,7 @@ public:
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
 	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes);
 	float RandomNumber(float Minimum, float Maximum);
+
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 

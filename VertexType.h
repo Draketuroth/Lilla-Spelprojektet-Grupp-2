@@ -15,4 +15,12 @@ struct TriangleVertex{
 	float u, v;
 };
 
+struct PosNormalTex
+{
+	XMFLOAT3 Pos;
+	XMFLOAT2 Tex;
+	XMFLOAT3 Normal;
+};
+
+
 #endif
