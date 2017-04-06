@@ -14,7 +14,7 @@ public:
 	void update();
 	void movement();
 
-	void keyEvent();
+	XMFLOAT3 getWalkDirection();
 
 	void walkZ(float deltaTime);
 	void walkX(float deltaTime);

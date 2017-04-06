@@ -66,23 +66,23 @@ bool BufferComponents::CreatePlaneVertexBuffer(ID3D11Device* &gDevice) {
 	TriangleVertex triangleVertices[6] =
 	{
 
-		-0.5f, -0.5f, 5.0f,	//v1 position	(LEFT BOTTOM)
-		0.0f, 1.0f,	//v1 uv coordinates
+		-1.0f, -1.0f, 0.0f,	//v1 position	(LEFT BOTTOM)
+		 0.0f,  1.0f,	//v1 uv coordinates
 
-		-0.5f, 0.5f, 5.0f,	//v2 position	(LEFT TOP)
-		0.0f, 0.0f,	//v2 uv coordinates
+		-1.0f,  1.0f, 0.0f,	//v2 position	(LEFT TOP)
+		 0.0f,  0.0f,	//v2 uv coordinates
 
-		0.5f, 0.5f, 5.0f, //v3 position	(RIGHT TOP)
-		1.0f, 0.0f,	//v3 uv coordinates
+		 1.0f,  1.0f, 0.0f, //v3 position	(RIGHT TOP)
+		 1.0f,  0.0f,	//v3 uv coordinates
 
-		-0.5f, -0.5f, 5.0f,	//v4 pos position	(LEFT BOTTOM)
-		0.0f, 1.0f,	//v4 uv coordinates
+		-1.0f, -1.0f, 0.0f,	//v4 pos position	(LEFT BOTTOM)
+		 0.0f,  1.0f,	//v4 uv coordinates
 
-		0.5f, 0.5f, 5.0f,	//v5 position	(RIGHT TOP)
-		1.0f, 0.0f,	//v5 uv coordinates
+		 1.0f,  1.0f, 0.0f,	//v5 position	(RIGHT TOP)
+		 1.0f,  0.0f,	//v5 uv coordinates
 
-		0.5f, -0.5f, 5.0f,  //v6 position	(RIGHT BOTTOM)
-		1.0f, 1.0f    //v6 uv coordinates
+		 1.0f, -1.0f, 0.0f,  //v6 position	(RIGHT BOTTOM)
+		 1.0f,  1.0f    //v6 uv coordinates
 	};
 
 	

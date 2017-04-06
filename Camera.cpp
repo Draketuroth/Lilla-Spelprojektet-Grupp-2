@@ -48,23 +48,23 @@ void Camera::cameraUpdate(float delta)
 {
 
 	//--------MOVEMENT MOUSE--------------
-	//POINT p;
-	//GetCursorPos(&p);
+	POINT p;
+	GetCursorPos(&p);
 
-	//if (MK_LBUTTON) {
+	if (MK_LBUTTON) {
 
-	//	 //Make each pixel to correspond to a quarter of a degree
+		// Make each pixel to correspond to a quarter of a degree
 
-	//	float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x - mLastMousePos.x));
+		/*float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x - mLastMousePos.x));
 
-	//	float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - mLastMousePos.y));
+		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - mLastMousePos.y));
 
-	//	Pitch(dy);
-	//	RotateY(dx);
-	//}
+		Pitch(dy);
+		RotateY(dx);*/
+	}
 
-	//mLastMousePos.x = p.x;
-	//mLastMousePos.y = p.y;
+	mLastMousePos.x = p.x;
+	mLastMousePos.y = p.y;
 
 	//_--------MOVEMENT KEYS-----------------------
 

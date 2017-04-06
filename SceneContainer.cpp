@@ -141,6 +141,8 @@ void SceneContainer::clear()
 
 void SceneContainer::render()
 {
+	//we clear in here since characters are rendered before the scene
+	//Characters need to be rendered first since they will be moving
 	clear();
 
 	drawPlatforms();

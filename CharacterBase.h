@@ -26,6 +26,8 @@ private:
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
 
+	XMMATRIX worldMatrix;
+
 public:
 	CharacterBase();
 	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID);
@@ -45,8 +47,12 @@ public:
 	void setPos(const XMFLOAT3 newPos);
 
 	bool createBuffers(ID3D11Device* &graphicDevice);
-
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
+
+	void move(XMFLOAT3 direction);
+
+	void updateWorldMatrix();
+	void resetWorldMatrix();
 
 	string toString();
 	

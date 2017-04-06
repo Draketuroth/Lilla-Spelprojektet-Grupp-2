@@ -42,7 +42,8 @@ public:
 	void drawPlatforms();
 	
 	void clear();
-	void render();
+	void renderScene();
+	void renderCharacters();
 };
 
 

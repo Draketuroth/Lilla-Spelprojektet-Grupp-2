@@ -28,43 +28,50 @@ void MainCharacter::update()
 
 void MainCharacter::movement()
 {
-	//Check if character is going to move
-	keyEvent();
-	//check if the character should rotate
-	rotate();
+	float deltaTime = timer.getDeltaTime();
+	XMFLOAT3 direction = getWalkDirection();
+
+	direction.x *= deltaTime;
+	direction.y *= deltaTime;
+	direction.z *= deltaTime;
+
+	move(direction);
+
+
 }
 
-void MainCharacter::keyEvent()
+XMFLOAT3 MainCharacter::getWalkDirection()
 {
+	XMFLOAT3 direction = { 0,0,0 };
+
 	if (GetAsyncKeyState('W') & 0x8000) {
 
-		walkZ(getMovementSpeed() * timer.getDeltaTime());
-		//animation
+		direction.z += 1.0;
 	}
 
 	if (GetAsyncKeyState('S') & 0x8000) {
 
-		walkZ(-getMovementSpeed() * timer.getDeltaTime());
-		//animation
+		direction.z -= 1.0;
 	}
 
 	if (GetAsyncKeyState('A') & 0x8000) {
 
-		walkX(-getMovementSpeed() * timer.getDeltaTime());
-		//animation
+		direction.x += 1.0;
 	}
 
 	if (GetAsyncKeyState('D') & 0x8000) {
 
-		walkX(getMovementSpeed() * timer.getDeltaTime());
-		//animation
+		direction.x -= 1.0;
 	}
+
+	return direction;
 }
 
 //--------- Changing the character's position --------------
+
 //Strafe
 void MainCharacter::walkX(float deltaTime) {
-
+	//the camera will be locked, and will not rotate so we can use the camera's right as x-axis
 	XMFLOAT3 right = camera.GetRight();
 
 	//Will be locked on the x-axis.
@@ -82,20 +89,15 @@ void MainCharacter::walkX(float deltaTime) {
 	//Position
 	XMVECTOR p = XMLoadFloat3(&position);
 	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, r, p));
-
-
-	/*mPosition += deltaTime * mRight
-	//If creating a vector from a single scalar variable, we use VectorReplicate
-	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR r = XMLoadFloat3(&mRight);
-	XMVECTOR p = XMLoadFloat3(&mPosition);
-	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));*/
+	
+	//set position?
 
 }
 //Walk
 void MainCharacter::walkZ(float deltaTime) {
 
-	XMFLOAT3 forward = camera.GetLook();
+	//Instead of getLook, we should get the z-axis.
+	XMFLOAT3 forward = { 0, 0, 1 };
 
 	XMFLOAT3 position = getPos();
 	position.x += deltaTime * forward.x;

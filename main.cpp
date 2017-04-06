@@ -134,7 +134,8 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			// Now we can render using the new updated buffers on the GPU
-			sceneContainer.render();
+			sceneContainer.renderCharacters();
+			sceneContainer.renderScene();
 
 			// When everythig has been drawn out, finish by presenting the final result on the screen by swapping between the back and front buffers
 			sceneContainer.gHandler.gSwapChain->Present(0, 0); // Change front and back buffer
