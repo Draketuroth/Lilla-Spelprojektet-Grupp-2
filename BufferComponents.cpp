@@ -359,9 +359,13 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	// Using the following method, the matrix can be computed from the world position of the camera (eye), a global up vector, and a 
 	// target point.
 
-	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&XMFLOAT3(0, 0, 4));
-	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&XMFLOAT3(0, 1, 0));
-	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&XMFLOAT3(0, 1, 0));
+	XMFLOAT3 eyePosF = { 0, 0, 4 };
+	XMFLOAT3 lookAtF = { 0, 1, 0 };
+	XMFLOAT3 upF = { 0, 1, 0 };
+
+	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&eyePosF);
+	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&lookAtF);
+	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&upF);
 	
 	XMMATRIX viewMatrix = XMMatrixLookAtLH(eyePos, lookAt, up);
 

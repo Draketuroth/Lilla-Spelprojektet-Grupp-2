@@ -16,14 +16,13 @@ public:
 
 	XMFLOAT3 getWalkDirection();
 
+
 	void walkZ(float deltaTime);
 	void walkX(float deltaTime);
 
 	void rotate();
 
-	void UpdateWorldMatrix();
-
 	Camera camera;
-	XMMATRIX tPlayerTranslation;
+	
 };
 

@@ -169,4 +169,6 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 	
 	character.draw(gHandler.gDeviceContext);
+
+	character.resetWorldMatrix();
 }

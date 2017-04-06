@@ -3,7 +3,7 @@
 
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 3.0f, 1)
+	:CharacterBase(true, 10, 3.0f, 1, {0, 0, 0}, XMMatrixIdentity())
 {
 
 }
@@ -20,9 +20,6 @@ void MainCharacter::update()
 	//Om den inte rör sig, spela idleAnimation
 	movement();
 
-	// Uppdatera världsmatrisen för spelarobjektet
-	UpdateWorldMatrix();
-
 	//dess draw() körs via CharacterBase draw()
 }
 
@@ -31,13 +28,15 @@ void MainCharacter::movement()
 	float deltaTime = timer.getDeltaTime();
 	XMFLOAT3 direction = getWalkDirection();
 
-	direction.x *= deltaTime;
+	/*direction.x *= deltaTime;
 	direction.y *= deltaTime;
-	direction.z *= deltaTime;
+	direction.z *= deltaTime;*/
+	
+
+    // Uppdatera världsmatrisen för spelarobjektet
+	updateWorldMatrix(direction);
 
 	move(direction);
-
-
 }
 
 XMFLOAT3 MainCharacter::getWalkDirection()
@@ -46,26 +45,29 @@ XMFLOAT3 MainCharacter::getWalkDirection()
 
 	if (GetAsyncKeyState('W') & 0x8000) {
 
-		direction.z += 1.0;
+		direction.z += 0.1f;
+	//	this->setPos(XMFLOAT3(0.1f, 0.0f, -0.1f));
 	}
 
 	if (GetAsyncKeyState('S') & 0x8000) {
 
-		direction.z -= 1.0;
+		direction.z -= 0.1;
+	//	this->setPos(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	}
 
 	if (GetAsyncKeyState('A') & 0x8000) {
 
-		direction.x += 1.0;
+		direction.x -= 0.1;
 	}
 
 	if (GetAsyncKeyState('D') & 0x8000) {
 
-		direction.x -= 1.0;
+		direction.x += 0.1;
 	}
 
 	return direction;
 }
+
 
 //--------- Changing the character's position --------------
 
@@ -143,9 +145,3 @@ void MainCharacter::rotate()
 	camera.mLastMousePos.y = p.y;
 }
 
-void MainCharacter::UpdateWorldMatrix() {
-
-	XMFLOAT3 newPos = getPos();
-
-	tPlayerTranslation = XMMatrixTranspose( XMMatrixTranslation(newPos.x, newPos.y, newPos.z) );
-}

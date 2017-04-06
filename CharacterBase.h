@@ -26,11 +26,13 @@ private:
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
 
-	XMMATRIX worldMatrix;
+	
 
 public:
+	XMMATRIX tPlayerTranslation;
+
 	CharacterBase();
-	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID);
+	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID, const XMFLOAT3 position, const XMMATRIX tPlayerTranslation);
 	~CharacterBase();
 
 	void releaseAll();
@@ -51,7 +53,7 @@ public:
 
 	void move(XMFLOAT3 direction);
 
-	void updateWorldMatrix();
+	void updateWorldMatrix(XMFLOAT3 direction);
 	void resetWorldMatrix();
 
 	string toString();

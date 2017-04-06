@@ -9,15 +9,17 @@ CharacterBase::CharacterBase()
 	this->alive = true;
 	
 	this->position = { 0, 0, 0 };
-	this->worldMatrix = XMMatrixIdentity();
+	this->tPlayerTranslation = XMMatrixIdentity();
 }
 
-CharacterBase::CharacterBase(const bool alive, const int health, const float movemenstpeed, const int unitID)
+CharacterBase::CharacterBase(const bool alive, const int health, const float movemenstpeed, const int unitID, const XMFLOAT3 position, const XMMATRIX tPlayerTranslation)
 {
 	this->health = health;
 	this->movementSpeed = movemenstpeed;
 	this->unitID = unitID;
 	this->alive = alive;
+	this->position = position;
+	this->tPlayerTranslation = tPlayerTranslation;
 }
 
 CharacterBase::~CharacterBase()
@@ -74,10 +76,13 @@ XMFLOAT3 CharacterBase::getPos()const
 void CharacterBase::setPos(const XMFLOAT3 newPos)
 {
 	XMVECTOR tempPos = XMLoadFloat3(&this->position);
-	XMVector3Transform(tempPos, this->worldMatrix);
+	XMVector3Transform(tempPos, this->tPlayerTranslation);
+	
 	XMStoreFloat3(&this->position, tempPos);
+	//this->position = newPos;
 }
 
+//-------------Create Buffer and Draw -----------------------
 bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 {
 	//----------CUBE-------------------------
@@ -208,72 +213,31 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 	UINT32 vertexSize = sizeof(TriangleVertex);
 	UINT32 offset = 0;
 
-	updateWorldMatrix();
-
 	graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 	graphicDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	graphicDeviceContext->DrawIndexed(36, 0, 0);	
 }
-
+//-----------------------------------------------------------
+//-------------Move and WorldMatrix -------------------------
 void CharacterBase::move(XMFLOAT3 direction)
 {
 	XMFLOAT3 newPosition(position.x + direction.x, position.y + direction.y, position.z + direction.z);
 	setPos(newPosition);
 }
-void CharacterBase::updateWorldMatrix()
+
+void CharacterBase::updateWorldMatrix(XMFLOAT3 direction)
 {
-	XMFLOAT3 right = { 1, 0, 0 };
-	XMFLOAT3 up = { 0, 1, 0 };
-	XMFLOAT3 forward = { 0, 0, 1 };
+	XMFLOAT3 newPos = direction;
 
-	XMVECTOR X = XMLoadFloat3(&right);
-	XMVECTOR Y = XMLoadFloat3(&up);
-	XMVECTOR Z = XMLoadFloat3(&forward);
-	XMVECTOR Pos = XMLoadFloat3(&this->position);
-
-	Z = XMVector3Normalize(Z);
-	Y = XMVector3Normalize(XMVector3Cross(Z, X));
-	X = XMVector3Cross(Y, Z);
-
-	float x = -XMVectorGetX(XMVector3Dot(Pos, X));
-	float y = -XMVectorGetX(XMVector3Dot(Pos, Y));
-	float z = -XMVectorGetX(XMVector3Dot(Pos, Z));
-
-	XMStoreFloat3(&right, X);
-	XMStoreFloat3(&up, Y);
-	XMStoreFloat3(&forward, Z);
-
-	XMFLOAT4X4 wMatrix;
-	XMStoreFloat4x4(&wMatrix, this->worldMatrix);
-
-	wMatrix(0, 0) = right.x;
-	wMatrix(1, 0) = right.y;
-	wMatrix(2, 0) = right.z;
-	wMatrix(3, 0) = x;
-	
-	wMatrix(0, 1) = up.x;
-	wMatrix(1, 1) = up.y;
-	wMatrix(2, 1) = up.z;
-	wMatrix(3, 1) = y;
-	
-	wMatrix(0, 2) = forward.x;
-	wMatrix(1, 2) = forward.y;
-	wMatrix(2, 2) = forward.z;
-	wMatrix(3, 2) = z;
-	
-	wMatrix(0, 3) = 0.0f;
-	wMatrix(1, 3) = 0.0f;
-	wMatrix(2, 3) = 0.0f;
-	wMatrix(3, 3) = 1.0f;
-
-	this->worldMatrix = XMLoadFloat4x4(&wMatrix);
-
+	tPlayerTranslation = XMMatrixTranspose(XMMatrixTranslation(newPos.x, newPos.y, newPos.z));
+	//tPlayerTranslation = XMMatrixTranslation(direction.x, direction.y, direction.z);
 }
-
 void CharacterBase::resetWorldMatrix()
 {
-	this->worldMatrix = XMMatrixIdentity();
+	this->tPlayerTranslation = XMMatrixIdentity();
 }
+
+//-----------------------------------------------------------
 
 string CharacterBase::toString()
 {
