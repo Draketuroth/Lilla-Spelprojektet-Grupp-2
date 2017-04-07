@@ -64,6 +64,7 @@ int RunApplication() {
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	timer.initialize();
+	sceneContainer.character.timer.initialize();
 
 	//----------------GAME LOOP----------------------------
 	while (windowMessage.message != WM_QUIT) {
@@ -140,7 +141,7 @@ int RunApplication() {
 			// When everythig has been drawn out, finish by presenting the final result on the screen by swapping between the back and front buffers
 			sceneContainer.gHandler.gSwapChain->Present(0, 0); // Change front and back buffer
 
-			timer.updateCurretTime();
+			timer.updateCurrentTime();
 
 		}
 

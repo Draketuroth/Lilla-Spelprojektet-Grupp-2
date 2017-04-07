@@ -3,7 +3,7 @@
 
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 3.0f, 1, {0, 0, 0}, XMMatrixIdentity())
+	:CharacterBase(true, 10, 1.0f, 1, {0, 0, 0}, XMMatrixIdentity())
 {
 	
 }
@@ -16,24 +16,24 @@ MainCharacter::~MainCharacter()
 
 void MainCharacter::update()
 {
-	//HÄR UPPDATERAS MOVEMENT, ANIMATION...
-	//Om den inte rör sig, spela idleAnimation
 	CharacterMove();
-
-	//dess draw() körs via CharacterBase draw()
 }
 void MainCharacter::CharacterMove()
 {
-	XMFLOAT3 direction = { 0,0,0 };
+	float time = timer.getDeltaTime();
+
+	XMFLOAT3 direction = { 0, 0, 0 };
 	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
 	XMFLOAT3 floatPos = { 0, 0, 0 };
 	XMFLOAT3 oldpos = this->getPos();
 
+	updateWorldMatrix(oldpos);
+
 	if (GetAsyncKeyState('W') & 0x8000) {
 
-		direction.z = 1.0f;
+		direction.z = 1.0;
 		XMVECTOR directionVec = XMLoadFloat3(&direction);
-		positionVec += directionVec * timer.getDeltaTime() * 0.001;
+		positionVec += directionVec * time * this->getMovementSpeed();
 		XMStoreFloat3(&floatPos, positionVec);
 		this->setPos(floatPos);
 	}
@@ -42,7 +42,7 @@ void MainCharacter::CharacterMove()
 
 		direction.z = 1.0;
 		XMVECTOR directionVec = XMLoadFloat3(&direction);
-		positionVec -= directionVec * timer.getDeltaTime() * 0.001;
+		positionVec -= directionVec * time  * this->getMovementSpeed();
 		XMStoreFloat3(&floatPos, positionVec);
 		this->setPos(floatPos);
 	}
@@ -51,7 +51,7 @@ void MainCharacter::CharacterMove()
 
 		direction.x = 1.0;
 		XMVECTOR directionVec = XMLoadFloat3(&direction);
-		positionVec -= directionVec * timer.getDeltaTime() * 0.001;
+		positionVec -= directionVec * time * this->getMovementSpeed();
 		XMStoreFloat3(&floatPos, positionVec);
 		this->setPos(floatPos);
 	}
@@ -60,7 +60,7 @@ void MainCharacter::CharacterMove()
 
 		direction.x = 1.0;
 		XMVECTOR directionVec = XMLoadFloat3(&direction);
-		positionVec += directionVec * timer.getDeltaTime() * 0.001;
+		positionVec += directionVec * time * this->getMovementSpeed();
 		XMStoreFloat3(&floatPos, positionVec);
 		this->setPos(floatPos);
 	}
@@ -72,6 +72,9 @@ void MainCharacter::CharacterMove()
 	{
 		cout << "Position X: " << this->getPos().x << endl;
 	}
+
+
+	timer.updateCurrentTime();
 }
 
 

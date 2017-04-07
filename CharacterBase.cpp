@@ -212,19 +212,15 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 	graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 	graphicDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	graphicDeviceContext->DrawIndexed(36, 0, 0);	
+
 }
 //-----------------------------------------------------------
 //-------------Move and WorldMatrix -------------------------
-void CharacterBase::move(XMFLOAT3 direction)
-{
-	XMFLOAT3 newPosition(position.x + direction.x, position.y + direction.y, position.z + direction.z);
-	setPos(newPosition);
-}
+
 
 void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos)
 {
 	tPlayerTranslation = XMMatrixTranspose(XMMatrixTranslation(newPos.x, newPos.y, newPos.z));
-	//tPlayerTranslation = XMMatrixTranslation(direction.x, direction.y, direction.z);
 }
 void CharacterBase::resetWorldMatrix()
 {

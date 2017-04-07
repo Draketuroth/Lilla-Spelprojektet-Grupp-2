@@ -21,6 +21,7 @@ public:
 
 	void initialize();
 	float getDeltaTime();
-	void updateCurretTime();
+	void updateCurrentTime();
+	void resetTimer();
 };
 

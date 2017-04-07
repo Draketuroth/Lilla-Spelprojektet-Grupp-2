@@ -1,7 +1,2 @@
-﻿  CharacterBase.cpp
-CharacterBase.cpp(125): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-  MainCharacter.cpp
-  SceneContainer.cpp
-  main.cpp
-  Generating Code...
-  Demo.vcxproj -> E:\Litet Spel\Project\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe
+﻿  MainCharacter.cpp
+  Demo.vcxproj -> C:\Users\halo15\Documents\Visual Studio 2017\Projects\ProjektGrupp2\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe

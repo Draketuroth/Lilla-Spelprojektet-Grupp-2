@@ -44,6 +44,7 @@ public:
 	void clear();
 	void renderScene();
 	void renderCharacters();
+
 };
 
 
