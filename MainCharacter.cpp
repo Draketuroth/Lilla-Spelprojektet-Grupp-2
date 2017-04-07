@@ -5,7 +5,7 @@
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 3.0f, 1, {0, 0, 0}, XMMatrixIdentity())
 {
-
+	
 }
 
 
@@ -18,103 +18,66 @@ void MainCharacter::update()
 {
 	//HÄR UPPDATERAS MOVEMENT, ANIMATION...
 	//Om den inte rör sig, spela idleAnimation
-	movement();
+	CharacterMove();
 
 	//dess draw() körs via CharacterBase draw()
 }
-
-void MainCharacter::movement()
-{
-	float deltaTime = timer.getDeltaTime();
-	XMFLOAT3 direction = getWalkDirection();
-
-	/*direction.x *= deltaTime;
-	direction.y *= deltaTime;
-	direction.z *= deltaTime;*/
-	
-
-    // Uppdatera världsmatrisen för spelarobjektet
-	updateWorldMatrix(direction);
-
-	move(direction);
-}
-
-XMFLOAT3 MainCharacter::getWalkDirection()
+void MainCharacter::CharacterMove()
 {
 	XMFLOAT3 direction = { 0,0,0 };
+	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
+	XMFLOAT3 floatPos = { 0, 0, 0 };
+	XMFLOAT3 oldpos = this->getPos();
 
 	if (GetAsyncKeyState('W') & 0x8000) {
 
-		direction.z += 0.1f;
-	//	this->setPos(XMFLOAT3(0.1f, 0.0f, -0.1f));
+		direction.z = 1.0f;
+		XMVECTOR directionVec = XMLoadFloat3(&direction);
+		positionVec += directionVec * timer.getDeltaTime() * 0.001;
+		XMStoreFloat3(&floatPos, positionVec);
+		this->setPos(floatPos);
 	}
 
 	if (GetAsyncKeyState('S') & 0x8000) {
 
-		direction.z -= 0.1;
-	//	this->setPos(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		direction.z = 1.0;
+		XMVECTOR directionVec = XMLoadFloat3(&direction);
+		positionVec -= directionVec * timer.getDeltaTime() * 0.001;
+		XMStoreFloat3(&floatPos, positionVec);
+		this->setPos(floatPos);
 	}
 
 	if (GetAsyncKeyState('A') & 0x8000) {
 
-		direction.x -= 0.1;
+		direction.x = 1.0;
+		XMVECTOR directionVec = XMLoadFloat3(&direction);
+		positionVec -= directionVec * timer.getDeltaTime() * 0.001;
+		XMStoreFloat3(&floatPos, positionVec);
+		this->setPos(floatPos);
 	}
 
 	if (GetAsyncKeyState('D') & 0x8000) {
 
-		direction.x += 0.1;
+		direction.x = 1.0;
+		XMVECTOR directionVec = XMLoadFloat3(&direction);
+		positionVec += directionVec * timer.getDeltaTime() * 0.001;
+		XMStoreFloat3(&floatPos, positionVec);
+		this->setPos(floatPos);
 	}
-
-	return direction;
+	if (oldpos.z != this->getPos().z)
+	{
+		cout << "Position Z: " << this->getPos().z << endl;
+	}
+	if (oldpos.x != this->getPos().x)
+	{
+		cout << "Position X: " << this->getPos().x << endl;
+	}
 }
 
 
 //--------- Changing the character's position --------------
 
-//Strafe
-void MainCharacter::walkX(float deltaTime) {
-	//the camera will be locked, and will not rotate so we can use the camera's right as x-axis
-	XMFLOAT3 right = camera.GetRight();
 
-	//Will be locked on the x-axis.
-	//It will only allow the character to move left and right.
-
-	XMFLOAT3 position = getPos();
-	position.x += deltaTime * right.x; 
-	position.y += deltaTime * right.y;
-	position.z += deltaTime * right.z;
-
-	//What does S stand for?
-	XMVECTOR s = XMVectorReplicate(deltaTime);
-	//Right
-	XMVECTOR r = XMLoadFloat3(&right);
-	//Position
-	XMVECTOR p = XMLoadFloat3(&position);
-	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, r, p));
-	
-	//set position?
-
-}
-//Walk
-void MainCharacter::walkZ(float deltaTime) {
-
-	//Instead of getLook, we should get the z-axis.
-	XMFLOAT3 forward = { 0, 0, 1 };
-
-	XMFLOAT3 position = getPos();
-	position.x += deltaTime * forward.x;
-	position.y += deltaTime * forward.y;
-	position.z += deltaTime * forward.z;
-
-	//What does S stand for?
-	XMVECTOR s = XMVectorReplicate(deltaTime);
-	//Forward
-	XMVECTOR f = XMLoadFloat3(&forward);
-	//Position
-	XMVECTOR p = XMLoadFloat3(&position);
-	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, f, p));
-	
-}
 //Rotate character
 void MainCharacter::rotate()
 {

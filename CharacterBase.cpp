@@ -4,10 +4,10 @@
 CharacterBase::CharacterBase()
 {
 	this->health = 0;
-	this->movementSpeed = 0;
+	this->movementSpeed = 20;
 	this->unitID = 0;
 	this->alive = true;
-	
+	this->timer.initialize();
 	this->position = { 0, 0, 0 };
 	this->tPlayerTranslation = XMMatrixIdentity();
 }
@@ -20,6 +20,7 @@ CharacterBase::CharacterBase(const bool alive, const int health, const float mov
 	this->alive = alive;
 	this->position = position;
 	this->tPlayerTranslation = tPlayerTranslation;
+	this->timer.initialize();
 }
 
 CharacterBase::~CharacterBase()
@@ -75,13 +76,8 @@ XMFLOAT3 CharacterBase::getPos()const
 }
 void CharacterBase::setPos(const XMFLOAT3 newPos)
 {
-	XMVECTOR tempPos = XMLoadFloat3(&this->position);
-	XMVector3Transform(tempPos, this->tPlayerTranslation);
-	
-	XMStoreFloat3(&this->position, tempPos);
-	//this->position = newPos;
+	this->position = newPos;
 }
-
 //-------------Create Buffer and Draw -----------------------
 bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 {
@@ -225,10 +221,8 @@ void CharacterBase::move(XMFLOAT3 direction)
 	setPos(newPosition);
 }
 
-void CharacterBase::updateWorldMatrix(XMFLOAT3 direction)
+void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos)
 {
-	XMFLOAT3 newPos = direction;
-
 	tPlayerTranslation = XMMatrixTranspose(XMMatrixTranslation(newPos.x, newPos.y, newPos.z));
 	//tPlayerTranslation = XMMatrixTranslation(direction.x, direction.y, direction.z);
 }

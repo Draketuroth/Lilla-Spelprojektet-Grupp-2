@@ -16,12 +16,12 @@ using namespace DirectX;
 class CharacterBase
 {
 private:
-
+	XMFLOAT3 position;
 	int health;
 	float movementSpeed;
 	int unitID;
 	bool alive;
-	XMFLOAT3 position;
+
 
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
@@ -30,6 +30,8 @@ private:
 
 public:
 	XMMATRIX tPlayerTranslation;
+	
+	Timer timer;
 
 	CharacterBase();
 	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID, const XMFLOAT3 position, const XMMATRIX tPlayerTranslation);
