@@ -222,6 +222,7 @@ bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 
 bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, XMFLOAT3 lightDirection) {
 
+
 	return true;
 
 }
