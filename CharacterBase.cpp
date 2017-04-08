@@ -83,6 +83,7 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 {
 	this->position = newPos;
 }
+
 //-------------Create Buffer and Draw -----------------------
 bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 {
@@ -232,17 +233,18 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 //-----------------------------------------------------------
 //-------------Move and WorldMatrix -------------------------
 
-void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos)
+void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 {
-
 	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
 
-	tPlayerTranslation = XMMatrixTranslationFromVector(localTranslation);
+	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
+
+	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
 }
 
 void CharacterBase::resetWorldMatrix()
 {
-	this->tPlayerTranslation = XMMatrixIdentity();
+	//this->tPlayerTranslation = XMMatrixIdentity();
 }
 
 //-----------------------------------------------------------

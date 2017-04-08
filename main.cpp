@@ -58,6 +58,7 @@ int RunApplication() {
 	SetCapture(windowHandle);
 
 	SetCursorPos(WIDTH / 2, HEIGHT / 2);
+	ShowCursor(0);
 
 	//timer.initialize();
 	sceneContainer.character.timer.initialize();
@@ -92,6 +93,8 @@ int RunApplication() {
 
 			sceneContainer.renderCharacters();
 			sceneContainer.renderScene();
+
+			//showFPS(windowHandle, deltaTime);
 
 			sceneContainer.gHandler.gSwapChain->Present(0, 0);
 

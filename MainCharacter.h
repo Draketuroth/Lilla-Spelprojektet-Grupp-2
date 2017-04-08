@@ -14,8 +14,9 @@ public:
 	void update();
 
 	void CharacterMove();
+	bool CheckInput(XMFLOAT3 &direction);
 
-	void rotate();
+	XMMATRIX rotate();
 
 	Camera camera;
 

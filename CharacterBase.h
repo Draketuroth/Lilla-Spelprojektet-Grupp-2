@@ -51,7 +51,7 @@ public:
 	bool createBuffers(ID3D11Device* &graphicDevice);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
-	void updateWorldMatrix(XMFLOAT3 direction);
+	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);
 	void resetWorldMatrix();
 
 	string toString();
