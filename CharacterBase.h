@@ -16,21 +16,23 @@ using namespace DirectX;
 class CharacterBase
 {
 private:
-
+	XMFLOAT3 position;
 	int health;
 	float movementSpeed;
 	int unitID;
 	bool alive;
-	XMFLOAT3 position;
+
 
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
 
-	XMMATRIX worldMatrix;
-
 public:
+	XMMATRIX tPlayerTranslation;
+	
+	Timer timer;
+
 	CharacterBase();
-	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID);
+	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID, const XMFLOAT3 position, const XMMATRIX tPlayerTranslation);
 	~CharacterBase();
 
 	void releaseAll();
@@ -49,9 +51,7 @@ public:
 	bool createBuffers(ID3D11Device* &graphicDevice);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
-	void move(XMFLOAT3 direction);
-
-	void updateWorldMatrix();
+	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);
 	void resetWorldMatrix();
 
 	string toString();

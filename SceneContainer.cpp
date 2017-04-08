@@ -92,35 +92,6 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 }
 
-void SceneContainer::drawPlane() {
-
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	// STANDARD PIPELINE
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);	// Setting the Vertex Shader 
-	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0); // Setting the Geometry Shader 
-	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0); // Setting the Pixel Shader 
-	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer); // Setting the Constant Buffer for the Vertex Shader
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
-
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
-
-	// The stride and offset must be stored in variables as we need to provide pointers to these when setting the vertex buffer
-	UINT32 vertexSize = sizeof(TriangleVertex);
-	UINT32 offset = 0;
-	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.planeVertexBuffer, &vertexSize, &offset);
-
-	// The input assembler will now recieve the vertices and the vertex layout
-
-	// The vertices should be interpreted as parts of a triangle in the input assembler
-	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
-
-	gHandler.gDeviceContext->Draw(6, 0);
-
-}
-
 void SceneContainer::drawPlatforms() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
@@ -168,6 +139,7 @@ void SceneContainer::renderScene() {
 
 void SceneContainer::renderCharacters()
 {
+
 	//we clear in here since characters are rendered before the scene
 	//Characters need to be rendered first since they will be moving
 	clear();
@@ -189,6 +161,9 @@ void SceneContainer::renderCharacters()
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
-	
+
 	character.draw(gHandler.gDeviceContext);
+
+	character.resetWorldMatrix();
+	
 }

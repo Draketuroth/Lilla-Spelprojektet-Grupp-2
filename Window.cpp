@@ -75,12 +75,11 @@ bool WindowInitialize(HWND &windowHandle) {
 	return true;
 }
 
-void showFPS(HWND windowHandle, float deltaTime, BufferComponents &bHandler) {
+void showFPS(HWND windowHandle, float deltaTime) {
 
 	static int interval;
 	
 	int fpsCounter = 1.0f / deltaTime;
-	int renderedCubes = 0;
 	
 	stringstream text_FPS;
 	
@@ -118,5 +117,6 @@ LRESULT CALLBACK WindowProcedure(HWND windowHandle, UINT message, WPARAM wParam,
 		// If a message has not been handled, meaning the window is still open, we sent it to our default window procedure for handling
 		return DefWindowProc(windowHandle, message, wParam, lParam);
 	}
+
 	return 0;
 }

@@ -26,13 +26,19 @@ void Timer::initialize()
 
 float Timer::getDeltaTime()
 {
+	this->currentTime = 0;
 	QueryPerformanceCounter((LARGE_INTEGER*)&this->currentTime);
 
 	this->deltaTime = ((this->currentTime - previousTime) * this->secondsPerCount);
 	return this->deltaTime;
 }
 
-void Timer::updateCurretTime()
+void Timer::updateCurrentTime()
 {
 	this->previousTime = this->currentTime;
+}
+
+void Timer::resetTimer()
+{
+
 }

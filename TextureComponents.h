@@ -19,7 +19,7 @@ public:
 	~TextureComponents();
 	void ReleaseAll();
 
-	ID3D11ShaderResourceView* standardResource;	// Shader resource views are required for accessing data in a resource
+	ID3D11ShaderResourceView* standardResource;
 	ID3D11SamplerState* texSampler;
 
 	bool CreateTexture(ID3D11Device* &gDevice);

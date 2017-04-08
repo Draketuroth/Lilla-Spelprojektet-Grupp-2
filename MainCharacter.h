@@ -5,25 +5,24 @@
 class MainCharacter: public CharacterBase
 {
 private:
-	Timer timer;
+
 
 public:
 	MainCharacter();
 	~MainCharacter();
 
 	void update();
-	void movement();
 
-	XMFLOAT3 getWalkDirection();
+	void CharacterMove();
+	bool CheckInput(XMFLOAT3 &direction);
 
-	void walkZ(float deltaTime);
-	void walkX(float deltaTime);
-
-	void rotate();
-
-	void UpdateWorldMatrix();
+	XMMATRIX rotate();
 
 	Camera camera;
-	XMMATRIX tPlayerTranslation;
+
+	float cameraDistanceY;
+	float cameraDistanceZ;
+	float playerHeight;
+	
 };
 

@@ -11,8 +11,8 @@ Camera::Camera() {
 	// Using the following method, the matrix can be computed from the world position of the camera (eye), a global up vector, and a 
 	// target point.
 
-	XMFLOAT3 eyePosF = { 0, 5, -1 };
-	XMFLOAT3 lookAtF = { 0, -1, 1 };
+	XMFLOAT3 eyePosF = { 0, 6, 0 };
+	XMFLOAT3 lookAtF = { 0, 0, 1 };
 	XMFLOAT3 upF = { 0, 1, 0 };
 
 	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&eyePosF);
@@ -37,6 +37,8 @@ Camera::Camera() {
 
 	XMMATRIX projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
 	SetLens(fov, aspectRatio, nearPlane, farPlane);
+
+	Pitch(45);
 }
 
 Camera::~Camera() {

@@ -4,20 +4,23 @@
 CharacterBase::CharacterBase()
 {
 	this->health = 0;
-	this->movementSpeed = 0;
+	this->movementSpeed = 20;
 	this->unitID = 0;
 	this->alive = true;
-	
+	this->timer.initialize();
 	this->position = { 0, 0, 0 };
-	this->worldMatrix = XMMatrixIdentity();
+	this->tPlayerTranslation = XMMatrixIdentity();
 }
 
-CharacterBase::CharacterBase(const bool alive, const int health, const float movemenstpeed, const int unitID)
+CharacterBase::CharacterBase(const bool alive, const int health, const float movemenstpeed, const int unitID, const XMFLOAT3 position, const XMMATRIX tPlayerTranslation)
 {
 	this->health = health;
 	this->movementSpeed = movemenstpeed;
 	this->unitID = unitID;
 	this->alive = alive;
+	this->position = position;
+	this->tPlayerTranslation = tPlayerTranslation;
+	this->timer.initialize();
 }
 
 CharacterBase::~CharacterBase()
@@ -35,6 +38,7 @@ int CharacterBase::getHealth()const
 {
 	return this->health;
 }
+
 void CharacterBase::setHealth(const int newHealth)
 {
 	this->health = newHealth;
@@ -44,6 +48,7 @@ float CharacterBase::getMovementSpeed()const
 {
 	return this->movementSpeed;
 }
+
 void CharacterBase::setMovementSpeed(const float newMSpeed)
 {
 	this->movementSpeed = newMSpeed;
@@ -53,6 +58,7 @@ int CharacterBase::getUnitID()const
 {
 	return this->unitID;
 }
+
 void CharacterBase::setUnitID(const int newUnitID)
 {
 	this->unitID = newUnitID;
@@ -62,6 +68,7 @@ bool CharacterBase::getAlive()const
 {
 	return this->alive;
 }
+
 void CharacterBase::setAlive(const bool newAlive)
 {
 	this->alive = newAlive;
@@ -71,55 +78,63 @@ XMFLOAT3 CharacterBase::getPos()const
 {
 	return this->position;
 }
+
 void CharacterBase::setPos(const XMFLOAT3 newPos)
 {
-	XMVECTOR tempPos = XMLoadFloat3(&this->position);
-	XMVector3Transform(tempPos, this->worldMatrix);
-	XMStoreFloat3(&this->position, tempPos);
+	this->position = newPos;
 }
 
+//-------------Create Buffer and Draw -----------------------
 bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 {
 	//----------CUBE-------------------------
 	HRESULT hr;
 
+	float scaleFactor = 0.3;
+
 	TriangleVertex cubeVertices[24] =
 	{
 		//Front face
-		-0.1f,  0.1f, -0.1f, 0.0f, 0.0f,
-		 0.1f,  0.1f, -0.1f, 1.0f, 0.0f,
-		-0.1f, -0.1f, -0.1f, 0.0f, 1.0f,
-		 0.1,  -0.1f, -0.1f, 1.0f, 1.0f,
+
+		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
 
 		// Back face
-	 	 0.1f,  0.1f, 0.1f, 0.0f, 0.0f,
-		-0.1f,  0.1f, 0.1f, 1.0f, 0.0f,
-		 0.1f, -0.1f, 0.1f, 0.0f, 1.0f,
-		-0.1,  -0.1f, 0.1f, 1.0f, 1.0f,
+
+		scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 1.0f,
 
 		// Left face
-		-0.1f,  0.1f,  0.1f, 0.0f, 0.0f,
-		-0.1f,  0.1f, -0.1f, 1.0f, 0.0f,
-		-0.1f, -0.1f,  0.1f, 0.0f, 1.0f,
-		-0.1f, -0.1f, -0.1f, 1.0f, 1.0f,
+
+		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
 
 		// Right face
-		0.1f,  0.1f, -0.1f, 0.0f, 0.0f,
-		0.1f,  0.1f,  0.1f, 1.0f, 0.0f,
-		0.1f, -0.1f, -0.1f, 0.0f, 1.0f,
-		0.1f, -0.1f,  0.1f, 1.0f, 1.0f,
+
+		scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, -scaleFactor,  scaleFactor, 1.0f, 1.0f,
 
 		// Top face
-		-0.1f, 0.1f,  0.1f, 0.0f, 0.0f,
-		 0.1f, 0.1f,  0.1f, 1.0f, 0.0f,
-		-0.1f, 0.1f, -0.1f, 0.0f, 1.0f,
-		 0.1f, 0.1f, -0.1f, 1.0f, 1.0f,
+
+		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 1.0f,
 
 		// Bottom face
-		 0.1f, -0.1f,  0.1f, 0.0f, 0.0f,
-		-0.1f, -0.1f,  0.1f, 1.0f, 0.0f,
-		 0.1f, -0.1f, -0.1f, 0.0f, 1.0f,
-		-0.1f, -0.1f, -0.1f, 1.0f, 1.0f
+
+		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f
 	};
 
 	D3D11_BUFFER_DESC bufferDesc;
@@ -199,6 +214,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 
 	return true;
 }
+
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 
 	ID3D11ShaderResourceView* nullSRV = nullptr;
@@ -208,72 +224,30 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 	UINT32 vertexSize = sizeof(TriangleVertex);
 	UINT32 offset = 0;
 
-	updateWorldMatrix();
-
 	graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 	graphicDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	graphicDeviceContext->DrawIndexed(36, 0, 0);	
+
 }
 
-void CharacterBase::move(XMFLOAT3 direction)
+//-----------------------------------------------------------
+//-------------Move and WorldMatrix -------------------------
+
+void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 {
-	XMFLOAT3 newPosition(position.x + direction.x, position.y + direction.y, position.z + direction.z);
-	setPos(newPosition);
-}
-void CharacterBase::updateWorldMatrix()
-{
-	XMFLOAT3 right = { 1, 0, 0 };
-	XMFLOAT3 up = { 0, 1, 0 };
-	XMFLOAT3 forward = { 0, 0, 1 };
+	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
 
-	XMVECTOR X = XMLoadFloat3(&right);
-	XMVECTOR Y = XMLoadFloat3(&up);
-	XMVECTOR Z = XMLoadFloat3(&forward);
-	XMVECTOR Pos = XMLoadFloat3(&this->position);
+	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
 
-	Z = XMVector3Normalize(Z);
-	Y = XMVector3Normalize(XMVector3Cross(Z, X));
-	X = XMVector3Cross(Y, Z);
-
-	float x = -XMVectorGetX(XMVector3Dot(Pos, X));
-	float y = -XMVectorGetX(XMVector3Dot(Pos, Y));
-	float z = -XMVectorGetX(XMVector3Dot(Pos, Z));
-
-	XMStoreFloat3(&right, X);
-	XMStoreFloat3(&up, Y);
-	XMStoreFloat3(&forward, Z);
-
-	XMFLOAT4X4 wMatrix;
-	XMStoreFloat4x4(&wMatrix, this->worldMatrix);
-
-	wMatrix(0, 0) = right.x;
-	wMatrix(1, 0) = right.y;
-	wMatrix(2, 0) = right.z;
-	wMatrix(3, 0) = x;
-	
-	wMatrix(0, 1) = up.x;
-	wMatrix(1, 1) = up.y;
-	wMatrix(2, 1) = up.z;
-	wMatrix(3, 1) = y;
-	
-	wMatrix(0, 2) = forward.x;
-	wMatrix(1, 2) = forward.y;
-	wMatrix(2, 2) = forward.z;
-	wMatrix(3, 2) = z;
-	
-	wMatrix(0, 3) = 0.0f;
-	wMatrix(1, 3) = 0.0f;
-	wMatrix(2, 3) = 0.0f;
-	wMatrix(3, 3) = 1.0f;
-
-	this->worldMatrix = XMLoadFloat4x4(&wMatrix);
-
+	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
 }
 
 void CharacterBase::resetWorldMatrix()
 {
-	this->worldMatrix = XMMatrixIdentity();
+	//this->tPlayerTranslation = XMMatrixIdentity();
 }
+
+//-----------------------------------------------------------
 
 string CharacterBase::toString()
 {
