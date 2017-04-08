@@ -38,6 +38,7 @@ int CharacterBase::getHealth()const
 {
 	return this->health;
 }
+
 void CharacterBase::setHealth(const int newHealth)
 {
 	this->health = newHealth;
@@ -47,6 +48,7 @@ float CharacterBase::getMovementSpeed()const
 {
 	return this->movementSpeed;
 }
+
 void CharacterBase::setMovementSpeed(const float newMSpeed)
 {
 	this->movementSpeed = newMSpeed;
@@ -56,6 +58,7 @@ int CharacterBase::getUnitID()const
 {
 	return this->unitID;
 }
+
 void CharacterBase::setUnitID(const int newUnitID)
 {
 	this->unitID = newUnitID;
@@ -65,6 +68,7 @@ bool CharacterBase::getAlive()const
 {
 	return this->alive;
 }
+
 void CharacterBase::setAlive(const bool newAlive)
 {
 	this->alive = newAlive;
@@ -74,6 +78,7 @@ XMFLOAT3 CharacterBase::getPos()const
 {
 	return this->position;
 }
+
 void CharacterBase::setPos(const XMFLOAT3 newPos)
 {
 	this->position = newPos;
@@ -84,43 +89,51 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 	//----------CUBE-------------------------
 	HRESULT hr;
 
+	float scaleFactor = 0.3;
+
 	TriangleVertex cubeVertices[24] =
 	{
 		//Front face
-		-0.1f,  0.1f, -0.1f, 0.0f, 0.0f,
-		 0.1f,  0.1f, -0.1f, 1.0f, 0.0f,
-		-0.1f, -0.1f, -0.1f, 0.0f, 1.0f,
-		 0.1,  -0.1f, -0.1f, 1.0f, 1.0f,
+
+		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
 
 		// Back face
-	 	 0.1f,  0.1f, 0.1f, 0.0f, 0.0f,
-		-0.1f,  0.1f, 0.1f, 1.0f, 0.0f,
-		 0.1f, -0.1f, 0.1f, 0.0f, 1.0f,
-		-0.1,  -0.1f, 0.1f, 1.0f, 1.0f,
+
+		scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 1.0f,
 
 		// Left face
-		-0.1f,  0.1f,  0.1f, 0.0f, 0.0f,
-		-0.1f,  0.1f, -0.1f, 1.0f, 0.0f,
-		-0.1f, -0.1f,  0.1f, 0.0f, 1.0f,
-		-0.1f, -0.1f, -0.1f, 1.0f, 1.0f,
+
+		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
 
 		// Right face
-		0.1f,  0.1f, -0.1f, 0.0f, 0.0f,
-		0.1f,  0.1f,  0.1f, 1.0f, 0.0f,
-		0.1f, -0.1f, -0.1f, 0.0f, 1.0f,
-		0.1f, -0.1f,  0.1f, 1.0f, 1.0f,
+
+		scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, -scaleFactor,  scaleFactor, 1.0f, 1.0f,
 
 		// Top face
-		-0.1f, 0.1f,  0.1f, 0.0f, 0.0f,
-		 0.1f, 0.1f,  0.1f, 1.0f, 0.0f,
-		-0.1f, 0.1f, -0.1f, 0.0f, 1.0f,
-		 0.1f, 0.1f, -0.1f, 1.0f, 1.0f,
+
+		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 1.0f,
 
 		// Bottom face
-		 0.1f, -0.1f,  0.1f, 0.0f, 0.0f,
-		-0.1f, -0.1f,  0.1f, 1.0f, 0.0f,
-		 0.1f, -0.1f, -0.1f, 0.0f, 1.0f,
-		-0.1f, -0.1f, -0.1f, 1.0f, 1.0f
+
+		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f
 	};
 
 	D3D11_BUFFER_DESC bufferDesc;
@@ -200,6 +213,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 
 	return true;
 }
+
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 
 	ID3D11ShaderResourceView* nullSRV = nullptr;
@@ -214,14 +228,18 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 	graphicDeviceContext->DrawIndexed(36, 0, 0);	
 
 }
+
 //-----------------------------------------------------------
 //-------------Move and WorldMatrix -------------------------
 
-
 void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos)
 {
-	tPlayerTranslation = XMMatrixTranspose(XMMatrixTranslation(newPos.x, newPos.y, newPos.z));
+
+	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
+
+	tPlayerTranslation = XMMatrixTranslationFromVector(localTranslation);
 }
+
 void CharacterBase::resetWorldMatrix()
 {
 	this->tPlayerTranslation = XMMatrixIdentity();

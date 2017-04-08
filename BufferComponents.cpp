@@ -3,7 +3,6 @@
 
 BufferComponents::BufferComponents() {
 
-	planeVertexBuffer = nullptr;	
 	gConstantBuffer = nullptr;	
 
 	nrOfCubes = 0;
@@ -15,14 +14,10 @@ BufferComponents::~BufferComponents() {
 
 void BufferComponents::ReleaseAll() {
 
-	SAFE_RELEASE(planeVertexBuffer);
 	SAFE_RELEASE(gConstantBuffer);
 	SAFE_RELEASE(gCubeIndexBuffer);
 
 	SAFE_RELEASE(gPlayerTransformBuffer);
-
-	/*SAFE_RELEASE(gCylinderBuffer);
-	SAFE_RELEASE(gCylinderIndexBuffer);*/
 
 	for (int i = 0; i < nrOfCubes; i++) {
 
@@ -32,8 +27,6 @@ void BufferComponents::ReleaseAll() {
 }
 
 bool BufferComponents::SetupScene(ID3D11Device* &gDevice) {
-
-	CreatePlaneVertexBuffer(gDevice);
 
 	if (!CreateCubeVertices(gDevice)) {
 
@@ -57,54 +50,6 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice) {
 
 	return true;
 
-}
-
-bool BufferComponents::CreatePlaneVertexBuffer(ID3D11Device* &gDevice) {
-
-	HRESULT hr;
-
-	TriangleVertex triangleVertices[6] =
-	{
-
-		-1.0f, -1.0f, 0.0f,	//v1 position	(LEFT BOTTOM)
-		 0.0f,  1.0f,	//v1 uv coordinates
-
-		-1.0f,  1.0f, 0.0f,	//v2 position	(LEFT TOP)
-		 0.0f,  0.0f,	//v2 uv coordinates
-
-		 1.0f,  1.0f, 0.0f, //v3 position	(RIGHT TOP)
-		 1.0f,  0.0f,	//v3 uv coordinates
-
-		-1.0f, -1.0f, 0.0f,	//v4 pos position	(LEFT BOTTOM)
-		 0.0f,  1.0f,	//v4 uv coordinates
-
-		 1.0f,  1.0f, 0.0f,	//v5 position	(RIGHT TOP)
-		 1.0f,  0.0f,	//v5 uv coordinates
-
-		 1.0f, -1.0f, 0.0f,  //v6 position	(RIGHT BOTTOM)
-		 1.0f,  1.0f    //v6 uv coordinates
-	};
-
-	
-
-	D3D11_BUFFER_DESC bufferDesc;
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(triangleVertices);
-
-	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = triangleVertices;
-	hr = gDevice->CreateBuffer(&bufferDesc, &data, &planeVertexBuffer);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	return true;
 }
 
 bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice) {

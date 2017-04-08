@@ -21,7 +21,7 @@ using namespace std;
 HWND windowHandle;
 
 //----------------------------------------------------------------------------------------------------------------------------------//
-// PIPELINE COMPONENTS
+// SCENE COMPONENTS
 //----------------------------------------------------------------------------------------------------------------------------------//
 SceneContainer sceneContainer;
 
@@ -31,7 +31,8 @@ Timer timer;
 // FORWARD DECLARATIONS
 //----------------------------------------------------------------------------------------------------------------------------------//
 int RunApplication();
-
+void updateCharacter();
+void updateBuffers();
 
 int main() {
 
@@ -47,7 +48,7 @@ int main() {
 int RunApplication() {
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	// PREDEFINED VARIABLES
+	// INITIALIZE
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
@@ -58,15 +59,12 @@ int RunApplication() {
 
 	SetCursorPos(WIDTH / 2, HEIGHT / 2);
 
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
-	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
-	timer.initialize();
+	//timer.initialize();
 	sceneContainer.character.timer.initialize();
 
-	//----------------GAME LOOP----------------------------
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// GAME LOOP
+	//----------------------------------------------------------------------------------------------------------------------------------//
 	while (windowMessage.message != WM_QUIT) {
 
 		if (PeekMessage(&windowMessage, NULL, NULL, NULL, PM_REMOVE)) {
@@ -78,68 +76,24 @@ int RunApplication() {
 		// If there are no messages to handle, the application will continue by running a frame
 		else {
 
+			//----------------------------------------------------------------------------------------------------------------------------------//
+			// UPDATE
+			//----------------------------------------------------------------------------------------------------------------------------------//
+
 			float deltaTime = timer.getDeltaTime();
 
-			//update camera
-			sceneContainer.character.camera.cameraUpdate(deltaTime);
-			sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
+			updateCharacter();
 
-			sceneContainer.character.update();
-
-			XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());	// Camera View Projection Matrix
-			XMMATRIX tCameraProjection = XMMatrixTranspose(sceneContainer.character.camera.Proj());
-			XMMATRIX tCameraView = XMMatrixTranspose(sceneContainer.character.camera.View());		// Camera View Matrix
-
-			//----------------------------------------------------------------------------------------------------------------------------------//
-			// CONSTANT BUFFER UPDATE
-			//----------------------------------------------------------------------------------------------------------------------------------//
-
-			// Here we disable GPU access to the vertex buffer data so I can change it on the CPU side and update it by sending it back when finished
-			sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-
-			// We create a pointer to the constant buffer containing the world matrix that requires to be multiplied with the rotation matrix
-
-			GS_CONSTANT_BUFFER* cBufferPointer = (GS_CONSTANT_BUFFER*)mappedResource.pData;
-
-			// Here We access the world matrix and update it. The angle of the rotation matrix is updated for every frame with a rotation matrix 
-			// constructed to rotate the triangles around the y-axis
-
-			// Both matrices must recieve the same treatment from the rotation matrix, no matter if we want to preserve its original space or not
-			cBufferPointer->worldViewProj = (sceneContainer.bHandler.tWorldMatrix  * tCameraViewProj);
-			cBufferPointer->matrixWorld = sceneContainer.bHandler.tWorldMatrix;
-			cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
-			cBufferPointer->matrixProjection = tCameraProjection;
-
-			cBufferPointer->cameraPos = sceneContainer.character.camera.GetPosition();
-
-			// At last we have to reenable GPU access to the vertex buffer data
-			sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gConstantBuffer, 0);
-
-			//----------------------------------------------------------------------------------------------------------------------------------//
-			// CHARACTER TRANSFORM BUFFER UPDATE
-			//----------------------------------------------------------------------------------------------------------------------------------//
-
-			sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gPlayerTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &playerMappedResource);
-
-			PLAYER_TRANSFORM* playerTransformPointer = (PLAYER_TRANSFORM*)playerMappedResource.pData;
-
-			XMMATRIX tCharacterTranslation = sceneContainer.character.tPlayerTranslation;
-
-			playerTransformPointer->matrixW = tCharacterTranslation;
-			playerTransformPointer->matrixWVP = tCharacterTranslation * tCameraViewProj;
-
-			sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gPlayerTransformBuffer, 0);
+			updateBuffers();
 
 			//----------------------------------------------------------------------------------------------------------------------------------//
 			// RENDER
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
-			// Now we can render using the new updated buffers on the GPU
 			sceneContainer.renderCharacters();
 			sceneContainer.renderScene();
 
-			// When everythig has been drawn out, finish by presenting the final result on the screen by swapping between the back and front buffers
-			sceneContainer.gHandler.gSwapChain->Present(0, 0); // Change front and back buffer
+			sceneContainer.gHandler.gSwapChain->Present(0, 0);
 
 			timer.updateCurrentTime();
 
@@ -152,6 +106,58 @@ int RunApplication() {
 	DestroyWindow(windowHandle);
 
 	return 0;
+}
+
+void updateCharacter() {
+
+	sceneContainer.character.update();
+
+	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
+}
+
+void updateBuffers() {
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
+	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
+	XMMATRIX tCameraProjection = XMMatrixTranspose(sceneContainer.character.camera.Proj());
+	XMMATRIX tCameraView = XMMatrixTranspose(sceneContainer.character.camera.View());
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// CONSTANT BUFFER UPDATE
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+	GS_CONSTANT_BUFFER* cBufferPointer = (GS_CONSTANT_BUFFER*)mappedResource.pData;
+
+	cBufferPointer->worldViewProj = (sceneContainer.bHandler.tWorldMatrix  * tCameraViewProj);
+	cBufferPointer->matrixWorld = sceneContainer.bHandler.tWorldMatrix;
+	cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
+	cBufferPointer->matrixProjection = tCameraProjection;
+
+	cBufferPointer->cameraPos = sceneContainer.character.camera.GetPosition();
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gConstantBuffer, 0);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// CHARACTER TRANSFORM BUFFER UPDATE
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gPlayerTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &playerMappedResource);
+
+	PLAYER_TRANSFORM* playerTransformPointer = (PLAYER_TRANSFORM*)playerMappedResource.pData;
+
+	XMMATRIX tCharacterTranslation = XMMatrixTranspose(sceneContainer.character.tPlayerTranslation);
+
+	playerTransformPointer->matrixW = tCharacterTranslation;
+
+	playerTransformPointer->matrixWVP = tCameraViewProj * tCharacterTranslation;
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gPlayerTransformBuffer, 0);
 }
 
 

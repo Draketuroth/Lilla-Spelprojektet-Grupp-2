@@ -38,7 +38,6 @@ public:
 
 	MainCharacter character;
 
-	void drawPlane();
 	void drawPlatforms();
 	
 	void clear();

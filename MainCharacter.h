@@ -18,6 +18,10 @@ public:
 	void rotate();
 
 	Camera camera;
+
+	float cameraDistanceY;
+	float cameraDistanceZ;
+	float playerHeight;
 	
 };
 

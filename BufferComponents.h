@@ -51,7 +51,6 @@ public:
 	XMMATRIX transformMatrix;
 	XMMATRIX tWorldMatrix;
 
-	ID3D11Buffer* planeVertexBuffer;	// Vertex buffer
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
 	ID3D11Buffer* gPlayerTransformBuffer;
 
@@ -64,7 +63,6 @@ public:
 
 	bool SetupScene(ID3D11Device* &gDevice);
 
-	bool CreatePlaneVertexBuffer(ID3D11Device* &gDevice);
 	bool CreateCubeVertices(ID3D11Device* &gDevice);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
 	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes);

@@ -1,28 +1,31 @@
 #include "MainCharacter.h"
 
-
-
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 1.0f, 1, {0, 0, 0}, XMMatrixIdentity())
+	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
 {
-	
-}
+	cameraDistanceY = 6.0f;
+	cameraDistanceZ = 5.0f;
+	playerHeight = 2.0f;
 
+	camera.SetPosition(2.0f, cameraDistanceY, 5.0f - cameraDistanceZ);
+}
 
 MainCharacter::~MainCharacter()
 {
 }
 
-
 void MainCharacter::update()
 {
 	CharacterMove();
 }
+
+//--------- Changing the character's position --------------
 void MainCharacter::CharacterMove()
 {
 	float time = timer.getDeltaTime();
 
 	XMFLOAT3 direction = { 0, 0, 0 };
+	XMFLOAT3 newCameraPos = { 0, 0, 0 };
 	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
 	XMFLOAT3 floatPos = { 0, 0, 0 };
 	XMFLOAT3 oldpos = this->getPos();
@@ -36,8 +39,11 @@ void MainCharacter::CharacterMove()
 		positionVec += directionVec * time * this->getMovementSpeed();
 		XMStoreFloat3(&floatPos, positionVec);
 		this->setPos(floatPos);
-	}
 
+		newCameraPos = { floatPos.x, cameraDistanceY, floatPos.z - cameraDistanceZ };
+		camera.SetPosition(newCameraPos);
+	}
+	
 	if (GetAsyncKeyState('S') & 0x8000) {
 
 		direction.z = 1.0;
@@ -45,6 +51,9 @@ void MainCharacter::CharacterMove()
 		positionVec -= directionVec * time  * this->getMovementSpeed();
 		XMStoreFloat3(&floatPos, positionVec);
 		this->setPos(floatPos);
+
+		newCameraPos = { floatPos.x, cameraDistanceY, floatPos.z - cameraDistanceZ};
+		camera.SetPosition(newCameraPos);
 	}
 
 	if (GetAsyncKeyState('A') & 0x8000) {
@@ -54,6 +63,9 @@ void MainCharacter::CharacterMove()
 		positionVec -= directionVec * time * this->getMovementSpeed();
 		XMStoreFloat3(&floatPos, positionVec);
 		this->setPos(floatPos);
+
+		newCameraPos = { floatPos.x, cameraDistanceY, floatPos.z - cameraDistanceZ };
+		camera.SetPosition(newCameraPos);
 	}
 
 	if (GetAsyncKeyState('D') & 0x8000) {
@@ -63,6 +75,9 @@ void MainCharacter::CharacterMove()
 		positionVec += directionVec * time * this->getMovementSpeed();
 		XMStoreFloat3(&floatPos, positionVec);
 		this->setPos(floatPos);
+
+		newCameraPos = { floatPos.x, cameraDistanceY, floatPos.z - cameraDistanceZ };
+		camera.SetPosition(newCameraPos);
 	}
 	if (oldpos.z != this->getPos().z)
 	{
@@ -76,10 +91,6 @@ void MainCharacter::CharacterMove()
 
 	timer.updateCurrentTime();
 }
-
-
-//--------- Changing the character's position --------------
-
 
 //Rotate character
 void MainCharacter::rotate()
