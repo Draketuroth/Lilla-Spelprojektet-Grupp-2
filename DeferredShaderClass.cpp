@@ -174,6 +174,18 @@ bool DeferredShaderClass::InitializeShader(ID3D11Device* gDevice) {
 	return true;
 }
 
+bool DeferredShaderClass::Render(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* texture, int indexCount) {
+
+	// Set the shader parameters that we will use rendering
+	if (!SetShaderParameters(gDeviceContext, texture)) {
+
+		return false;
+	}
+
+	// Now we can render the prepared buffers with the shader
+	RenderShader(gDeviceContext, indexCount);
+}
+
 bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* texture) {
 
 	HRESULT result;

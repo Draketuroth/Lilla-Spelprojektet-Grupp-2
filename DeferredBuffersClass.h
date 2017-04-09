@@ -60,6 +60,7 @@ public:
 
 	void SetRenderTargets(ID3D11DeviceContext* gDeviceContext);
 	void ClearRenderTargets(ID3D11DeviceContext* gDeviceContext, float red, float green, float blue, float alpha);
+	void SetObjectBuffer(ID3D11DeviceContext* gDeviceContext);
 
 	ID3D11ShaderResourceView* GetShaderResourceView(int);
 

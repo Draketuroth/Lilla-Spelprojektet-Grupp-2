@@ -141,6 +141,29 @@ void SceneContainer::clear()
 	gHandler.gDeviceContext->ClearDepthStencilView(gHandler.depthView, D3D11_CLEAR_DEPTH, 1.0f, 0);	// Clear the depth stencil view
 }
 
+bool SceneContainer::renderSceneToTexture() {
+
+	// Set the render buffers to be the render target
+	deferredObject.SetRenderTargets(gHandler.gDeviceContext);
+
+	// Clear the render buffers
+	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Set the object vertex buffer to prepare it for drawing
+	deferredObject.SetObjectBuffer(gHandler.gDeviceContext);
+
+	// Render the object using the deferred shader
+	int indexCounter = deferredObject.ImportStruct.size();
+	deferredShaders.Render(gHandler.gDeviceContext, tHandler.standardResource, indexCounter);
+
+	// Turn the render target back to the original back buffer and not the render buffers anymore
+
+	// Reset the viewport
+
+	return true;
+	
+}
+
 void SceneContainer::renderScene() {
 
 	drawPlatforms();

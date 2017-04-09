@@ -757,6 +757,13 @@ void DeferredBuffersClass::ClearRenderTargets(ID3D11DeviceContext* gDeviceContex
 
 }
 
+void DeferredBuffersClass::SetObjectBuffer(ID3D11DeviceContext* gDeviceContext) {
+
+	UINT32 vertexSize = sizeof(OBJStruct);
+	UINT32 offset = 0;
+	gDeviceContext->IASetVertexBuffers(0, 1, &gDeferredBuffer, &vertexSize, &offset);
+}
+
 ID3D11ShaderResourceView* DeferredBuffersClass::GetShaderResourceView(int view) {
 
 	return d_shaderResourceViewArray[view];

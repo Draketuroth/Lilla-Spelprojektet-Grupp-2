@@ -49,6 +49,9 @@ public:
 	void drawPlatforms();
 	
 	void clear();
+
+	bool renderSceneToTexture();
+
 	void renderScene();
 	void renderCharacters();
 
