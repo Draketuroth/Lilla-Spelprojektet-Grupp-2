@@ -66,7 +66,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* gDevice) {
 	ID3DBlob* vsErrorBlob = nullptr;
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\LightShader\\LightVS.hlsl",
+		L"Shaders\\LightShaders\\LightVS.hlsl",
 		nullptr,
 		nullptr,
 		"VS_main",

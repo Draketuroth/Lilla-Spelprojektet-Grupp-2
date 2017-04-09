@@ -14,6 +14,7 @@
 
 #include "DeferredBuffersClass.h"
 #include "DeferredShaderClass.h"
+#include "LightShaderClass.h"
 
 #include "GraphicComponents.h"
 #include "BufferComponents.h"
@@ -41,6 +42,7 @@ public:
 
 	DeferredBuffersClass deferredObject;
 	DeferredShaderClass deferredShaders;
+	LightShaderClass lightShaders;
 
 	MainCharacter character;
 

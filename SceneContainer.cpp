@@ -25,6 +25,7 @@ void SceneContainer::releaseAll() {
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
+	lightShaders.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -85,6 +86,14 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
+	if (!lightShaders.Initialize(gHandler.gDevice)) {
+
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Light shaders couldn't be initialized\nClosing application...",
+			L"ERROR",
+			MB_OK);
+	}
 
 	character.createBuffers(gHandler.gDevice);
 
