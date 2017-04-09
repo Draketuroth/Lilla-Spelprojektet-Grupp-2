@@ -393,6 +393,7 @@ DeferredBuffersClass::DeferredBuffersClass() {
 	}
 
 	d_depthStencilBuffer = nullptr;
+	d_depthStencilState = nullptr;
 	d_depthStencilView = nullptr;
 }
 
@@ -406,6 +407,7 @@ void DeferredBuffersClass::ReleaseAll() {
 	int i;
 
 	SAFE_RELEASE(d_depthStencilView);
+	SAFE_RELEASE(d_depthStencilState);
 	SAFE_RELEASE(d_depthStencilBuffer);
 
 	for (i = 0; i < BUFFER_COUNT; i++) {

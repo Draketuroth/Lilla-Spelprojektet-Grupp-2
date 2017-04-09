@@ -35,13 +35,13 @@ private:
 	bool CreatePointSampler(ID3D11Device* gDevice);
 	bool CreateLightBuffer(ID3D11Device* gDevice);
 	bool SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, XMFLOAT3 lightDirection);
-	bool Render(ID3D11DeviceContext* gDeviceContext);
+	void Render(ID3D11DeviceContext* gDeviceContext, int indexCount);
 
 	ID3D11VertexShader* l_vertexShader;
 	ID3D11PixelShader* l_pixelShader;
 	ID3D11InputLayout* l_layout;
 	ID3D11SamplerState* l_sampleState;
-	ID3D11Buffer* l_lightBiffer;
+	ID3D11Buffer* l_lightBuffer;
 
 };
 

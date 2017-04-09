@@ -174,6 +174,15 @@ bool DeferredShaderClass::InitializeShader(ID3D11Device* gDevice) {
 	return true;
 }
 
+bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* texture) {
+
+	HRESULT result;
+
+	gDeviceContext->PSSetShaderResources(0, 1, &texture);
+
+	return true;
+}
+
 void DeferredShaderClass::RenderShader(ID3D11DeviceContext* gDeviceContext, int indexCount) {
 
 	// Set the vertex input layout

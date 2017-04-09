@@ -7,7 +7,7 @@ LightShaderClass::LightShaderClass() {
 	l_pixelShader = nullptr;
 	l_layout = nullptr;
 	l_sampleState = nullptr;
-	l_lightBiffer = nullptr;
+	l_lightBuffer = nullptr;
 }
 
 LightShaderClass::~LightShaderClass() {
@@ -21,7 +21,7 @@ void LightShaderClass::ReleaseAll() {
 	SAFE_RELEASE(l_pixelShader);
 	SAFE_RELEASE(l_layout);
 	SAFE_RELEASE(l_sampleState);
-	SAFE_RELEASE(l_lightBiffer);
+	SAFE_RELEASE(l_lightBuffer);
 }
 
 bool LightShaderClass::Initialize(ID3D11Device* gDevice) {
@@ -210,7 +210,7 @@ bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 	lightBufferDesc.MiscFlags = 0;
 	lightBufferDesc.StructureByteStride = 0;
 
-	hr = gDevice->CreateBuffer(&lightBufferDesc, NULL, &l_lightBiffer);
+	hr = gDevice->CreateBuffer(&lightBufferDesc, NULL, &l_lightBuffer);
 	
 	if (FAILED(hr))
 	{
@@ -222,7 +222,45 @@ bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 
 bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, XMFLOAT3 lightDirection) {
 
+	HRESULT hr;
+
+	unsigned int bufferNumber;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	ZeroMemory(&mappedResource, sizeof(mappedResource));
+
+	gDeviceContext->PSSetShaderResources(0, 1, &colorTexture);
+	gDeviceContext->PSSetShaderResources(1, 1, &normalTexture);
+
+	hr = gDeviceContext->Map(l_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	LightBufferType* lightPointer = (LightBufferType*)mappedResource.pData;
+
+	lightPointer->lightDirection = lightDirection;
+	lightPointer->padding = 0.0f;
+
+	gDeviceContext->Unmap(l_lightBuffer, 0);
+
+	bufferNumber = 0;
+
+	gDeviceContext->PSSetConstantBuffers(bufferNumber, 1, &l_lightBuffer);
 
 	return true;
 
+}
+
+void LightShaderClass::Render(ID3D11DeviceContext* gDeviceContext, int indexCount) {
+
+	gDeviceContext->IASetInputLayout(l_layout);
+
+	gDeviceContext->VSSetShader(l_vertexShader, NULL, 0);
+	gDeviceContext->PSSetShader(l_pixelShader, NULL, 0);
+
+	gDeviceContext->PSSetSamplers(0, 1, &l_sampleState);
+
+	gDeviceContext->DrawIndexed(indexCount, 0, 0);
 }
