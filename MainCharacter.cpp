@@ -7,7 +7,7 @@ MainCharacter::MainCharacter()
 	cameraDistanceZ = 5.0f;
 	playerHeight = 2.0f;
 
-	camera.SetPosition(2.0f, cameraDistanceY, 5.0f - cameraDistanceZ);
+	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 }
 
 MainCharacter::~MainCharacter()
