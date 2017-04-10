@@ -52,14 +52,15 @@ int RunApplication() {
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
-	
+
 	MSG windowMessage = { 0 };
 
 	SetCapture(windowHandle);
 
 	SetCursorPos(WIDTH / 2, HEIGHT / 2);
+	ShowCursor(0);
 
-	timer.initialize();
+	//timer.initialize();
 	sceneContainer.character.timer.initialize();
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -93,7 +94,7 @@ int RunApplication() {
 			sceneContainer.renderCharacters();
 			sceneContainer.renderScene();
 
-			showFPS(windowHandle, deltaTime);
+			//showFPS(windowHandle, deltaTime);
 
 			sceneContainer.gHandler.gSwapChain->Present(0, 0);
 
