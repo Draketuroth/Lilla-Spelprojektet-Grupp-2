@@ -70,6 +70,12 @@
     <Filter Include="Source Files\HLSL\LightShaders">
       <UniqueIdentifier>{2d9bddc7-44d5-40f9-a954-e8b5158fe4e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameState">
+      <UniqueIdentifier>{a54cdd99-7277-471f-8444-272b2544186b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameState">
+      <UniqueIdentifier>{7bde820a-7357-41e1-81a9-d8f35cc143b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="LightShaderClass.cpp">
       <Filter>Source Files\Deferred Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files\GameState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="LightShaderClass.h">
       <Filter>Header Files\Deferred Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files\GameState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

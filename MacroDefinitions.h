@@ -12,3 +12,7 @@
 
 #define LaunchInWindowedMode TRUE;
 #define SAFE_RELEASE( x ) if( x ) ( x )->Release(), ( x ) = nullptr;
+
+#define MAIN_MENU 11
+#define GAME_OVER 12
+#define PAUSE_MENU 13
