@@ -4,10 +4,10 @@ MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 6.0f;
-	cameraDistanceZ = 5.0f;
+	cameraDistanceZ = 3.0f;
 	playerHeight = 2.0f;
 
-	camera.SetPosition(2.0f, cameraDistanceY, 5.0f - cameraDistanceZ);
+	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 }
 
 MainCharacter::~MainCharacter()
@@ -142,10 +142,10 @@ XMMATRIX MainCharacter::rotate()
 {
 	XMMATRIX R;
 	POINT p;
+
+	XMFLOAT3 characterPosition = getPos();
+	float angle;
 	GetCursorPos(&p);
-	XMFLOAT3 right = camera.GetRight();
-	XMFLOAT3 forward = camera.GetLook();
-	XMFLOAT3 up = camera.GetUp();
 
 	if (MK_LBUTTON) {
 
@@ -154,17 +154,14 @@ XMMATRIX MainCharacter::rotate()
 		//The character will rotate around y.
 
 		float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x));
-		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - camera.mLastMousePos.y));
+		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y));
 
-		R = XMMatrixRotationY(dx);
+		angle = atan2(dy, dx) * (2 * PI);
 
-		//-------What does this do?------------
-		/*XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-		XMStoreFloat3(&forward, XMVector3TransformNormal(XMLoadFloat3(&forward), R));*/
+		R = XMMatrixRotationY(angle);
+
 	}
 
-	//The mouse position is the new Point?
 	camera.mLastMousePos.x = p.x;
 	camera.mLastMousePos.y = p.y;
 

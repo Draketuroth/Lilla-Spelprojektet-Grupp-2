@@ -40,6 +40,9 @@ bool WindowInitialize(HWND &windowHandle) {
 		return false;
 	}
 
+	HCURSOR customCursor = LoadCursor(0, IDC_CROSS);
+	SetCursor(customCursor);
+
 	RECT wRC = { 0, 0, WIDTH, HEIGHT };
 	AdjustWindowRect(&wRC, WS_OVERLAPPEDWINDOW, FALSE);
 
