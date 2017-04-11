@@ -81,8 +81,20 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			float deltaTime = timer.getDeltaTime();
-			menuState.menuHandler(windowHandle, sceneContainer.gHandler.gDevice, sceneContainer.gHandler.gDeviceContext);
 
+			//while (menuState.state != START_GAME)
+			//{
+			//	menuState.menuHandler(windowHandle, sceneContainer);
+			//}
+			switch (menuState.state)
+			{
+			case MAIN_MENU:
+				menuState.menuHandler(windowHandle, sceneContainer);
+				break;
+			}
+		
+			
+			
 
 			updateCharacter();
 
@@ -100,7 +112,6 @@ int RunApplication() {
 			sceneContainer.gHandler.gSwapChain->Present(0, 0);
 
 			timer.updateCurrentTime();
-
 		}
 
 	}

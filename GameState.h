@@ -23,8 +23,8 @@ struct VS_CONSTANT_BUFFER
 };
 struct RectangleData
 {
-	XMFLOAT3 points;
-	XMFLOAT2 uv;
+	float x, y, z;
+	float u, v;
 };
 
 class GameState
@@ -32,7 +32,7 @@ class GameState
 	
 	
 private:
-	int state;
+	
 	ID3D11Buffer* gMenuConstant;
 	ID3D11Buffer* gMenuVertexBuffer;
 
@@ -41,6 +41,11 @@ private:
 	//ID3D11DepthStencilView* menuDepthView;
 
 public:
+	int state;
+
+	GameState();
+	~GameState();
+
 	int menuHandler(HWND windowHandle, SceneContainer scene);
 	int mainMenu(HWND windowHandle);
 	int pauseMenu(HWND windowHandle);
@@ -50,6 +55,7 @@ public:
 	void createBufferData(ID3D11Device* gDevice);
 	//bool createMenuDepthStencil(ID3D11Device* gDevice);
 	void releaseAll();
+
 
 	void renderMainMenu(SceneContainer scene);
 	//void renderPauseMenu();

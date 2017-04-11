@@ -1,19 +1,2 @@
-﻿  CharacterBase.cpp
-  GameState.cpp
-GameState.cpp(6): error C3861: 'createMenuDepthStencil': identifier not found
-GameState.cpp(63): error C2039: 'menuDepthState': is not a member of 'GameState'
-  e:\litet spel\project\lilla-spelprojektet-grupp-2\GameState.h(31): note: see declaration of 'GameState'
-GameState.cpp(63): error C2227: left of '->Release' must point to class/struct/union/generic type
-GameState.cpp(64): error C2039: 'menuDepthStencil': is not a member of 'GameState'
-  e:\litet spel\project\lilla-spelprojektet-grupp-2\GameState.h(31): note: see declaration of 'GameState'
-GameState.cpp(64): error C2227: left of '->Release' must point to class/struct/union/generic type
-GameState.cpp(65): error C2039: 'menuDepthView': is not a member of 'GameState'
-  e:\litet spel\project\lilla-spelprojektet-grupp-2\GameState.h(31): note: see declaration of 'GameState'
-GameState.cpp(65): error C2227: left of '->Release' must point to class/struct/union/generic type
-GameState.cpp(78): error C2664: 'void ID3D11DeviceContext::IASetVertexBuffers(UINT,UINT,ID3D11Buffer *const *,const UINT *,const UINT *)': cannot convert argument 3 from 'ID3D11Buffer *' to 'ID3D11Buffer *const *'
-  GameState.cpp(78): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-  MainCharacter.cpp
-  SceneContainer.cpp
-  main.cpp
-main.cpp(84): error C2660: 'GameState::menuHandler': function does not take 3 arguments
-  Generating Code...
+﻿  main.cpp
+  Demo.vcxproj -> E:\Litet Spel\Project\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe

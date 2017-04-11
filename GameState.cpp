@@ -1,28 +1,39 @@
 #include "GameState.h"
+GameState::GameState()
+{
+	this->state = MAIN_MENU;
+}
+GameState::~GameState()
+{
 
+}
 int GameState::menuHandler(HWND windowHandle, SceneContainer scene)
 {
-	createBufferData(scene.gHandler.gDevice);
-	
-
-
+//	createBufferData(scene.gHandler.gDevice);
+	mainMenu(windowHandle);
 
 	return state;
 }
 int GameState::mainMenu(HWND windowHandle)
 {
-	
-	return MAIN_MENU;
+	while (this->state == MAIN_MENU)
+	{
+		if (GetAsyncKeyState('T') & 0x8000)
+		{
+			this->state = START_GAME;
+		}
+	}
+	return state;
 }
 int GameState::pauseMenu(HWND windowHandle)
 {
 
-	return PAUSE_MENU;
+	return state;
 }
 int GameState::gameOver(HWND windowHandle)
 {
 
-	return GAME_OVER;
+	return state;
 }
 void GameState::createBufferData(ID3D11Device* gDevice)
 {
@@ -73,14 +84,32 @@ void GameState::renderMainMenu(SceneContainer scene)
 
 	scene.gHandler.gDeviceContext->PSSetShaderResources(0, 0, nullptr);
 	scene.gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	scene.gHandler.gDeviceContext->IASetVertexBuffers(0, 1, this->gMenuVertexBuffer, &vertexsize, &offset);
+	scene.gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &this->gMenuVertexBuffer, &vertexsize, &offset);
 
 	scene.gHandler.gDeviceContext->Draw(6, 0);
 }
 void GameState::createVertexBuffer(ID3D11Device* gDevice)
 {
+	RectangleData quad[6]
+	{
+		-0.8f, 0.7f, 0.0f,//Top left pos
+		0.0f, 0.0f,//top left uv
 
+		-0.8f, -0.7f, 0.0f,//Bot left pos
+		0.0f, 1.0f,//Bot left uv
 
+		0.8f, 0.7f, 0.0f,//Top right pos
+		1.0f, 0.0f,//Top right uv
+
+		0.8f, -0.7f, 0.0f,//Bot right pos
+		1.0f, 1.0f,
+
+		-0.8f, -0.7f, 0.0f,//Bot left2 pos
+		0.0f, 1.0f,//Bot left2 uv
+
+		0.8f, 0.7f, 0.0f,//Top right2 pos
+		1.0f, 0.0f//Top right2 uv
+	};
 }
 //bool GameState::createMenuDepthStencil(ID3D11Device* gDevice)
 //{
