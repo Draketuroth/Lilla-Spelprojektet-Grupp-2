@@ -3,7 +3,7 @@
 int GameState::menuHandler(HWND windowHandle, SceneContainer scene)
 {
 	createBufferData(scene.gHandler.gDevice);
-	createMenuDepthStencil(scene.gHandler.gDevice);
+	
 
 
 
