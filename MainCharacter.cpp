@@ -10,6 +10,7 @@ MainCharacter::MainCharacter()
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 	plane = getPlane();
+
 }
 
 MainCharacter::~MainCharacter()
