@@ -8,7 +8,7 @@
 
 
 #include "SceneContainer.h"
-
+#include "GameState.h"
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
@@ -24,7 +24,7 @@ HWND windowHandle;
 // SCENE COMPONENTS
 //----------------------------------------------------------------------------------------------------------------------------------//
 SceneContainer sceneContainer;
-
+GameState menuState;
 Timer timer;
 
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -81,6 +81,8 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			float deltaTime = timer.getDeltaTime();
+			menuState.menuHandler(windowHandle, sceneContainer.gHandler.gDevice, sceneContainer.gHandler.gDeviceContext);
+
 
 			updateCharacter();
 
@@ -104,7 +106,7 @@ int RunApplication() {
 	}
 
 	sceneContainer.releaseAll();
-
+	menuState.releaseAll();
 	DestroyWindow(windowHandle);
 
 	return 0;
