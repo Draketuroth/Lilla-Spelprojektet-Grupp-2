@@ -76,6 +76,9 @@
     <Filter Include="Source Files\Lava">
       <UniqueIdentifier>{45fc84cc-53ff-46f4-a8a1-0aeb601a9e6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\LavaShaders">
+      <UniqueIdentifier>{e808010d-7055-4c04-9ee4-698750e3c713}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -207,6 +210,15 @@
     </FxCompile>
     <FxCompile Include="Shaders\LightShaders\LightVS.hlsl">
       <Filter>Source Files\HLSL\LightShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LavaVertex.hlsl">
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LavaGeometry.hlsl">
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="LavaFragment.hlsl">
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

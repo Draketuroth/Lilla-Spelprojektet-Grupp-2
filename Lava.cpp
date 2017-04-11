@@ -11,7 +11,7 @@ Lava::~Lava()
 
 void Lava::LoadRawFile()
 {
-	vector<unsigned char> in(DEPTH * WIDTH);
+	vector<unsigned char> in(LAVADEPTH * LAVAWIDTH);
 
 	ifstream inFile; 
 	inFile.open(map.filename.c_str(), std::ios_base::binary); 
@@ -27,10 +27,10 @@ void Lava::LoadRawFile()
 		inFile.close(); 
 	}
 
-	heightMap.resize(DEPTH * WIDTH, 0);
-	for (int i = 0; i < (DEPTH * WIDTH); i++)
+	heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
+	for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
 	{
-		heightMap[i] = (in[i] / 255.0f)*MAXHEIGHT; 
+		heightMap[i] = (in[i] / 255.0f)*LAVAMAXHEIGHT;
 	}
 }
 
@@ -42,46 +42,46 @@ void Lava::ReleaseAll()
 
 float Lava::GetWidth()const
 {
-	return (WIDTH - 1)*QUADSIZE; 
+	return (LAVAWIDTH - 1)*LAVAQUADSIZE;
 }
 
 float Lava::GetDepth()const
 {
-	return (DEPTH - 1)*QUADSIZE;
+	return (LAVADEPTH - 1)*LAVAQUADSIZE;
 }
 
 void Lava::VBuffer(ID3D11Device* device)
 {
-	vector<LavaVertex> verticis(DEPTH*WIDTH);
+	vector<LavaVertex> verticis(LAVADEPTH*LAVAWIDTH);
 
 	float halfWidth = 0.5*GetWidth(); 
 	float halfDepth = 0.5f*GetDepth(); 
 
-	float patchWidth = GetWidth() / (WIDTH - 1);
-	float patchDepth = GetDepth() / (DEPTH - 1);
+	float patchWidth = GetWidth() / (LAVAWIDTH - 1);
+	float patchDepth = GetDepth() / (LAVADEPTH - 1);
 
-	float u = 1.0f / (WIDTH - 1); 
-	float v = 1.0f / (DEPTH - 1);
+	float u = 1.0f / (LAVAWIDTH - 1);
+	float v = 1.0f / (LAVADEPTH - 1);
 	int k = 0;
 
-	for (UINT i = 0; i < WIDTH; ++i)
+	for (UINT i = 0; i < LAVAWIDTH; ++i)
 	{
 		float z = 0;
-		for (UINT j = 0; j < DEPTH; ++j)
+		for (UINT j = 0; j < LAVADEPTH; ++j)
 		{
 			float x = 0;
 			float y = 0;
 
 			x = -halfDepth + j;
-			y = heightMap[i*WIDTH + j];
+			y = heightMap[i*LAVAWIDTH + j];
 			z = halfDepth - i;
 
 			//cout << heightMap[i] << endl;
-			verticis[i*WIDTH + j].pos = XMFLOAT3(x, y, z);
+			verticis[i*LAVAWIDTH + j].pos = XMFLOAT3(x, y, z);
 
 			//sträcka texturen över griden
-			verticis[i*WIDTH + j].pos.y = j*u;
-			verticis[i*WIDTH + j].pos.x = i*v;
+			verticis[i*LAVAWIDTH + j].pos.y = j*u;
+			verticis[i*LAVAWIDTH + j].pos.x = i*v;
 
 			k++;
 		}
@@ -105,19 +105,19 @@ void Lava::IBBuffer(ID3D11Device* device)
 	HRESULT hr;
 	int k = 0;
 
-	index.resize((DEPTH * WIDTH) * 6);
+	index.resize((LAVADEPTH * LAVAWIDTH) * 6);
 
-	for (unsigned int i = 0; i < DEPTH - 1; i++)
+	for (unsigned int i = 0; i < LAVAWIDTH - 1; i++)
 	{
-		for (unsigned int j = 0; j < WIDTH - 1; j++)
+		for (unsigned int j = 0; j < LAVAWIDTH - 1; j++)
 		{
-			index[k + 5] = (i + 1) * WIDTH + j + 1;
-			index[k + 4] = i * WIDTH + j + 1;
-			index[k + 3] = (i + 1) * WIDTH + j;
+			index[k + 5] = (i + 1) * LAVAWIDTH + j + 1;
+			index[k + 4] = i * LAVAWIDTH + j + 1;
+			index[k + 3] = (i + 1) * LAVAWIDTH + j;
 
-			index[k + 2] = (i + 1) * WIDTH + j;
-			index[k + 1] = i * WIDTH + j + 1;
-			index[k] = i * WIDTH + j;
+			index[k + 2] = (i + 1) * LAVAWIDTH + j;
+			index[k + 1] = i * LAVAWIDTH + j + 1;
+			index[k] = i * LAVAWIDTH + j;
 
 			//next quad
 			k += 6;

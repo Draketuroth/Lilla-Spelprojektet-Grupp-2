@@ -9,10 +9,10 @@
 #include "VertexType.h"
 #include "MacroDefinitions.h"
 
-#define DEPTH 100
-#define WIDTH 100 
-#define MAXHEIGHT 10
-#define QUADSIZE 1
+#define LAVADEPTH 100
+#define LAVAWIDTH 100 
+#define LAVAMAXHEIGHT 10
+#define LAVAQUADSIZE 1
 using namespace std; 
 
 class Lava
