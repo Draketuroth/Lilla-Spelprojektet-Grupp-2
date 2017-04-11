@@ -58,7 +58,7 @@ int RunApplication() {
 	SetCapture(windowHandle);
 
 	SetCursorPos(WIDTH / 2, HEIGHT / 2);
-	ShowCursor(0);
+	ShowCursor(1);
 
 	//timer.initialize();
 	sceneContainer.character.timer.initialize();

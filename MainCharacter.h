@@ -18,11 +18,16 @@ public:
 
 	XMMATRIX rotate();
 
-	Camera camera;
+
 
 	float cameraDistanceY;
 	float cameraDistanceZ;
 	float playerHeight;
-	
+
+	XMVECTOR getPlane();
+
+
+	Camera camera;
+	XMVECTOR plane;
 };
 

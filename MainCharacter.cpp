@@ -8,6 +8,8 @@ MainCharacter::MainCharacter()
 	playerHeight = 2.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
+
+	plane = getPlane();
 }
 
 MainCharacter::~MainCharacter()
@@ -149,14 +151,13 @@ XMMATRIX MainCharacter::rotate()
 
 	if (MK_LBUTTON) {
 
-		//Where the mouse is, is where to character will face. How to solve?
-		//We have z(forward), x (right) and y (which is up). 
-		//The character will rotate around y.
-
 		float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x));
 		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y));
+		
 
-		angle = atan2(dy, dx) * (2 * PI);
+		angle = atan2(dx, dy) * (2 * PI);
+
+		
 
 		R = XMMatrixRotationY(angle);
 
@@ -166,5 +167,13 @@ XMMATRIX MainCharacter::rotate()
 	camera.mLastMousePos.y = p.y;
 
 	return R;
+}
+
+XMVECTOR MainCharacter::getPlane()
+{
+	XMVECTOR point = { 0, 0, 0 };
+	XMVECTOR normal = { 0, 1, 0 };
+
+	return XMPlaneFromPointNormal(point, normal);
 }
 
