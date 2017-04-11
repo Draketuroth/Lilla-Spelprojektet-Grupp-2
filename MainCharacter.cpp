@@ -152,9 +152,12 @@ XMMATRIX MainCharacter::rotate()
 	XMFLOAT3 up = camera.GetUp();
 
 	XMFLOAT3 currentRay;
+	
+	//float mouseX = camera.mLastMousePos.x;
+	//float mouseY = camera.mLastMousePos.y;
 
-	float mouseX = camera.mLastMousePos.x;
-	float mouseY = camera.mLastMousePos.y;
+	float mouseX = p.x;
+	float mouseY = p.y;
 
 	float mouseXNDC = (2 * mouseX) / WIDTH - 1;
 	float mouseYNDC = (2 * mouseY) / HEIGHT - 1;
