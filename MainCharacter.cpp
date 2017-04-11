@@ -10,6 +10,7 @@ MainCharacter::MainCharacter()
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
+	plane = getPlane();
 
 	direction = { 0, 0, 0 };
 	newCameraPos = { 0, 0, 0 };
@@ -202,5 +203,13 @@ XMMATRIX MainCharacter::rotate()
 	//cout << camera.mLastMousePos.x << " " << camera.mLastMousePos.y << endl;
 
 	return R;
+}
+
+XMVECTOR MainCharacter::getPlane()
+{
+	XMVECTOR point = { 0, 0, 0 };
+	XMVECTOR normal = { 0, 1, 0 };
+
+	return XMPlaneFromPointNormal(point, normal);
 }
 
