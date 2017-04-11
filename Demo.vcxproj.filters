@@ -70,6 +70,12 @@
     <Filter Include="Source Files\HLSL\LightShaders">
       <UniqueIdentifier>{2d9bddc7-44d5-40f9-a954-e8b5158fe4e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Lava">
+      <UniqueIdentifier>{e10d0397-4caa-4ec3-a2d3-61a51efea6cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lava">
+      <UniqueIdentifier>{45fc84cc-53ff-46f4-a8a1-0aeb601a9e6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="LightShaderClass.cpp">
       <Filter>Source Files\Deferred Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Lava.cpp">
+      <Filter>Source Files\Lava</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="LightShaderClass.h">
       <Filter>Header Files\Deferred Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Lava.h">
+      <Filter>Header Files\Lava</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

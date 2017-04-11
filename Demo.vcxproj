@@ -129,6 +129,7 @@
     <ClCompile Include="DeferredBuffersClass.cpp" />
     <ClCompile Include="DeferredShaderClass.cpp" />
     <ClCompile Include="GraphicComponents.cpp" />
+    <ClCompile Include="Lava.cpp" />
     <ClCompile Include="LightShaderClass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainCharacter.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="DeferredBuffersClass.h" />
     <ClInclude Include="DeferredShaderClass.h" />
     <ClInclude Include="GraphicComponents.h" />
+    <ClInclude Include="Lava.h" />
     <ClInclude Include="LightShaderClass.h" />
     <ClInclude Include="MacroDefinitions.h" />
     <ClInclude Include="MainCharacter.h" />
