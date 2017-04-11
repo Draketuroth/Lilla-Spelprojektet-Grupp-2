@@ -199,3 +199,8 @@ void SceneContainer::renderCharacters()
 	character.resetWorldMatrix();
 	
 }
+
+void SceneContainer::renderLava()
+{
+
+}

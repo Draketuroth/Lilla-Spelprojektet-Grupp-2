@@ -55,6 +55,8 @@ public:
 	void renderScene();
 	void renderCharacters();
 
+	void renderLava(); 
+
 };
 
 
