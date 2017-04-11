@@ -154,13 +154,8 @@ XMMATRIX MainCharacter::rotate()
 		float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x));
 		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y));
 		
-
 		angle = atan2(dx, dy) * (2 * PI);
-
-		
-
 		R = XMMatrixRotationY(angle);
-
 	}
 
 	camera.mLastMousePos.x = p.x;
