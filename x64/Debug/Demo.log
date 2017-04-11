@@ -1,12 +1,4 @@
-﻿  BufferComponents.cpp
-  CharacterBase.cpp
-  DeferredBuffersClass.cpp
-  GraphicComponents.cpp
-  Lava.cpp
-  LightShaderClass.cpp
-  MainCharacter.cpp
-  SceneContainer.cpp
-  Window.cpp
-  main.cpp
-  Generating Code...
+﻿  Lava.cpp
+c:\users\test\source\repos\lilla-spelprojektet-grupp-2\Lava.h(13): warning C4005: 'WIDTH': macro redefinition
+  c:\users\test\source\repos\lilla-spelprojektet-grupp-2\MacroDefinitions.h(5): note: see previous definition of 'WIDTH'
   Demo.vcxproj -> C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe

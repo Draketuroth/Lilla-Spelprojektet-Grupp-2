@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include "VertexType.h"
+#include "MacroDefinitions.h"
 
 #define DEPTH 100
 #define WIDTH 100 
@@ -29,7 +30,7 @@ public:
 	void LoadRawFile(); 
 
 	void VBuffer(ID3D11Device* device); 
-	void IBuffer(ID3D11Device* device);
+	void IBBuffer(ID3D11Device* device);
 
 	float GetWidth()const;
 	float GetDepth()const;
@@ -37,11 +38,16 @@ public:
 	void ReleaseAll(); 
 	vector<float> hightmap; 
 
+	ID3D11Buffer* LavaVB;
+	ID3D11Buffer* LavaIB;
+
+	vector<int> index;
+
 private:
 	Timer lavaTime;
 	Map map; 
 	vector<float> heightMap;
-
+	unsigned int indexCounter = 0;
 };
 
 

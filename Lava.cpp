@@ -36,7 +36,8 @@ void Lava::LoadRawFile()
 
 void Lava::ReleaseAll()
 {
-
+	SAFE_RELEASE(LavaVB);
+	SAFE_RELEASE(LavaIB);
 }
 
 float Lava::GetWidth()const
@@ -84,5 +85,62 @@ void Lava::VBuffer(ID3D11Device* device)
 
 			k++;
 		}
+	}
+
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_DEFAULT;
+	vbd.ByteWidth = sizeof(OBJStruct) * verticis.size();
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0;
+	vbd.MiscFlags = 0;
+	vbd.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA vinitData;
+	vinitData.pSysMem = &verticis[0];
+	HRESULT(device->CreateBuffer(&vbd, &vinitData, &LavaVB));
+}
+
+void Lava::IBBuffer(ID3D11Device* device)
+{
+	HRESULT hr;
+	int k = 0;
+
+	index.resize((DEPTH * WIDTH) * 6);
+
+	for (unsigned int i = 0; i < DEPTH - 1; i++)
+	{
+		for (unsigned int j = 0; j < WIDTH - 1; j++)
+		{
+			index[k + 5] = (i + 1) * WIDTH + j + 1;
+			index[k + 4] = i * WIDTH + j + 1;
+			index[k + 3] = (i + 1) * WIDTH + j;
+
+			index[k + 2] = (i + 1) * WIDTH + j;
+			index[k + 1] = i * WIDTH + j + 1;
+			index[k] = i * WIDTH + j;
+
+			//next quad
+			k += 6;
+			indexCounter += 6;
+
+		}
+	}
+
+	D3D11_BUFFER_DESC ibd;
+	memset(&ibd, 0, sizeof(ibd));
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.Usage = D3D11_USAGE_DEFAULT;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	ibd.StructureByteStride = 0;
+	ibd.ByteWidth = index.size() * sizeof(int);
+
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = index.data();
+	hr = device->CreateBuffer(&ibd, &iinitData, &LavaIB);
+
+	if (hr != S_OK)
+	{
+		cout << "Error Index buffer" << endl;
 	}
 }
