@@ -6,11 +6,12 @@
 #include "Timer.h"
 #include <fstream>
 #include <iostream>
+#include "VertexType.h"
 
-#define HEIGHT 100
+#define DEPTH 100
 #define WIDTH 100 
 #define MAXHEIGHT 10
-
+#define QUADSIZE 1
 using namespace std; 
 
 class Lava
@@ -30,6 +31,8 @@ public:
 	void VBuffer(ID3D11Device* device); 
 	void IBuffer(ID3D11Device* device);
 
+	float GetWidth()const;
+	float GetDepth()const;
 
 	void ReleaseAll(); 
 	vector<float> hightmap; 
