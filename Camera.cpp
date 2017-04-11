@@ -11,17 +11,18 @@ Camera::Camera() {
 	// Using the following method, the matrix can be computed from the world position of the camera (eye), a global up vector, and a 
 	// target point.
 
-	XMFLOAT3 eyePosF = { 0, 6, 0 };
-	XMFLOAT3 lookAtF = { 0, 0, 1 };
-	XMFLOAT3 upF = { 0, 1, 0 };
+	eyePosF = { 0, 6, 0 };
+	lookAtF = { 0, 0, 1 };
+	upF = { 0, 1, 0 };
 
-	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&eyePosF);
-	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&lookAtF);
-	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&upF);
+	eyePos = DirectX::XMLoadFloat3(&eyePosF);
+	lookAt = DirectX::XMLoadFloat3(&lookAtF);
+	up = DirectX::XMLoadFloat3(&upF);
 
-	XMMATRIX viewMatrix = XMMatrixLookAtLH(eyePos, lookAt, up);
+	viewMatrix = XMMatrixLookAtLH(eyePos, lookAt, up);
 	LookAt(eyePos, lookAt, up);
 
+	
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	// The projection matrix is the actual camera we are looking through when viewing the world with its far and near clipping plane.
@@ -35,8 +36,13 @@ Camera::Camera() {
 
 	float farPlane = FARPLANE;
 
-	XMMATRIX projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
+	projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
 	SetLens(fov, aspectRatio, nearPlane, farPlane);
+
+	viewProj = viewMatrix * projectionMatrix;
+	detViewProj = XMMatrixDeterminant(viewProj);
+	InvViewPoj = XMMatrixInverse(&detViewProj, viewProj);
+	
 
 	Pitch(45);
 }

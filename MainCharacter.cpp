@@ -1,4 +1,5 @@
 #include "MainCharacter.h"
+#include "MacroDefinitions.h"
 
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
@@ -8,6 +9,12 @@ MainCharacter::MainCharacter()
 	playerHeight = 2.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
+
+
+	direction = { 0, 0, 0 };
+	newCameraPos = { 0, 0, 0 };
+	directionVec;
+	floatPos = { 0, 0, 0 };
 }
 
 MainCharacter::~MainCharacter()
@@ -25,11 +32,8 @@ void MainCharacter::CharacterMove()
 
 	float time = timer.getDeltaTime();
 
-	XMFLOAT3 direction = { 0, 0, 0 };
-	XMFLOAT3 newCameraPos = { 0, 0, 0 };
+	
 	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
-	XMVECTOR directionVec;
-	XMFLOAT3 floatPos = { 0, 0, 0 };
 	XMFLOAT3 oldpos = this->getPos();
 
 	XMMATRIX R = rotate();
@@ -56,14 +60,14 @@ void MainCharacter::CharacterMove()
 
 #if defined (DEBUG) || defined(_DEBUG)
 
-	if (oldpos.z != this->getPos().z)
-	{
-		cout << "Position Z: " << this->getPos().z << endl;
-	}
-	if (oldpos.x != this->getPos().x)
-	{
-		cout << "Position X: " << this->getPos().x << endl;
-	}
+	//if (oldpos.z != this->getPos().z)
+	//{
+	//	cout << "Position Z: " << this->getPos().z << endl;
+	//}
+	//if (oldpos.x != this->getPos().x)
+	//{
+	//	cout << "Position X: " << this->getPos().x << endl;
+	//}
 
 #endif
 
@@ -147,6 +151,31 @@ XMMATRIX MainCharacter::rotate()
 	XMFLOAT3 forward = camera.GetLook();
 	XMFLOAT3 up = camera.GetUp();
 
+	XMFLOAT3 currentRay;
+
+	float mouseX = camera.mLastMousePos.x;
+	float mouseY = camera.mLastMousePos.y;
+
+	float mouseXNDC = (2 * mouseX) / WIDTH - 1;
+	float mouseYNDC = (2 * mouseY) / HEIGHT - 1;
+	mouseYNDC = (mouseYNDC*-1);
+
+	XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 1.0f};
+	
+	
+
+	XMVECTOR mouseWorldPos = XMVector4Transform(clipcoords, camera.InvViewPoj);
+	
+	XMFLOAT4 MWP; 
+	XMStoreFloat4(&MWP, mouseWorldPos);
+	float MWPLength = sqrt(MWP.x*MWP.x + MWP.y*MWP.y + MWP.z*MWP.z);
+	XMFLOAT4 normalizedMWP;
+	normalizedMWP.x = MWP.x / MWPLength; 
+	normalizedMWP.y = MWP.y / MWPLength;
+	normalizedMWP.z = MWP.z / MWPLength;
+	cout << normalizedMWP.x << " " << normalizedMWP.y << " " << normalizedMWP.z << endl;
+	
+
 	if (MK_LBUTTON) {
 
 		//Where the mouse is, is where to character will face. How to solve?
@@ -167,6 +196,7 @@ XMMATRIX MainCharacter::rotate()
 	//The mouse position is the new Point?
 	camera.mLastMousePos.x = p.x;
 	camera.mLastMousePos.y = p.y;
+	//cout << camera.mLastMousePos.x << " " << camera.mLastMousePos.y << endl;
 
 	return R;
 }

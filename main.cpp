@@ -45,66 +45,84 @@ int main() {
 	return RunApplication();
 }
 
-int RunApplication() {
+int RunApplication()
+{
+	int GameState = 2;
 
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	// INITIALIZE
-	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
-	
-	MSG windowMessage = { 0 };
+	switch (GameState)
+	{
+	case 1:
 
-	SetCapture(windowHandle);
+	case 2:
+		//----------------------------------------------------------------------------------------------------------------------------------//
+		// INITIALIZE
+		//----------------------------------------------------------------------------------------------------------------------------------//
 
-	SetCursorPos(WIDTH / 2, HEIGHT / 2);
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
 
-	timer.initialize();
-	sceneContainer.character.timer.initialize();
+		MSG windowMessage = { 0 };
 
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	// GAME LOOP
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	while (windowMessage.message != WM_QUIT) {
+		SetCapture(windowHandle);
 
-		if (PeekMessage(&windowMessage, NULL, NULL, NULL, PM_REMOVE)) {
+		SetCursorPos(WIDTH / 2, HEIGHT / 2);
 
-			TranslateMessage(&windowMessage);
-			DispatchMessage(&windowMessage);
+		timer.initialize();
+		sceneContainer.character.timer.initialize();
+
+
+
+		//----------------------------------------------------------------------------------------------------------------------------------//
+		// GAME LOOP
+		//----------------------------------------------------------------------------------------------------------------------------------//
+		while (windowMessage.message != WM_QUIT)
+		{
+
+			if (PeekMessage(&windowMessage, NULL, NULL, NULL, PM_REMOVE)) {
+
+				TranslateMessage(&windowMessage);
+				DispatchMessage(&windowMessage);
+			}
+
+			// If there are no messages to handle, the application will continue by running a frame
+			else {
+
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// UPDATE
+				//----------------------------------------------------------------------------------------------------------------------------------//
+
+				float deltaTime = timer.getDeltaTime();
+
+
+
+				updateCharacter();
+
+				updateBuffers();
+
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// RENDER
+				//----------------------------------------------------------------------------------------------------------------------------------//
+
+				sceneContainer.renderCharacters();
+				sceneContainer.renderScene();
+
+				showFPS(windowHandle, deltaTime);
+
+				sceneContainer.gHandler.gSwapChain->Present(0, 0);
+
+				timer.updateCurrentTime();
+
+				
+			}
+
 		}
-
-		// If there are no messages to handle, the application will continue by running a frame
-		else {
-
-			//----------------------------------------------------------------------------------------------------------------------------------//
-			// UPDATE
-			//----------------------------------------------------------------------------------------------------------------------------------//
-
-			float deltaTime = timer.getDeltaTime();
-
-			updateCharacter();
-
-			updateBuffers();
-
-			//----------------------------------------------------------------------------------------------------------------------------------//
-			// RENDER
-			//----------------------------------------------------------------------------------------------------------------------------------//
-
-			sceneContainer.renderCharacters();
-			sceneContainer.renderScene();
-
-			showFPS(windowHandle, deltaTime);
-
-			sceneContainer.gHandler.gSwapChain->Present(0, 0);
-
-			timer.updateCurrentTime();
-
-		}
-
+		break;
+	 
+		
+		
 	}
 
 	sceneContainer.releaseAll();
-
 	DestroyWindow(windowHandle);
 
 	return 0;

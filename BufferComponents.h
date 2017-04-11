@@ -53,6 +53,16 @@ public:
 
 	XMMATRIX transformMatrix;
 	XMMATRIX tWorldMatrix;
+	XMMATRIX projectionMatrix;
+	XMMATRIX viewMatrix;
+
+
+	
+
+	XMVECTOR eyePos;
+	XMVECTOR lookAt;
+	XMVECTOR up;
+
 
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
 	ID3D11Buffer* gPlayerTransformBuffer;
@@ -74,6 +84,13 @@ public:
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 
+private:
+
+
+
+	XMFLOAT3 eyePosF;
+	XMFLOAT3 lookAtF;
+	XMFLOAT3 upF;
 };
 
 #endif BUFFERCOMPONENTS_H
