@@ -21,6 +21,7 @@ public:
 	Camera camera;
 	XMVECTOR plane;
 
+
 	float cameraDistanceY;
 	float cameraDistanceZ;
 	float playerHeight;

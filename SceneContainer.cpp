@@ -199,3 +199,7 @@ void SceneContainer::renderCharacters()
 	character.resetWorldMatrix();
 	
 }
+
+
+
+

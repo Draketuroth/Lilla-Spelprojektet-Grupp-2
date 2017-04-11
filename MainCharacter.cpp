@@ -5,7 +5,7 @@ MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 6.0f;
-	cameraDistanceZ = 5.0f;
+	cameraDistanceZ = 3.0f;
 	playerHeight = 2.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
@@ -147,10 +147,10 @@ XMMATRIX MainCharacter::rotate()
 {
 	XMMATRIX R;
 	POINT p;
+
+	XMFLOAT3 characterPosition = getPos();
+	float angle;
 	GetCursorPos(&p);
-	XMFLOAT3 right = camera.GetRight();
-	XMFLOAT3 forward = camera.GetLook();
-	XMFLOAT3 up = camera.GetUp();
 
 	XMFLOAT3 currentRay;
 	
@@ -189,22 +189,13 @@ XMMATRIX MainCharacter::rotate()
 
 	if (MK_LBUTTON) {
 
-		//Where the mouse is, is where to character will face. How to solve?
-		//We have z(forward), x (right) and y (which is up). 
-		//The character will rotate around y.
-
 		float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x));
-		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y - camera.mLastMousePos.y));
-
-		R = XMMatrixRotationY(dx);
-
-		//-------What does this do?------------
-		/*XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-		XMStoreFloat3(&forward, XMVector3TransformNormal(XMLoadFloat3(&forward), R));*/
+		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y));
+		
+		angle = atan2(dx, dy) * (2 * PI);
+		R = XMMatrixRotationY(angle);
 	}
 
-	//The mouse position is the new Point?
 	camera.mLastMousePos.x = p.x;
 	camera.mLastMousePos.y = p.y;
 	//cout << camera.mLastMousePos.x << " " << camera.mLastMousePos.y << endl;
