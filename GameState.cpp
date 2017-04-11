@@ -60,9 +60,7 @@ void GameState::createBufferData(ID3D11Device* gDevice)
 void GameState::releaseAll()
 {
 	SAFE_RELEASE(this->gMenuConstant);
-	SAFE_RELEASE(this->menuDepthState);
-	SAFE_RELEASE(this->menuDepthStencil);
-	SAFE_RELEASE(this->menuDepthView);
+	SAFE_RELEASE(this->gMenuVertexBuffer);
 }
 void GameState::renderMainMenu(SceneContainer scene)
 {
