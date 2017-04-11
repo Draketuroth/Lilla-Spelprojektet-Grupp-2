@@ -19,6 +19,7 @@ public:
 	XMMATRIX rotate();
 	
 	Camera camera;
+	XMVECTOR plane;
 
 	float cameraDistanceY;
 	float cameraDistanceZ;
@@ -31,7 +32,7 @@ public:
 	XMFLOAT3 newCameraPos;
 	XMVECTOR directionVec;
 	XMFLOAT3 floatPos;
-
+	XMVECTOR getPlane();
 	
 };
 
