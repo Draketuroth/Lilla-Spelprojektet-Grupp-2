@@ -40,11 +40,16 @@ Camera::Camera() {
 	SetLens(fov, aspectRatio, nearPlane, farPlane);
 
 	viewProj = viewMatrix * projectionMatrix;
+	projDet = XMMatrixDeterminant(projectionMatrix);
+
+	ProjInv = XMMatrixInverse(&projDet, projectionMatrix);
+	viewDet = XMMatrixDeterminant(viewMatrix);
+	ViewInv = XMMatrixInverse(&viewDet, viewMatrix);
 	detViewProj = XMMatrixDeterminant(viewProj);
 	InvViewPoj = XMMatrixInverse(&detViewProj, viewProj);
 	
 
-	Pitch(45);
+	Pitch(70);
 }
 
 Camera::~Camera() {

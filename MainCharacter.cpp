@@ -166,12 +166,19 @@ XMMATRIX MainCharacter::rotate()
 
 	XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 1.0f};
 	
-	
+	XMVECTOR mouseViewCoords = XMVector4Transform(clipcoords, camera.ProjInv);
+	XMFLOAT4 MVP;
 
-	XMVECTOR mouseWorldPos = XMVector4Transform(clipcoords, camera.InvViewPoj);
+	XMStoreFloat4(&MVP, mouseViewCoords);
+	XMFLOAT4 filter = { MVP.x, MVP.y, 1.f, 0 };
+	XMVECTOR mouseWorldPos = XMLoadFloat4(&filter);
+
+	mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
 	
-	XMFLOAT4 MWP; 
-	XMStoreFloat4(&MWP, mouseWorldPos);
+	
+	XMFLOAT4 holder; 
+	XMStoreFloat4(&holder, mouseWorldPos);
+	XMFLOAT3 MWP = { holder.x, holder.y, holder.z };
 	float MWPLength = sqrt(MWP.x*MWP.x + MWP.y*MWP.y + MWP.z*MWP.z);
 	XMFLOAT4 normalizedMWP;
 	normalizedMWP.x = MWP.x / MWPLength; 
