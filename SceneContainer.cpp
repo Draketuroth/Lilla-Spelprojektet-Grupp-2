@@ -143,7 +143,6 @@ void SceneContainer::clear()
 
 void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 
-	// Don't forget to turn of the z-buffer
 	ID3D11DepthStencilView* nullDepthView = { nullptr };
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
@@ -172,11 +171,32 @@ bool SceneContainer::renderDeferred() {
 		return false;
 	}
 
-	// Step 2: 
+	// Step 2: Unbinding
 
-	//lightShaders.SetShaderParameters(gHandler.gDeviceContext, 
-									 //deferredObject.d_shaderResourceViewArray[0],
-									 //deferredObject.d_shaderResourceViewArray[1],
+	//gHandler.gDeviceContext->ClearState();
+
+	ID3D11GeometryShader* nullShader = { nullptr };
+	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
+
+	ID3D11RenderTargetView* nullRenderTargets = { nullptr };
+	ID3D11DepthStencilView* nullDepthStencilView = { nullptr };
+	gHandler.gDeviceContext->OMSetRenderTargets(1, &nullRenderTargets, nullDepthStencilView);
+
+	ID3D11ShaderResourceView* nullShaderResourceView = { nullptr };
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
+
+	// Step 3: Switch back to backbuffer as render target
+	// Turn the render target back to the original back buffer and not the render buffers anymore
+	// Turns off the z-buffer for 2D rendering
+	resetRenderTarget(gHandler);
+
+	// Step 4: 2D render
+
+	XMFLOAT3 lightDirection = { 8.0f, 20.0f, 5.0f };
+	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
+									deferredObject.d_shaderResourceViewArray[0],
+									deferredObject.d_shaderResourceViewArray[1],
+									lightDirection);
 									
 	lightShaders.Render(gHandler.gDeviceContext, deferredObject.ImportStruct.size());
 
@@ -197,14 +217,10 @@ bool SceneContainer::renderSceneToTexture() {
 	// Render the object using the deferred shader
 	int indexCounter = deferredObject.ImportStruct.size();
 
+	// Don't forget to set the constant buffer to the geometry shader
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	
 	deferredShaders.Render(gHandler.gDeviceContext, tHandler.texSampler, tHandler.standardResource, indexCounter);
-
-	// Turn the render target back to the original back buffer and not the render buffers anymore
-	resetRenderTarget(gHandler);
-
-	// Reset the viewport
 
 	return true;
 	
