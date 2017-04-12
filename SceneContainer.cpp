@@ -143,6 +143,7 @@ void SceneContainer::clear()
 
 void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 
+	// Don't forget to turn of the z-buffer
 	ID3D11DepthStencilView* nullDepthView = { nullptr };
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
@@ -170,6 +171,14 @@ bool SceneContainer::renderDeferred() {
 
 		return false;
 	}
+
+	// Step 2: 
+
+	//lightShaders.SetShaderParameters(gHandler.gDeviceContext, 
+									 //deferredObject.d_shaderResourceViewArray[0],
+									 //deferredObject.d_shaderResourceViewArray[1],
+									
+	lightShaders.Render(gHandler.gDeviceContext, deferredObject.ImportStruct.size());
 
 	return true;
 }
