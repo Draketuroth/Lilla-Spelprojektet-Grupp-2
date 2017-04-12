@@ -31,7 +31,7 @@ Timer timer;
 // FORWARD DECLARATIONS
 //----------------------------------------------------------------------------------------------------------------------------------//
 int RunApplication();
-void updateCharacter();
+void updateCharacter(HWND windowhandle);
 void updateBuffers();
 
 int main() {
@@ -95,7 +95,8 @@ int RunApplication()
 
 
 
-				updateCharacter();
+				updateCharacter(windowHandle);
+
 
 				updateBuffers();
 
@@ -128,10 +129,10 @@ int RunApplication()
 	return 0;
 }
 
-void updateCharacter() {
+void updateCharacter(HWND windowhandle) {
 
-	sceneContainer.character.update();
-
+	sceneContainer.character.update(windowhandle);
+	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 }
 

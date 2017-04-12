@@ -114,6 +114,9 @@
     <ClCompile Include="LightShaderClass.cpp">
       <Filter>Source Files\Deferred Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="BasicMath.cpp">
+      <Filter>Source Files\Global</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BufferComponents.h">
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="LightShaderClass.h">
       <Filter>Header Files\Deferred Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMath.h">
+      <Filter>Header Files\Global</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

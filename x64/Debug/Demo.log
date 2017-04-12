@@ -1,9 +1,2 @@
-﻿  BufferComponents.cpp
-  Camera.cpp
-  CharacterBase.cpp
-  GraphicComponents.cpp
-  MainCharacter.cpp
-  SceneContainer.cpp
-  Window.cpp
-  main.cpp
+﻿  MainCharacter.cpp
   Demo.vcxproj -> D:\Lilla spel\x64\Debug\Scene.exe

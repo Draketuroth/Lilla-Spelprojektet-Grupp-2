@@ -1,5 +1,6 @@
 #include "MainCharacter.h"
 #include "MacroDefinitions.h"
+#include"Window.h"
 
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
@@ -22,13 +23,13 @@ MainCharacter::~MainCharacter()
 {
 }
 
-void MainCharacter::update()
+void MainCharacter::update(HWND windowhandle)
 {
-	CharacterMove();
+	CharacterMove(windowhandle);
 }
 
 //--------- Changing the character's position --------------
-void MainCharacter::CharacterMove()
+void MainCharacter::CharacterMove(HWND windowhandle)
 {
 
 	float time = timer.getDeltaTime();
@@ -37,7 +38,7 @@ void MainCharacter::CharacterMove()
 	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
 	XMFLOAT3 oldpos = this->getPos();
 
-	XMMATRIX R = rotate();
+	XMMATRIX R = rotate(windowhandle);
 	updateWorldMatrix(oldpos, R);
 
 	if(CheckInput(direction) == false){
@@ -143,48 +144,45 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 }
 
 //Rotate character
-XMMATRIX MainCharacter::rotate()
+XMMATRIX MainCharacter::rotate(HWND windowhandle)
 {
+	basicMath math;
 	XMMATRIX R;
 	POINT p;
+	const float RayRange = 600;
 
 	XMFLOAT3 characterPosition = getPos();
 	float angle;
 	GetCursorPos(&p);
-
-	XMFLOAT3 currentRay;
-	
-	//float mouseX = camera.mLastMousePos.x;
-	//float mouseY = camera.mLastMousePos.y;
+	ScreenToClient(windowhandle, &p);
 
 	float mouseX = p.x;
 	float mouseY = p.y;
 
+	
+
 	float mouseXNDC = (2 * mouseX) / WIDTH - 1;
 	float mouseYNDC = (2 * mouseY) / HEIGHT - 1;
-	mouseYNDC = (mouseYNDC*-1);
+	mouseYNDC *= -1;
 
-	XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 1.0f};
+	XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 0.0f};
 	
 	XMVECTOR mouseViewCoords = XMVector4Transform(clipcoords, camera.ProjInv);
-	XMFLOAT4 MVP;
 
+
+	XMFLOAT4 MVP;
 	XMStoreFloat4(&MVP, mouseViewCoords);
 	XMFLOAT4 filter = { MVP.x, MVP.y, 1.f, 0 };
 	XMVECTOR mouseWorldPos = XMLoadFloat4(&filter);
-
+	cout << filter.x << " " << filter.y << " " << filter.z << endl;
 	mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
 	
 	
 	XMFLOAT4 holder; 
 	XMStoreFloat4(&holder, mouseWorldPos);
 	XMFLOAT3 MWP = { holder.x, holder.y, holder.z };
-	float MWPLength = sqrt(MWP.x*MWP.x + MWP.y*MWP.y + MWP.z*MWP.z);
-	XMFLOAT4 normalizedMWP;
-	normalizedMWP.x = MWP.x / MWPLength; 
-	normalizedMWP.y = MWP.y / MWPLength;
-	normalizedMWP.z = MWP.z / MWPLength;
-	cout << normalizedMWP.x << " " << normalizedMWP.y << " " << normalizedMWP.z << endl;
+	MWP = math.Normalize(MWP);
+	//cout << MWP.x << " " << MWP.y << " " << MWP.z << endl;
 	
 
 	if (MK_LBUTTON) {
@@ -196,9 +194,12 @@ XMMATRIX MainCharacter::rotate()
 		R = XMMatrixRotationY(angle);
 	}
 
-	camera.mLastMousePos.x = p.x;
-	camera.mLastMousePos.y = p.y;
-	//cout << camera.mLastMousePos.x << " " << camera.mLastMousePos.y << endl;
+
+	
+	bool PlaneHit = IntersectionInRange(MWP);
+	//cout << PlaneHit << endl;
+
+	
 
 	return R;
 }
@@ -210,4 +211,49 @@ XMVECTOR MainCharacter::getPlane()
 
 	return XMPlaneFromPointNormal(point, normal);
 }
+XMFLOAT3 MainCharacter::getPointOnRay(XMFLOAT3 ray, float distance)
+{
+	
+	XMFLOAT3 scaledRay = { ray.x * distance, ray.y * distance, ray.z * distance };
+
+	return scaledRay;
+}
+bool MainCharacter::IntersectionInRange(XMFLOAT3 MousePos)
+{
+	basicMath math;
+	XMFLOAT3 normal = { 0,1,0 };
+	XMFLOAT3 camPos = camera.GetPosition();
+	XMFLOAT3 rayDirection;
+	XMFLOAT3 point = { 0,0,0 };
+	float T;
+
+	XMVECTOR vecCamPos = XMLoadFloat3(&camPos);
+	XMVECTOR vecMousePos = XMLoadFloat3(&MousePos);
+	XMVECTOR vecRayDirection = vecMousePos - vecCamPos;
+	
+	XMStoreFloat3(&rayDirection, vecRayDirection);
+	rayDirection = math.Normalize(rayDirection);
+
+	// a point in the plane dotted with the plane normal
+	float dp = math.dot(normal, point);
+	dp *= -1;
+
+	T = (dp - math.dot(normal,camPos)) / math.dot(normal,rayDirection);
+ 	if (T < 0)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+
+	
+	float denominator = math.dot(normal, MousePos);
+	
+	
+
+	return false;
+}
+
 
