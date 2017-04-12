@@ -4,8 +4,8 @@
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
 {
-	cameraDistanceY = 6.0f;
-	cameraDistanceZ = 3.0f;
+	cameraDistanceY = 40.0f;
+	cameraDistanceZ = 20.0f;
 	playerHeight = 2.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);

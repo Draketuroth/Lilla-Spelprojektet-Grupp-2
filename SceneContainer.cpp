@@ -141,22 +141,59 @@ void SceneContainer::clear()
 	gHandler.gDeviceContext->ClearDepthStencilView(gHandler.depthView, D3D11_CLEAR_DEPTH, 1.0f, 0);	// Clear the depth stencil view
 }
 
+void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
+
+	ID3D11DepthStencilView* nullDepthView = { nullptr };
+	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
+}
+
+void SceneContainer::render() {
+
+	//we clear in here since characters are rendered before the scene
+	//Characters need to be rendered first since they will be moving
+	clear();
+
+	renderDeferred();
+
+	//renderCharacters();
+	//renderScene();
+}
+
+bool SceneContainer::renderDeferred() {
+
+	bool result;
+
+	// Step 1: Render the scene to the render buffers
+	result = renderSceneToTexture();
+
+	if (!result) {
+
+		return false;
+	}
+
+	return true;
+}
+
 bool SceneContainer::renderSceneToTexture() {
 
 	// Set the render buffers to be the render target
 	deferredObject.SetRenderTargets(gHandler.gDeviceContext);
 
 	// Clear the render buffers
-	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
+	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 1.0f, 1.0f);
 
 	// Set the object vertex buffer to prepare it for drawing
 	deferredObject.SetObjectBuffer(gHandler.gDeviceContext);
 
 	// Render the object using the deferred shader
 	int indexCounter = deferredObject.ImportStruct.size();
-	deferredShaders.Render(gHandler.gDeviceContext, tHandler.standardResource, indexCounter);
+
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	
+	deferredShaders.Render(gHandler.gDeviceContext, tHandler.texSampler, tHandler.standardResource, indexCounter);
 
 	// Turn the render target back to the original back buffer and not the render buffers anymore
+	resetRenderTarget(gHandler);
 
 	// Reset the viewport
 
@@ -171,10 +208,6 @@ void SceneContainer::renderScene() {
 
 void SceneContainer::renderCharacters()
 {
-
-	//we clear in here since characters are rendered before the scene
-	//Characters need to be rendered first since they will be moving
-	clear();
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
