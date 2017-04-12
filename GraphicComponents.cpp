@@ -563,9 +563,118 @@ bool GraphicComponents::CreateLavaShaders()
 	HRESULT hr; 
 
 	ID3DBlob* vsBlob = nullptr; 
-	ID3DBlob* vsBlob = nullptr; 
+	ID3DBlob* vsErrorBlob = nullptr; 
 
 	hr = D3DCompileFromFile(
-		L"
+		L"Shaders\\LavaShaders\\LavaVertex.hlsl",
+		nullptr, 
+		nullptr, 
+		"VS_main", 
+		"vs_5_0", 
+		D3DCOMPILE_DEBUG,
+		0, 
+		&vsBlob, 
+		&vsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+		cout << "Vertex shader Lava Error: Vertex shader could not be compiled or loaded from file" << endl;
+
+		if (vsErrorBlob) {
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer()); 
+			vsErrorBlob->Release(); 
+		}
+
+		return false; 
+	}
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gLavaVertexShader); 
+
+	if (FAILED(hr)) {
+		cout << "Vertex Shader Lava Error: Vertex Shader could not be created" << endl; 
+		return false; 
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vetrexInputDesc[] = {
+		{"POSITION0", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+
+	int inputLayoutSize = sizeof(vetrexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	gDevice->CreateInputLayout(vetrexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gLavaVertexLayout); 
+
+	if (FAILED(hr)) {
+		cout << "Vertex Shader Lava Error: Shader Input Layout could not be created" << endl; 
+	}
+
+	vsBlob->Release(); 
+
+	ID3DBlob* psBlob = nullptr; 
+	ID3DBlob* psErrorBlob = nullptr; 
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\LavaShaders\\LavaGeometry.hlsl",
+		nullptr,
+		nullptr,
+		"PS_main",
+		"ps_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&psBlob,
+		&psErrorBlob
 	); 
+
+	if (FAILED(hr)) {
+		cout << "Fragment shader Lava Error: Fragment Shader could not be compiled or loaded from file" << endl; 
+
+		if (psErrorBlob)
+		{
+			OutputDebugStringA((char*)psErrorBlob->GetBufferPointer()); 
+			psErrorBlob->Release();
+		}
+
+		return false; 
+	}
+
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gLavaPixelShader); 
+
+	if (FAILED(hr)) {
+		cout << "Pixel Shader Lava Error: Pixel Shader could not be created" << endl; 
+		return false; 
+	}
+
+	psBlob->Release(); 
+
+	ID3DBlob* gsBlob = nullptr; 
+	ID3DBlob* gsErrorBlob = nullptr; 
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\LavaShaders\\LavaGeometry.hlsl",
+		nullptr,
+		nullptr,
+		"GS_main",
+		"gs_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&gsBlob,
+		&gsErrorBlob
+	); 
+
+	if (FAILED(hr))
+	{
+		cout << "Geometry Shader Lava Error: Geometry Shader could not be be created" << endl; 
+		return false; 
+	}
+
+	hr = gDevice->CreateGeometryShader(gsBlob->GetBufferPointer(), gsBlob->GetBufferSize(), nullptr, &gLavaGeometryShader); 
+
+	if (FAILED(hr)) {
+		cout << "Geometry Shader Lava Error: Geometry Shader could not be created" << endl; 
+		return false; 
+	}
+
+	gsBlob->Release(); 
+
+	return true; 
+
+
 }

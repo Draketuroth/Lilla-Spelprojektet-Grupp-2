@@ -211,13 +211,13 @@
     <FxCompile Include="Shaders\LightShaders\LightVS.hlsl">
       <Filter>Source Files\HLSL\LightShaders</Filter>
     </FxCompile>
-    <FxCompile Include="LavaVertex.hlsl">
+    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
-    <FxCompile Include="LavaGeometry.hlsl">
+    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
-    <FxCompile Include="LavaFragment.hlsl">
+    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
   </ItemGroup>
