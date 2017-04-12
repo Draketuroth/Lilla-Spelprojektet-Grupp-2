@@ -661,8 +661,12 @@ bool GraphicComponents::CreateLavaShaders()
 
 	if (FAILED(hr))
 	{
-		cout << "Geometry Shader Lava Error: Geometry Shader could not be be created" << endl; 
-		return false; 
+		cout << "Geometry Shader Lava Error: Geometry Shader could not be compiled or loaded from file" << endl;
+		if (gsErrorBlob) {
+			OutputDebugStringA((char*)gsBlob->GetBufferPointer()); 
+			gsErrorBlob->Release();
+		}
+
 	}
 
 	hr = gDevice->CreateGeometryShader(gsBlob->GetBufferPointer(), gsBlob->GetBufferSize(), nullptr, &gLavaGeometryShader); 

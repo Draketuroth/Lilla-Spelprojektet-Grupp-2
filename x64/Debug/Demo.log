@@ -1,3 +1,2 @@
-﻿  failed to open file: C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\LavaFragment.hlsl
-  compilation failed; no code produced
-C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(1252,5): error MSB6006: "fxc.exe" exited with code 1.
+﻿  SceneContainer.cpp
+  Demo.vcxproj -> C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe
