@@ -23,6 +23,8 @@ struct PS_IN
 float4 PS_main(PS_IN input) : SV_Target
 {
 
+	return float4(0.6f, 0.57f, 0.23f, 1.0f);
+
 	float3 lightSource = float3(0.0f, 20.0f, 20.0f);	// Light source in the form of a point light
 	float3 lightVector;
 	float lightIntensity;

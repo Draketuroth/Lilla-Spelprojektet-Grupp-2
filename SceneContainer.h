@@ -45,6 +45,7 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
+	Lava lava; 
 
 	void drawPlatforms();
 	

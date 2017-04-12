@@ -100,7 +100,7 @@ void Lava::VBuffer(ID3D11Device* device)
 	HRESULT(device->CreateBuffer(&vbd, &vinitData, &LavaVB));
 }
 
-void Lava::IBBuffer(ID3D11Device* device)
+void Lava::IBuffer(ID3D11Device* device)
 {
 	HRESULT hr;
 	int k = 0;

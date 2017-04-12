@@ -566,7 +566,7 @@ bool GraphicComponents::CreateLavaShaders()
 	ID3DBlob* vsErrorBlob = nullptr; 
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\LavaShaders\\LavaVertex.hlsl",
+		L"Shaders\\LavaShaders\\VertexShaderLava.hlsl",
 		nullptr, 
 		nullptr, 
 		"VS_main", 
@@ -612,7 +612,7 @@ bool GraphicComponents::CreateLavaShaders()
 	ID3DBlob* psErrorBlob = nullptr; 
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\LavaShaders\\LavaGeometry.hlsl",
+		L"Shaders\\LavaShaders\\FragmentShaderLava.hlsl",
 		nullptr,
 		nullptr,
 		"PS_main",
@@ -648,7 +648,7 @@ bool GraphicComponents::CreateLavaShaders()
 	ID3DBlob* gsErrorBlob = nullptr; 
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\LavaShaders\\LavaGeometry.hlsl",
+		L"Shaders\\LavaShaders\\GeometryShaderLava.hlsl",
 		nullptr,
 		nullptr,
 		"GS_main",

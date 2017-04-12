@@ -19,7 +19,7 @@ using namespace std;
 class Lava
 {
 public:
-	struct Map
+	struct HMap
 	{
 		wstring	filename;  
 	};
@@ -31,7 +31,7 @@ public:
 	void LoadRawFile(); 
 
 	void VBuffer(ID3D11Device* device); 
-	void IBBuffer(ID3D11Device* device);
+	void IBuffer(ID3D11Device* device);
 
 	float GetWidth()const;
 	float GetDepth()const;
@@ -44,11 +44,12 @@ public:
 
 	vector<int> index;
 
+	unsigned int indexCounter = 0;
 private:
 	
-	Map map; 
+	HMap map; 
 	vector<float> heightMap;
-	unsigned int indexCounter = 0;
+	
 };
 
 

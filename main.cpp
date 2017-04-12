@@ -25,6 +25,8 @@ HWND windowHandle;
 //----------------------------------------------------------------------------------------------------------------------------------//
 SceneContainer sceneContainer;
 
+
+
 Timer timer;
 
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -33,6 +35,7 @@ Timer timer;
 int RunApplication();
 void updateCharacter();
 void updateBuffers();
+void updateLava();
 
 int main() {
 
@@ -42,6 +45,7 @@ int main() {
 
 	sceneContainer.initialize(windowHandle);
 
+	
 	return RunApplication();
 }
 
@@ -61,6 +65,7 @@ int RunApplication() {
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
+	updateLava(); 
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
@@ -91,6 +96,7 @@ int RunApplication() {
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
 			sceneContainer.renderCharacters();
+			sceneContainer.renderLava(); 
 			sceneContainer.renderScene();
 
 			showFPS(windowHandle, deltaTime);
@@ -104,7 +110,7 @@ int RunApplication() {
 	}
 
 	sceneContainer.releaseAll();
-
+	sceneContainer.lava.ReleaseAll();
 	DestroyWindow(windowHandle);
 
 	return 0;
@@ -115,6 +121,13 @@ void updateCharacter() {
 	sceneContainer.character.update();
 
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
+}
+
+void updateLava()
+{
+	sceneContainer.lava.LoadRawFile();
+	sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice);
+	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 
 void updateBuffers() {
