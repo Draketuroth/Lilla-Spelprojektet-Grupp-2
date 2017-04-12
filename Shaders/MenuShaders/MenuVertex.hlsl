@@ -1,8 +1,3 @@
-cbuffer VS_CONSTANT_BUFFER : register(b1)
-{
-	matrix menuWorld;
-}
-
 struct VS_IN
 {
 	float3 Pos : POSITION;
@@ -12,10 +7,9 @@ struct VS_OUT
 {
 	float4 Pos : SV_POSITION;
 	float2 Tex : TEXCOORD;
-
 };
 
-VS_OUT VS_main( VS_IN input)
+VS_OUT VS_main(VS_IN input)
 {
 	VS_OUT output = (VS_OUT)0;
 

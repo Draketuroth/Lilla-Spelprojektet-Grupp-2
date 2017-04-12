@@ -39,6 +39,10 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(depthView);
 	SAFE_RELEASE(depthState);
 
+	SAFE_RELEASE(gMenuLayout);
+	SAFE_RELEASE(gMenuVertex);
+	SAFE_RELEASE(gMenuPixel);
+
 }
 
 bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
@@ -67,6 +71,10 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 
 	if (!CreatePlatformShaders()) {
 
+		return false;
+	}
+	if (!CreateMenuShaders())
+	{
 		return false;
 	}
 
@@ -580,7 +588,7 @@ bool GraphicComponents::CreateMenuShaders()
 	}
 
 
-	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gVertexShader);
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gMenuVertex);
 
 	if (FAILED(hr)) {
 
@@ -595,7 +603,7 @@ bool GraphicComponents::CreateMenuShaders()
 	};
 
 	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
-	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gVertexLayout);
+	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gMenuLayout);
 
 	if (FAILED(hr)) {
 
@@ -634,7 +642,7 @@ bool GraphicComponents::CreateMenuShaders()
 		return false;
 	}
 
-	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gPixelShader);
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gMenuPixel);
 
 	if (FAILED(hr)) {
 

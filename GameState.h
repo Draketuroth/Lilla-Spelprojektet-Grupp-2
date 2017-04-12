@@ -19,7 +19,7 @@ struct VS_CONSTANT_BUFFER
 	int16_t pad2;		//15 bytes
 	char pad3;
 	//-------------------
-
+	XMMATRIX menuWorld;
 };
 struct RectangleData
 {
@@ -35,7 +35,8 @@ private:
 	
 	ID3D11Buffer* gMenuConstant;
 	ID3D11Buffer* gMenuVertexBuffer;
-
+	ID3D11Buffer* gMenuIndex;
+	XMFLOAT2 mousePos;
 	//ID3D11Texture2D* menuDepthStencil;
 	//ID3D11DepthStencilState* menuDepthState;
 	//ID3D11DepthStencilView* menuDepthView;
@@ -47,15 +48,16 @@ public:
 	~GameState();
 
 	int menuHandler(HWND windowHandle, SceneContainer scene);
-	int mainMenu(HWND windowHandle);
+	int mainMenu(HWND windowHandle, SceneContainer scene);
 	int pauseMenu(HWND windowHandle);
 	int gameOver(HWND windowHandle);
 
-	void createVertexBuffer(ID3D11Device* gDevice);
+	bool createIndexBuffer(ID3D11Device* gDevice);
+	bool createVertexBuffer(ID3D11Device* gDevice);
 	void createBufferData(ID3D11Device* gDevice);
 	//bool createMenuDepthStencil(ID3D11Device* gDevice);
 	void releaseAll();
-
+	void getMousePos();
 
 	void renderMainMenu(SceneContainer scene);
 	//void renderPauseMenu();

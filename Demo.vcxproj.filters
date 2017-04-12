@@ -211,10 +211,10 @@
     <FxCompile Include="Shaders\LightShaders\LightVS.hlsl">
       <Filter>Source Files\HLSL\LightShaders</Filter>
     </FxCompile>
-    <FxCompile Include="MenuVertex.hlsl">
+    <FxCompile Include="Shaders\MenuShaders\MenuVertex.hlsl">
       <Filter>Source Files\HLSL\MenuShaders</Filter>
     </FxCompile>
-    <FxCompile Include="MenuFragment.hlsl">
+    <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
       <Filter>Source Files\HLSL\MenuShaders</Filter>
     </FxCompile>
   </ItemGroup>

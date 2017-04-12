@@ -1,2 +1,15 @@
-﻿  main.cpp
+﻿  BufferComponents.cpp
+  Camera.cpp
+  CharacterBase.cpp
+  DeferredBuffersClass.cpp
+  DeferredShaderClass.cpp
+  GameState.cpp
+  GraphicComponents.cpp
+  LightShaderClass.cpp
+e:\litet spel\project\lilla-spelprojektet-grupp-2\deferredshaderclass.cpp(187): warning C4715: 'DeferredShaderClass::Render': not all control paths return a value
+  MainCharacter.cpp
+  SceneContainer.cpp
+  TextureComponents.cpp
+  Window.cpp
+  main.cpp
   Demo.vcxproj -> E:\Litet Spel\Project\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe

@@ -9,24 +9,42 @@ GameState::~GameState()
 }
 int GameState::menuHandler(HWND windowHandle, SceneContainer scene)
 {
-//	createBufferData(scene.gHandler.gDevice);
-	mainMenu(windowHandle);
+	createBufferData(scene.gHandler.gDevice);
+	createVertexBuffer(scene.gHandler.gDevice);
+	createIndexBuffer(scene.gHandler.gDevice);
+	mainMenu(windowHandle, scene);
 
 	return state;
 }
-int GameState::mainMenu(HWND windowHandle)
+int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 {
+
 	while (this->state == MAIN_MENU)
 	{
+		renderMainMenu(scene);
 		if (GetAsyncKeyState('T') & 0x8000)
 		{
 			this->state = START_GAME;
+		}
+		if (GetAsyncKeyState(VK_LBUTTON) & VK_LBUTTON)
+		{
+			getMousePos();
+			cout << "MousePos X: " << this->mousePos.x << endl;
+			if (this->mousePos.x <= 0.3f && this->mousePos.x >= -0.3f && this->mousePos.y <= 0.7f && this->mousePos.y >= 0.4f)
+			{
+				cout << "Position X: " << this->mousePos.x << endl << "Position Y: " << this->mousePos.y << endl;
+				//this->state = START_GAME;
+			}
 		}
 	}
 	return state;
 }
 int GameState::pauseMenu(HWND windowHandle)
 {
+	while (this->state == PAUSE_MENU)
+	{
+
+	}
 
 	return state;
 }
@@ -42,8 +60,11 @@ void GameState::createBufferData(ID3D11Device* gDevice)
 	XMFLOAT4 bgColor = { 0.6f, 0.4f, 0.2f, 1.0f };
 	XMFLOAT4 rectColor = { 0.31f, 0.64f, 0.15f, 1.0f };
 
-
 	VS_CONSTANT_BUFFER menuConstant;
+
+	menuConstant.backGroundColor = bgColor;
+	menuConstant.rectangleColor = rectColor;
+	menuConstant.menuWorld = XMMatrixIdentity();
 
 	// The buffer description is filled in below, mainly so the graphic card understand the structure of it
 
@@ -75,41 +96,108 @@ void GameState::releaseAll()
 }
 void GameState::renderMainMenu(SceneContainer scene)
 {
+	scene.clear();
+
 	scene.gHandler.gDeviceContext->VSSetShader(scene.gHandler.gMenuVertex, nullptr, 0);
 	scene.gHandler.gDeviceContext->PSSetShader(scene.gHandler.gMenuPixel, nullptr, 0);
+	scene.gHandler.gDeviceContext->PSSetShaderResources(0, 0, nullptr);
+	scene.gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &this->gMenuConstant);
 	scene.gHandler.gDeviceContext->GSSetShader(nullptr, nullptr, 0);
 
 	UINT32 vertexsize = sizeof(RectangleData);
 	UINT32 offset = 0;
-
-	scene.gHandler.gDeviceContext->PSSetShaderResources(0, 0, nullptr);
-	scene.gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	scene.gHandler.gDeviceContext->IASetIndexBuffer(this->gMenuIndex, DXGI_FORMAT_R32_UINT, 0);
 	scene.gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &this->gMenuVertexBuffer, &vertexsize, &offset);
 
-	scene.gHandler.gDeviceContext->Draw(6, 0);
+	scene.gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	scene.gHandler.gDeviceContext->IASetInputLayout(scene.gHandler.gMenuLayout);
+
+	scene.gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
+	//Don't forget the swapchain, måste ha för att byta mellan det som ritas och det som visas
+	scene.gHandler.gSwapChain->Present(0, 0);
 }
-void GameState::createVertexBuffer(ID3D11Device* gDevice)
+bool GameState::createVertexBuffer(ID3D11Device* gDevice)
 {
-	RectangleData quad[6]
+	RectangleData quad[4]
 	{
-		-0.8f, 0.7f, 0.0f,//Top left pos
+		-0.3f, 0.7f, 0.0f,//Top left pos
 		0.0f, 0.0f,//top left uv
 
-		-0.8f, -0.7f, 0.0f,//Bot left pos
+		-0.3f, 0.4f, 0.0f,//Bot left pos
 		0.0f, 1.0f,//Bot left uv
 
-		0.8f, 0.7f, 0.0f,//Top right pos
+		0.3f, 0.7f, 0.0f,//Top right pos
 		1.0f, 0.0f,//Top right uv
 
-		0.8f, -0.7f, 0.0f,//Bot right pos
-		1.0f, 1.0f,
-
-		-0.8f, -0.7f, 0.0f,//Bot left2 pos
-		0.0f, 1.0f,//Bot left2 uv
-
-		0.8f, 0.7f, 0.0f,//Top right2 pos
-		1.0f, 0.0f//Top right2 uv
+		0.3f, 0.4f, 0.0f,//Bot right pos
+		1.0f, 1.0f
 	};
+	HRESULT hr;
+
+	D3D11_BUFFER_DESC bufferDesc;
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(quad);
+
+	D3D11_SUBRESOURCE_DATA data;
+	data.pSysMem = quad;
+	hr = gDevice->CreateBuffer(&bufferDesc, &data, &this->gMenuVertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+bool GameState::createIndexBuffer(ID3D11Device* gDevice)
+{
+	HRESULT hr;
+
+	unsigned int indices[6] =
+	{
+		1, 0, 2, 1, 2, 3
+	};
+
+	// Create the buffer description
+	D3D11_BUFFER_DESC bufferDesc;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(unsigned int) * 6;
+	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+
+	// Set the subresource data
+
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = indices;
+	initData.SysMemPitch = 0;
+	initData.SysMemSlicePitch = 0;
+
+	// Create the buffer
+
+	hr = gDevice->CreateBuffer(&bufferDesc, &initData, &gMenuIndex);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+
+
+	return true;
+}
+void GameState::getMousePos()
+{
+	POINT p;
+	GetCursorPos(&p);
+	this->mousePos.x = p.x;
+	this->mousePos.y = p.y;
+
+	//this->mousePos.x = (2 * mousePos.x) / WIDTH - 1;
+	//this->mousePos.y = (2 * mousePos.y) / HEIGHT - 1;
+	//this->mousePos.y *= -1;
 }
 //bool GameState::createMenuDepthStencil(ID3D11Device* gDevice)
 //{
