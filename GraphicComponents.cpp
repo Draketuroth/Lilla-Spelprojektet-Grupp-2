@@ -12,6 +12,11 @@ GraphicComponents::GraphicComponents() {
 	gVertexShader = nullptr;
 	gPixelShader = nullptr;
 	gGeometryShader = nullptr;
+
+	gLavaVertexLayout = nullptr; 
+	gLavaVertexShader = nullptr; 
+	gLavaPixelShader = nullptr; 
+	gLavaGeometryShader = nullptr; 
 }
 
 GraphicComponents::~GraphicComponents() {
@@ -38,6 +43,11 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(depthStencil);
 	SAFE_RELEASE(depthView);
 	SAFE_RELEASE(depthState);
+
+	SAFE_RELEASE(gLavaVertexLayout); 
+	SAFE_RELEASE(gLavaVertexShader); 
+	SAFE_RELEASE(gLavaPixelShader); 
+	SAFE_RELEASE(gLavaGeometryShader); 
 
 }
 
@@ -546,4 +556,16 @@ bool GraphicComponents::CreatePlatformShaders() {
 	gsBlob->Release();
 
 	return true;
+}
+
+bool GraphicComponents::CreateLavaShaders()
+{
+	HRESULT hr; 
+
+	ID3DBlob* vsBlob = nullptr; 
+	ID3DBlob* vsBlob = nullptr; 
+
+	hr = D3DCompileFromFile(
+		L"
+	); 
 }

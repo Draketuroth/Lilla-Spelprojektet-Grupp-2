@@ -13,6 +13,7 @@
 #define LAVAWIDTH 100 
 #define LAVAMAXHEIGHT 10
 #define LAVAQUADSIZE 1
+
 using namespace std; 
 
 class Lava

@@ -1,18 +1,29 @@
+//----------------------------------------------------------------------------------------------------------------------------------//
+// Terrain Fragment Shader DirectX11
+//
+// Linnea Vajda TA15
+//----------------------------------------------------------------------------------------------------------------------------------//
+
 SamplerState texSampler: register(s0);
 Texture2D tex0 : register(t0);
 
-struct PS_OUT
+
+struct PS_IN
 {
-	float3 Pos : POSITION;
+	float3 Norm: NORMAL;
 	float2 Tex : TEXCOORD;
-	float3 Norm : NORMAL;
-	float3 WPos : WPOSITION;
+	float4 Pos : SV_POSITION;
+	float3 WPos : POSITION;
+	float3 ViewPos : POSITION1;
+	
 };
+
 
 // The transformed geometry from the geometry shader is now mapped onto the active Render Target, which will be our back buffer
 float4 PS_main(PS_IN input) : SV_Target
 {
-	float3 lightSource = float3(0.0f, 20.0f, -20.0f);	// Light source in the form of a point light
+
+	float3 lightSource = float3(0.0f, 20.0f, 20.0f);	// Light source in the form of a point light
 	float3 lightVector;
 	float lightIntensity;
 	float3 diffuseLight;
@@ -26,7 +37,7 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	float3 Ld = float3(0.6f, 0.6f, 0.6f);	// Ld represents the light source intensity
 	float3 Ka = float3(0.2f, 0.2f, 0.2f);		// Ka is the hardcoded ambient light
-	float3 Ks = float3(1.0f, 1.0f, 1.0f);	// Ks is the hardcoded specular light
+	float3 Ks = float3(0.0f, 0.0f, 0.0f);	// Ks is the hardcoded specular light
 	float3 Kd = float3(1.0f, 1.0f, 1.0f);	// Kd represents the diffuse reflectivity cofficient
 	float3 ads;
 
@@ -35,17 +46,17 @@ float4 PS_main(PS_IN input) : SV_Target
 	float3 v = normalize(input.ViewPos).xyz;	// The v component represents the viewer position in world coordinates
 	float3 r = reflect(-s.xyz, n);	// The r component represent the reflection of the light direction vector with the the normal n
 
+
 	diffuseLight = Kd * max(dot(s, n), 0.0f);
 
 	specularLight = Ks * pow(max(dot(r, v), 0.0f), shinyPower);
 
 	ads = Ld * (Ka + diffuseLight + specularLight);
-
-	// Now the Sample state will sample the color output from the texture file so that we can return the correct color
-
+	
 	texColor = tex0.Sample(texSampler, input.Tex).xyz;
 
 	color = float4(texColor, 1.0f);
 
 	return color;
 };
+

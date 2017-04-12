@@ -1,4 +1,7 @@
-﻿  Lava.cpp
-c:\users\test\source\repos\lilla-spelprojektet-grupp-2\Lava.h(13): warning C4005: 'WIDTH': macro redefinition
-  c:\users\test\source\repos\lilla-spelprojektet-grupp-2\MacroDefinitions.h(5): note: see previous definition of 'WIDTH'
-  Demo.vcxproj -> C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe
+﻿C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\LavaGeometry.hlsl(55,3-65): warning X3206: implicit truncation of vector type
+C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\LavaGeometry.hlsl(59,3-56): warning X3206: implicit truncation of vector type
+C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\LavaGeometry.hlsl(63,20-44): warning X3206: implicit truncation of vector type
+C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\LavaGeometry.hlsl(23,14-23): warning X4711: Duplicate non-system value semantic definition: input semantic 'POSITION' and input semantic 'POSITION'
+C:\Users\test\Source\Repos\Lilla-Spelprojektet-Grupp-2\LavaGeometry.hlsl(23,14-23): error X4503: output POSITION0 used more than once
+  
+  compilation failed; no code produced
