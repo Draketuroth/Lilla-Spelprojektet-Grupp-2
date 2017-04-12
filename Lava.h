@@ -45,7 +45,7 @@ public:
 	vector<int> index;
 
 private:
-	Timer lavaTime;
+	
 	Map map; 
 	vector<float> heightMap;
 	unsigned int indexCounter = 0;

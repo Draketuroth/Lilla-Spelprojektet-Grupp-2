@@ -19,9 +19,9 @@
 #include "GraphicComponents.h"
 #include "BufferComponents.h"
 #include "TextureComponents.h"
-#include "Lava.h"
-#include "MainCharacter.h"
 
+#include "MainCharacter.h"
+#include "Lava.h"
 class SceneContainer {
 
 private:
@@ -45,9 +45,6 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
-
-	Lava lava; 
-	
 
 	void drawPlatforms();
 	
