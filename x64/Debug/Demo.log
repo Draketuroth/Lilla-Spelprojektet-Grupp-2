@@ -1,18 +1,2 @@
-﻿  compilation object save succeeded; see D:\Lilla spel\x64\Debug\LightVS.cso
-  compilation object save succeeded; see D:\Lilla spel\x64\Debug\MenuFragment.cso
-  compilation object save succeeded; see D:\Lilla spel\x64\Debug\MenuVertex.cso
-  BasicMath.cpp
-  BufferComponents.cpp
-  Camera.cpp
-  CharacterBase.cpp
-  DeferredBuffersClass.cpp
-  DeferredShaderClass.cpp
-  GameState.cpp
-  GraphicComponents.cpp
-  LightShaderClass.cpp
-  main.cpp
-  MainCharacter.cpp
-  SceneContainer.cpp
-  TextureComponents.cpp
-  Window.cpp
+﻿  MainCharacter.cpp
   Demo.vcxproj -> D:\Lilla spel\x64\Debug\Scene.exe

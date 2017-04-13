@@ -134,9 +134,9 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 	XMFLOAT4 MVP;
 	XMStoreFloat4(&MVP, mouseViewCoords);
-	XMFLOAT4 filter = { MVP.x, MVP.y, 1.f, 0 };
+	XMFLOAT4 filter = { MVP.x, MVP.y, 1.0f, 1.0f };
 	XMVECTOR mouseWorldPos = XMLoadFloat4(&filter);
-	//cout << filter.x << " " << filter.y << " " << filter.z << endl;
+	cout << filter.x << " " << filter.y << " " << filter.z << endl;
 	mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
 	
 	
@@ -159,7 +159,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 	
 	bool PlaneHit = IntersectionInRange(MWP);
-	cout << PlaneHit << endl;
+	//cout << PlaneHit << endl;
 
 	
 
