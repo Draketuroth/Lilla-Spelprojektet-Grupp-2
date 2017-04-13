@@ -94,12 +94,10 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	if (GetAsyncKeyState('S'))
 	{
 		direction.z = -1.0;
-		//negativePosVec = true;
 	}
 	if (GetAsyncKeyState('A'))
 	{
 		direction.x = -1.0;
-		//negativePosVec = true;
 	}
 	if (GetAsyncKeyState('D'))
 	{
@@ -128,42 +126,11 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 	float mouseXNDC = (2 * mouseX) / WIDTH - 1;
 	float mouseYNDC = (2 * mouseY) / HEIGHT - 1;
 	mouseYNDC *= -1;
-	//cout << mouseXNDC << " " << mouseYNDC << endl;
-
-	XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 0.0f};    
+	cout << mouseXNDC << " " << mouseYNDC << endl;
 	
-	XMVECTOR mouseViewCoords = XMVector4Transform(clipcoords, camera.ProjInv);
-
-
-	XMFLOAT4 MVP;
-	XMStoreFloat4(&MVP, mouseViewCoords);
-	XMFLOAT4 filter = { MVP.x, MVP.y, 1.0f, 1.0f };
-	XMVECTOR mouseWorldPos = XMLoadFloat4(&filter);
-	cout << filter.x << " " << filter.y << " " << filter.z << endl;
-	mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
+	angle = atan2(mouseXNDC, mouseYNDC);
+	R = XMMatrixRotationY(angle);
 	
-	
-	XMFLOAT4 holder; 
-	XMStoreFloat4(&holder, mouseWorldPos);
-	XMFLOAT3 MWP = { holder.x, holder.y, holder.z };
-	MWP = math.Normalize(MWP);
-	//cout << MWP.x << " " << MWP.y << " " << MWP.z << endl;
-	
-
-	if (MK_LBUTTON) {
-
-		float dx = XMConvertToRadians(0.25f * static_cast<float>(p.x));
-		float dy = XMConvertToRadians(0.25f * static_cast<float>(p.y));
-		
-		angle = atan2(dx, dy) * (2 * PI);
-		R = XMMatrixRotationY(angle);
-	}
-
-
-	
-	bool PlaneHit = IntersectionInRange(MWP);
-	//cout << PlaneHit << endl;
-
 	
 
 	return R;
@@ -185,6 +152,42 @@ XMFLOAT3 MainCharacter::getPointOnRay(XMFLOAT3 ray, float distance)
 }
 bool MainCharacter::IntersectionInRange(XMFLOAT3 MousePos)
 {
+
+	//XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 0.0f};    
+	//
+	//XMVECTOR mouseViewCoords = XMVector4Transform(clipcoords, camera.projectionMatrix);
+
+
+	//XMFLOAT4 MVP;
+	//XMStoreFloat4(&MVP, mouseViewCoords);
+	//XMFLOAT4 filter = { MVP.x, MVP.y, 1.0f, 0.0f };
+	//XMVECTOR mouseWorldPos = XMLoadFloat4(&filter);
+	////cout << filter.x << " " << filter.y << " " << filter.z << endl;
+	//mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
+	//
+	//
+	//XMFLOAT4 holder; 
+	//XMStoreFloat4(&holder, mouseWorldPos);
+	//XMFLOAT3 MWP = { holder.x, holder.y, holder.z };
+	//MWP = math.Normalize(MWP);
+	////cout << MWP.x << " " << MWP.y << " " << MWP.z << endl;
+	//
+
+
+	//XMMATRIX world = XMMatrixIdentity();
+
+	//XMVECTOR ray = XMVector3Unproject(clipcoords, 0.0f, 0.0f, WIDTH, HEIGHT, 0.0f, 1.0f, camera.projectionMatrix, camera.viewMatrix, world);
+
+	//
+	//bool PlaneHit = IntersectionInRange(MWP);
+	//cout << PlaneHit << endl;
+
+	//if (IntersectionInRange(MWP))
+	//{
+	//}	
+
+	bool hit = false;
+
 	basicMath math;
 	XMFLOAT3 normal = { 0,1,0 };
 	XMFLOAT3 camPos = camera.GetPosition();
@@ -199,26 +202,20 @@ bool MainCharacter::IntersectionInRange(XMFLOAT3 MousePos)
 	XMStoreFloat3(&rayDirection, vecRayDirection);
 	rayDirection = math.Normalize(rayDirection);
 
+
 	// a point in the plane dotted with the plane normal
 	float dp = math.dot(normal, point);
 	//dp *= -1;
 
 	T = (dp - math.dot(normal,camPos)) / math.dot(normal,rayDirection);
 
-	if (T < 0)
+	if (T > 0)
 	{
-		return false;
-	}
-	else
-	{
-		return true;
+		hit = true;
 	}
 
-	
-	
-	
-
-	return false;
+	return hit;
 }
+
 
 
