@@ -104,8 +104,7 @@ int RunApplication() {
 			// RENDER
 			//----------------------------------------------------------------------------------------------------------------------------------//
 
-			sceneContainer.renderCharacters();
-			sceneContainer.renderScene();
+			sceneContainer.render();
 
 			showFPS(windowHandle, deltaTime);
 
