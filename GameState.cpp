@@ -95,6 +95,7 @@ void GameState::releaseAll()
 {
 	SAFE_RELEASE(this->gMenuConstant);
 	SAFE_RELEASE(this->gMenuVertexBuffer);
+	SAFE_RELEASE(this->gMenuIndex);
 }
 void GameState::renderMainMenu(SceneContainer scene)
 {
