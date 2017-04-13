@@ -28,12 +28,14 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 		}
 		if (GetAsyncKeyState(VK_LBUTTON) & VK_LBUTTON)
 		{
-			getMousePos();
-			cout << "MousePos X: " << this->mousePos.x << endl;
-			if (this->mousePos.x <= 0.3f && this->mousePos.x >= -0.3f && this->mousePos.y <= 0.7f && this->mousePos.y >= 0.4f)
+			
+			
+			getMousePos(windowHandle, scene);
+		//	cout << "MousePos X: " << this->floatMouse.x << endl << "MousePos Y: " << this->floatMouse.y << endl;
+			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.7f && this->floatMouse.y >= 0.4f)
 			{
-				cout << "Position X: " << this->mousePos.x << endl << "Position Y: " << this->mousePos.y << endl;
-				//this->state = START_GAME;
+				cout << "Position X: " << this->floatMouse.x << endl << "Position Y: " << this->floatMouse.y << endl;
+				this->state = START_GAME;
 			}
 		}
 	}
@@ -188,16 +190,32 @@ bool GameState::createIndexBuffer(ID3D11Device* gDevice)
 
 	return true;
 }
-void GameState::getMousePos()
+void GameState::getMousePos(HWND windowHandle, SceneContainer scene)
 {
-	POINT p;
-	GetCursorPos(&p);
-	this->mousePos.x = p.x;
-	this->mousePos.y = p.y;
 
-	//this->mousePos.x = (2 * mousePos.x) / WIDTH - 1;
-	//this->mousePos.y = (2 * mousePos.y) / HEIGHT - 1;
-	//this->mousePos.y *= -1;
+	GetCursorPos(&this->mousePos);
+	ScreenToClient(windowHandle, &this->mousePos);
+	this->floatMouse.x = mousePos.x;
+	this->floatMouse.y = mousePos.y;
+	//XMVECTOR vecMouse;
+	this->floatMouse.x = (2 * this->floatMouse.x) / WIDTH - 1;
+	this->floatMouse.y = -(2 * this->floatMouse.y) / HEIGHT + 1;
+	//Matrix calculations for taking the pixel coordinates to clip space
+	//XMMATRIX inViewProj;
+	//inViewProj = scene.character.camera.ViewProj();
+	//XMVECTOR det = XMMatrixDeterminant(inViewProj);
+	//XMMatrixInverse(&det, inViewProj);
+
+	//XMFLOAT2 mP;//Storing the mousePos in a xmfloat2
+	//mP.x = this->mousePos.x;
+	//mP.y = this->mousePos.y;
+
+	//vecMouse = XMLoadFloat2(&mP);//Storing the mousepos in a vector
+
+	//XMVector2Transform(vecMouse, inViewProj);//Multiply the inverse of ViewProj with the mousePos
+	//XMStoreFloat2(&mP, vecMouse);
+	//this->mousePos.x = mP.x;
+	//this->mousePos.y = mP.y;
 }
 //bool GameState::createMenuDepthStencil(ID3D11Device* gDevice)
 //{

@@ -36,7 +36,8 @@ private:
 	ID3D11Buffer* gMenuConstant;
 	ID3D11Buffer* gMenuVertexBuffer;
 	ID3D11Buffer* gMenuIndex;
-	XMFLOAT2 mousePos;
+	POINT mousePos;
+	XMFLOAT2 floatMouse;
 	//ID3D11Texture2D* menuDepthStencil;
 	//ID3D11DepthStencilState* menuDepthState;
 	//ID3D11DepthStencilView* menuDepthView;
@@ -57,7 +58,7 @@ public:
 	void createBufferData(ID3D11Device* gDevice);
 	//bool createMenuDepthStencil(ID3D11Device* gDevice);
 	void releaseAll();
-	void getMousePos();
+	void getMousePos(HWND windowHandle, SceneContainer scene);
 
 	void renderMainMenu(SceneContainer scene);
 	//void renderPauseMenu();
