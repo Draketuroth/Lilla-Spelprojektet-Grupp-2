@@ -255,12 +255,13 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, 
 
 void LightShaderClass::Render(ID3D11DeviceContext* gDeviceContext, int indexCount) {
 
-	gDeviceContext->IASetInputLayout(l_layout);
+	// No input layout necessary since we're using vertexID in the HLSL shader
+	//gDeviceContext->IASetInputLayout(l_layout);
 
 	gDeviceContext->VSSetShader(l_vertexShader, NULL, 0);
 	gDeviceContext->PSSetShader(l_pixelShader, NULL, 0);
 
 	gDeviceContext->PSSetSamplers(0, 1, &l_sampleState);
 
-	gDeviceContext->DrawIndexed(indexCount, 0, 0);
+	gDeviceContext->Draw(3, 0);
 }
