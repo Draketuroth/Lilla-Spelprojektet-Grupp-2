@@ -46,9 +46,18 @@ public:
 
 	MainCharacter character;
 
+	//------------------------------------------------------------//
+	// RENDER FUNCTIONS
+	//------------------------------------------------------------//
+
 	void drawPlatforms();
 	
 	void clear();
+	void resetRenderTarget(GraphicComponents &gHandler);
+
+	void render();
+
+	bool renderDeferred();
 
 	bool renderSceneToTexture();
 

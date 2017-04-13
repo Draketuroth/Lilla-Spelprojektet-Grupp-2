@@ -112,6 +112,11 @@ public:
 	XMMATRIX viewProj;
 	XMMATRIX InvViewPoj;
 	XMVECTOR detViewProj;
+	XMVECTOR projDet;
+
+	XMMATRIX ProjInv;
+	XMVECTOR viewDet;
+	XMMATRIX ViewInv;
 private:
 
 	// Camera coordinate system with coordinates relative to World Space

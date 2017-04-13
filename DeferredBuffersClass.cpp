@@ -422,7 +422,7 @@ void DeferredBuffersClass::ReleaseAll() {
 
 bool DeferredBuffersClass::Initialize(ID3D11Device* gDevice) {
 
-//#ifdef DEBUG
+
 
 	if (!SetupResources(gDevice)) {
 
@@ -762,6 +762,7 @@ void DeferredBuffersClass::SetObjectBuffer(ID3D11DeviceContext* gDeviceContext) 
 	UINT32 vertexSize = sizeof(OBJStruct);
 	UINT32 offset = 0;
 	gDeviceContext->IASetVertexBuffers(0, 1, &gDeferredBuffer, &vertexSize, &offset);
+	gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 ID3D11ShaderResourceView* DeferredBuffersClass::GetShaderResourceView(int view) {

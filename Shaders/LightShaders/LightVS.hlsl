@@ -21,15 +21,12 @@ struct VS_OUT {
 	float2 tex : TEXCOORD;
 };
 
-VS_OUT VS_main(VS_IN input) {
+VS_OUT VS_main(uint id : SV_VertexID) {
 
-	VS_OUT output = (VS_OUT)0;
+	VS_OUT output;
 
-	input.position.w = 1.0f;
-
-	output.position = mul(input.position, worldViewProj);
-
-	output.tex = input.tex;
+	output.tex = float2((id << 1) & 2, id & 2);
+	output.position = float4(output.tex * float2(2, -2) + float2(-1, 1), 0, 1);
 
 	return output;
 

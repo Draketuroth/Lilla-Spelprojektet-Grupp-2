@@ -154,10 +154,6 @@ XMMATRIX MainCharacter::rotate()
 	camera.mLastMousePos.y = p.y;
 	//cout << camera.mLastMousePos.x << " " << camera.mLastMousePos.y << endl;
 
-	XMVECTOR cameraPos = camera.GetPositionXM();
-	//XMVECTOR point = mouseposition in worldspace
-
-	//XMVECTOR intersectionPoint = XMPlaneIntersectLine(this->plane, cameraPos, point);
 
 	return R;
 }
