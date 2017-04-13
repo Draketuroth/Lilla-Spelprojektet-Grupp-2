@@ -28,6 +28,7 @@ private:
 
 public:
 	XMMATRIX tPlayerTranslation;
+	BoundingBox bbox;
 	
 	Timer timer;
 

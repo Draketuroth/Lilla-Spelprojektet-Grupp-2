@@ -17,6 +17,7 @@ public:
 	bool CheckInput(XMFLOAT3 &direction);
 
 	XMMATRIX rotate();
+
 	
 	Camera camera;
 	XMVECTOR plane;

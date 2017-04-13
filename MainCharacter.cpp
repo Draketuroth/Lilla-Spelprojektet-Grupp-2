@@ -31,6 +31,8 @@ void MainCharacter::update()
 void MainCharacter::CharacterMove()
 {
 
+	direction = { 0, 0, 0 };
+
 	float time = timer.getDeltaTime();
 
 	
