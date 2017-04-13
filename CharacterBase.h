@@ -7,7 +7,7 @@
 #include "Timer.h"
 #include "Camera.h"
 #include "VertexType.h"
-
+#include "BasicMath.h"
 #include "MacroDefinitions.h"
 
 using namespace std;

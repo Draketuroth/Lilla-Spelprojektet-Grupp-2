@@ -11,12 +11,12 @@ public:
 	MainCharacter();
 	~MainCharacter();
 
-	void update();
+	void update(HWND windowhandle);
 
-	void CharacterMove();
+	void CharacterMove(HWND windowhandle);
 	bool CheckInput(XMFLOAT3 &direction);
 
-	XMMATRIX rotate();
+	XMMATRIX rotate(HWND windowhandle);
 	
 	Camera camera;
 	XMVECTOR plane;
@@ -34,6 +34,8 @@ public:
 	XMVECTOR directionVec;
 	XMFLOAT3 floatPos;
 	XMVECTOR getPlane();
+	XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);
+	bool IntersectionInRange(XMFLOAT3 ray);
 	
 };
 
