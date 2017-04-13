@@ -36,8 +36,7 @@ struct PLAYER_TRANSFORM {
 struct CubeObjects {
 
 	XMMATRIX objectWorldMatrix;
-	ID3D11Buffer* gCubeVertexBuffer;;
-	BoundingBox bbox;
+	ID3D11Buffer* gCubeVertexBuffer;
 	bool renderCheck;
 };
 

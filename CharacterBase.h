@@ -28,7 +28,6 @@ private:
 
 public:
 	XMMATRIX tPlayerTranslation;
-	BoundingBox bbox;
 	
 	Timer timer;
 
@@ -53,7 +52,6 @@ public:
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
 	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);
-	void CharacterBase::TransformBoundingBox(BoundingBox bbox, XMMATRIX translation);
 	void resetWorldMatrix();
 
 	string toString();

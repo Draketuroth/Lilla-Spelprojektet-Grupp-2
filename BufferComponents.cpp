@@ -232,19 +232,6 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		}
 
 		//----------------------------------------------------------------------------------------------------------------------------------//
-		// FILL LIST OF VERTICES FOR BOUNDING BOX CREATION
-		//----------------------------------------------------------------------------------------------------------------------------------//
-
-		XMFLOAT3 boundingPoints[24];
-
-		for (int k = 0; k < 24; k++) {
-
-			boundingPoints[k].x = cubeVertices[k].x;
-			boundingPoints[k].y = cubeVertices[k].y;
-			boundingPoints[k].z = cubeVertices[k].z;
-		}
-
-		//----------------------------------------------------------------------------------------------------------------------------------//
 		// CREATE VERTEX BUFFER
 		//----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -263,26 +250,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 			return false;
 		}
 
-		//----------------------------------------------------------------------------------------------------------------------------------//
-		// TRANSFORM BOUNDING BOX AND INITIALIZE RENDER CHECK BOOLEAN VARIABLE
-		//----------------------------------------------------------------------------------------------------------------------------------//
-
-		cubeObjects[i].objectWorldMatrix = XMMatrixIdentity();
-		XMMATRIX transform = XMMATRIX(cubeObjects[i].objectWorldMatrix);
-
-		BoundingBox::CreateFromPoints(cubeObjects[nrOfCubes].bbox, 24, boundingPoints, 0);
-
-		cubeObjects[i].bbox.Extents = { 2, 2, 2 };
-
-		cubeObjects[i].bbox.Transform(cubeObjects[nrOfCubes].bbox, transform);
-
-		//----------------------------------------------------------------------------------------------------------------------------------//
-		// INITIALIZE RENDER CHECK TO FALSE FOR ALL CUBES
-		//----------------------------------------------------------------------------------------------------------------------------------//
-
 		cubeObjects[nrOfCubes].renderCheck = true;
-		XMFLOAT3 corners[8];
-		cubeObjects[nrOfCubes].bbox.GetCorners(corners);
 
 		offset += spacing;
 		
