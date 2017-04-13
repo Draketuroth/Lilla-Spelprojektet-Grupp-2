@@ -1,5 +1,6 @@
 #pragma once
 #include "CharacterBase.h"
+#include "BufferComponents.h"
 
 
 class MainCharacter: public CharacterBase

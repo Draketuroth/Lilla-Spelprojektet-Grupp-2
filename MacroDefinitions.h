@@ -8,7 +8,7 @@
 #define NEARPLANE 0.1f
 #define FARPLANE 50.0f
 
-#define CUBECAPACITY 50
+#define CUBECAPACITY 30
 
 #define LaunchInWindowedMode FALSE;
 #define SAFE_RELEASE( x ) if( x ) ( x )->Release(), ( x ) = nullptr;

@@ -263,11 +263,11 @@ void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 
 	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
 
-	// Translate player bounding box in world space
-	TransformBoundingBox(this->bbox, translation);
-
 	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
+
+	// Translate player bounding box in world space
+	TransformBoundingBox(this->bbox, tPlayerTranslation);
 }
 
 void CharacterBase::TransformBoundingBox(BoundingBox bbox, XMMATRIX translation) {
