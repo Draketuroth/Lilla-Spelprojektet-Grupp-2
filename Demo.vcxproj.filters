@@ -70,6 +70,15 @@
     <Filter Include="Source Files\HLSL\LightShaders">
       <UniqueIdentifier>{2d9bddc7-44d5-40f9-a954-e8b5158fe4e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameState">
+      <UniqueIdentifier>{a54cdd99-7277-471f-8444-272b2544186b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameState">
+      <UniqueIdentifier>{7bde820a-7357-41e1-81a9-d8f35cc143b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\MenuShaders">
+      <UniqueIdentifier>{955df009-0008-4c42-83e6-6c6ea89f8593}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="LightShaderClass.cpp">
       <Filter>Source Files\Deferred Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files\GameState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +173,9 @@
     <ClInclude Include="LightShaderClass.h">
       <Filter>Header Files\Deferred Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files\GameState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\StandardShaders\Fragment.hlsl">
@@ -195,6 +210,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\LightShaders\LightVS.hlsl">
       <Filter>Source Files\HLSL\LightShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\MenuShaders\MenuVertex.hlsl">
+      <Filter>Source Files\HLSL\MenuShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
+      <Filter>Source Files\HLSL\MenuShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

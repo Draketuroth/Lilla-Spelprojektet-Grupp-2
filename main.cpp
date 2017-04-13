@@ -8,7 +8,7 @@
 
 
 #include "SceneContainer.h"
-
+#include "GameState.h"
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
@@ -24,7 +24,7 @@ HWND windowHandle;
 // SCENE COMPONENTS
 //----------------------------------------------------------------------------------------------------------------------------------//
 SceneContainer sceneContainer;
-
+GameState menuState;
 Timer timer;
 
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -39,89 +39,85 @@ int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
-
+	
 	sceneContainer.initialize(windowHandle);
 
 	return RunApplication();
 }
 
-int RunApplication()
-{
-	int GameState = 2;
+int RunApplication() {
 
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// INITIALIZE
+	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	switch (GameState)
-	{
-	case 1:
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
+	
+	MSG windowMessage = { 0 };
 
-	case 2:
-		//----------------------------------------------------------------------------------------------------------------------------------//
-		// INITIALIZE
-		//----------------------------------------------------------------------------------------------------------------------------------//
+	SetCapture(windowHandle);
 
-		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
+	SetCursorPos(WIDTH / 2, HEIGHT / 2);
 
-		MSG windowMessage = { 0 };
+	timer.initialize();
+	sceneContainer.character.timer.initialize();
 
-		SetCapture(windowHandle);
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// GAME LOOP
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	while (windowMessage.message != WM_QUIT) {
 
-		SetCursorPos(WIDTH / 2, HEIGHT / 2);
+		if (PeekMessage(&windowMessage, NULL, NULL, NULL, PM_REMOVE)) {
 
-		timer.initialize();
-		sceneContainer.character.timer.initialize();
-
-
-
-		//----------------------------------------------------------------------------------------------------------------------------------//
-		// GAME LOOP
-		//----------------------------------------------------------------------------------------------------------------------------------//
-		while (windowMessage.message != WM_QUIT)
-		{
-
-			if (PeekMessage(&windowMessage, NULL, NULL, NULL, PM_REMOVE)) {
-
-				TranslateMessage(&windowMessage);
-				DispatchMessage(&windowMessage);
-			}
-
-			// If there are no messages to handle, the application will continue by running a frame
-			else {
-
-				//----------------------------------------------------------------------------------------------------------------------------------//
-				// UPDATE
-				//----------------------------------------------------------------------------------------------------------------------------------//
-
-				float deltaTime = timer.getDeltaTime();
-
-
-
-				updateCharacter();
-
-				updateBuffers();
-
-				//----------------------------------------------------------------------------------------------------------------------------------//
-				// RENDER
-				//----------------------------------------------------------------------------------------------------------------------------------//
-
-				sceneContainer.render();
-
-				showFPS(windowHandle, deltaTime);
-
-				sceneContainer.gHandler.gSwapChain->Present(0, 0);
-
-				timer.updateCurrentTime();
-
-				
-			}
-
+			TranslateMessage(&windowMessage);
+			DispatchMessage(&windowMessage);
 		}
-		break;
-	 
+
+		// If there are no messages to handle, the application will continue by running a frame
+		else {
+
+			//----------------------------------------------------------------------------------------------------------------------------------//
+			// UPDATE
+			//----------------------------------------------------------------------------------------------------------------------------------//
+
+			float deltaTime = timer.getDeltaTime();
+
+			//while (menuState.state != START_GAME)
+			//{
+			//	menuState.menuHandler(windowHandle, sceneContainer);
+			//}
+			switch (menuState.state)
+			{
+			case MAIN_MENU:
+				menuState.menuHandler(windowHandle, sceneContainer);
+				break;
+			}
 		
-		
+			
+			
+
+			updateCharacter();
+
+			updateBuffers();
+
+			//----------------------------------------------------------------------------------------------------------------------------------//
+			// RENDER
+			//----------------------------------------------------------------------------------------------------------------------------------//
+
+			sceneContainer.renderCharacters();
+			sceneContainer.renderScene();
+
+			showFPS(windowHandle, deltaTime);
+
+			sceneContainer.gHandler.gSwapChain->Present(0, 0);
+
+			timer.updateCurrentTime();
+		}
+
 	}
 
 	sceneContainer.releaseAll();
+	menuState.releaseAll();
 	DestroyWindow(windowHandle);
 
 	return 0;
