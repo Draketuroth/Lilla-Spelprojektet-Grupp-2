@@ -49,7 +49,7 @@ Camera::Camera() {
 	InvViewPoj = XMMatrixInverse(nullptr, viewProj);
 	
 
-	Pitch(0);
+	Pitch(45);
 }
 
 Camera::~Camera() {

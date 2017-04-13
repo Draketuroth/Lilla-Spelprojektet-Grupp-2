@@ -15,7 +15,7 @@
 
 #include "MacroDefinitions.h"
 
-#define BUFFER_COUNT 2
+#define BUFFER_COUNT 3
 
 struct MTL_STRUCT
 {

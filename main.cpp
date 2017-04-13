@@ -89,11 +89,13 @@ int RunApplication() {
 			switch (menuState.state)
 			{
 			case MAIN_MENU:
-				menuState.menuHandler(windowHandle, sceneContainer);
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				break;
+			case PAUSE_MENU:
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
 			}
-		
-			
+			menuState.checkGameState();
 			
 
 			
