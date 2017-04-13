@@ -192,11 +192,14 @@ bool SceneContainer::renderDeferred() {
 
 	// Step 4: 2D rendering of light calculations
 
-	XMFLOAT3 lightDirection = { 8.0f, 20.0f, 0.0f };
+	XMFLOAT3 lightDirection = { 8.0f, 20.0f, 8.0f };
 	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
 									deferredObject.d_shaderResourceViewArray[0],
 									deferredObject.d_shaderResourceViewArray[1],
+									deferredObject.d_shaderResourceViewArray[2],
 									lightDirection);
+
+	gHandler.gDeviceContext->PSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);
 									
 	lightShaders.Render(gHandler.gDeviceContext, deferredObject.ImportStruct.size());
 

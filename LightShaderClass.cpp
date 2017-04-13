@@ -220,7 +220,7 @@ bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 	return true;
 }
 
-bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, XMFLOAT3 lightDirection) {
+bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, ID3D11ShaderResourceView* worldTexture, XMFLOAT3 lightDirection) {
 
 	HRESULT hr;
 
@@ -230,6 +230,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, 
 
 	gDeviceContext->PSSetShaderResources(0, 1, &colorTexture);
 	gDeviceContext->PSSetShaderResources(1, 1, &normalTexture);
+	gDeviceContext->PSSetShaderResources(2, 1, &worldTexture);
 
 	hr = gDeviceContext->Map(l_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 

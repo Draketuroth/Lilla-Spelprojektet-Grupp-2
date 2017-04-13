@@ -25,6 +25,7 @@ struct PS_OUT {
 
 	float4 Color : SV_TARGET0;
 	float4 Normal : SV_TARGET1;
+	float4 Position : SV_TARGET2;
 };
 
 
@@ -37,6 +38,8 @@ PS_OUT PS_main(PS_IN input)
 
 	// Store the normal output to the render target
 	output.Normal = float4(input.Normal, 1.0f);
+
+	output.Position = float4(input.WPos, 1.0f);
 
 	return output;
 };
