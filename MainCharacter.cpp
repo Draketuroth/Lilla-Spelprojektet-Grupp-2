@@ -90,12 +90,10 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	if (GetAsyncKeyState('S'))
 	{
 		direction.z = -1.0;
-		//negativePosVec = true;
 	}
 	if (GetAsyncKeyState('A'))
 	{
 		direction.x = -1.0;
-		//negativePosVec = true;
 	}
 	if (GetAsyncKeyState('D'))
 	{
@@ -115,7 +113,7 @@ XMMATRIX MainCharacter::rotate()
 	float angle;
 	GetCursorPos(&p);
 
-	//XMFLOAT3 currentRay;
+	XMFLOAT3 currentRay;
 	
 	//float mouseX = camera.mLastMousePos.x;
 	//float mouseY = camera.mLastMousePos.y;
@@ -155,6 +153,11 @@ XMMATRIX MainCharacter::rotate()
 	camera.mLastMousePos.x = p.x;
 	camera.mLastMousePos.y = p.y;
 	//cout << camera.mLastMousePos.x << " " << camera.mLastMousePos.y << endl;
+
+	XMVECTOR cameraPos = camera.GetPositionXM();
+	//XMVECTOR point = mouseposition in worldspace
+
+	//XMVECTOR intersectionPoint = XMPlaneIntersectLine(this->plane, cameraPos, point);
 
 	return R;
 }
