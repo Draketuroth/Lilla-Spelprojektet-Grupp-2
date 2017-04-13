@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Fredrik\Desktop\PhysicsLib\bullet3-2.86.1\Extras\Serialize\BulletWorldImporter\btBulletWorldImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Fredrik\Desktop\PhysicsLib\bullet3-2.86.1\Extras\Serialize\BulletWorldImporter\btWorldImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Fredrik\Desktop\PhysicsLib\bullet3-2.86.1\Extras\Serialize\BulletWorldImporter\btBulletWorldImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Fredrik\Desktop\PhysicsLib\bullet3-2.86.1\Extras\Serialize\BulletWorldImporter\btWorldImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Fredrik\Desktop\PhysicsLib\bullet3-2.86.1\Extras\Serialize\BulletWorldImporter\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BC1A06B4-407A-3E22-A16B-C4B6338ACC85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{3FDB8006-50BC-3490-A6F0-EB3D66FB7780}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

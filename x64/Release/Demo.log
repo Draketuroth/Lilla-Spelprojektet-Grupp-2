@@ -1,2 +1,1 @@
-﻿  DeferredShaderClass.cpp
-  Demo.vcxproj -> C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Release\Scene.exe
+﻿LINK : fatal error LNK1104: cannot open file 'C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\Bullet\lib\Release\BulletCollision.lib'

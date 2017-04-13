@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Fredrik\Desktop\PhysicsLib\bullet3-2.86.1\test\InverseDynamics\test_invdyn_kinematics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Fredrik\Desktop\PhysicsLib\bullet3-2.86.1\test\InverseDynamics\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BC1A06B4-407A-3E22-A16B-C4B6338ACC85}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

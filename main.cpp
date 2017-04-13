@@ -15,6 +15,8 @@
 using namespace DirectX;
 using namespace std;
 
+#include "btBulletDynamicsCommon.h"
+
 //----------------------------------------------------------------------------------------------------------------------------------//
 // WINDOW HANDLE AND CAMERA
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -41,6 +43,8 @@ int main() {
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
 	
 	sceneContainer.initialize(windowHandle);
+
+	//btBoxShape* box = new btBoxShape(btVector3(1, 1, 1));
 
 	return RunApplication();
 }
