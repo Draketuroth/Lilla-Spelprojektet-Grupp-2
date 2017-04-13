@@ -153,10 +153,10 @@ void SceneContainer::render() {
 	//Characters need to be rendered first since they will be moving
 	clear();
 
-	renderDeferred();
+	//renderDeferred();
 
-	//renderCharacters();
-	//renderScene();
+	renderCharacters();
+	renderScene();
 }
 
 bool SceneContainer::renderDeferred() {
@@ -190,9 +190,9 @@ bool SceneContainer::renderDeferred() {
 	// Turns off the z-buffer for 2D rendering
 	resetRenderTarget(gHandler);
 
-	// Step 4: 2D render
+	// Step 4: 2D rendering of light calculations
 
-	XMFLOAT3 lightDirection = { 8.0f, 20.0f, 5.0f };
+	XMFLOAT3 lightDirection = { 8.0f, 20.0f, 0.0f };
 	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
 									deferredObject.d_shaderResourceViewArray[0],
 									deferredObject.d_shaderResourceViewArray[1],
