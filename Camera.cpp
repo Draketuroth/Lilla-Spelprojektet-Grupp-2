@@ -42,11 +42,11 @@ Camera::Camera() {
 	viewProj = viewMatrix * projectionMatrix;
 	projDet = XMMatrixDeterminant(projectionMatrix);
 
-	ProjInv = XMMatrixInverse(&projDet, projectionMatrix);
+	ProjInv = XMMatrixInverse(nullptr, projectionMatrix);
 	viewDet = XMMatrixDeterminant(viewMatrix);
-	ViewInv = XMMatrixInverse(&viewDet, viewMatrix);
+	ViewInv = XMMatrixInverse(nullptr, viewMatrix);
 	detViewProj = XMMatrixDeterminant(viewProj);
-	InvViewPoj = XMMatrixInverse(&detViewProj, viewProj);
+	InvViewPoj = XMMatrixInverse(nullptr, viewProj);
 	
 
 	Pitch(0);

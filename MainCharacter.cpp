@@ -125,21 +125,34 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 	float mouseXNDC = (2 * mouseX) / WIDTH - 1;
 	float mouseYNDC = (2 * mouseY) / HEIGHT - 1;
 	mouseYNDC *= -1;
+
+
+	//https://www.braynzarsoft.net/viewtutorial/q16390-24-picking
+	float viewSpaceZ = 1 / tan((0.45*PI) / 2);
+
 	//cout << mouseXNDC << " " << mouseYNDC << endl;
 
-	XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 0.0f};    
+	XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, viewSpaceZ};    
 	
 	XMVECTOR mouseViewCoords = XMVector4Transform(clipcoords, camera.ProjInv);
 
 
 	XMFLOAT4 MVP;
 	XMStoreFloat4(&MVP, mouseViewCoords);
-	XMFLOAT4 filter = { MVP.x, MVP.y, 1.0f, 1.0f };
+	XMFLOAT4 filter = { MVP.x, MVP.y, 1.0f, 0.0f};
 	XMVECTOR mouseWorldPos = XMLoadFloat4(&filter);
-	cout << filter.x << " " << filter.y << " " << filter.z << endl;
-	mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
+	//cout << filter.x << " " << filter.y << " " << filter.z << endl;
+	//mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
 	
-	
+	XMFLOAT3 MWPosFloat3;
+	XMVECTOR MWPos = XMVector4Transform(mouseWorldPos, camera.ViewInv);
+	XMStoreFloat4(&filter, MWPos);
+	MWPosFloat3.x = filter.x;
+	MWPosFloat3.y = filter.y;
+	MWPosFloat3.z = filter.z;
+	math.Normalize(MWPosFloat3);
+	cout << MWPosFloat3.x << " " << MWPosFloat3.y << " " << MWPosFloat3.z << endl;
+
 	XMFLOAT4 holder; 
 	XMStoreFloat4(&holder, mouseWorldPos);
 	XMFLOAT3 MWP = { holder.x, holder.y, holder.z };
