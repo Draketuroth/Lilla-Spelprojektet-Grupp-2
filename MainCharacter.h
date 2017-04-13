@@ -36,7 +36,7 @@ public:
 	XMFLOAT3 floatPos;
 	XMVECTOR getPlane();
 	XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);
-	bool IntersectionInRange(XMFLOAT3 ray);
-	
+	bool IntersectionInRange(XMFLOAT3 MousePos);
+
 };
 
