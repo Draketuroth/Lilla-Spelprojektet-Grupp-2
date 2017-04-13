@@ -56,6 +56,11 @@ void MainCharacter::CharacterMove()
 	}
 
 	XMStoreFloat3(&floatPos, positionVec);
+
+	//if(this->bbox.Intersects()
+
+	/*floatPos.y -= time;*/
+
 	this->setPos(floatPos);
 
 	newCameraPos = { floatPos.x, cameraDistanceY, floatPos.z - cameraDistanceZ };

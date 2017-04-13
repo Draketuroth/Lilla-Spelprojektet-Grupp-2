@@ -263,7 +263,18 @@ void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 
 	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
 
+	// Translate player bounding box in world space
+	TransformBoundingBox(this->bbox, translation);
+
+	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
+}
+
+void CharacterBase::TransformBoundingBox(BoundingBox bbox, XMMATRIX translation) {
+
+	XMMATRIX transform = XMMATRIX(translation);
+
+	bbox.Transform(this->bbox, transform);
 }
 
 void CharacterBase::resetWorldMatrix()
