@@ -22,6 +22,8 @@
 
 #include "MainCharacter.h"
 
+#include "btBulletDynamicsCommon.h"
+
 class SceneContainer {
 
 private:
@@ -45,6 +47,16 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
+
+	//------------------------------------------------------------//
+	// BULLET PHYSICS GLOBAL VARIABLES
+	//------------------------------------------------------------//
+
+	btDynamicsWorld* bulletDynamicsWorld;
+	btDispatcher* bulletDispatcher;
+	btCollisionConfiguration* bulletCollisionConfig;
+	btBroadphaseInterface* bulletBroadPhase;
+	btConstraintSolver* bulletConstraintSolver;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
