@@ -51,13 +51,9 @@ public:
 	XMMATRIX projectionMatrix;
 	XMMATRIX viewMatrix;
 
-
-	
-
 	XMVECTOR eyePos;
 	XMVECTOR lookAt;
 	XMVECTOR up;
-
 
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
 	ID3D11Buffer* gPlayerTransformBuffer;
