@@ -19,10 +19,9 @@
 #include "GraphicComponents.h"
 #include "BufferComponents.h"
 #include "TextureComponents.h"
+#include "BulletComponents.h"
 
 #include "MainCharacter.h"
-
-#include "btBulletDynamicsCommon.h"
 
 class SceneContainer {
 
@@ -48,15 +47,7 @@ public:
 
 	MainCharacter character;
 
-	//------------------------------------------------------------//
-	// BULLET PHYSICS GLOBAL VARIABLES
-	//------------------------------------------------------------//
-
-	btDynamicsWorld* bulletDynamicsWorld;
-	btDispatcher* bulletDispatcher;
-	btCollisionConfiguration* bulletCollisionConfig;
-	btBroadphaseInterface* bulletBroadPhase;
-	btConstraintSolver* bulletConstraintSolver;
+	BulletComponents bulletPhysicsHandler;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS

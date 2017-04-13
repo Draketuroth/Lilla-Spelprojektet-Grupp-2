@@ -6,11 +6,7 @@
 #include <DirectXMath.h>
 #include <iostream>
 #include "MacroDefinitions.h"
-#include "Camera.h"
 #include "VertexType.h"
-#include <fstream>
-#include <iostream>
-#include <sstream>
 #include <vector>
 
 using namespace DirectX;

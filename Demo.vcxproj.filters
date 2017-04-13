@@ -79,6 +79,12 @@
     <Filter Include="Source Files\HLSL\MenuShaders">
       <UniqueIdentifier>{955df009-0008-4c42-83e6-6c6ea89f8593}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\BulletComponents">
+      <UniqueIdentifier>{57caae69-6712-4661-9152-4ee54ba02244}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BulletComponents">
+      <UniqueIdentifier>{9745d815-8387-443e-a7d7-872d87d6c5a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -128,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="BasicMath.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletComponents.cpp">
+      <Filter>Source Files\BulletComponents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="BasicMath.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletComponents.h">
+      <Filter>Header Files\BulletComponents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

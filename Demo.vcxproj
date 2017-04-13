@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="BasicMath.cpp" />
     <ClCompile Include="BufferComponents.cpp" />
+    <ClCompile Include="BulletComponents.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="DeferredBuffersClass.cpp" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="BasicMath.h" />
     <ClInclude Include="BufferComponents.h" />
+    <ClInclude Include="BulletComponents.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="DeferredBuffersClass.h" />
