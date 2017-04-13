@@ -240,8 +240,7 @@ bool MainCharacter::IntersectionInRange(XMFLOAT3 MousePos)
 	//dp *= -1;
 
 	T = (dp - math.dot(normal,camPos)) / math.dot(normal,rayDirection);
-
-	if (T < 0)
+ 	if (T < 0)
 	{
 		return false;
 	}
