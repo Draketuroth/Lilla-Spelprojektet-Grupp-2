@@ -34,7 +34,12 @@ public:
 	XMVECTOR directionVec;
 	XMFLOAT3 floatPos;
 	XMVECTOR getPlane();
-	XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);
+	
+	void FillVertexBuffer();
+
+
+
+
 	bool IntersectionInRange(XMFLOAT3 MousePos);
 
 };

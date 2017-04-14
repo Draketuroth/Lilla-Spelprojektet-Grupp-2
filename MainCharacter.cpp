@@ -143,13 +143,25 @@ XMVECTOR MainCharacter::getPlane()
 
 	return XMPlaneFromPointNormal(point, normal);
 }
-XMFLOAT3 MainCharacter::getPointOnRay(XMFLOAT3 ray, float distance)
-{
-	
-	XMFLOAT3 scaledRay = { ray.x * distance, ray.y * distance, ray.z * distance };
 
-	return scaledRay;
+void MainCharacter::FillVertexBuffer()
+{
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 bool MainCharacter::IntersectionInRange(XMFLOAT3 MousePos)
 {
 

@@ -126,6 +126,12 @@
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\GameState</Filter>
     </ClCompile>
+    <ClCompile Include="BasicMath.cpp">
+      <Filter>Source Files\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemies.cpp">
+      <Filter>Source Files\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BufferComponents.h">
@@ -175,6 +181,12 @@
     </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>Header Files\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMath.h">
+      <Filter>Header Files\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemies.h">
+      <Filter>Header Files\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
