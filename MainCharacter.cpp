@@ -27,8 +27,8 @@ MainCharacter::~MainCharacter()
 void MainCharacter::update(HWND windowhandle)
 {
 	CharacterMove(windowhandle);
-	meleeAttack();
-	rangeAttack();
+	/*meleeAttack();
+	rangeAttack();*/
 }
 
 //--------- Changing the character's position --------------
@@ -220,9 +220,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 //	return hit;
 //}
 
-		//attack
-	}
-}
+
 
 
 

@@ -100,6 +100,8 @@ int RunApplication() {
 				updateCharacter(windowHandle);
 				updateBuffers();
 
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
+
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//

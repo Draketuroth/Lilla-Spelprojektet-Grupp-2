@@ -162,6 +162,34 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents
 	// CREATE THE RIGID BODY
 	//----------------------------------------------------------------------//
 
+	// Platform Rigid Body only uses an identity matrix as its world matrix
+	btTransform transform;
+	transform.setIdentity();
+
+	// Define the kind of shape we want and construct rigid body information
+	btBoxShape* boxShape = new btBoxShape(btVector3(2, 2, 2));
+	btScalar mass(0.10f);	// Rigid body is dynamic if and only if mass is non zero, otherwise static
+	btVector3 inertia(0, 0, 0);
+
+	if (mass != 0.0) {
+
+		boxShape->calculateLocalInertia(mass, inertia);
+	}
+
+	btMotionState* motion = new btDefaultMotionState(transform);
+
+	// Definition of the rigid body
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape, inertia);
+
+	// Create the rigid body
+	btRigidBody* playerRigidBody = new btRigidBody(info);
+
+	// Set the rigid body to the current platform 
+	this->rigidBody = playerRigidBody;
+
+	// Add the new rigid body to the dynamic world
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
+
 	//----------------------------------------------------------------------//
 	// INDEX BUFFER
 	//----------------------------------------------------------------------//
@@ -246,9 +274,21 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 
 void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 {
-	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
+	
+	XMMATRIX transform = XMMatrixIdentity();
+	XMFLOAT4X4 data;
 
+	btTransform btRigidTransform;
+	this->rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+
+	btRigidTransform.getOpenGLMatrix((float*)&data);
+
+	transform = XMLoadFloat4x4(&data);
+
+	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
 	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
+
+	translation = XMMatrixMultiply(transform, translation);
 
 	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
