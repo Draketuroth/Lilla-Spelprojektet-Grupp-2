@@ -146,21 +146,21 @@ void MainCharacter::meleeAttack()
 		//(When attack != done or smth)
 		//else... attack = done reset attack duration?
 
-		//cout << "MELEE ATTACK" << endl;
+		cout << "MELEE ATTACK" << endl;
 
-		//
+		
 
-		//XMFLOAT3 cPos = getPos();
-		//XMFLOAT3 ePos; //= get enemy position
-		//float angle;
+		XMFLOAT3 cPos = getPos();
+		XMFLOAT3 ePos; //= get enemy position
+		float angle;
 
-		//float opp = cPos.y - ePos.y;
-		//opp = abs(opp);
-		//float adj = cPos.x - ePos.y;
-		//adj = abs(adj);
+		float opp = cPos.y - ePos.y;
+		opp = abs(opp);
+		float adj = cPos.x - ePos.y;
+		adj = abs(adj);
 
-		////angle of attack. Also needs a range.
-		//angle = atan(opp / adj);
+		//angle of attack. Also needs a range.
+		angle = atan(opp / adj);
 
 		//filter down the list of enemies, 
 		//first if they're within range
