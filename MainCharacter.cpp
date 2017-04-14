@@ -171,20 +171,20 @@ void MainCharacter::meleeAttack(HWND windowHandle)
 
 		//we need to get the number of enemies
 		//ALT. enemyArray.length?
-		int nrOfEnemies = 10;
+		//int nrOfEnemies = 10;
 
-		for (int i = 0; i < nrOfEnemies, i++;)
-		{
-			float enemyDistance = 2;
-			if (enemyDistance <= 1)
-			{
-				//check if that enemy boundingBox intersects meleeBox
-					//if YES 
-						//drain that enemy's health
-					//else
-						//do nothing and continue on
-			}
-		}
+		//for (int i = 0; i < nrOfEnemies, i++;)
+		//{
+		//	float enemyDistance = 2;
+		//	if (enemyDistance <= 1)
+		//	{
+		//		//check if that enemy boundingBox intersects meleeBox
+		//			//if YES 
+		//				//drain that enemy's health
+		//			//else
+		//				//do nothing and continue on
+		//	}
+		//}
 
 		//attack done 
 		//reset attack duration
