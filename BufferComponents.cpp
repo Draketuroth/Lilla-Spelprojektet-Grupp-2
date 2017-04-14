@@ -33,13 +33,16 @@ void BufferComponents::ReleaseAll() {
 	for (int i = 0; i < nrOfCubes; i++) {
 
 		SAFE_RELEASE(cubeObjects[i].gCubeVertexBuffer);
+		delete cubeObjects[i].rigidBody;
 	}
+
+	
 
 }
 
-bool BufferComponents::SetupScene(ID3D11Device* &gDevice) {
+bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
 
-	if (!CreateCubeVertices(gDevice)) {
+	if (!CreateCubeVertices(gDevice, bulletPhysicsHandler)) {
 
 		return false;
 	}
@@ -63,7 +66,7 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice) {
 
 }
 
-bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice) {
+bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// INITIALIZE OFFSET VARIABLES
@@ -71,15 +74,15 @@ bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice) {
 
 	float spacing = 2.3f;
 
-	DrawCubeRow(gDevice, -4.6f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, -4.6f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, -2.3f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, -2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 0.0f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, 0.0f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 2.3f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, 2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RENDER CHECK TEST
@@ -151,7 +154,7 @@ bool BufferComponents::CreateCubeIndices(ID3D11Device* &gDevice) {
 	return true;
 }
 
-bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes) {
+bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler) {
 
 	HRESULT hr;
 
@@ -250,6 +253,35 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 			return false;
 		}
 
+		//----------------------------------------------------------------------------------------------------------------------------------//
+		// CREATE RIGID BODY
+		//----------------------------------------------------------------------------------------------------------------------------------//
+
+		// Platform Rigid Body only uses an identity matrix as its world matrix
+		btTransform transform;
+		transform.setIdentity();
+		
+		// Define the kind of shape we want and construct rigid body information
+		btBoxShape* boxShape = new btBoxShape(btVector3(2, 2, 2));
+		btMotionState* motion = new btDefaultMotionState(transform);
+
+		// Definition of the rigid body
+		btScalar mass(0.0f);
+		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape);
+
+		// Create the rigid body
+		btRigidBody* platformRigidBody = new btRigidBody(info);
+
+		// Set the rigid body to the current platform 
+		cubeObjects[nrOfCubes].rigidBody = platformRigidBody;
+
+		// Add the new rigid body to the dynamic world
+		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody);
+
+		//----------------------------------------------------------------------------------------------------------------------------------//
+		// ADD OFFSET FOR THE NEXT PLATFORM
+		//----------------------------------------------------------------------------------------------------------------------------------//
+		
 		cubeObjects[nrOfCubes].renderCheck = true;
 
 		offset += spacing;

@@ -85,7 +85,7 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 }
 
 //-------------Create Buffer and Draw -----------------------
-bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
+bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents &bulletPhysicsHandler)
 {
 	//----------------------------------------------------------------------//
 	// VERTEX BUFFER
@@ -157,6 +157,10 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 
 		return false;
 	}
+
+	//----------------------------------------------------------------------//
+	// CREATE THE RIGID BODY
+	//----------------------------------------------------------------------//
 
 	//----------------------------------------------------------------------//
 	// INDEX BUFFER

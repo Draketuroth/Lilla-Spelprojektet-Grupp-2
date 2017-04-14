@@ -56,7 +56,9 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	if (!bHandler.SetupScene(gHandler.gDevice)) {
+	bulletPhysicsHandler.InitializeBulletPhysics();
+
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler)) {
 
 		MessageBox(
 			NULL,
@@ -101,9 +103,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	character.createBuffers(gHandler.gDevice);
-
-	bulletPhysicsHandler.InitializeBulletPhysics();
+	character.createBuffers(gHandler.gDevice, bulletPhysicsHandler);
 
 	return true;
 

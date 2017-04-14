@@ -9,8 +9,7 @@
 #include "VertexType.h"
 #include <vector>
 
-#include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
+#include "BulletComponents.h"
 
 using namespace DirectX;
 
@@ -34,7 +33,8 @@ struct PLAYER_TRANSFORM {
 
 struct CubeObjects {
 
-	XMMATRIX objectWorldMatrix;
+	btRigidBody* rigidBody;
+
 	ID3D11Buffer* gCubeVertexBuffer;
 	bool renderCheck;
 };
@@ -68,19 +68,17 @@ public:
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
 
-	bool SetupScene(ID3D11Device* &gDevice);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 
-	bool CreateCubeVertices(ID3D11Device* &gDevice);
+	bool CreateCubeVertices(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
-	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes);
+	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler);
 	float RandomNumber(float Minimum, float Maximum);
 
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 
 private:
-
-
 
 	XMFLOAT3 eyePosF;
 	XMFLOAT3 lookAtF;
