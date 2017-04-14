@@ -11,8 +11,6 @@ MainCharacter::MainCharacter()
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
-	plane = getPlane();
-
 	direction = { 0, 0, 0 };
 	newCameraPos = { 0, 0, 0 };
 	directionVec;
@@ -26,6 +24,8 @@ MainCharacter::~MainCharacter()
 void MainCharacter::update(HWND windowhandle)
 {
 	CharacterMove(windowhandle);
+	meleeAttack();
+	rangeAttack();
 }
 
 //--------- Changing the character's position --------------
@@ -123,7 +123,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 	float mouseXNDC = (2 * mouseX) / WIDTH - 1;
 	float mouseYNDC = (2 * mouseY) / HEIGHT - 1;
 	mouseYNDC *= -1;
-	cout << mouseXNDC << " " << mouseYNDC << endl;
+	//cout << mouseXNDC << " " << mouseYNDC << endl;
 	
 	angle = atan2(mouseXNDC, mouseYNDC);
 	R = XMMatrixRotationY(angle);
@@ -132,87 +132,135 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 	return R;
 }
-
-XMVECTOR MainCharacter::getPlane()
+void MainCharacter::meleeAttack()
 {
-	XMVECTOR point = { 0, 0, 0 };
-	XMVECTOR normal = { 0, 1, 0 };
-
-	return XMPlaneFromPointNormal(point, normal);
-}
-XMFLOAT3 MainCharacter::getPointOnRay(XMFLOAT3 ray, float distance)
-{
-	
-	XMFLOAT3 scaledRay = { ray.x * distance, ray.y * distance, ray.z * distance };
-
-	return scaledRay;
-}
-bool MainCharacter::IntersectionInRange(XMFLOAT3 MousePos)
-{
-
-	//XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 0.0f};    
-	//
-	//XMVECTOR mouseViewCoords = XMVector4Transform(clipcoords, camera.projectionMatrix);
-
-
-	//XMFLOAT4 MVP;
-	//XMStoreFloat4(&MVP, mouseViewCoords);
-	//XMFLOAT4 filter = { MVP.x, MVP.y, 1.0f, 0.0f };
-	//XMVECTOR mouseWorldPos = XMLoadFloat4(&filter);
-	////cout << filter.x << " " << filter.y << " " << filter.z << endl;
-	//mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
-	//
-	//
-	//XMFLOAT4 holder; 
-	//XMStoreFloat4(&holder, mouseWorldPos);
-	//XMFLOAT3 MWP = { holder.x, holder.y, holder.z };
-	//MWP = math.Normalize(MWP);
-	////cout << MWP.x << " " << MWP.y << " " << MWP.z << endl;
-	//
-
-
-	//XMMATRIX world = XMMatrixIdentity();
-
-	//XMVECTOR ray = XMVector3Unproject(clipcoords, 0.0f, 0.0f, WIDTH, HEIGHT, 0.0f, 1.0f, camera.projectionMatrix, camera.viewMatrix, world);
-
-	//
-	//bool PlaneHit = IntersectionInRange(MWP);
-	//cout << PlaneHit << endl;
-
-	//if (IntersectionInRange(MWP))
-	//{
-	//}	
-
-	bool hit = false;
-
-	basicMath math;
-	XMFLOAT3 normal = { 0,1,0 };
-	XMFLOAT3 camPos = camera.GetPosition();
-	XMFLOAT3 rayDirection;
-	XMFLOAT3 point = { 0,0,0 };
-	float T;
-
-	XMVECTOR vecCamPos = XMLoadFloat3(&camPos);
-	XMVECTOR vecMousePos = XMLoadFloat3(&MousePos);
-	XMVECTOR vecRayDirection = vecMousePos - vecCamPos;
-	
-	XMStoreFloat3(&rayDirection, vecRayDirection);
-	rayDirection = math.Normalize(rayDirection);
-
-
-	// a point in the plane dotted with the plane normal
-	float dp = math.dot(normal, point);
-	//dp *= -1;
-
-	T = (dp - math.dot(normal,camPos)) / math.dot(normal,rayDirection);
-
-	if (T > 0)
+	if (GetAsyncKeyState(MK_LBUTTON))
 	{
-		hit = true;
-	}
+		//Need an attack duration.
+		//attackDuration = 0.5f;
+		//if attackdur > 0 
+		// arratckDur -= deltaTime;
+		//When a time has passed and the attack is ongoing damage enemies within range.
+		//(When attack != done or smth)
+		//else... attack = done reset attack duration?
 
-	return hit;
+		//cout << "MELEE ATTACK" << endl;
+
+		//
+
+		//XMFLOAT3 cPos = getPos();
+		//XMFLOAT3 ePos; //= get enemy position
+		//float angle;
+
+		//float opp = cPos.y - ePos.y;
+		//opp = abs(opp);
+		//float adj = cPos.x - ePos.y;
+		//adj = abs(adj);
+
+		////angle of attack. Also needs a range.
+		//angle = atan(opp / adj);
+
+		//filter down the list of enemies, 
+		//first if they're within range
+		//then if they're within the angle of the attack
+		
+		
+
+	}
 }
+void MainCharacter::rangeAttack()
+{
+	if (GetAsyncKeyState(MK_RBUTTON))
+	{
+		cout << "RANGED ATTACK" << endl;
+
+		//attack
+	}
+}
+
+
+
+//Don't need this
+//XMVECTOR MainCharacter::getPlane()
+//{
+//	XMVECTOR point = { 0, 0, 0 };
+//	XMVECTOR normal = { 0, 1, 0 };
+//
+//	return XMPlaneFromPointNormal(point, normal);
+//}
+//XMFLOAT3 MainCharacter::getPointOnRay(XMFLOAT3 ray, float distance)
+//{
+//	
+//	XMFLOAT3 scaledRay = { ray.x * distance, ray.y * distance, ray.z * distance };
+//
+//	return scaledRay;
+//}
+//bool MainCharacter::IntersectionInRange(XMFLOAT3 MousePos)
+//{
+//
+//	//XMVECTOR clipcoords = {mouseXNDC, mouseYNDC, 1.0f, 0.0f};    
+//	//
+//	//XMVECTOR mouseViewCoords = XMVector4Transform(clipcoords, camera.projectionMatrix);
+//
+//
+//	//XMFLOAT4 MVP;
+//	//XMStoreFloat4(&MVP, mouseViewCoords);
+//	//XMFLOAT4 filter = { MVP.x, MVP.y, 1.0f, 0.0f };
+//	//XMVECTOR mouseWorldPos = XMLoadFloat4(&filter);
+//	////cout << filter.x << " " << filter.y << " " << filter.z << endl;
+//	//mouseWorldPos = XMVector4Transform(mouseWorldPos,camera.ViewInv);
+//	//
+//	//
+//	//XMFLOAT4 holder; 
+//	//XMStoreFloat4(&holder, mouseWorldPos);
+//	//XMFLOAT3 MWP = { holder.x, holder.y, holder.z };
+//	//MWP = math.Normalize(MWP);
+//	////cout << MWP.x << " " << MWP.y << " " << MWP.z << endl;
+//	//
+//
+//
+//	//XMMATRIX world = XMMatrixIdentity();
+//
+//	//XMVECTOR ray = XMVector3Unproject(clipcoords, 0.0f, 0.0f, WIDTH, HEIGHT, 0.0f, 1.0f, camera.projectionMatrix, camera.viewMatrix, world);
+//
+//	//
+//	//bool PlaneHit = IntersectionInRange(MWP);
+//	//cout << PlaneHit << endl;
+//
+//	//if (IntersectionInRange(MWP))
+//	//{
+//	//}	
+//
+//	//bool hit = false;
+//
+//	//basicMath math;
+//	//XMFLOAT3 normal = { 0,1,0 };
+//	//XMFLOAT3 camPos = camera.GetPosition();
+//	//XMFLOAT3 rayDirection;
+//	//XMFLOAT3 point = { 0,0,0 };
+//	//float T;
+//
+//	//XMVECTOR vecCamPos = XMLoadFloat3(&camPos);
+//	//XMVECTOR vecMousePos = XMLoadFloat3(&MousePos);
+//	//XMVECTOR vecRayDirection = vecMousePos - vecCamPos;
+//	//
+//	//XMStoreFloat3(&rayDirection, vecRayDirection);
+//	//rayDirection = math.Normalize(rayDirection);
+//
+//
+//	//// a point in the plane dotted with the plane normal
+//	//float dp = math.dot(normal, point);
+//	////dp *= -1;
+//
+//	//T = (dp - math.dot(normal,camPos)) / math.dot(normal,rayDirection);
+//
+//	//if (T > 0)
+//	//{
+//	//	hit = true;
+//	//}
+//
+//	return false;
+//}
 
 
 
