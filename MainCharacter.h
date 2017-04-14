@@ -16,9 +16,11 @@ public:
 	void CharacterMove(HWND windowhandle);
 	bool CheckInput(XMFLOAT3 &direction);
 
+	float characterLookAt(HWND windowHandle);
+
 	XMMATRIX rotate(HWND windowhandle);
-	void meleeAttack();
-	void rangeAttack();
+	void meleeAttack(HWND windowHandle);
+	void rangeAttack(HWND windowHandle);
 	
 	Camera camera;
 

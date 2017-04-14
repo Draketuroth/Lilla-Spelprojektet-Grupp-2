@@ -24,8 +24,8 @@ MainCharacter::~MainCharacter()
 void MainCharacter::update(HWND windowhandle)
 {
 	CharacterMove(windowhandle);
-	meleeAttack();
-	rangeAttack();
+	//meleeAttack(windowhandle);
+	//rangeAttack(windowhandle);
 }
 
 //--------- Changing the character's position --------------
@@ -106,18 +106,12 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	return negativePosVec;
 }
 
-//Rotate character
-XMMATRIX MainCharacter::rotate(HWND windowhandle)
+float MainCharacter::characterLookAt(HWND windowHandle)
 {
-	basicMath math;
-	XMMATRIX R;
 	POINT p;
-	const float RayRange = 600;
-
-	XMFLOAT3 characterPosition = getPos();
 	float angle;
 	GetCursorPos(&p);
-	ScreenToClient(windowhandle, &p);
+	ScreenToClient(windowHandle, &p);
 
 	float mouseX = p.x;
 	float mouseY = p.y;
@@ -125,16 +119,23 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 	float mouseXNDC = (2 * mouseX) / WIDTH - 1;
 	float mouseYNDC = (2 * mouseY) / HEIGHT - 1;
 	mouseYNDC *= -1;
-	//cout << mouseXNDC << " " << mouseYNDC << endl;
-	
+
 	angle = atan2(mouseXNDC, mouseYNDC);
+
+	return angle;
+}
+
+//Rotate character
+XMMATRIX MainCharacter::rotate(HWND windowhandle)
+{
+	XMMATRIX R;
+
+	float angle = characterLookAt(windowhandle);
 	R = XMMatrixRotationY(angle);
-	
-	
 
 	return R;
 }
-void MainCharacter::meleeAttack()
+void MainCharacter::meleeAttack(HWND windowHandle)
 {
 	if (GetAsyncKeyState(MK_LBUTTON))
 	{
@@ -147,30 +148,50 @@ void MainCharacter::meleeAttack()
 		//else... attack = done reset attack duration?
 
 		cout << "MELEE ATTACK" << endl;
+		//this is the way the character will be facing
+		float angle = characterLookAt(windowHandle);
+		
+		//create boundingBox within the angle of the attack that
+		//covers the range between the character and the attack range
+		XMFLOAT3 characterPos = getPos();
+		float centerX = 0.5 * cos(angle * (2 * PI)); //0.5 eftersom 1 boxRange
+		float centerZ = 0.5 * sin(angle * (2 * PI));
+		XMFLOAT3 boxCenter = {centerX, 0, centerZ };  
+		XMFLOAT3 boxRange = { 1, 1, 1 };
 
+		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		
 
-		XMFLOAT3 cPos = getPos();
-		XMFLOAT3 ePos; //= get enemy position
-		float angle;
-
-		float opp = cPos.y - ePos.y;
-		opp = abs(opp);
-		float adj = cPos.x - ePos.y;
-		adj = abs(adj);
-
-		//angle of attack. Also needs a range.
-		angle = atan(opp / adj);
+		//We need a way to browse through the enemies
+		//Array? Handler?
 
 		//filter down the list of enemies, 
 		//first if they're within range
 		//then if they're within the angle of the attack
-		
-		
 
+		//we need to get the number of enemies
+		//ALT. enemyArray.length?
+		int nrOfEnemies = 10;
+
+		for (int i = 0; i < nrOfEnemies, i++;)
+		{
+			float enemyDistance = 2;
+			if (enemyDistance <= 1)
+			{
+				//check if that enemy boundingBox intersects meleeBox
+					//if YES 
+						//drain that enemy's health
+					//else
+						//do nothing and continue on
+			}
+		}
+
+		//attack done 
+		//reset attack duration
+		
 	}
 }
-void MainCharacter::rangeAttack()
+void MainCharacter::rangeAttack(HWND windowHandle)
 {
 	if (GetAsyncKeyState(MK_RBUTTON))
 	{

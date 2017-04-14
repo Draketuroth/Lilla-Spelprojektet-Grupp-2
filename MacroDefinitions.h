@@ -10,7 +10,7 @@
 
 #define CUBECAPACITY 50
 
-#define LaunchInWindowedMode FALSE;
+#define LaunchInWindowedMode TRUE;
 #define SAFE_RELEASE( x ) if( x ) ( x )->Release(), ( x ) = nullptr;
 
 #define MAIN_MENU 11
