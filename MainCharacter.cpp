@@ -200,7 +200,9 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 	if (GetAsyncKeyState(MK_RBUTTON))
 	{
 		cout << "RANGED ATTACK" << endl;
+	}
 
+}
 
 
 
