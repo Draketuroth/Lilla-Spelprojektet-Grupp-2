@@ -178,7 +178,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 	//----------------------------------------------------------------------//
 	// INDEX BUFFER
 	//----------------------------------------------------------------------//
-
+	
 	// Create Indices
 	unsigned int indices[36] = {
 

@@ -3,8 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-#FBX SDK should not be included
+#FBX SDK and Bullet Physics should not be included
 FBX SDK/*
+Bullet/*
 
 # User-specific files
 *.suo
