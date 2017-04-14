@@ -97,7 +97,6 @@ int RunApplication() {
 			}
 			menuState.checkGameState();
 			
-
 			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
 			updateCharacter(windowHandle);

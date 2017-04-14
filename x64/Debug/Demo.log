@@ -1,2 +1,16 @@
-﻿  BufferComponents.cpp
+﻿  BasicMath.cpp
+  BufferComponents.cpp
+  Camera.cpp
+  CharacterBase.cpp
+  DeferredBuffersClass.cpp
+  DeferredShaderClass.cpp
+  GameState.cpp
+  GraphicComponents.cpp
+  LightShaderClass.cpp
+  MainCharacter.cpp
+  SceneContainer.cpp
+  TextureComponents.cpp
+  Window.cpp
+  main.cpp
+  BulletComponents.cpp
   Demo.vcxproj -> C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Debug\Scene.exe

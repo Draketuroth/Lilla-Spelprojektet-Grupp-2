@@ -9,6 +9,9 @@
 #include "VertexType.h"
 #include <vector>
 
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
+
 using namespace DirectX;
 
 // We require a combined transformation matrix from all the previously created matrices and a matrix to preserve the world positions throughout the pipeline

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef BULLETSCOMPONENTS_H
 #define BULLETSCOMPONENTS_H
 
@@ -7,7 +8,8 @@
 #include <iostream>
 #include "MacroDefinitions.h"
 
-#include "btBulletDynamicsCommon.h"
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 class BulletComponents {
 
