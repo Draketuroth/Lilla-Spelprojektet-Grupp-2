@@ -39,6 +39,7 @@ public:
 
 	void releaseAll();
 
+	//GET-SET
 	int getHealth()const;
 	void setHealth(const int newHealth);
 	float getMovementSpeed()const;
@@ -53,6 +54,7 @@ public:
 	bool createBuffers(ID3D11Device* &graphicDevice, BulletComponents &bulletPhysicsHandler);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
+	//Matrices
 	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);
 	void resetWorldMatrix();
 
