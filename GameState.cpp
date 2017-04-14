@@ -2,6 +2,7 @@
 GameState::GameState()
 {
 	this->state = MAIN_MENU;
+
 }
 GameState::~GameState()
 {
@@ -9,9 +10,6 @@ GameState::~GameState()
 }
 int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMessage)
 {
-	createBufferData(scene.gHandler.gDevice);
-	createVertexBuffer(scene.gHandler.gDevice);
-	createIndexBuffer(scene.gHandler.gDevice);
 	if (this->state == MAIN_MENU)
 	{
 		mainMenu(windowHandle, scene);
@@ -24,8 +22,7 @@ int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMe
 }
 int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 {
-
-	while (this->state == MAIN_MENU)
+	if (this->state == MAIN_MENU)
 	{
 		renderMainMenu(scene);
 		if (GetAsyncKeyState(VK_LBUTTON))
@@ -41,7 +38,7 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 }
 int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMessage)
 {
-	while (this->state == PAUSE_MENU)
+	if (this->state == PAUSE_MENU)
 	{
 		renderMainMenu(scene);
 		if (GetAsyncKeyState(VK_LBUTTON))

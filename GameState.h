@@ -38,9 +38,6 @@ private:
 	ID3D11Buffer* gMenuIndex;
 	POINT mousePos;
 	XMFLOAT2 floatMouse;
-	//ID3D11Texture2D* menuDepthStencil;
-	//ID3D11DepthStencilState* menuDepthState;
-	//ID3D11DepthStencilView* menuDepthView;
 
 public:
 	int state;
