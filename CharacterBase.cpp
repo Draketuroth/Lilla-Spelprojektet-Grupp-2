@@ -162,7 +162,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents
 	// CREATE THE RIGID BODY
 	//----------------------------------------------------------------------//
 
-	// Platform Rigid Body only uses an identity matrix as its world matrix
+	// Platform Rigid Body only uses an identity matrix as its world matrix. Might have to be changed later
 	btTransform transform;
 	transform.setIdentity();
 
