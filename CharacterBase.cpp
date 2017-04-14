@@ -85,7 +85,7 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 }
 
 //-------------Create Buffer and Draw -----------------------
-bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
+bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents &bulletPhysicsHandler)
 {
 	//----------------------------------------------------------------------//
 	// VERTEX BUFFER
@@ -159,21 +159,36 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 	}
 
 	//----------------------------------------------------------------------//
-	// BOUNDING BOX
+	// CREATE THE RIGID BODY
 	//----------------------------------------------------------------------//
 
-	XMFLOAT3 boundingPoints[24];
+	// Platform Rigid Body only uses an identity matrix as its world matrix. Might have to be changed later
+	btTransform transform;
+	transform.setIdentity();
 
-	for (int k = 0; k < 24; k++) {
+	// Define the kind of shape we want and construct rigid body information
+	btBoxShape* boxShape = new btBoxShape(btVector3(2, 2, 2));
+	btScalar mass(0.10f);	// Rigid body is dynamic if and only if mass is non zero, otherwise static
+	btVector3 inertia(0, 0, 0);
 
-		boundingPoints[k].x = cubeVertices[k].x;
-		boundingPoints[k].y = cubeVertices[k].y;
-		boundingPoints[k].z = cubeVertices[k].z;
+	if (mass != 0.0) {
+
+		boxShape->calculateLocalInertia(mass, inertia);
 	}
 
-	BoundingBox::CreateFromPoints(this->bbox, 24, boundingPoints, 0);
+	btMotionState* motion = new btDefaultMotionState(transform);
 
-	this->bbox.Extents = { 2, 2, 2 };
+	// Definition of the rigid body
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape, inertia);
+
+	// Create the rigid body
+	btRigidBody* playerRigidBody = new btRigidBody(info);
+
+	// Set the rigid body to the current platform 
+	this->rigidBody = playerRigidBody;
+
+	// Add the new rigid body to the dynamic world
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
 
 	//----------------------------------------------------------------------//
 	// INDEX BUFFER
@@ -259,23 +274,27 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 
 void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 {
-	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
+	
+	XMMATRIX transform = XMMatrixIdentity();
+	XMFLOAT4X4 data;
 
+	btTransform btRigidTransform;
+	this->rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+
+	btRigidTransform.getOpenGLMatrix((float*)&data);
+
+	transform = XMLoadFloat4x4(&data);
+
+	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
 	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
 
-	// Translate player bounding box in world space
-	TransformBoundingBox(this->bbox, translation);
+	translation = XMMatrixMultiply(transform, translation);
 
 	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
 }
 
-void CharacterBase::TransformBoundingBox(BoundingBox bbox, XMMATRIX translation) {
 
-	XMMATRIX transform = XMMATRIX(translation);
-
-	bbox.Transform(this->bbox, transform);
-}
 
 void CharacterBase::resetWorldMatrix()
 {

@@ -3,15 +3,19 @@
 
 SceneContainer::SceneContainer() {
 
+	// Initialize handler and main character
+
 	gHandler = GraphicComponents();
 	bHandler = BufferComponents();
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
+
+	bulletPhysicsHandler = BulletComponents();
+
 }
 
 SceneContainer::~SceneContainer() {
-
 
 }
 
@@ -26,6 +30,8 @@ void SceneContainer::releaseAll() {
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
 	lightShaders.ReleaseAll();
+
+	bulletPhysicsHandler.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -50,7 +56,9 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	if (!bHandler.SetupScene(gHandler.gDevice)) {
+	bulletPhysicsHandler.InitializeBulletPhysics();
+
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler)) {
 
 		MessageBox(
 			NULL,
@@ -95,7 +103,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	character.createBuffers(gHandler.gDevice);
+	character.createBuffers(gHandler.gDevice, bulletPhysicsHandler);
 
 	return true;
 

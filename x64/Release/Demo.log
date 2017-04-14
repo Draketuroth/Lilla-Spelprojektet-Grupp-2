@@ -1,2 +1,21 @@
-﻿  DeferredShaderClass.cpp
-  Demo.vcxproj -> C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Release\Scene.exe
+﻿  BasicMath.cpp
+  BufferComponents.cpp
+  Camera.cpp
+  CharacterBase.cpp
+  DeferredBuffersClass.cpp
+  DeferredShaderClass.cpp
+  GameState.cpp
+  GraphicComponents.cpp
+  LightShaderClass.cpp
+  main.cpp
+  MainCharacter.cpp
+  SceneContainer.cpp
+  TextureComponents.cpp
+  Timer.cpp
+  WICTextureLoader.cpp
+  Window.cpp
+SceneContainer.obj : error LNK2019: unresolved external symbol "public: __cdecl BulletComponents::BulletComponents(void)" (??0BulletComponents@@QEAA@XZ) referenced in function "public: __cdecl SceneContainer::SceneContainer(void)" (??0SceneContainer@@QEAA@XZ)
+SceneContainer.obj : error LNK2019: unresolved external symbol "public: __cdecl BulletComponents::~BulletComponents(void)" (??1BulletComponents@@QEAA@XZ) referenced in function "public: __cdecl SceneContainer::SceneContainer(void)" (??0SceneContainer@@QEAA@XZ)
+SceneContainer.obj : error LNK2019: unresolved external symbol "public: void __cdecl BulletComponents::InitializeBulletPhysics(void)" (?InitializeBulletPhysics@BulletComponents@@QEAAXXZ) referenced in function "public: bool __cdecl SceneContainer::initialize(struct HWND__ * &)" (?initialize@SceneContainer@@QEAA_NAEAPEAUHWND__@@@Z)
+SceneContainer.obj : error LNK2019: unresolved external symbol "public: void __cdecl BulletComponents::ReleaseAll(void)" (?ReleaseAll@BulletComponents@@QEAAXXZ) referenced in function "public: void __cdecl SceneContainer::releaseAll(void)" (?releaseAll@SceneContainer@@QEAAXXZ)
+C:\Users\Fredrik\Source\Repos\Lilla-Spelprojektet-Grupp-2\x64\Release\Scene.exe : fatal error LNK1120: 4 unresolved externals

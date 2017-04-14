@@ -9,6 +9,7 @@
 #include "VertexType.h"
 #include "BasicMath.h"
 #include "MacroDefinitions.h"
+#include "BufferComponents.h"
 
 using namespace std;
 using namespace DirectX;
@@ -28,7 +29,7 @@ private:
 
 public:
 	XMMATRIX tPlayerTranslation;
-	BoundingBox bbox;
+	btRigidBody* rigidBody;
 	
 	Timer timer;
 
@@ -50,14 +51,11 @@ public:
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
-
-	//Create and draw
-	bool createBuffers(ID3D11Device* &graphicDevice);
+	bool createBuffers(ID3D11Device* &graphicDevice, BulletComponents &bulletPhysicsHandler);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
 	//Matrices
 	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);
-	void CharacterBase::TransformBoundingBox(BoundingBox bbox, XMMATRIX translation);
 	void resetWorldMatrix();
 
 	string toString();

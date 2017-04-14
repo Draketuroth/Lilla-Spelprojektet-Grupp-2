@@ -11,6 +11,8 @@ MainCharacter::MainCharacter()
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
+	/*plane = getPlane();*/
+
 	direction = { 0, 0, 0 };
 	newCameraPos = { 0, 0, 0 };
 	directionVec;
@@ -19,18 +21,20 @@ MainCharacter::MainCharacter()
 
 MainCharacter::~MainCharacter()
 {
+
 }
 
 void MainCharacter::update(HWND windowhandle)
 {
 	CharacterMove(windowhandle);
-	//meleeAttack(windowhandle);
-	//rangeAttack(windowhandle);
+	/*meleeAttack();
+	rangeAttack();*/
 }
 
 //--------- Changing the character's position --------------
 void MainCharacter::CharacterMove(HWND windowhandle)
 {
+	
 	direction = { 0, 0, 0 };
 
 	float time = timer.getDeltaTime();
@@ -197,9 +201,6 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 	{
 		cout << "RANGED ATTACK" << endl;
 
-		//attack
-	}
-}
 
 
 
