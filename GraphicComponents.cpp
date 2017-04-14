@@ -102,7 +102,8 @@ bool GraphicComponents::CreateSwapChainAndDevice(HWND &windowHandle) {
 	chainDescription.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;	// We are using 32-bit color
 	chainDescription.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		// Defines use of swap chain. It now uses the surface or resource as an output render target.
 	chainDescription.OutputWindow = windowHandle;						// The window to be used defined in "Global Window Variables"
-	chainDescription.SampleDesc.Count = 1;								// How many multisamples to be used and default seems to be 4
+	chainDescription.SampleDesc.Count = 1;
+	chainDescription.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;	// How many multisamples to be used and default seems to be 4
 	chainDescription.Windowed = LaunchInWindowedMode;					// Specify whether to launch application window in windowed or fullscreen mode		
 
 																		// A trick here is that we can take advantage of a debug layer, and therefore Debug should be defined as a build option

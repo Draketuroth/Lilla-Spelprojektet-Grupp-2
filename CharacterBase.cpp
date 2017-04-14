@@ -87,7 +87,10 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 //-------------Create Buffer and Draw -----------------------
 bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 {
-	//----------CUBE-------------------------
+	//----------------------------------------------------------------------//
+	// VERTEX BUFFER
+	//----------------------------------------------------------------------//
+
 	HRESULT hr;
 
 	float scaleFactor = 0.3;
@@ -154,6 +157,27 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 
 		return false;
 	}
+
+	//----------------------------------------------------------------------//
+	// BOUNDING BOX
+	//----------------------------------------------------------------------//
+
+	XMFLOAT3 boundingPoints[24];
+
+	for (int k = 0; k < 24; k++) {
+
+		boundingPoints[k].x = cubeVertices[k].x;
+		boundingPoints[k].y = cubeVertices[k].y;
+		boundingPoints[k].z = cubeVertices[k].z;
+	}
+
+	BoundingBox::CreateFromPoints(this->bbox, 24, boundingPoints, 0);
+
+	this->bbox.Extents = { 2, 2, 2 };
+
+	//----------------------------------------------------------------------//
+	// INDEX BUFFER
+	//----------------------------------------------------------------------//
 
 	// Create Indices
 	unsigned int indices[36] = {
@@ -239,7 +263,18 @@ void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 
 	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
 
+	// Translate player bounding box in world space
+	TransformBoundingBox(this->bbox, translation);
+
+	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
+}
+
+void CharacterBase::TransformBoundingBox(BoundingBox bbox, XMMATRIX translation) {
+
+	XMMATRIX transform = XMMATRIX(translation);
+
+	bbox.Transform(this->bbox, transform);
 }
 
 void CharacterBase::resetWorldMatrix()

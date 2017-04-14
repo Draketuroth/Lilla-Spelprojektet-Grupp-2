@@ -2,55 +2,58 @@
 GameState::GameState()
 {
 	this->state = MAIN_MENU;
+
 }
 GameState::~GameState()
 {
 
 }
-int GameState::menuHandler(HWND windowHandle, SceneContainer scene)
+int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMessage)
 {
-	createBufferData(scene.gHandler.gDevice);
-	createVertexBuffer(scene.gHandler.gDevice);
-	createIndexBuffer(scene.gHandler.gDevice);
-	mainMenu(windowHandle, scene);
-
+	if (this->state == MAIN_MENU)
+	{
+		mainMenu(windowHandle, scene);
+	}
+	else if (this->state == PAUSE_MENU)
+	{
+		pauseMenu(windowHandle, scene, windowMessage);
+	}
 	return state;
 }
 int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 {
-
-	while (this->state == MAIN_MENU)
+	if (this->state == MAIN_MENU)
 	{
 		renderMainMenu(scene);
-		if (GetAsyncKeyState('T') & 0x8000)
-		{
-			this->state = START_GAME;
-		}
-		if (GetAsyncKeyState(VK_LBUTTON) & VK_LBUTTON)
-		{
-			
-			
-			getMousePos(windowHandle, scene);
-		//	cout << "MousePos X: " << this->floatMouse.x << endl << "MousePos Y: " << this->floatMouse.y << endl;
+		if (GetAsyncKeyState(VK_LBUTTON))
+		{			
+			getMousePos(windowHandle, scene);	
 			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.7f && this->floatMouse.y >= 0.4f)
 			{
-				cout << "Position X: " << this->floatMouse.x << endl << "Position Y: " << this->floatMouse.y << endl;
 				this->state = START_GAME;
 			}
 		}
 	}
 	return state;
 }
-int GameState::pauseMenu(HWND windowHandle)
+int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMessage)
 {
-	while (this->state == PAUSE_MENU)
+	if (this->state == PAUSE_MENU)
 	{
-
+		renderMainMenu(scene);
+		if (GetAsyncKeyState(VK_LBUTTON))
+		{
+			getMousePos(windowHandle, scene);
+			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.7f && this->floatMouse.y >= 0.4f)
+			{
+				this->state = START_GAME;
+			}
+		}
 	}
 
 	return state;
 }
-int GameState::gameOver(HWND windowHandle)
+int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 {
 
 	return state;
@@ -95,6 +98,7 @@ void GameState::releaseAll()
 {
 	SAFE_RELEASE(this->gMenuConstant);
 	SAFE_RELEASE(this->gMenuVertexBuffer);
+	SAFE_RELEASE(this->gMenuIndex);
 }
 void GameState::renderMainMenu(SceneContainer scene)
 {
@@ -192,118 +196,20 @@ bool GameState::createIndexBuffer(ID3D11Device* gDevice)
 }
 void GameState::getMousePos(HWND windowHandle, SceneContainer scene)
 {
-
 	GetCursorPos(&this->mousePos);
 	ScreenToClient(windowHandle, &this->mousePos);
 	this->floatMouse.x = mousePos.x;
 	this->floatMouse.y = mousePos.y;
-	//XMVECTOR vecMouse;
 	this->floatMouse.x = (2 * this->floatMouse.x) / WIDTH - 1;
 	this->floatMouse.y = -(2 * this->floatMouse.y) / HEIGHT + 1;
-	//Matrix calculations for taking the pixel coordinates to clip space
-	//XMMATRIX inViewProj;
-	//inViewProj = scene.character.camera.ViewProj();
-	//XMVECTOR det = XMMatrixDeterminant(inViewProj);
-	//XMMatrixInverse(&det, inViewProj);
-
-	//XMFLOAT2 mP;//Storing the mousePos in a xmfloat2
-	//mP.x = this->mousePos.x;
-	//mP.y = this->mousePos.y;
-
-	//vecMouse = XMLoadFloat2(&mP);//Storing the mousepos in a vector
-
-	//XMVector2Transform(vecMouse, inViewProj);//Multiply the inverse of ViewProj with the mousePos
-	//XMStoreFloat2(&mP, vecMouse);
-	//this->mousePos.x = mP.x;
-	//this->mousePos.y = mP.y;
 }
-//bool GameState::createMenuDepthStencil(ID3D11Device* gDevice)
-//{
-//	HRESULT hr;
-//
-//	// Depth Texture
-//	//----------------------------------------------------------------------------------------------------------------------------------//
-//
-//	// THe depth buffer texture is used to store the distance of each fragment to the camera
-//
-//	D3D11_TEXTURE2D_DESC descDepth;
-//	descDepth.Width = WIDTH;
-//	descDepth.Height = HEIGHT;
-//	descDepth.MipLevels = 1;
-//	descDepth.ArraySize = 1;
-//	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-//	descDepth.SampleDesc.Count = 1;
-//	descDepth.SampleDesc.Quality = 0;
-//	descDepth.Usage = D3D11_USAGE_DEFAULT;
-//	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-//	descDepth.CPUAccessFlags = 0;
-//	descDepth.MiscFlags = 0;
-//
-//	hr = gDevice->CreateTexture2D(&descDepth, nullptr, &menuDepthStencil);
-//
-//	if (FAILED(hr)) {
-//
-//		return false;
-//	}
-//
-//	//----------------------------------------------------------------------------------------------------------------------------------//
-//
-//
-//	// Depth View Description
-//	//----------------------------------------------------------------------------------------------------------------------------------//
-//
-//	// Create depth view description. A depth-stencil-view interface process a texture resource during the depth-stencil testing.
-//	D3D11_DEPTH_STENCIL_VIEW_DESC dViewDesc;
-//	dViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-//	dViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-//	dViewDesc.Texture2D.MipSlice = 0;
-//	dViewDesc.Flags = 0;
-//
-//	//Create depth stencil view
-//	hr = gDevice->CreateDepthStencilView(menuDepthStencil, &dViewDesc, &menuDepthView);
-//
-//	if (FAILED(hr)) {
-//
-//		return false;
-//	}
-//
-//	// Depth State Description
-//	//----------------------------------------------------------------------------------------------------------------------------------//
-//
-//	D3D11_DEPTH_STENCIL_DESC stencilDesc;
-//
-//	// Depth test
-//	stencilDesc.DepthEnable = true;
-//	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-//	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-//
-//	// Stencil test
-//	stencilDesc.StencilEnable = true;
-//	stencilDesc.StencilReadMask = 0xFF;
-//	stencilDesc.StencilWriteMask = 0xFF;
-//
-//	// Stencil operations if the pixel is facing forward
-//
-//	stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-//	stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-//	stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-//	stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-//
-//	// Stencil operations if the pixel is facing backward
-//
-//	stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-//	stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-//	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-//	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-//
-//	// Create Depth State
-//	hr = gDevice->CreateDepthStencilState(&stencilDesc, &menuDepthState);
-//
-//	if (FAILED(hr)) {
-//
-//		return false;
-//	}
-//
-//	//----------------------------------------------------------------------------------------------------------------------------------//
-//	return true;
-//}
+void GameState::checkGameState()
+{
+	if (this->state == START_GAME)
+	{
+		if (GetAsyncKeyState('P'))
+		{
+			this->state = PAUSE_MENU;
+		}
+	}
+}

@@ -31,6 +31,7 @@ void MainCharacter::update(HWND windowhandle)
 //--------- Changing the character's position --------------
 void MainCharacter::CharacterMove(HWND windowhandle)
 {
+	direction = { 0, 0, 0 };
 
 	float time = timer.getDeltaTime();
 
@@ -56,6 +57,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	}
 
 	XMStoreFloat3(&floatPos, positionVec);
+
 	this->setPos(floatPos);
 
 	newCameraPos = { floatPos.x, cameraDistanceY, floatPos.z - cameraDistanceZ };

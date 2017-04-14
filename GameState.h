@@ -38,9 +38,6 @@ private:
 	ID3D11Buffer* gMenuIndex;
 	POINT mousePos;
 	XMFLOAT2 floatMouse;
-	//ID3D11Texture2D* menuDepthStencil;
-	//ID3D11DepthStencilState* menuDepthState;
-	//ID3D11DepthStencilView* menuDepthView;
 
 public:
 	int state;
@@ -48,15 +45,16 @@ public:
 	GameState();
 	~GameState();
 
-	int menuHandler(HWND windowHandle, SceneContainer scene);
+	int menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMessage);
 	int mainMenu(HWND windowHandle, SceneContainer scene);
-	int pauseMenu(HWND windowHandle);
-	int gameOver(HWND windowHandle);
+	int pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMessage);
+	int gameOver(HWND windowHandle, SceneContainer scene);
 
 	bool createIndexBuffer(ID3D11Device* gDevice);
 	bool createVertexBuffer(ID3D11Device* gDevice);
 	void createBufferData(ID3D11Device* gDevice);
-	//bool createMenuDepthStencil(ID3D11Device* gDevice);
+	void checkGameState();
+
 	void releaseAll();
 	void getMousePos(HWND windowHandle, SceneContainer scene);
 

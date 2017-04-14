@@ -62,6 +62,10 @@ int RunApplication() {
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
 
+	menuState.createBufferData(sceneContainer.gHandler.gDevice);
+	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
+	menuState.createVertexBuffer(sceneContainer.gHandler.gDevice);
+
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -82,39 +86,36 @@ int RunApplication() {
 
 			float deltaTime = timer.getDeltaTime();
 
-			//while (menuState.state != START_GAME)
-			//{
-			//	menuState.menuHandler(windowHandle, sceneContainer);
-			//}
+
 			switch (menuState.state)
 			{
 			case MAIN_MENU:
-				menuState.menuHandler(windowHandle, sceneContainer);
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				break;
+			case PAUSE_MENU:
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				break;
+			case START_GAME:
+				menuState.checkGameState();
+				updateCharacter(windowHandle);
+				updateBuffers();
+
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// RENDER
+				//----------------------------------------------------------------------------------------------------------------------------------//
+
+				sceneContainer.render();
+
+				showFPS(windowHandle, deltaTime);
+
+				sceneContainer.gHandler.gSwapChain->Present(0, 0);
+
+				timer.updateCurrentTime();
 				break;
 			}
-		
 			
 			
-
 			
-
-
-			updateCharacter(windowHandle);
-
-
-			updateBuffers();
-
-			//----------------------------------------------------------------------------------------------------------------------------------//
-			// RENDER
-			//----------------------------------------------------------------------------------------------------------------------------------//
-
-			sceneContainer.render();
-
-			showFPS(windowHandle, deltaTime);
-
-			sceneContainer.gHandler.gSwapChain->Present(0, 0);
-
-			timer.updateCurrentTime();
 		}
 
 	}
