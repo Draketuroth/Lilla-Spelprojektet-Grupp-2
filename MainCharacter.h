@@ -16,10 +16,13 @@ public:
 	void CharacterMove(HWND windowhandle);
 	bool CheckInput(XMFLOAT3 &direction);
 
+	float characterLookAt(HWND windowHandle);
+
 	XMMATRIX rotate(HWND windowhandle);
+	void meleeAttack(HWND windowHandle);
+	void rangeAttack(HWND windowHandle);
 	
 	Camera camera;
-	XMVECTOR plane;
 
 
 	float cameraDistanceY;
@@ -33,9 +36,12 @@ public:
 	XMFLOAT3 newCameraPos;
 	XMVECTOR directionVec;
 	XMFLOAT3 floatPos;
-	XMVECTOR getPlane();
-	XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);
-	bool IntersectionInRange(XMFLOAT3 MousePos);
+	
+
+	//Don't need this but it contains code.
+	//XMVECTOR getPlane();
+	//XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);
+	//bool IntersectionInRange(XMFLOAT3 MousePos);
 
 };
 

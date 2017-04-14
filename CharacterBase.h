@@ -38,6 +38,7 @@ public:
 
 	void releaseAll();
 
+	//GET-SET
 	int getHealth()const;
 	void setHealth(const int newHealth);
 	float getMovementSpeed()const;
@@ -49,9 +50,12 @@ public:
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
+
+	//Create and draw
 	bool createBuffers(ID3D11Device* &graphicDevice);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
+	//Matrices
 	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);
 	void CharacterBase::TransformBoundingBox(BoundingBox bbox, XMMATRIX translation);
 	void resetWorldMatrix();
