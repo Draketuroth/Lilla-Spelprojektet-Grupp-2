@@ -11,6 +11,8 @@
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 
+using namespace std;
+
 class BulletComponents {
 
 private:
@@ -29,6 +31,10 @@ public:
 	btCollisionConfiguration* bulletCollisionConfig;
 	btBroadphaseInterface* bulletBroadPhase;
 	btConstraintSolver* bulletConstraintSolver;
+
+	//------------------------------------------------------------//
+	// BULLET PHYSICS FUNCTIONS
+	//------------------------------------------------------------//
 
 	void InitializeBulletPhysics();
 	void ReleaseAll();

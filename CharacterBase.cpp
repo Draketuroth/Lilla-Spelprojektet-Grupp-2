@@ -171,10 +171,10 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents
 	btScalar mass(0.10f);	// Rigid body is dynamic if and only if mass is non zero, otherwise static
 	btVector3 inertia(0, 0, 0);
 
-	if (mass != 0.0) {
+	/*if (mass != 0.0) {
 
 		boxShape->calculateLocalInertia(mass, inertia);
-	}
+	}*/
 
 	btMotionState* motion = new btDefaultMotionState(transform);
 
@@ -274,24 +274,30 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 
 void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 {
-	
+	// Prepare matrices for conversion
 	XMMATRIX transform = XMMatrixIdentity();
 	XMFLOAT4X4 data;
 
+	// Gather the rigid body matrix
 	btTransform btRigidTransform;
 	this->rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
-
+	
+	// Load it into an XMFLOAT4x4
 	btRigidTransform.getOpenGLMatrix((float*)&data);
 
+	// Load it into an XMMATRIX
 	transform = XMLoadFloat4x4(&data);
 
+	// Calculate player object world transform
 	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
 	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
 
-	translation = XMMatrixMultiply(transform, translation);
+	// Multiply the player's translation by the transform of the dynamic rigid body
+	translation = transform;
 
 	// Build the new world matrix
-	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
+	tPlayerTranslation = translation;
+
 }
 
 

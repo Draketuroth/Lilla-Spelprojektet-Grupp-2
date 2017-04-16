@@ -229,7 +229,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		for (int j = 0; j < 24; j++) {
 
 			cubeVertices[j].x += xOffsetValue + spacing;
-			cubeVertices[j].y += yOffsetValue;
+			cubeVertices[j].y += yOffsetValue - 6;
 			cubeVertices[j].z += zOffsetValue + spacing;
 
 		}
@@ -259,10 +259,14 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 		// Platform Rigid Body only uses an identity matrix as its world matrix
 		btTransform transform;
-		transform.setIdentity();
-		
+		XMFLOAT4X4 d;
+		XMMATRIX platformTranslation = XMMatrixTranslation(xOffsetValue + spacing, yOffsetValue - 6, zOffsetValue + spacing);
+		XMStoreFloat4x4(&d, platformTranslation);
+
+		transform.setFromOpenGLMatrix((float*)&d);
+
 		// Define the kind of shape we want and construct rigid body information
-		btBoxShape* boxShape = new btBoxShape(btVector3(2, 2, 2));
+		btBoxShape* boxShape = new btBoxShape(btVector3(0.3, 0.3, 0.3));
 		btMotionState* motion = new btDefaultMotionState(transform);
 
 		// Definition of the rigid body
@@ -271,9 +275,6 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 		// Create the rigid body
 		btRigidBody* platformRigidBody = new btRigidBody(info);
-
-		// Set the rigid body to the current platform 
-		cubeObjects[nrOfCubes].rigidBody = platformRigidBody;
 
 		// Add the new rigid body to the dynamic world
 		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody);

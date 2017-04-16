@@ -101,7 +101,7 @@ int RunApplication() {
 				updateBuffers();
 
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
-
+				//sceneContainer.character.rig
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//

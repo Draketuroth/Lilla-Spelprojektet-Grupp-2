@@ -28,6 +28,7 @@ private:
 	ID3D11Buffer* indexBuffer;
 
 public:
+
 	XMMATRIX tPlayerTranslation;
 	btRigidBody* rigidBody;
 	

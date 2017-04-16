@@ -51,7 +51,6 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	
 		directionVec = XMLoadFloat3(&direction);
 		positionVec += directionVec * time * this->getMovementSpeed();
-
 	}
 
 	else {
@@ -62,9 +61,28 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 
 	XMStoreFloat3(&floatPos, positionVec);
 
-	this->setPos(floatPos);
+	XMMATRIX transform = XMMatrixIdentity();
+	XMFLOAT4X4 data;
 
-	newCameraPos = { floatPos.x, cameraDistanceY, floatPos.z - cameraDistanceZ };
+	// Gather the rigid body matrix
+	btTransform btRigidTransform;
+	this->rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+
+	// Load it into an XMFLOAT4x4
+	btRigidTransform.getOpenGLMatrix((float*)&data);
+
+	// Load it into an XMMATRIX
+	transform = XMLoadFloat4x4(&data);
+	XMVECTOR t;
+	XMVECTOR s;
+	XMVECTOR r;
+	XMMatrixDecompose(&s, &r, &t, transform);
+	XMFLOAT3 rigidPos;
+	XMStoreFloat3(&rigidPos, t);
+
+	this->setPos(rigidPos);
+
+	newCameraPos = { floatPos.x, floatPos.y + cameraDistanceY, floatPos.z - cameraDistanceZ };
 	camera.SetPosition(newCameraPos);
 
 //#if defined (DEBUG) || defined(_DEBUG)
@@ -93,18 +111,22 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	if (GetAsyncKeyState('W'))
 	{
 		direction.z = 1.0;
+		this->rigidBody->applyForce(btVector3(0, 0, 1), btVector3(direction.x, direction.y, direction.z));
 	}
 	if (GetAsyncKeyState('S'))
 	{
 		direction.z = -1.0;
+		this->rigidBody->applyForce(btVector3(0, 0, -1), btVector3(direction.x, direction.y, direction.z));
 	}
 	if (GetAsyncKeyState('A'))
 	{
 		direction.x = -1.0;
+		this->rigidBody->applyForce(btVector3(-1, 0, 0), btVector3(direction.x, direction.y, direction.z));
 	}
 	if (GetAsyncKeyState('D'))
 	{
 		direction.x = 1.0;
+		this->rigidBody->applyForce(btVector3(1, 0, 0), btVector3(direction.x, direction.y, direction.z));
 	}
 
 	return negativePosVec;

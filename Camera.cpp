@@ -48,7 +48,6 @@ Camera::Camera() {
 	detViewProj = XMMatrixDeterminant(viewProj);
 	InvViewPoj = XMMatrixInverse(&detViewProj, viewProj);
 	
-
 	Pitch(45);
 }
 
