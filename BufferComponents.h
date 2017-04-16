@@ -21,6 +21,7 @@ struct GS_CONSTANT_BUFFER {
 	XMMATRIX matrixWorld;
 	XMMATRIX matrixView;
 	XMMATRIX matrixProjection;
+	XMMATRIX inverseViewProjection;
 	XMFLOAT3 cameraPos;
 
 };

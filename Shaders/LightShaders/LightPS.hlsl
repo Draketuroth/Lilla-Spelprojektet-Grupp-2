@@ -12,7 +12,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b1) {
 	matrix worldViewProj;
 	matrix matrixWorld;
 	matrix matrixView;
-	matrix matrixProjection;
+	matrix inverseViewProjection;
 	float4 cameraPos;
 };
 
@@ -37,13 +37,19 @@ float4 PS_main(PS_IN input) : SV_TARGET
 	float4 position;
 
 	float4 normalData;
-	float4 depthValue;
+	float depthValue;
 
 	float specularPower;
 	float specularIntensity;
+	float NdL;
+	float specularLight;
 
-	float3 lightDir;
-	float lightIntensity;
+	float3 lightVector;
+	float3 reflectionVector;
+	float3 diffuseLight;
+
+	float3 directionToCamera;
+
 	float4 outputColor;
 
 	// Sample the colors from the color texture
@@ -61,7 +67,6 @@ float4 PS_main(PS_IN input) : SV_TARGET
 	// Get specular intensity from the color map
 	specularIntensity = colorTexture.Sample(PointSampler, input.tex).a;
 
-
 	depthValue = depthTexture.Sample(PointSampler, input.tex).r;
 
 	// Compute-screen space position
@@ -72,19 +77,31 @@ float4 PS_main(PS_IN input) : SV_TARGET
 	position.w = 1.0f;
 
 	// Transform to world space
-
+	position = mul(position, inverseViewProjection);
+	position /= position.w;
 
 	worldPos = worldTexture.Sample(PointSampler, input.tex);
 
-	// Invert the light direction for calculations
-	lightDir = -lightDirection;
+	// Surface-to-light vector
 
-	// Calculate the amount of light on the current pixel
-	lightIntensity = saturate(dot(normal.xyz, lightDir));
+	lightVector = -normalize(lightDirection);
 
-	// Determine the final amount of diffuse color based on the pixel color combined with the light intensity
-	outputColor = saturate(color * lightIntensity);
+	// Compute diffuse light
 
-	return outputColor;
+	NdL = max(0, dot(normal, lightVector));
+	diffuseLight = NdL * color.rgb;
 
+	// Reflection vector
+
+	reflectionVector = normalize(reflect(lightVector, normal));
+
+	// Camera-to-surface vector
+
+	directionToCamera = normalize(cameraPos - position).xyz;
+
+	// Compute specular light
+
+	specularLight = specularIntensity * pow(saturate(dot(reflectionVector, directionToCamera)), specularIntensity);
+
+	return float4(diffuseLight.rgb, specularLight);
 }

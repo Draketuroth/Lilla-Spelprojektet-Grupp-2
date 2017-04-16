@@ -356,6 +356,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	GsConstData.matrixWorld = { tWorldMatrix };
 	GsConstData.matrixView = { XMMatrixTranspose(viewMatrix) };
 	GsConstData.matrixProjection = { XMMatrixTranspose(projectionMatrix) };
+	GsConstData.matrixProjection = XMMatrixIdentity();
 	GsConstData.worldViewProj = { tWorldViewProj };
 	GsConstData.cameraPos = XMFLOAT3(0.0f, 0.0f, 2.0f);
 

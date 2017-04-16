@@ -102,11 +102,11 @@ int RunApplication() {
 
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				if(GetAsyncKeyState('L')) {
+				/*if(GetAsyncKeyState('L')) {
 
 					SAFE_RELEASE(sceneContainer.bHandler.cubeObjects[14].gCubeVertexBuffer);
 					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sceneContainer.bulletPhysicsHandler.rigidBodies[14]);
-				}
+				}*/
 				
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
@@ -150,6 +150,7 @@ void updateBuffers() {
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
+	XMMATRIX tCameraInverseViewProj = XMMatrixTranspose(XMMatrixInverse(nullptr, sceneContainer.character.camera.ViewProj()));
 	XMMATRIX tCameraProjection = XMMatrixTranspose(sceneContainer.character.camera.Proj());
 	XMMATRIX tCameraView = XMMatrixTranspose(sceneContainer.character.camera.View());
 
@@ -165,6 +166,7 @@ void updateBuffers() {
 	cBufferPointer->matrixWorld = sceneContainer.bHandler.tWorldMatrix;
 	cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
 	cBufferPointer->matrixProjection = tCameraProjection;
+	cBufferPointer->inverseViewProjection = tCameraInverseViewProj;
 
 	cBufferPointer->cameraPos = sceneContainer.character.camera.GetPosition();
 

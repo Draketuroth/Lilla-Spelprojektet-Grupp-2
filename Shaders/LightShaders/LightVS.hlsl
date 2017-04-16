@@ -1,14 +1,4 @@
 
-cbuffer GS_CONSTANT_BUFFER : register(b0) {
-
-	matrix worldViewProj;
-	matrix matrixWorld;
-	matrix matrixView;
-	matrix matrixProjection;
-	float4 cameraPos;
-
-};
-
 struct VS_IN {
 
 	float4 position : POSITION;
