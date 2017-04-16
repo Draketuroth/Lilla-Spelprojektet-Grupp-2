@@ -33,11 +33,7 @@ void BufferComponents::ReleaseAll() {
 	for (int i = 0; i < nrOfCubes; i++) {
 
 		SAFE_RELEASE(cubeObjects[i].gCubeVertexBuffer);
-		delete cubeObjects[i].rigidBody;
 	}
-
-	
-
 }
 
 bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
@@ -82,7 +78,7 @@ bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice, BulletComponen
 
 	DrawCubeRow(gDevice, 2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 6, bulletPhysicsHandler);
+	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 5, bulletPhysicsHandler);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RENDER CHECK TEST
@@ -266,7 +262,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		transform.setFromOpenGLMatrix((float*)&d);
 
 		// Define the kind of shape we want and construct rigid body information
-		btBoxShape* boxShape = new btBoxShape(btVector3(0.3, 0.3, 0.3));
+		btBoxShape* boxShape = new btBoxShape(btVector3(0.1, 0.1, 0.1));
 		btMotionState* motion = new btDefaultMotionState(transform);
 
 		// Definition of the rigid body
@@ -278,6 +274,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 		// Add the new rigid body to the dynamic world
 		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody);
+		bulletPhysicsHandler.rigidBodies.push_back(platformRigidBody);
 
 		//----------------------------------------------------------------------------------------------------------------------------------//
 		// ADD OFFSET FOR THE NEXT PLATFORM

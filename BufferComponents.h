@@ -33,8 +33,6 @@ struct PLAYER_TRANSFORM {
 
 struct CubeObjects {
 
-	btRigidBody* rigidBody;
-
 	ID3D11Buffer* gCubeVertexBuffer;
 	bool renderCheck;
 };

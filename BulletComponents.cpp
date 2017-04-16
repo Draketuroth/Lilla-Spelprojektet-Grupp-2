@@ -34,11 +34,21 @@ void BulletComponents::InitializeBulletPhysics() {
 	bulletDynamicsWorld = new btDiscreteDynamicsWorld(bulletDispatcher, bulletBroadPhase, bulletConstraintSolver, bulletCollisionConfig);
 
 	// Immediately set the gravity after initializing main Bullet Physics components
-	bulletDynamicsWorld->setGravity(btVector3(0.0f, -2, 0));
+	bulletDynamicsWorld->setGravity(btVector3(0.0f, -10, 0));
 
 }
 
 void BulletComponents::ReleaseAll() {
+
+	for (int i = 0; i < rigidBodies.size(); i++) {
+
+		bulletDynamicsWorld->removeCollisionObject(rigidBodies[i]);
+		btMotionState* motion = rigidBodies[i]->getMotionState();
+		btCollisionShape* shape = rigidBodies[i]->getCollisionShape();
+		delete rigidBodies[i];
+		delete motion;
+		delete shape;
+	}
 
 	delete bulletDispatcher;
 	delete bulletCollisionConfig;

@@ -10,13 +10,6 @@ MainCharacter::MainCharacter()
 	playerHeight = 2.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
-
-	/*plane = getPlane();*/
-
-	direction = { 0, 0, 0 };
-	newCameraPos = { 0, 0, 0 };
-	directionVec;
-	floatPos = { 0, 0, 0 };
 }
 
 MainCharacter::~MainCharacter()
@@ -49,19 +42,17 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	//Here
 	if(CheckInput(direction) == false){
 	
-		directionVec = XMLoadFloat3(&direction);
-		positionVec += directionVec * time * this->getMovementSpeed();
+		/*directionVec = XMLoadFloat3(&direction);
+		positionVec += directionVec * time * this->getMovementSpeed();*/
 	}
 
 	else {
 		
-		directionVec = XMLoadFloat3(&direction);
-		positionVec -= directionVec * time * this->getMovementSpeed();
+		/*directionVec = XMLoadFloat3(&direction);
+		positionVec -= directionVec * time * this->getMovementSpeed();*/
 	}
 
-	XMStoreFloat3(&floatPos, positionVec);
-
-	XMMATRIX transform = XMMatrixIdentity();
+	XMMATRIX transform;
 	XMFLOAT4X4 data;
 
 	// Gather the rigid body matrix
@@ -82,7 +73,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 
 	this->setPos(rigidPos);
 
-	newCameraPos = { floatPos.x, floatPos.y + cameraDistanceY, floatPos.z - cameraDistanceZ };
+	newCameraPos = { rigidPos.x, rigidPos.y + cameraDistanceY, rigidPos.z - cameraDistanceZ };
 	camera.SetPosition(newCameraPos);
 
 //#if defined (DEBUG) || defined(_DEBUG)
@@ -161,6 +152,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 	return R;
 }
+
 void MainCharacter::meleeAttack(HWND windowHandle)
 {
 	if (GetAsyncKeyState(MK_LBUTTON))
@@ -217,6 +209,7 @@ void MainCharacter::meleeAttack(HWND windowHandle)
 		
 	}
 }
+
 void MainCharacter::rangeAttack(HWND windowHandle)
 {
 	if (GetAsyncKeyState(MK_RBUTTON))

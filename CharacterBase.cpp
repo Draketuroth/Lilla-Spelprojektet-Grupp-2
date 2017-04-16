@@ -163,11 +163,15 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents
 	//----------------------------------------------------------------------//
 
 	// Platform Rigid Body only uses an identity matrix as its world matrix. Might have to be changed later
+	XMMATRIX translation = XMMatrixTranslation(2, 2, 5);
+	XMFLOAT4X4 t;
+	XMStoreFloat4x4(&t, translation);
+	
 	btTransform transform;
-	transform.setIdentity();
+	transform.setFromOpenGLMatrix((float*)&t);
 
 	// Define the kind of shape we want and construct rigid body information
-	btBoxShape* boxShape = new btBoxShape(btVector3(2, 2, 2));
+	btBoxShape* boxShape = new btBoxShape(btVector3(1.2, 1.2, 1.2));
 	btScalar mass(0.10f);	// Rigid body is dynamic if and only if mass is non zero, otherwise static
 	btVector3 inertia(0, 0, 0);
 
@@ -189,6 +193,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents
 
 	// Add the new rigid body to the dynamic world
 	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
+	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
 
 	//----------------------------------------------------------------------//
 	// INDEX BUFFER
@@ -275,7 +280,7 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 {
 	// Prepare matrices for conversion
-	XMMATRIX transform = XMMatrixIdentity();
+	XMMATRIX transform;
 	XMFLOAT4X4 data;
 
 	// Gather the rigid body matrix
@@ -288,15 +293,8 @@ void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 	// Load it into an XMMATRIX
 	transform = XMLoadFloat4x4(&data);
 
-	// Calculate player object world transform
-	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
-	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
-
-	// Multiply the player's translation by the transform of the dynamic rigid body
-	translation = transform;
-
 	// Build the new world matrix
-	tPlayerTranslation = translation;
+	tPlayerTranslation = transform;
 
 }
 

@@ -6,6 +6,7 @@
 #include <d3dcompiler.h>	// We also need the D3DCompiler header to compile shaders
 #include <DirectXMath.h>
 #include <iostream>
+#include <vector>
 #include "MacroDefinitions.h"
 
 #include <btBulletCollisionCommon.h>
@@ -31,6 +32,8 @@ public:
 	btCollisionConfiguration* bulletCollisionConfig;
 	btBroadphaseInterface* bulletBroadPhase;
 	btConstraintSolver* bulletConstraintSolver;
+
+	vector<btRigidBody*>rigidBodies;
 
 	//------------------------------------------------------------//
 	// BULLET PHYSICS FUNCTIONS
