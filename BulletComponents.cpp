@@ -11,7 +11,6 @@ BulletComponents::~BulletComponents() {
 
 }
 
-
 void BulletComponents::InitializeBulletPhysics() {
 
 	// Initialize main Bullet Physics components

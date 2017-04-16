@@ -39,18 +39,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMMATRIX R = rotate(windowhandle);
 	updateWorldMatrix(oldpos, R);
 
-	//Here
-	if(CheckInput(direction) == false){
-	
-		/*directionVec = XMLoadFloat3(&direction);
-		positionVec += directionVec * time * this->getMovementSpeed();*/
-	}
-
-	else {
-		
-		/*directionVec = XMLoadFloat3(&direction);
-		positionVec -= directionVec * time * this->getMovementSpeed();*/
-	}
+	CheckInput(direction);
 
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
@@ -102,22 +91,26 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	if (GetAsyncKeyState('W'))
 	{
 		direction.z = 1.0;
-		this->rigidBody->applyForce(btVector3(0, 0, 1), btVector3(direction.x, direction.y, direction.z));
+		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
+
 	}
 	if (GetAsyncKeyState('S'))
 	{
 		direction.z = -1.0;
-		this->rigidBody->applyForce(btVector3(0, 0, -1), btVector3(direction.x, direction.y, direction.z));
+		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));
+
 	}
 	if (GetAsyncKeyState('A'))
 	{
 		direction.x = -1.0;
-		this->rigidBody->applyForce(btVector3(-1, 0, 0), btVector3(direction.x, direction.y, direction.z));
+		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
+
 	}
 	if (GetAsyncKeyState('D'))
 	{
 		direction.x = 1.0;
-		this->rigidBody->applyForce(btVector3(1, 0, 0), btVector3(direction.x, direction.y, direction.z));
+		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));
+
 	}
 
 	return negativePosVec;

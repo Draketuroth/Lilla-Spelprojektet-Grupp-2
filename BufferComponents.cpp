@@ -78,7 +78,7 @@ bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice, BulletComponen
 
 	DrawCubeRow(gDevice, 2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 5, bulletPhysicsHandler);
+	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RENDER CHECK TEST
@@ -225,7 +225,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		for (int j = 0; j < 24; j++) {
 
 			cubeVertices[j].x += xOffsetValue + spacing;
-			cubeVertices[j].y += yOffsetValue - 6;
+			cubeVertices[j].y += yOffsetValue;
 			cubeVertices[j].z += zOffsetValue + spacing;
 
 		}
@@ -256,7 +256,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		// Platform Rigid Body only uses an identity matrix as its world matrix
 		btTransform transform;
 		XMFLOAT4X4 d;
-		XMMATRIX platformTranslation = XMMatrixTranslation(xOffsetValue + spacing, yOffsetValue - 6, zOffsetValue + spacing);
+		XMMATRIX platformTranslation = XMMatrixTranslation(xOffsetValue + spacing, yOffsetValue, zOffsetValue + spacing);
 		XMStoreFloat4x4(&d, platformTranslation);
 
 		transform.setFromOpenGLMatrix((float*)&d);

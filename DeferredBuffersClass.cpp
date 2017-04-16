@@ -549,6 +549,8 @@ bool DeferredBuffersClass::SetupResources(ID3D11Device* gDevice) {
 bool DeferredBuffersClass::CreateDepthStencil(ID3D11Device* gDevice){
 	
 	HRESULT hr;
+	DXGI_FORMAT resFormat = DXGI_FORMAT_R32G8X24_TYPELESS;
+	DXGI_FORMAT srvFormat = DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// DEPTH TEXTURE DESCRIPTION
@@ -556,22 +558,22 @@ bool DeferredBuffersClass::CreateDepthStencil(ID3D11Device* gDevice){
 
 	// THe depth buffer texture is used to store the distance of each fragment to the camera
 
-	D3D11_TEXTURE2D_DESC descDepth;
-	ZeroMemory(&descDepth, sizeof(descDepth));
+	D3D11_TEXTURE2D_DESC texDesc;
+	ZeroMemory(&texDesc, sizeof(texDesc));
 
-	descDepth.Width = WIDTH;
-	descDepth.Height = HEIGHT;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	descDepth.SampleDesc.Count = 1;
-	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
+	texDesc.Width = WIDTH;
+	texDesc.Height = HEIGHT;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = resFormat;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
 
-	hr = gDevice->CreateTexture2D(&descDepth, nullptr, &d_depthStencilBuffer);
+	hr = gDevice->CreateTexture2D(&texDesc, nullptr, &d_depthStencilBuffer);
 
 	if (FAILED(hr)) {
 
@@ -585,8 +587,8 @@ bool DeferredBuffersClass::CreateDepthStencil(ID3D11Device* gDevice){
 	D3D11_DEPTH_STENCIL_VIEW_DESC dViewDesc;
 	ZeroMemory(&dViewDesc, sizeof(dViewDesc));
 
-	dViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	dViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+	dViewDesc.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+	dViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dViewDesc.Texture2D.MipSlice = 0;
 	dViewDesc.Flags = 0;
 
@@ -594,6 +596,21 @@ bool DeferredBuffersClass::CreateDepthStencil(ID3D11Device* gDevice){
 
 	if (FAILED(hr)) {
 
+		return false;
+	}
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// RESOURCE VIEW DESCRIPTION
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = srvFormat;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = texDesc.MipLevels;
+
+	hr = gDevice->CreateShaderResourceView(d_depthStencilBuffer, &srvDesc, &d_depthResourceView);
+	if (FAILED(hr))
+	{
 		return false;
 	}
 

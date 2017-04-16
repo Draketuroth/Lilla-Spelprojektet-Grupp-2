@@ -70,6 +70,7 @@ public:
 	ID3D11ShaderResourceView* d_shaderResourceViewArray[BUFFER_COUNT];
 	ID3D11Texture2D* d_depthStencilBuffer;
 	ID3D11DepthStencilView* d_depthStencilView;
+	ID3D11ShaderResourceView* d_depthResourceView;
 	ID3D11DepthStencilState* d_depthStencilState;	// Depth-stencil state used for the output merger
 	D3D11_VIEWPORT d_viewPort;
 

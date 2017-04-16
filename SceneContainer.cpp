@@ -161,10 +161,10 @@ void SceneContainer::render() {
 	//Characters need to be rendered first since they will be moving
 	clear();
 
-	//renderDeferred();
+	renderDeferred();
 
-	renderCharacters();
-	renderScene();
+	/*renderCharacters();
+	renderScene();*/
 }
 
 bool SceneContainer::renderDeferred() {
@@ -205,6 +205,7 @@ bool SceneContainer::renderDeferred() {
 									deferredObject.d_shaderResourceViewArray[0],
 									deferredObject.d_shaderResourceViewArray[1],
 									deferredObject.d_shaderResourceViewArray[2],
+									deferredObject.d_depthResourceView,
 									lightDirection);
 
 	gHandler.gDeviceContext->PSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);

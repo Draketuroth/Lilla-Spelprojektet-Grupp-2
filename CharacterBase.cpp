@@ -163,7 +163,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents
 	//----------------------------------------------------------------------//
 
 	// Platform Rigid Body only uses an identity matrix as its world matrix. Might have to be changed later
-	XMMATRIX translation = XMMatrixTranslation(2, 2, 5);
+	XMMATRIX translation = XMMatrixTranslation(2, 5, 5);
 	XMFLOAT4X4 t;
 	XMStoreFloat4x4(&t, translation);
 	
@@ -294,7 +294,7 @@ void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 	transform = XMLoadFloat4x4(&data);
 
 	// Build the new world matrix
-	tPlayerTranslation = transform;
+	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
 
 }
 
