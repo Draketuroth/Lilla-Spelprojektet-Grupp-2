@@ -5,7 +5,9 @@
 
 #FBX SDK and Bullet Physics should not be included
 FBX SDK/*
-Bullet/*
+!Bullet/lib
+!Bullet/src
+Bullet/
 
 # User-specific files
 *.suo
