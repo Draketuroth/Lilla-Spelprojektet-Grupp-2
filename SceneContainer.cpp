@@ -103,7 +103,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	character.createBuffers(gHandler.gDevice, bulletPhysicsHandler);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler);
 
 	return true;
 

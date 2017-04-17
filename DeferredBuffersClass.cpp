@@ -418,6 +418,7 @@ void DeferredBuffersClass::ReleaseAll() {
 	}
 
 	SAFE_RELEASE(gDeferredBuffer);
+	SAFE_RELEASE(d_depthResourceView);
 }
 
 bool DeferredBuffersClass::Initialize(ID3D11Device* gDevice) {

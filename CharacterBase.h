@@ -52,7 +52,8 @@ public:
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
-	bool createBuffers(ID3D11Device* &graphicDevice, BulletComponents &bulletPhysicsHandler);
+	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
+	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, BulletComponents &bulletPhysicsHandler);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
 	//Matrices
