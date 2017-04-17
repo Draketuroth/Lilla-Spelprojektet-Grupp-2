@@ -171,7 +171,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, BulletComponents
 	transform.setFromOpenGLMatrix((float*)&t);
 
 	// Define the kind of shape we want and construct rigid body information
-	btBoxShape* boxShape = new btBoxShape(btVector3(1.2, 1.2, 1.2));
+	btBoxShape* boxShape = new btBoxShape(btVector3(1.3, 1.3, 1.3));
 	btScalar mass(0.10f);	// Rigid body is dynamic if and only if mass is non zero, otherwise static
 	btVector3 inertia(0, 0, 0);
 

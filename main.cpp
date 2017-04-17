@@ -102,11 +102,11 @@ int RunApplication() {
 
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				/*if(GetAsyncKeyState('L')) {
+				if(GetAsyncKeyState('L')) {
 
 					SAFE_RELEASE(sceneContainer.bHandler.cubeObjects[14].gCubeVertexBuffer);
 					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sceneContainer.bulletPhysicsHandler.rigidBodies[14]);
-				}*/
+				}
 				
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
