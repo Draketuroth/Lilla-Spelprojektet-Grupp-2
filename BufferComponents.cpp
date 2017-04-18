@@ -4,6 +4,17 @@
 BufferComponents::BufferComponents() {
 
 	gConstantBuffer = nullptr;	
+	projectionMatrix = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	viewMatrix = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+
+	eyePosF = { 0, 0, 4 };
+	lookAtF = { 0, 1, 0 };
+	upF = { 0, 1, 0 };
+
+
+	eyePos = XMLoadFloat3(&eyePosF);
+	lookAt = XMLoadFloat3(&lookAtF);
+	up = XMLoadFloat3(&upF);
 
 	nrOfCubes = 0;
 }
@@ -23,12 +34,11 @@ void BufferComponents::ReleaseAll() {
 
 		SAFE_RELEASE(cubeObjects[i].gCubeVertexBuffer);
 	}
-
 }
 
-bool BufferComponents::SetupScene(ID3D11Device* &gDevice) {
+bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
 
-	if (!CreateCubeVertices(gDevice)) {
+	if (!CreateCubeVertices(gDevice, bulletPhysicsHandler)) {
 
 		return false;
 	}
@@ -52,7 +62,7 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice) {
 
 }
 
-bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice) {
+bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// INITIALIZE OFFSET VARIABLES
@@ -60,15 +70,15 @@ bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice) {
 
 	float spacing = 2.3f;
 
-	DrawCubeRow(gDevice, -4.6f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, -4.6f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, -2.3f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, -2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 0.0f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, 0.0f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 2.3f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, 2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 6);
+	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RENDER CHECK TEST
@@ -140,7 +150,7 @@ bool BufferComponents::CreateCubeIndices(ID3D11Device* &gDevice) {
 	return true;
 }
 
-bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes) {
+bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler) {
 
 	HRESULT hr;
 
@@ -221,19 +231,6 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		}
 
 		//----------------------------------------------------------------------------------------------------------------------------------//
-		// FILL LIST OF VERTICES FOR BOUNDING BOX CREATION
-		//----------------------------------------------------------------------------------------------------------------------------------//
-
-		XMFLOAT3 boundingPoints[24];
-
-		for (int k = 0; k < 24; k++) {
-
-			boundingPoints[k].x = cubeVertices[k].x;
-			boundingPoints[k].y = cubeVertices[k].y;
-			boundingPoints[k].z = cubeVertices[k].z;
-		}
-
-		//----------------------------------------------------------------------------------------------------------------------------------//
 		// CREATE VERTEX BUFFER
 		//----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -253,25 +250,37 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		}
 
 		//----------------------------------------------------------------------------------------------------------------------------------//
-		// TRANSFORM BOUNDING BOX AND INITIALIZE RENDER CHECK BOOLEAN VARIABLE
+		// CREATE RIGID BODY
 		//----------------------------------------------------------------------------------------------------------------------------------//
 
-		cubeObjects[i].objectWorldMatrix = XMMatrixIdentity();
-		XMMATRIX transform = XMMATRIX(cubeObjects[i].objectWorldMatrix);
+		// Platform Rigid Body only uses an identity matrix as its world matrix
+		btTransform transform;
+		XMFLOAT4X4 d;
+		XMMATRIX platformTranslation = XMMatrixTranslation(xOffsetValue + spacing, yOffsetValue, zOffsetValue + spacing);
+		XMStoreFloat4x4(&d, platformTranslation);
 
-		BoundingBox::CreateFromPoints(cubeObjects[nrOfCubes].bbox, 24, boundingPoints, 0);
+		transform.setFromOpenGLMatrix((float*)&d);
 
-		cubeObjects[i].bbox.Extents = { 2, 2, 2 };
+		// Define the kind of shape we want and construct rigid body information
+		btBoxShape* boxShape = new btBoxShape(btVector3(0.1, 0.1, 0.1));
+		btMotionState* motion = new btDefaultMotionState(transform);
 
-		cubeObjects[i].bbox.Transform(cubeObjects[nrOfCubes].bbox, transform);
+		// Definition of the rigid body
+		btScalar mass(0.0f);
+		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape);
+
+		// Create the rigid body
+		btRigidBody* platformRigidBody = new btRigidBody(info);
+
+		// Add the new rigid body to the dynamic world
+		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody);
+		bulletPhysicsHandler.rigidBodies.push_back(platformRigidBody);
 
 		//----------------------------------------------------------------------------------------------------------------------------------//
-		// INITIALIZE RENDER CHECK TO FALSE FOR ALL CUBES
+		// ADD OFFSET FOR THE NEXT PLATFORM
 		//----------------------------------------------------------------------------------------------------------------------------------//
-
+		
 		cubeObjects[nrOfCubes].renderCheck = true;
-		XMFLOAT3 corners[8];
-		cubeObjects[nrOfCubes].bbox.GetCorners(corners);
 
 		offset += spacing;
 		
@@ -304,15 +313,13 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	// Using the following method, the matrix can be computed from the world position of the camera (eye), a global up vector, and a 
 	// target point.
 
-	XMFLOAT3 eyePosF = { 0, 0, 4 };
-	XMFLOAT3 lookAtF = { 0, 1, 0 };
-	XMFLOAT3 upF = { 0, 1, 0 };
-
-	DirectX::XMVECTOR eyePos = DirectX::XMLoadFloat3(&eyePosF);
-	DirectX::XMVECTOR lookAt = DirectX::XMLoadFloat3(&lookAtF);
-	DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&upF);
 	
-	XMMATRIX viewMatrix = XMMatrixLookAtLH(eyePos, lookAt, up);
+
+	/*XMVECTOR eyePos = XMLoadFloat3(&eyePosF);
+	XMVECTOR lookAt = XMLoadFloat3(&lookAtF);
+	XMVECTOR up = XMLoadFloat3(&upF);*/
+	
+	viewMatrix = XMMatrixLookAtLH(eyePos, lookAt, up);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -327,7 +334,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 
 	float farPlane = FARPLANE;
 
-	XMMATRIX projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
+	projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -349,6 +356,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	GsConstData.matrixWorld = { tWorldMatrix };
 	GsConstData.matrixView = { XMMatrixTranspose(viewMatrix) };
 	GsConstData.matrixProjection = { XMMatrixTranspose(projectionMatrix) };
+	GsConstData.matrixProjection = XMMatrixIdentity();
 	GsConstData.worldViewProj = { tWorldViewProj };
 	GsConstData.cameraPos = XMFLOAT3(0.0f, 0.0f, 2.0f);
 

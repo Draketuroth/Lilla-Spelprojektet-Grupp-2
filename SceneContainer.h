@@ -19,6 +19,7 @@
 #include "GraphicComponents.h"
 #include "BufferComponents.h"
 #include "TextureComponents.h"
+#include "BulletComponents.h"
 
 #include "MainCharacter.h"
 #include "Lava.h"
@@ -47,9 +48,20 @@ public:
 	MainCharacter character;
 	Lava lava; 
 
+	BulletComponents bulletPhysicsHandler;
+
+	//------------------------------------------------------------//
+	// RENDER FUNCTIONS
+	//------------------------------------------------------------//
+
 	void drawPlatforms();
 	
 	void clear();
+	void resetRenderTarget(GraphicComponents &gHandler);
+
+	void render();
+
+	bool renderDeferred();
 
 	bool renderSceneToTexture();
 

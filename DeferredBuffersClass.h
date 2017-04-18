@@ -15,7 +15,7 @@
 
 #include "MacroDefinitions.h"
 
-#define BUFFER_COUNT 2
+#define BUFFER_COUNT 3
 
 struct MTL_STRUCT
 {
@@ -36,15 +36,7 @@ class DeferredBuffersClass {
 
 private:
 
-	int d_textureWidth, d_textureHeight;
-
-	ID3D11Texture2D* d_renderTargetTextureArray[BUFFER_COUNT];
-	ID3D11RenderTargetView* d_renderTargetViewArray[BUFFER_COUNT];
-	ID3D11ShaderResourceView* d_shaderResourceViewArray[BUFFER_COUNT];
-	ID3D11Texture2D* d_depthStencilBuffer;
-	ID3D11DepthStencilView* d_depthStencilView;
-	ID3D11DepthStencilState* d_depthStencilState;	// Depth-stencil state used for the output merger
-	D3D11_VIEWPORT d_viewPort;
+	
 
 public:
 
@@ -70,6 +62,17 @@ public:
 	wstring OBJTexturePath;
 
 	ID3D11Buffer* gDeferredBuffer;
+
+	int d_textureWidth, d_textureHeight;
+
+	ID3D11Texture2D* d_renderTargetTextureArray[BUFFER_COUNT];
+	ID3D11RenderTargetView* d_renderTargetViewArray[BUFFER_COUNT];
+	ID3D11ShaderResourceView* d_shaderResourceViewArray[BUFFER_COUNT];
+	ID3D11Texture2D* d_depthStencilBuffer;
+	ID3D11DepthStencilView* d_depthStencilView;
+	ID3D11ShaderResourceView* d_depthResourceView;
+	ID3D11DepthStencilState* d_depthStencilState;	// Depth-stencil state used for the output merger
+	D3D11_VIEWPORT d_viewPort;
 
 };
 

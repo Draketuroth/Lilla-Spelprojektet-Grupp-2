@@ -22,8 +22,8 @@ public:
 	void ReleaseAll();
 
 	bool InitializeShader(ID3D11Device* gDevice);
-	bool Render(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* texture, int indexCount);
-	bool SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* texture);
+	bool Render(ID3D11DeviceContext* gDeviceContext, ID3D11SamplerState* textureSampler, ID3D11ShaderResourceView* texture, int indexCount);
+	bool SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11SamplerState* textureSampler, ID3D11ShaderResourceView* texture);
 	void RenderShader(ID3D11DeviceContext* gDeviceContext, int indexCount);
 
 	ID3D11VertexShader* d_vertexShader;

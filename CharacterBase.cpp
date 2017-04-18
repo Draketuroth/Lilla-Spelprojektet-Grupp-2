@@ -85,57 +85,13 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 }
 
 //-------------Create Buffer and Draw -----------------------
-bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
+bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices)
 {
-	//----------CUBE-------------------------
 	HRESULT hr;
 
-	float scaleFactor = 0.3;
-
-	TriangleVertex cubeVertices[24] =
-	{
-		//Front face
-
-		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
-		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
-		-scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
-		scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
-
-		// Back face
-
-		scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
-		-scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
-		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
-		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 1.0f,
-
-		// Left face
-
-		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
-		-scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
-		-scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
-		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
-
-		// Right face
-
-		scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
-		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
-		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
-		scaleFactor, -scaleFactor,  scaleFactor, 1.0f, 1.0f,
-
-		// Top face
-
-		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
-		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
-		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 1.0f,
-		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 1.0f,
-
-		// Bottom face
-
-		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 0.0f,
-		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 0.0f,
-		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
-		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f
-	};
+	//----------------------------------------------------------------------//
+	// VERTEX BUFFER
+	//----------------------------------------------------------------------//
 
 	D3D11_BUFFER_DESC bufferDesc;
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
@@ -143,11 +99,11 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 	memset(&bufferDesc, 0, sizeof(bufferDesc));
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(cubeVertices);
+	bufferDesc.ByteWidth = sizeof(TriangleVertex) * vertices.size();
 
 	D3D11_SUBRESOURCE_DATA data;
 	ZeroMemory(&data, sizeof(data));
-	data.pSysMem = cubeVertices;
+	data.pSysMem = &vertices[0];
 	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &vertexBuffer);
 
 	if (FAILED(hr)) {
@@ -155,43 +111,15 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 		return false;
 	}
 
-	// Create Indices
-	unsigned int indices[36] = {
-
-		// Front face
-		0,1,2,
-		2,1,3,
-
-		// Back face
-
-		4,5,6,
-		6,5,7,
-
-		// Left face
-
-		8,9,10,
-		10,9,11,
-
-		// Right face
-
-		12,13,14,
-		14,13,15,
-
-		// Top face
-
-		16,17,18,
-		18,17,19,
-
-		// Bottom face
-
-		20,21,22,
-		22,21,23 };
+	//----------------------------------------------------------------------//
+	// INDEX BUFFER
+	//----------------------------------------------------------------------//
 
 	// Create the buffer description
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(indices);
+	bufferDesc.ByteWidth = sizeof(unsigned int) * indices.size();
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
@@ -199,7 +127,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 	// Set the subresource data
 
 	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = indices;
+	initData.pSysMem = &indices[0];
 	initData.SysMemPitch = 0;
 	initData.SysMemSlicePitch = 0;
 
@@ -213,6 +141,46 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice)
 	}
 
 	return true;
+}
+
+void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, BulletComponents &bulletPhysicsHandler) {
+
+	//----------------------------------------------------------------------//
+	// CREATE THE RIGID BODY
+	//----------------------------------------------------------------------//
+
+	// Platform Rigid Body only uses an identity matrix as its world matrix. Might have to be changed later
+	XMMATRIX translation = XMMatrixTranslation(spawnPos.x, spawnPos.y, spawnPos.z);
+	XMFLOAT4X4 t;
+	XMStoreFloat4x4(&t, translation);
+
+	btTransform transform;
+	transform.setFromOpenGLMatrix((float*)&t);
+
+	// Define the kind of shape we want and construct rigid body information
+	btBoxShape* boxShape = new btBoxShape(btVector3(1.3, 1.3, 1.3));
+
+	btVector3 inertia(0, 0, 0);
+
+	/*if (mass != 0.0) {
+
+	boxShape->calculateLocalInertia(mass, inertia);
+	}*/
+
+	btMotionState* motion = new btDefaultMotionState(transform);
+
+	// Definition of the rigid body
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape, inertia);
+
+	// Create the rigid body
+	btRigidBody* playerRigidBody = new btRigidBody(info);
+
+	// Set the rigid body to the current platform 
+	this->rigidBody = playerRigidBody;
+
+	// Add the new rigid body to the dynamic world
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
+	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
 }
 
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
@@ -235,12 +203,26 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 
 void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 {
-	XMVECTOR localTranslation = XMLoadFloat3(&newPos);
+	// Prepare matrices for conversion
+	XMMATRIX transform;
+	XMFLOAT4X4 data;
 
-	XMMATRIX translation = XMMatrixTranslationFromVector(localTranslation);
+	// Gather the rigid body matrix
+	btTransform btRigidTransform;
+	this->rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+	
+	// Load it into an XMFLOAT4x4
+	btRigidTransform.getOpenGLMatrix((float*)&data);
 
-	tPlayerTranslation = XMMatrixMultiply(rotation, translation);
+	// Load it into an XMMATRIX
+	transform = XMLoadFloat4x4(&data);
+
+	// Build the new world matrix
+	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
+
 }
+
+
 
 void CharacterBase::resetWorldMatrix()
 {

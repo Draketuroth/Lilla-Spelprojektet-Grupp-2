@@ -174,23 +174,26 @@ bool DeferredShaderClass::InitializeShader(ID3D11Device* gDevice) {
 	return true;
 }
 
-bool DeferredShaderClass::Render(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* texture, int indexCount) {
+bool DeferredShaderClass::Render(ID3D11DeviceContext* gDeviceContext, ID3D11SamplerState* textureSampler, ID3D11ShaderResourceView* texture, int indexCount) {
 
 	// Set the shader parameters that we will use rendering
-	if (!SetShaderParameters(gDeviceContext, texture)) {
+	if (!SetShaderParameters(gDeviceContext, textureSampler, texture)) {
 
 		return false;
 	}
 
 	// Now we can render the prepared buffers with the shader
 	RenderShader(gDeviceContext, indexCount);
+
+	return true;
 }
 
-bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* texture) {
+bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11SamplerState* textureSampler, ID3D11ShaderResourceView* texture) {
 
 	HRESULT result;
 
 	gDeviceContext->PSSetShaderResources(0, 1, &texture);
+	gDeviceContext->PSSetSamplers(0, 1, &textureSampler);
 
 	return true;
 }
@@ -202,9 +205,10 @@ void DeferredShaderClass::RenderShader(ID3D11DeviceContext* gDeviceContext, int 
 
 	// Set the vertex and pixel shaders
 	gDeviceContext->VSSetShader(d_vertexShader, nullptr, 0);
+	gDeviceContext->GSSetShader(d_geometryShader, nullptr, 0);
 	gDeviceContext->PSSetShader(d_pixelShader, nullptr, 0);
 
 	// Render the geometry
-	gDeviceContext->DrawIndexed(indexCount, 0, 0);
+	gDeviceContext->Draw(indexCount, 0);
 
 }

@@ -70,14 +70,29 @@
     <Filter Include="Source Files\HLSL\LightShaders">
       <UniqueIdentifier>{2d9bddc7-44d5-40f9-a954-e8b5158fe4e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Lava">
-      <UniqueIdentifier>{e10d0397-4caa-4ec3-a2d3-61a51efea6cb}</UniqueIdentifier>
+    <Filter Include="Source Files\GameState">
+      <UniqueIdentifier>{a54cdd99-7277-471f-8444-272b2544186b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameState">
+      <UniqueIdentifier>{7bde820a-7357-41e1-81a9-d8f35cc143b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\MenuShaders">
+      <UniqueIdentifier>{955df009-0008-4c42-83e6-6c6ea89f8593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BulletComponents">
+      <UniqueIdentifier>{57caae69-6712-4661-9152-4ee54ba02244}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BulletComponents">
+      <UniqueIdentifier>{9745d815-8387-443e-a7d7-872d87d6c5a9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Lava">
-      <UniqueIdentifier>{45fc84cc-53ff-46f4-a8a1-0aeb601a9e6f}</UniqueIdentifier>
+      <UniqueIdentifier>{6bbe6e5e-4c07-4f57-8da7-df0d3f3ae563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lava">
+      <UniqueIdentifier>{0a9c9b18-33e4-46ff-8b4a-df8974fd008c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\HLSL\LavaShaders">
-      <UniqueIdentifier>{e808010d-7055-4c04-9ee4-698750e3c713}</UniqueIdentifier>
+      <UniqueIdentifier>{5215d500-9018-41ee-9566-e259721128be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +137,15 @@
     </ClCompile>
     <ClCompile Include="LightShaderClass.cpp">
       <Filter>Source Files\Deferred Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletComponents.cpp">
+      <Filter>Source Files\BulletComponents</Filter>
     </ClCompile>
     <ClCompile Include="Lava.cpp">
       <Filter>Source Files\Lava</Filter>
@@ -173,6 +197,15 @@
     <ClInclude Include="LightShaderClass.h">
       <Filter>Header Files\Deferred Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletComponents.h">
+      <Filter>Header Files\BulletComponents</Filter>
+    </ClInclude>
     <ClInclude Include="Lava.h">
       <Filter>Header Files\Lava</Filter>
     </ClInclude>
@@ -211,13 +244,19 @@
     <FxCompile Include="Shaders\LightShaders\LightVS.hlsl">
       <Filter>Source Files\HLSL\LightShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
+    <FxCompile Include="Shaders\MenuShaders\MenuVertex.hlsl">
+      <Filter>Source Files\HLSL\MenuShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
+      <Filter>Source Files\HLSL\MenuShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
+    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
   </ItemGroup>
