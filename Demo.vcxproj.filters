@@ -91,6 +91,9 @@
     <Filter Include="Header Files\Lava">
       <UniqueIdentifier>{0a9c9b18-33e4-46ff-8b4a-df8974fd008c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\LavaShaders">
+      <UniqueIdentifier>{5215d500-9018-41ee-9566-e259721128be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -246,6 +249,15 @@
     </FxCompile>
     <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
       <Filter>Source Files\HLSL\MenuShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

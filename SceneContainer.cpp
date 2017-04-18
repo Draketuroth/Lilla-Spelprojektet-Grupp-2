@@ -163,8 +163,8 @@ void SceneContainer::render() {
 
 	//renderDeferred();
 	renderLava(); 
-	renderCharacters();
-	renderScene();
+	//renderCharacters();
+	//renderScene();
 }
 
 bool SceneContainer::renderDeferred() {
@@ -272,16 +272,12 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderLava()
 {
-	//ID3D11ShaderResourceView* resourceArr[2];
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gLavaVertexShader, nullptr, 0);	//vs
 	gHandler.gDeviceContext->GSSetShader(gHandler.gLavaGeometryShader, nullptr, 0); //gs
 	gHandler.gDeviceContext->PSSetShader(gHandler.gLavaPixelShader, nullptr, 0); //ps
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	
-	//gHandler.gDeviceContext->PSSetShaderResources(0, 2, &tHandler.standardResource);
-	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
-
+	 
 	UINT32 vertexSize = sizeof(LavaVertex);
 	UINT32 offset = 0;
 
@@ -289,16 +285,9 @@ void SceneContainer::renderLava()
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &lava.LavaVB, &vertexSize, &offset);
 	//Set index buffer
 	gHandler.gDeviceContext->IASetIndexBuffer(lava.LavaIB, DXGI_FORMAT_R32_UINT, offset);
-
+	//set triagel list
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaVertexLayout);
 
 	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);
-
-	ID3D11ShaderResourceView* nullResource[2] = { nullptr };
-
-	gHandler.gDeviceContext->PSSetShaderResources(0, 2, nullResource);
-	//character.draw(gHandler.gDeviceContext);
-
-	//character.resetWorldMatrix();
 }

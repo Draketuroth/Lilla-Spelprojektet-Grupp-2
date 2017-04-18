@@ -134,7 +134,7 @@ void Lava::IBuffer(ID3D11Device* device)
 	ibd.MiscFlags = 0;
 	ibd.StructureByteStride = 0;
 	ibd.ByteWidth = index.size() * sizeof(int);
-
+	
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = index.data();
 	hr = device->CreateBuffer(&ibd, &iinitData, &LavaIB);

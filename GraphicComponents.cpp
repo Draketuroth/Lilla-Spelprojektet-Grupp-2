@@ -87,6 +87,10 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 	{
 		return false;
 	}
+	if (!CreateLavaShaders())
+	{
+		return false; 
+	}
 
 	return true;
 }
@@ -605,7 +609,8 @@ bool GraphicComponents::CreateLavaShaders()
 	}
 
 	D3D11_INPUT_ELEMENT_DESC vetrexInputDesc[] = {
-		{"POSITION0", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	int inputLayoutSize = sizeof(vetrexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
