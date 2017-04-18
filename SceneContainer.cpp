@@ -163,8 +163,8 @@ void SceneContainer::render() {
 
 	//renderDeferred();
 	renderLava(); 
-	//renderCharacters();
-	//renderScene();
+	renderCharacters();
+	renderScene();
 }
 
 bool SceneContainer::renderDeferred() {

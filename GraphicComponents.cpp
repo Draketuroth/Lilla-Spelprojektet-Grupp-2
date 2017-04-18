@@ -614,7 +614,7 @@ bool GraphicComponents::CreateLavaShaders()
 	};
 
 	int inputLayoutSize = sizeof(vetrexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
-	gDevice->CreateInputLayout(vetrexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gLavaVertexLayout); 
+	hr = gDevice->CreateInputLayout(vetrexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gLavaVertexLayout); 
 
 	if (FAILED(hr)) {
 		cout << "Vertex Shader Lava Error: Shader Input Layout could not be created" << endl; 
