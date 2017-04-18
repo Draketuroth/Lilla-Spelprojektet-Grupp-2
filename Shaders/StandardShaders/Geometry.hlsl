@@ -58,7 +58,7 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 
 	float3 edge1 = input[1].Pos.xyz - input[0].Pos.xyz;
 	float3 edge2 = input[2].Pos.xyz - input[0].Pos.xyz;
-	
+
 	// Calculate the normal to determine the direction for the new triangle to be created ( closer to the camera )
 
 	float3 normalAB = normalize(cross(edge1, edge2));
