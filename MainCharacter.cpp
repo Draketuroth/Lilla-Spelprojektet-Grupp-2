@@ -11,26 +11,34 @@ MainCharacter::MainCharacter()
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
-	direction = { 0, 0, 0 };
-	newCameraPos = { 0, 0, 0 };
-	directionVec;
-	floatPos = { 0, 0, 0 };
 }
 
 MainCharacter::~MainCharacter()
 {
+
+}
+
+void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle) {
+
+	// Main character function
+	loadVertices();
+
+	// Base character functions
+	createBuffers(graphicDevice, vertices, indices);
+	CreateBoundingBox(0.10, this->getPos(), bulletPhysicsHandle);
 }
 
 void MainCharacter::update(HWND windowhandle)
 {
 	CharacterMove(windowhandle);
-	//meleeAttack(windowhandle);
-	//rangeAttack(windowhandle);
+	/*meleeAttack();
+	rangeAttack();*/
 }
 
 //--------- Changing the character's position --------------
 void MainCharacter::CharacterMove(HWND windowhandle)
 {
+	
 	direction = { 0, 0, 0 };
 
 	float time = timer.getDeltaTime();
@@ -42,25 +50,30 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMMATRIX R = rotate(windowhandle);
 	updateWorldMatrix(oldpos, R);
 
-	//Here
-	if(CheckInput(direction) == false){
-	
-		directionVec = XMLoadFloat3(&direction);
-		positionVec += directionVec * time * this->getMovementSpeed();
+	CheckInput(direction);
 
-	}
+	XMMATRIX transform;
+	XMFLOAT4X4 data;
 
-	else {
-		
-		directionVec = XMLoadFloat3(&direction);
-		positionVec -= directionVec * time * this->getMovementSpeed();
-	}
+	// Gather the rigid body matrix
+	btTransform btRigidTransform;
+	this->rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
 
-	XMStoreFloat3(&floatPos, positionVec);
+	// Load it into an XMFLOAT4x4
+	btRigidTransform.getOpenGLMatrix((float*)&data);
 
-	this->setPos(floatPos);
+	// Load it into an XMMATRIX
+	transform = XMLoadFloat4x4(&data);
+	XMVECTOR t;
+	XMVECTOR s;
+	XMVECTOR r;
+	XMMatrixDecompose(&s, &r, &t, transform);
+	XMFLOAT3 rigidPos;
+	XMStoreFloat3(&rigidPos, t);
 
-	newCameraPos = { floatPos.x, cameraDistanceY, floatPos.z - cameraDistanceZ };
+	this->setPos(rigidPos);
+
+	newCameraPos = { rigidPos.x, rigidPos.y + cameraDistanceY, rigidPos.z - cameraDistanceZ };
 	camera.SetPosition(newCameraPos);
 
 //#if defined (DEBUG) || defined(_DEBUG)
@@ -89,18 +102,26 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	if (GetAsyncKeyState('W'))
 	{
 		direction.z = 1.0;
+		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
+
 	}
 	if (GetAsyncKeyState('S'))
 	{
 		direction.z = -1.0;
+		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));
+
 	}
 	if (GetAsyncKeyState('A'))
 	{
 		direction.x = -1.0;
+		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
+
 	}
 	if (GetAsyncKeyState('D'))
 	{
 		direction.x = 1.0;
+		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));
+
 	}
 
 	return negativePosVec;
@@ -125,6 +146,101 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 	return angle;
 }
 
+void MainCharacter::loadVertices() {
+
+	HRESULT hr;
+	int i;
+
+	float scaleFactor = 0.3;
+
+	TriangleVertex cubeVertices[24] =
+	{
+		//Front face
+
+		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
+
+		// Back face
+
+		scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 1.0f,
+
+		// Left face
+
+		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
+
+		// Right face
+
+		scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, -scaleFactor,  scaleFactor, 1.0f, 1.0f,
+
+		// Top face
+
+		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
+		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
+		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 1.0f,
+
+		// Bottom face
+
+		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 0.0f,
+		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 0.0f,
+		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
+		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f
+	};
+
+	for (i = 0; i < 24; i++) {
+
+		vertices.push_back(cubeVertices[i]);
+	}
+
+	// Create Indices
+	unsigned int cubeIndices[36] = {
+
+		// Front face
+		0,1,2,
+		2,1,3,
+
+		// Back face
+
+		4,5,6,
+		6,5,7,
+
+		// Left face
+
+		8,9,10,
+		10,9,11,
+
+		// Right face
+
+		12,13,14,
+		14,13,15,
+
+		// Top face
+
+		16,17,18,
+		18,17,19,
+
+		// Bottom face
+
+		20,21,22,
+		22,21,23 };
+
+	for (i = 0; i < 36; i++) {
+
+		indices.push_back(cubeIndices[i]);
+	}
+}
+
 //Rotate character
 XMMATRIX MainCharacter::rotate(HWND windowhandle)
 {
@@ -135,6 +251,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 	return R;
 }
+
 void MainCharacter::meleeAttack(HWND windowHandle)
 {
 	if (GetAsyncKeyState(MK_LBUTTON))
@@ -191,14 +308,14 @@ void MainCharacter::meleeAttack(HWND windowHandle)
 		
 	}
 }
+
 void MainCharacter::rangeAttack(HWND windowHandle)
 {
 	if (GetAsyncKeyState(MK_RBUTTON))
 	{
 		cout << "RANGED ATTACK" << endl;
-
-		//attack
 	}
+
 }
 
 

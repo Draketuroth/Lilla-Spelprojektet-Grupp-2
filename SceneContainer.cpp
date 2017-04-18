@@ -3,15 +3,19 @@
 
 SceneContainer::SceneContainer() {
 
+	// Initialize handler and main character
+
 	gHandler = GraphicComponents();
 	bHandler = BufferComponents();
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
+
+	bulletPhysicsHandler = BulletComponents();
+
 }
 
 SceneContainer::~SceneContainer() {
-
 
 }
 
@@ -26,6 +30,8 @@ void SceneContainer::releaseAll() {
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
 	lightShaders.ReleaseAll();
+
+	bulletPhysicsHandler.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -50,7 +56,9 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	if (!bHandler.SetupScene(gHandler.gDevice)) {
+	bulletPhysicsHandler.InitializeBulletPhysics();
+
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler)) {
 
 		MessageBox(
 			NULL,
@@ -95,7 +103,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	character.createBuffers(gHandler.gDevice);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler);
 
 	return true;
 
@@ -192,11 +200,12 @@ bool SceneContainer::renderDeferred() {
 
 	// Step 4: 2D rendering of light calculations
 
-	XMFLOAT3 lightDirection = { 8.0f, 20.0f, 8.0f };
+	XMFLOAT3 lightDirection = { 1.0f, 1.0f, 0.0f };
 	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
 									deferredObject.d_shaderResourceViewArray[0],
 									deferredObject.d_shaderResourceViewArray[1],
 									deferredObject.d_shaderResourceViewArray[2],
+									deferredObject.d_depthResourceView,
 									lightDirection);
 
 	gHandler.gDeviceContext->PSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);
