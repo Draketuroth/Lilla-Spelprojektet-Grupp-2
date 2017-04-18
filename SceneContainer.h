@@ -19,6 +19,7 @@
 #include "GraphicComponents.h"
 #include "BufferComponents.h"
 #include "TextureComponents.h"
+#include "BulletComponents.h"
 
 #include "MainCharacter.h"
 
@@ -45,6 +46,8 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
+
+	BulletComponents bulletPhysicsHandler;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS

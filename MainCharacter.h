@@ -11,12 +11,15 @@ public:
 	MainCharacter();
 	~MainCharacter();
 
+	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle);
 	void update(HWND windowhandle);
 
 	void CharacterMove(HWND windowhandle);
 	bool CheckInput(XMFLOAT3 &direction);
 
 	float characterLookAt(HWND windowHandle);
+
+	void loadVertices();
 
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle);
@@ -26,19 +29,17 @@ public:
 
 	Camera camera;
 
-
 	float cameraDistanceY;
 	float cameraDistanceZ;
 	float playerHeight;
-
-
-
 
 	XMFLOAT3 direction;
 	XMFLOAT3 newCameraPos;
 	XMVECTOR directionVec;
 	XMFLOAT3 floatPos;
 	
+	vector<TriangleVertex>vertices;
+	vector<unsigned int>indices;
 
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();

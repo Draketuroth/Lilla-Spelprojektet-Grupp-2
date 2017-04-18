@@ -6,12 +6,10 @@
 #include <DirectXMath.h>
 #include <iostream>
 #include "MacroDefinitions.h"
-#include "Camera.h"
 #include "VertexType.h"
-#include <fstream>
-#include <iostream>
-#include <sstream>
 #include <vector>
+
+#include "BulletComponents.h"
 
 using namespace DirectX;
 
@@ -23,6 +21,7 @@ struct GS_CONSTANT_BUFFER {
 	XMMATRIX matrixWorld;
 	XMMATRIX matrixView;
 	XMMATRIX matrixProjection;
+	XMMATRIX inverseViewProjection;
 	XMFLOAT3 cameraPos;
 
 };
@@ -35,9 +34,7 @@ struct PLAYER_TRANSFORM {
 
 struct CubeObjects {
 
-	XMMATRIX objectWorldMatrix;
-	ID3D11Buffer* gCubeVertexBuffer;;
-	BoundingBox bbox;
+	ID3D11Buffer* gCubeVertexBuffer;
 	bool renderCheck;
 };
 
@@ -56,13 +53,9 @@ public:
 	XMMATRIX projectionMatrix;
 	XMMATRIX viewMatrix;
 
-
-	
-
 	XMVECTOR eyePos;
 	XMVECTOR lookAt;
 	XMVECTOR up;
-
 
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
 	ID3D11Buffer* gPlayerTransformBuffer;
@@ -74,19 +67,17 @@ public:
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
 
-	bool SetupScene(ID3D11Device* &gDevice);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 
-	bool CreateCubeVertices(ID3D11Device* &gDevice);
+	bool CreateCubeVertices(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
-	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes);
+	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler);
 	float RandomNumber(float Minimum, float Maximum);
 
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 
 private:
-
-
 
 	XMFLOAT3 eyePosF;
 	XMFLOAT3 lookAtF;

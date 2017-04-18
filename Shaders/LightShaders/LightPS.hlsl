@@ -12,13 +12,14 @@ cbuffer GS_CONSTANT_BUFFER : register(b1) {
 	matrix worldViewProj;
 	matrix matrixWorld;
 	matrix matrixView;
-	matrix matrixProjection;
+	matrix inverseViewProjection;
 	float4 cameraPos;
 };
 
 Texture2D colorTexture : register(t0);
 Texture2D normalTexture : register(t1);
 Texture2D worldTexture : register(t2);
+Texture2D depthTexture : register(t3);
 
 struct PS_IN {
 
@@ -29,31 +30,78 @@ struct PS_IN {
 float4 PS_main(PS_IN input) : SV_TARGET
 {
 
-	float4 colors;
-	float4 normals;
+	float4 color;
 	float4 worldPos;
-	float3 lightDir;
-	float lightIntensity;
+	float3 normal;
+
+	float4 position;
+
+	float4 normalData;
+	float depthValue;
+
+	float specularPower;
+	float specularIntensity;
+	float NdL;
+	float specularLight;
+
+	float3 lightVector;
+	float3 reflectionVector;
+	float3 diffuseLight;
+
+	float3 directionToCamera;
+
 	float4 outputColor;
 
-	// Start by retreiving the color data and normals for this pixel using a point sampler
-
 	// Sample the colors from the color texture
-	colors = colorTexture.Sample(PointSampler, input.tex);
+	color = colorTexture.Sample(PointSampler, input.tex);
 
-	normals = normalTexture.Sample(PointSampler, input.tex);
+	// Get normal data from the normal map
+	normalData = normalTexture.Sample(PointSampler, input.tex);
+
+	// Transform normal back into [-1, 1] range
+	normal = 2.0f * normalData.xyz - 1.0f;
+
+	// Get specular power and get it into [0, 255] range
+	specularPower = normalData.a * 255;
+
+	// Get specular intensity from the color map
+	specularIntensity = colorTexture.Sample(PointSampler, input.tex).a;
+
+	depthValue = depthTexture.Sample(PointSampler, input.tex).r;
+
+	// Compute-screen space position
+
+	position.x = input.tex.x * 2.0f - 1.0f;
+	position.y = input.tex.y * 2.0f - 1.0f;
+	position.z = depthValue;
+	position.w = 1.0f;
+
+	// Transform to world space
+	position = mul(position, inverseViewProjection);
+	position /= position.w;
 
 	worldPos = worldTexture.Sample(PointSampler, input.tex);
 
-	// Invert the light direction for calculations
-	lightDir = -lightDirection;
+	// Surface-to-light vector
 
-	// Calculate the amount of light on the current pixel
-	lightIntensity = saturate(dot(normals.xyz, lightDir));
+	lightVector = -normalize(lightDirection);
 
-	// Determine the final amount of diffuse color based on the pixel color combined with the light intensity
-	outputColor = saturate(worldPos * lightIntensity);
+	// Compute diffuse light
 
-	return outputColor;
+	NdL = max(0, dot(normal, lightVector));
+	diffuseLight = NdL * color.rgb;
 
+	// Reflection vector
+
+	reflectionVector = normalize(reflect(lightVector, normal));
+
+	// Camera-to-surface vector
+
+	directionToCamera = normalize(cameraPos - position).xyz;
+
+	// Compute specular light
+
+	specularLight = specularIntensity * pow(saturate(dot(reflectionVector, directionToCamera)), specularIntensity);
+
+	return float4(diffuseLight.rgb, specularLight);
 }
