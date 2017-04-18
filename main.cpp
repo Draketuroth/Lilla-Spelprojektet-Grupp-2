@@ -140,6 +140,37 @@ void updateCharacter(HWND windowhandle) {
 	sceneContainer.character.update(windowhandle);
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
+
+	sceneContainer.fbxImporter.animTimePos += timer.getDeltaTime() * 20;
+
+	if (GetAsyncKeyState(VK_UP) & 0x8000) {
+
+		if (sceneContainer.currentAnimIndex < ANIMATIONCOUNT - 1) {
+
+			sceneContainer.currentAnimIndex++;
+			sceneContainer.fbxImporter.animTimePos = 0.0f;
+			Sleep(200);
+
+		}
+	}
+
+	if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+
+		if (sceneContainer.currentAnimIndex > 0) {
+
+			sceneContainer.currentAnimIndex--;
+			sceneContainer.fbxImporter.animTimePos = 0.0f;
+			Sleep(200);
+
+		}
+	}
+
+	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.fbxImporter.meshSkeleton.hierarchy[0].Animations[sceneContainer.currentAnimIndex].Length) {
+
+		sceneContainer.fbxImporter.animTimePos = 0.0f;
+	}
+
+	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.currentAnimIndex);
 }
 
 void updateBuffers() {

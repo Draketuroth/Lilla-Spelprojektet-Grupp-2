@@ -23,6 +23,8 @@
 
 #include "MainCharacter.h"
 
+#include "FBXLoader.h"
+
 class SceneContainer {
 
 private:
@@ -46,8 +48,11 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
+	FbxImport fbxImporter;
 
 	BulletComponents bulletPhysicsHandler;
+
+	int currentAnimIndex;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
@@ -66,8 +71,6 @@ public:
 
 	void renderScene();
 	void renderCharacters();
-
-
 
 };
 

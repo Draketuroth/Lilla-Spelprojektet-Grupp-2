@@ -4,6 +4,9 @@
 // BTH - Fredrik Linde TA15 2016
 //----------------------------------------------------------------------------------------------------------------------------------//
 
+#ifndef FBXLOADER_H
+#define FBXLOADER_H
+
 #include <windows.h>
 
 #include <d3d11.h>	// We require the d3d11 header for Direct3D functions
@@ -245,5 +248,5 @@ private:
 
 };
 
-
+#endif
 

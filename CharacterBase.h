@@ -10,6 +10,7 @@
 #include "BasicMath.h"
 #include "MacroDefinitions.h"
 #include "BufferComponents.h"
+#include "FBXLoader.h"
 
 using namespace std;
 using namespace DirectX;
@@ -25,7 +26,6 @@ private:
 
 
 	ID3D11Buffer* vertexBuffer;
-	ID3D11Buffer* indexBuffer;
 
 public:
 
@@ -52,9 +52,9 @@ public:
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
-	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
+	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData);
 	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, BulletComponents &bulletPhysicsHandler);
-	void draw(ID3D11DeviceContext* &graphicDeviceContext);
+	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
 
 	//Matrices
 	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);

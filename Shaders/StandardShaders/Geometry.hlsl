@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------------------------------------------------------------//
 // Geometry Shader DirectX11
 //
-// Philip Velandria, Jonathan Sundberg, Linnea Vajda, Fredrik Linde
+// Fredrik Linde
 //----------------------------------------------------------------------------------------------------------------------------------//
 
 // The registers are underlying hardware registers on the GPU where all data is stored during execution of the shaders
@@ -28,6 +28,7 @@ struct GS_IN
 {
 	float3 Pos : POSITION;
 	float2 Tex: TEXCOORD;
+	float3 Norm : NORMAL;
 
 };
 
@@ -52,16 +53,6 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 
 	// UINT is an unsigned INT. The range is 0 through 4294967295 decimals
 	uint i;
-	float3 offSet = float3(1.0f, 1.0f, 1.0f);
-
-	// Calculate the length of the sides (edges) A and B to use them for calculating the normal (Delta Pos)
-
-	float3 edge1 = input[1].Pos.xyz - input[0].Pos.xyz;
-	float3 edge2 = input[2].Pos.xyz - input[0].Pos.xyz;
-	
-	// Calculate the normal to determine the direction for the new triangle to be created ( closer to the camera )
-
-	float3 normalAB = normalize(cross(edge1, edge2));
 
 	for (i = 0; i < 3; i++)
 	{
@@ -75,7 +66,7 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 
 		// For the normal to properly work and to later be used correctly when creating the basic diffuse shading, it's required to be computed in world coordinates
 
-		output.Norm = mul(float4(normalAB, 1.0f), worldPosition);
+		output.Norm = mul(float4(input[i].Norm, 1.0f), matrixW);
 
 		output.Tex = input[i].Tex;
 

@@ -31,7 +31,6 @@ CharacterBase::~CharacterBase()
 void CharacterBase::releaseAll() {
 
 	SAFE_RELEASE(vertexBuffer);
-	SAFE_RELEASE(indexBuffer);
 }
 
 int CharacterBase::getHealth()const
@@ -85,55 +84,54 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 }
 
 //-------------Create Buffer and Draw -----------------------
-bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices)
+bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData)
 {
 	HRESULT hr;
 
-	//----------------------------------------------------------------------//
-	// VERTEX BUFFER
-	//----------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// BONE BUFFER DESCRIPTION
+	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	D3D11_BUFFER_DESC bufferDesc;
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	D3D11_BUFFER_DESC boneBufferDesc;
 
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(TriangleVertex) * vertices.size();
+	memset(&boneBufferDesc, 0, sizeof(boneBufferDesc));
 
-	D3D11_SUBRESOURCE_DATA data;
-	ZeroMemory(&data, sizeof(data));
-	data.pSysMem = &vertices[0];
-	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &vertexBuffer);
+	boneBufferDesc.ByteWidth = sizeof(VS_SKINNED_DATA);
+	boneBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	boneBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	boneBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	boneBufferDesc.MiscFlags = 0;
+	boneBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA boneData;
+	boneData.pSysMem = &skinData;
+	boneData.SysMemPitch = 0;
+	boneData.SysMemSlicePitch = 0;
+
+	hr = graphicDevice->CreateBuffer(&boneBufferDesc, &boneData, &fbxImporter.gBoneBuffer);
 
 	if (FAILED(hr)) {
 
 		return false;
 	}
 
-	//----------------------------------------------------------------------//
-	// INDEX BUFFER
-	//----------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	// Create the buffer description
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// VERTEX BUFFER DESCRIPTION
+	//----------------------------------------------------------------------------------------------------------------------------------//
 
+	D3D11_BUFFER_DESC bufferDesc = {};
+
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(unsigned int) * indices.size();
-	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = 0;
+	bufferDesc.ByteWidth = fbxVector.size() * sizeof(Vertex_Bone);
 
-	// Set the subresource data
-
-	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = &indices[0];
-	initData.SysMemPitch = 0;
-	initData.SysMemSlicePitch = 0;
-
-	// Create the buffer
-
-	hr = graphicDevice->CreateBuffer(&bufferDesc, &initData, &indexBuffer);
+	D3D11_SUBRESOURCE_DATA data;
+	data.pSysMem = &fbxVector[0];
+	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &fbxImporter.gBoneVertexBuffer);
 
 	if (FAILED(hr)) {
 
@@ -183,18 +181,14 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, BulletCompo
 	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
 }
 
-void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
+void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount) {
 
 	ID3D11ShaderResourceView* nullSRV = nullptr;
 
 	graphicDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
 
-	UINT32 vertexSize = sizeof(TriangleVertex);
-	UINT32 offset = 0;
-
-	graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
-	graphicDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	graphicDeviceContext->DrawIndexed(36, 0, 0);	
+	//graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
+	graphicDeviceContext->Draw(vertexCount, 0);
 
 }
 
