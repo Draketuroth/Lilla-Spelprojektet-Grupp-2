@@ -98,32 +98,47 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 
 	bool negativePosVec = false;
+	bool isIdle = true;
 
 	direction.x = 0;
 	direction.z = 0;
 
 	if (GetAsyncKeyState('W'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
 		direction.z = 1.0;
 		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
 
 	}
 	if (GetAsyncKeyState('S'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
 		direction.z = -1.0;
 		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));
 
 	}
 	if (GetAsyncKeyState('A'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
 		direction.x = -1.0;
 		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
 
 	}
 	if (GetAsyncKeyState('D'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
 		direction.x = 1.0;
 		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));
+
+	}
+
+	if (isIdle == true){
+
+		currentAnimIndex = 1;
 
 	}
 

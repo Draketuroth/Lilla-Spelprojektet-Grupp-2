@@ -30,7 +30,7 @@ CharacterBase::~CharacterBase()
 
 void CharacterBase::releaseAll() {
 
-	SAFE_RELEASE(vertexBuffer);
+	//SAFE_RELEASE(vertexBuffer);
 }
 
 int CharacterBase::getHealth()const
@@ -219,8 +219,6 @@ void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
 
 }
-
-
 
 void CharacterBase::resetWorldMatrix()
 {

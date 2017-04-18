@@ -24,7 +24,6 @@ private:
 	int unitID;
 	bool alive;
 
-
 	ID3D11Buffer* vertexBuffer;
 
 public:

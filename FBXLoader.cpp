@@ -128,7 +128,7 @@ HRESULT FbxImport::LoadFBX(std::vector<Vertex_Bone>* pOutVertexVector) {
 
 		if (i == 1) {
 
-			currentFilePath = "FbxModel\\wave.fbx";
+			currentFilePath = "FbxModel\\idle.fbx";
 			hr = LoadAnimation(currentFilePath, gFbxSdkManager, pImporter, pFbxScene);
 
 			if (FAILED(hr)) {

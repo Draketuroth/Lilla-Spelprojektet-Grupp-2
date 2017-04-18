@@ -141,27 +141,7 @@ void updateCharacter(HWND windowhandle) {
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-	sceneContainer.fbxImporter.animTimePos += timer.getDeltaTime() * 20;
-
-	if (GetAsyncKeyState(VK_UP) & 0x8000) {
-
-		if (sceneContainer.character.currentAnimIndex < ANIMATIONCOUNT - 1) {
-
-			sceneContainer.character.currentAnimIndex++;
-			sceneContainer.fbxImporter.animTimePos = 0.0f;
-
-		}
-	}
-
-	if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-
-		if (sceneContainer.character.currentAnimIndex > 0) {
-
-			sceneContainer.character.currentAnimIndex--;
-			sceneContainer.fbxImporter.animTimePos = 0.0f;
-
-		}
-	}
+	sceneContainer.fbxImporter.animTimePos += timer.getDeltaTime() * 50;
 
 	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.fbxImporter.meshSkeleton.hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
