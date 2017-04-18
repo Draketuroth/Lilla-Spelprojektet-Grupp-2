@@ -6,10 +6,12 @@ Enemy::Enemy()
 	this->Type = 0;
 	this->SpawnPos = { 0,0,0 };
 }
+
 Enemy::~Enemy()
 {
 
 }
+
 Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 	:CharacterBase(true, 2, 5.0f, 1, { 1,1,5 }, XMMatrixIdentity())
 {
@@ -74,16 +76,6 @@ void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHa
 
 	};
 
-	
-
-
-	for (int i = 0; i < 24; i++)
-	{
-		HostileCube[i].x += this->SpawnPos.x;
-		HostileCube[i].y += this->SpawnPos.y;
-		HostileCube[i].z += this->SpawnPos.z;
-
-	}
 	for (unsigned int i = 0; i < 24; i++)
 	{
 
@@ -129,9 +121,10 @@ void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHa
 	}
 	
 	createBuffers(graphicDevice, vertices, indices);
-	CreateBoundingBox(0.10, this->getPos(), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->SpawnPos, XMFLOAT3(1.3, 1.3, 1.3), bulletPhysicsHandle);
 	
 }
+
 void Enemy::EnemyPhysics()
 {
 

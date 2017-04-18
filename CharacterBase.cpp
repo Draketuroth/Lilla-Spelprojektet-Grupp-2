@@ -143,7 +143,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<TriangleV
 	return true;
 }
 
-void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, BulletComponents &bulletPhysicsHandler) {
+void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler) {
 
 	//----------------------------------------------------------------------//
 	// CREATE THE RIGID BODY
@@ -158,7 +158,7 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, BulletCompo
 	transform.setFromOpenGLMatrix((float*)&t);
 
 	// Define the kind of shape we want and construct rigid body information
-	btBoxShape* boxShape = new btBoxShape(btVector3(1.3, 1.3, 1.3));
+	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
 
 	btVector3 inertia(0, 0, 0);
 

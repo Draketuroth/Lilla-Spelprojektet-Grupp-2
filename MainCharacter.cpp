@@ -25,7 +25,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, vertices, indices);
-	CreateBoundingBox(0.10, this->getPos(), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1.3, 1.3, 1.3), bulletPhysicsHandle);
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -151,7 +151,7 @@ void MainCharacter::loadVertices() {
 	HRESULT hr;
 	int i;
 
-	float scaleFactor = 0.3;
+	float scaleFactor = 0.3f;
 
 	TriangleVertex cubeVertices[24] =
 	{
