@@ -245,18 +245,15 @@ void MainCharacter::loadVertices() {
 XMMATRIX MainCharacter::rotate(HWND windowhandle)
 {
 	XMMATRIX R;
-
-	return XMPlaneFromPointNormal(point, normal);
-}
-
-
-
-bool MainCharacter::IntersectionInRange(XMFLOAT3 MousePos)
 	float angle = characterLookAt(windowhandle);
+
 	R = XMMatrixRotationY(angle);
 
 	return R;
 }
+
+
+
 
 void MainCharacter::meleeAttack(HWND windowHandle)
 {
