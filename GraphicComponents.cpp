@@ -691,7 +691,7 @@ bool GraphicComponents::CreateLavaShaders()
 
 
 }
-}
+
 
 bool GraphicComponents::CreateMenuShaders()
 {

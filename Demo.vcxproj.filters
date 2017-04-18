@@ -85,6 +85,12 @@
     <Filter Include="Source Files\BulletComponents">
       <UniqueIdentifier>{9745d815-8387-443e-a7d7-872d87d6c5a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Lava">
+      <UniqueIdentifier>{6bbe6e5e-4c07-4f57-8da7-df0d3f3ae563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lava">
+      <UniqueIdentifier>{0a9c9b18-33e4-46ff-8b4a-df8974fd008c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -137,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="BulletComponents.cpp">
       <Filter>Source Files\BulletComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Lava.cpp">
+      <Filter>Source Files\Lava</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="BulletComponents.h">
       <Filter>Header Files\BulletComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Lava.h">
+      <Filter>Header Files\Lava</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -162,7 +162,7 @@ void SceneContainer::render() {
 	clear();
 
 	//renderDeferred();
-
+	renderLava(); 
 	renderCharacters();
 	renderScene();
 }
