@@ -20,8 +20,8 @@ MainCharacter::~MainCharacter()
 void MainCharacter::update(HWND windowhandle)
 {
 	CharacterMove(windowhandle);
-	/*meleeAttack();
-	rangeAttack();*/
+	/*meleeAttack(windowhandle);
+	rangeAttack(windowhandle);*/
 }
 
 //--------- Changing the character's position --------------
@@ -87,10 +87,18 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 
 	direction.x = 0;
 	direction.z = 0;
+	this->rigidBody->clearForces();
+
 
 	if (GetAsyncKeyState('W'))
 	{
 		direction.z = 1.0;
+
+		XMFLOAT3 posF = getPos();
+		btVector3 pos = { posF.x, posF.y, posF.z };
+
+		//this->rigidBody->applyForce(btVector3(0, 0, 1), pos);
+
 		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
 
 	}
@@ -150,13 +158,6 @@ void MainCharacter::meleeAttack(HWND windowHandle)
 {
 	if (GetAsyncKeyState(MK_LBUTTON))
 	{
-		//Need an attack duration.
-		//attackDuration = 0.5f;
-		//if attackdur > 0 
-		// arratckDur -= deltaTime;
-		//When a time has passed and the attack is ongoing damage enemies within range.
-		//(When attack != done or smth)
-		//else... attack = done reset attack duration?
 
 		cout << "MELEE ATTACK" << endl;
 		//this is the way the character will be facing
@@ -172,34 +173,22 @@ void MainCharacter::meleeAttack(HWND windowHandle)
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		
-
-		//We need a way to browse through the enemies
-		//Array? Handler?
-
 		//filter down the list of enemies, 
-		//first if they're within range
-		//then if they're within the angle of the attack
 
-		//we need to get the number of enemies
-		//ALT. enemyArray.length?
-		//int nrOfEnemies = 10;
+		int nrOfEnemies; //= getNrOfEnemies();
 
-		//for (int i = 0; i < nrOfEnemies, i++;)
-		//{
-		//	float enemyDistance = 2;
-		//	if (enemyDistance <= 1)
-		//	{
-		//		//check if that enemy boundingBox intersects meleeBox
-		//			//if YES 
-		//				//drain that enemy's health
-		//			//else
-		//				//do nothing and continue on
-		//	}
-		//}
-
+		for (int i = 0; i < nrOfEnemies, i++;)
+		{
+			float enemyDistance; //= getDistanceFromCharacter(float object);
+			if (enemyDistance <= 1.0)
+			{
+				if (/*characterBoundingBox intersects(enemyBoundingBox)*/1)
+				{
+					//enemyHealth--;
+				}
+			}
+		}
 		//attack done 
-		//reset attack duration
-		
 	}
 }
 
@@ -210,6 +199,17 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 		cout << "RANGED ATTACK" << endl;
 	}
 
+	//check which way the charater is looking
+	float angle = characterLookAt(windowHandle);
+
+	//fireProjectile(angle);
+
+	//fireProjectile have to create and follow up the projectile and see it it hits anything.
+	//it needs to check every frame until the projectile is a certain distance away from the character
+	//or until it hits an enemy
+
+	//The projectile should move straight forward into its direction at a constant speed (no real need for physics)
+	//The projectile needs to be able to sort through the list of enemies.
 }
 
 
