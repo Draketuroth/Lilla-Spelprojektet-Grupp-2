@@ -3,7 +3,7 @@
 #include"Window.h"
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
+	:CharacterBase(true, 10, 5.0f, 1, {2, 20, 5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 6.0f;
 	cameraDistanceZ = 3.0f;
@@ -321,7 +321,10 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 
 }
 
+void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
+{
 
+}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()

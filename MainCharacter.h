@@ -25,6 +25,7 @@ public:
 	void meleeAttack(HWND windowHandle);
 	void rangeAttack(HWND windowHandle);
 	
+	void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
 
 
 	Camera camera;

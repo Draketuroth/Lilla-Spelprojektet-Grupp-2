@@ -29,6 +29,7 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gCubeIndexBuffer);
 
 	SAFE_RELEASE(gPlayerTransformBuffer);
+	SAFE_RELEASE(gEnemyTransformBuffer);
 
 	for (int i = 0; i < nrOfCubes; i++) {
 
@@ -55,6 +56,10 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 
 	if (!CreatePlayerTransformBuffer(gDevice)) {
 
+		return false;
+	}
+	if (!CreateEnemyTransformBuffer(gDevice))
+	{
 		return false;
 	}
 
@@ -414,6 +419,38 @@ bool BufferComponents::CreatePlayerTransformBuffer(ID3D11Device* &gDevice) {
 	constData.SysMemSlicePitch = 0;
 
 	hr = gDevice->CreateBuffer(&playerBufferDesc, &constData, &gPlayerTransformBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
+
+	HRESULT hr;
+
+	PLAYER_TRANSFORM eTransformData;
+
+	eTransformData.matrixW = XMMatrixIdentity();
+	eTransformData.matrixWVP = XMMatrixIdentity();
+
+	D3D11_BUFFER_DESC enemyBufferDesc;
+	ZeroMemory(&enemyBufferDesc, sizeof(enemyBufferDesc));
+	enemyBufferDesc.ByteWidth = sizeof(GS_CONSTANT_BUFFER);
+	enemyBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	enemyBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	enemyBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	enemyBufferDesc.MiscFlags = 0;
+	enemyBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA constData;
+	constData.pSysMem = &eTransformData;
+	constData.SysMemPitch = 0;
+	constData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&enemyBufferDesc, &constData, &gEnemyTransformBuffer);
 
 	if (FAILED(hr)) {
 

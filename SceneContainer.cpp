@@ -10,7 +10,7 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemy = Enemy(0, { 0,0,2 });
+	enemy = Enemy(0, { 0.3f,20,1 });
 
 	bulletPhysicsHandler = BulletComponents();
 
@@ -106,7 +106,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler);
-	enemy.Spawn(gHandler.gDevice);
+	enemy.Spawn(gHandler.gDevice,bulletPhysicsHandler);
 
 	return true;
 
@@ -278,16 +278,15 @@ void SceneContainer::renderCharacters()
 void SceneContainer::renderEnemies()
 {
 	
-	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	//gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
-	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
+	gHandler.gDeviceContext->GSSetShader(gHandler.gEnemyGeometryShader, nullptr, 0);
 
-	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
-	
 
 	ID3D11Buffer* nullBuffer = { nullptr };
 	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);

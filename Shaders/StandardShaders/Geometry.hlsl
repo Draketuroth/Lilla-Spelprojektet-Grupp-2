@@ -75,7 +75,7 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 
 		// For the normal to properly work and to later be used correctly when creating the basic diffuse shading, it's required to be computed in world coordinates
 
-		output.Norm = mul(float4(normalAB, 1.0f), worldPosition);
+		output.Norm = mul(float4(normalAB, 1.0f), matrixW);
 
 		output.Tex = input[i].Tex;
 

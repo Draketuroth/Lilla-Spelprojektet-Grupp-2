@@ -36,7 +36,7 @@ void Enemy::setSpawnPos(XMFLOAT3 SpawnPos)
 	this->SpawnPos = SpawnPos;
 }
 
-void Enemy::Spawn(ID3D11Device* graphicDevice)
+void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle)
 {
 	
 	TriangleVertex HostileCube[24] =
@@ -129,5 +129,48 @@ void Enemy::Spawn(ID3D11Device* graphicDevice)
 	}
 	
 	createBuffers(graphicDevice, vertices, indices);
+	CreateBoundingBox(0.10, this->SpawnPos, bulletPhysicsHandle);
+	
+}
+void Enemy::EnemyPhysics()
+{
 
+
+	float time = timer.getDeltaTime();
+
+
+	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
+	XMFLOAT3 oldpos = this->getPos();
+
+	XMMATRIX R = XMMatrixIdentity();
+	updateWorldMatrix(oldpos, R);
+
+	
+
+	XMMATRIX transform;
+	XMFLOAT4X4 data;
+
+	// Gather the rigid body matrix
+	btTransform btRigidTransform;
+	this->rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+
+	// Load it into an XMFLOAT4x4
+	btRigidTransform.getOpenGLMatrix((float*)&data);
+
+	// Load it into an XMMATRIX
+	transform = XMLoadFloat4x4(&data);
+	XMVECTOR t;
+	XMVECTOR s;
+	XMVECTOR r;
+	XMMatrixDecompose(&s, &r, &t, transform);
+	XMFLOAT3 rigidPos;
+	XMStoreFloat3(&rigidPos, t);
+
+	this->setPos(rigidPos);
+
+	
+
+	
+
+	timer.updateCurrentTime();
 }
