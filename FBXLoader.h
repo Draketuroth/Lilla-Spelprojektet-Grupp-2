@@ -63,16 +63,22 @@ struct Keyframe { // Stores the attributes of a keyframe in an animation
 
 };
 
+struct Animation {
+
+	vector<Keyframe> Sequence;
+	FbxLongLong Length;
+};
+
 struct Joint { // Stores the attributes of a joint node
 
-	const char* Name;
+	string Name;
 	int ParentIndex;
 
 	FbxAMatrix GlobalBindposeInverse;
 	FbxAMatrix TransformMatrix;
 	FbxAMatrix TransformLinkMatrix;
+	Animation Animations[3];
 
-	vector<Keyframe> Animation;
 	FbxNode* Node;
 
 	Joint() :
@@ -177,8 +183,8 @@ public:
 
 	XMMATRIX Load4X4JointTransformations(Joint joint, int transformIndex);
 	XMMATRIX Load4X4Transformations(FbxAMatrix fbxMatrix);
-	void UpdateAnimation(ID3D11DeviceContext* gDevice);
-	void Interpolate(VS_SKINNED_DATA* boneBufferPointer, int jointIndex, ID3D11DeviceContext* gDevice);
+	void UpdateAnimation(ID3D11DeviceContext* gDevice, int animIndex);
+	void Interpolate(VS_SKINNED_DATA* boneBufferPointer, int jointIndex, ID3D11DeviceContext* gDevice, int animIndex);
 	void InitializeAnimation();
 	
 	Skeleton meshSkeleton;
@@ -188,7 +194,6 @@ public:
 	XMMATRIX invertedBindPose[16];	// Bind pose matrix
 
 	vector<Vertex_Bone>vertices;	// Extra copy of vertices
-	FbxLongLong animationLength;
 
 private:
 
@@ -202,7 +207,7 @@ private:
 	void RecursiveDepthFirstSearch(FbxNode* node, int depth, int index, int parentIndex);
 
 	// Function to process the animation data when the skeleton hierarchy has been loaded
-	void GatherAnimationData(FbxNode* node, FbxScene* scene);
+	void GatherAnimationData(FbxNode* node, FbxScene* scene, int animIndex);
 
 	void SetGlobalTransform();
 
@@ -219,9 +224,16 @@ private:
 	// Receive only meshes from the Fbx root node
 	FbxMesh* GetMeshFromRoot(FbxNode* node);
 
-	void ProcessControlPoints(FbxNode* node);
+	void ProcessControlPoints();
 
 	void ConvertToLeftHanded(FbxAMatrix &matrix);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// OPEN FILE FUNCTIONS
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	HRESULT LoadBaseFile(const char* fileName, FbxManager* gFbxSdkManager, FbxImporter* pImporter, FbxScene* pScene);
+	HRESULT LoadAnimation(const char* fileName, FbxManager* gFbxSdkManager, FbxImporter* pImporter, FbxScene* pScene);
 
 private:
 
