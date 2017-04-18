@@ -8,7 +8,7 @@
 
 
 #include "SceneContainer.h"
-
+#include "GameState.h"
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
@@ -24,16 +24,14 @@ HWND windowHandle;
 // SCENE COMPONENTS
 //----------------------------------------------------------------------------------------------------------------------------------//
 SceneContainer sceneContainer;
-
-
-
+GameState menuState;
 Timer timer;
 
 //----------------------------------------------------------------------------------------------------------------------------------//
 // FORWARD DECLARATIONS
 //----------------------------------------------------------------------------------------------------------------------------------//
 int RunApplication();
-void updateCharacter();
+void updateCharacter(HWND windowhandle);
 void updateBuffers();
 void updateLava();
 
@@ -42,7 +40,7 @@ int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
-
+	
 	sceneContainer.initialize(windowHandle);
 
 	
@@ -67,6 +65,10 @@ int RunApplication() {
 	sceneContainer.character.timer.initialize();
 	updateLava(); 
 
+	menuState.createBufferData(sceneContainer.gHandler.gDevice);
+	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
+	menuState.createVertexBuffer(sceneContainer.gHandler.gDevice);
+
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -87,39 +89,60 @@ int RunApplication() {
 
 			float deltaTime = timer.getDeltaTime();
 
-			updateCharacter();
 
-			updateBuffers();
+			switch (menuState.state)
+			{
+			case MAIN_MENU:
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				break;
+			case PAUSE_MENU:
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				break;
+			case START_GAME:
+				menuState.checkGameState();
+				updateCharacter(windowHandle);
+				updateBuffers();
 
-			//----------------------------------------------------------------------------------------------------------------------------------//
-			// RENDER
-			//----------------------------------------------------------------------------------------------------------------------------------//
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-			sceneContainer.renderCharacters();
-			sceneContainer.renderLava(); 
-			sceneContainer.renderScene();
+				if(GetAsyncKeyState('L')) {
 
-			showFPS(windowHandle, deltaTime);
+					SAFE_RELEASE(sceneContainer.bHandler.cubeObjects[14].gCubeVertexBuffer);
+					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sceneContainer.bulletPhysicsHandler.rigidBodies[14]);
+				}
+				
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// RENDER
+				//----------------------------------------------------------------------------------------------------------------------------------//
 
-			sceneContainer.gHandler.gSwapChain->Present(0, 0);
+				sceneContainer.render();
 
-			timer.updateCurrentTime();
+				showFPS(windowHandle, deltaTime);
 
+				sceneContainer.gHandler.gSwapChain->Present(0, 0);
+
+				timer.updateCurrentTime();
+				break;
+			}
+			
+			
+			
 		}
 
 	}
 
 	sceneContainer.releaseAll();
+	menuState.releaseAll();
 	sceneContainer.lava.ReleaseAll();
 	DestroyWindow(windowHandle);
 
 	return 0;
 }
 
-void updateCharacter() {
+void updateCharacter(HWND windowhandle) {
 
-	sceneContainer.character.update();
-
+	sceneContainer.character.update(windowhandle);
+	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 }
 
@@ -138,6 +161,7 @@ void updateBuffers() {
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
+	XMMATRIX tCameraInverseViewProj = XMMatrixTranspose(XMMatrixInverse(nullptr, sceneContainer.character.camera.ViewProj()));
 	XMMATRIX tCameraProjection = XMMatrixTranspose(sceneContainer.character.camera.Proj());
 	XMMATRIX tCameraView = XMMatrixTranspose(sceneContainer.character.camera.View());
 
@@ -153,6 +177,7 @@ void updateBuffers() {
 	cBufferPointer->matrixWorld = sceneContainer.bHandler.tWorldMatrix;
 	cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
 	cBufferPointer->matrixProjection = tCameraProjection;
+	cBufferPointer->inverseViewProjection = tCameraInverseViewProj;
 
 	cBufferPointer->cameraPos = sceneContainer.character.camera.GetPosition();
 

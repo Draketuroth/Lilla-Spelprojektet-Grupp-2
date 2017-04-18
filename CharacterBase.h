@@ -7,8 +7,9 @@
 #include "Timer.h"
 #include "Camera.h"
 #include "VertexType.h"
-
+#include "BasicMath.h"
 #include "MacroDefinitions.h"
+#include "BufferComponents.h"
 
 using namespace std;
 using namespace DirectX;
@@ -27,7 +28,9 @@ private:
 	ID3D11Buffer* indexBuffer;
 
 public:
+
 	XMMATRIX tPlayerTranslation;
+	btRigidBody* rigidBody;
 	
 	Timer timer;
 
@@ -37,6 +40,7 @@ public:
 
 	void releaseAll();
 
+	//GET-SET
 	int getHealth()const;
 	void setHealth(const int newHealth);
 	float getMovementSpeed()const;
@@ -48,9 +52,11 @@ public:
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
-	bool createBuffers(ID3D11Device* &graphicDevice);
+	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
+	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, BulletComponents &bulletPhysicsHandler);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
+	//Matrices
 	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);
 	void resetWorldMatrix();
 

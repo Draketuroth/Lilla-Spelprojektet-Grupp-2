@@ -97,8 +97,26 @@ public:
 	float GetX()const; 
 	float GetZ()const; 
 
+	XMFLOAT4X4 inverseView;
+	
+	XMFLOAT3 eyePosF;
+	XMFLOAT3 lookAtF;
+	XMFLOAT3 upF;
 
+	XMVECTOR eyePos;
+	XMVECTOR lookAt;
+	XMVECTOR up;
 
+	XMMATRIX viewMatrix;
+	XMMATRIX projectionMatrix;
+	XMMATRIX viewProj;
+	XMMATRIX InvViewPoj;
+	XMVECTOR detViewProj;
+	XMVECTOR projDet;
+
+	XMMATRIX ProjInv;
+	XMVECTOR viewDet;
+	XMMATRIX ViewInv;
 private:
 
 	// Camera coordinate system with coordinates relative to World Space
@@ -118,7 +136,7 @@ private:
 	// Cache View/Proj Matrices 
 	XMFLOAT4X4 mView;
 	XMFLOAT4X4 mProj;
-	XMFLOAT4X4 inverseView;
+	
 
 };
 

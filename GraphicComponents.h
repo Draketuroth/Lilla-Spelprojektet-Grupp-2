@@ -28,6 +28,10 @@ public:
 	ID3D11PixelShader* gPixelShader;	
 	ID3D11GeometryShader* gGeometryShader;
 
+	ID3D11InputLayout* gMenuLayout;
+	ID3D11VertexShader* gMenuVertex;
+	ID3D11PixelShader* gMenuPixel;
+
 	ID3D11InputLayout* gPlatformLayout;
 	ID3D11VertexShader* gPlatformVertexShader;
 	ID3D11PixelShader* gPlatformPixelShader;
@@ -47,6 +51,7 @@ public:
 	bool CreateRenderTargetView();	// We require a render target view for rendering and we create this by taking the back buffer from the swap chain
 	bool CreateSwapChainAndDevice(HWND &windowHandle);	// Function to create the graphic device responsible for interactions with the graphic card and the swap chain to switch between back & front buffer
 
+	bool CreateMenuShaders();
 	bool CreateStandardShaders();
 	bool CreatePlatformShaders();
 	bool CreateLavaShaders(); 

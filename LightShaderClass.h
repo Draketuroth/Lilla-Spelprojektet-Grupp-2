@@ -29,13 +29,13 @@ public:
 
 	bool Initialize(ID3D11Device* gDevice );
 
-private:
-
 	bool InitializeShader(ID3D11Device* gDevice);
 	bool CreatePointSampler(ID3D11Device* gDevice);
 	bool CreateLightBuffer(ID3D11Device* gDevice);
-	bool SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, XMFLOAT3 lightDirection);
+	bool SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, ID3D11ShaderResourceView* worldTexture, ID3D11ShaderResourceView* depthTexture, XMFLOAT3 lightDirection);
 	void Render(ID3D11DeviceContext* gDeviceContext, int indexCount);
+
+private:
 
 	ID3D11VertexShader* l_vertexShader;
 	ID3D11PixelShader* l_pixelShader;
