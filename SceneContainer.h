@@ -52,8 +52,6 @@ public:
 
 	BulletComponents bulletPhysicsHandler;
 
-	int currentAnimIndex;
-
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
 	//------------------------------------------------------------//

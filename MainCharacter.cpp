@@ -5,9 +5,10 @@
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
 {
-	cameraDistanceY = 40.0f;
+	cameraDistanceY = 6.0f;
 	cameraDistanceZ = 3.0f;
 	playerHeight = 2.0f;
+	currentAnimIndex = 0;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
@@ -19,6 +20,8 @@ MainCharacter::~MainCharacter()
 }
 
 void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter) {
+
+	currentAnimIndex = 0;
 
 	// Main character function
 	loadVertices(fbxImporter, graphicDevice);

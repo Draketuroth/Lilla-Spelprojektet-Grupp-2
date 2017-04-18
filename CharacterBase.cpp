@@ -211,6 +211,10 @@ void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 	// Load it into an XMMATRIX
 	transform = XMLoadFloat4x4(&data);
 
+	XMMATRIX scale = XMMatrixScaling(0.2, 0.2, 0.2);
+
+	transform = XMMatrixMultiply(scale, transform);
+
 	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
 

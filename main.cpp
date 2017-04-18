@@ -145,32 +145,30 @@ void updateCharacter(HWND windowhandle) {
 
 	if (GetAsyncKeyState(VK_UP) & 0x8000) {
 
-		if (sceneContainer.currentAnimIndex < ANIMATIONCOUNT - 1) {
+		if (sceneContainer.character.currentAnimIndex < ANIMATIONCOUNT - 1) {
 
-			sceneContainer.currentAnimIndex++;
+			sceneContainer.character.currentAnimIndex++;
 			sceneContainer.fbxImporter.animTimePos = 0.0f;
-			Sleep(200);
 
 		}
 	}
 
 	if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
 
-		if (sceneContainer.currentAnimIndex > 0) {
+		if (sceneContainer.character.currentAnimIndex > 0) {
 
-			sceneContainer.currentAnimIndex--;
+			sceneContainer.character.currentAnimIndex--;
 			sceneContainer.fbxImporter.animTimePos = 0.0f;
-			Sleep(200);
 
 		}
 	}
 
-	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.fbxImporter.meshSkeleton.hierarchy[0].Animations[sceneContainer.currentAnimIndex].Length) {
+	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.fbxImporter.meshSkeleton.hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
 		sceneContainer.fbxImporter.animTimePos = 0.0f;
 	}
 
-	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.currentAnimIndex);
+	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex);
 }
 
 void updateBuffers() {

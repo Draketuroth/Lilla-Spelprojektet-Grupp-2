@@ -38,6 +38,7 @@ public:
 	
 	vector<Vertex_Bone> fbxVector;
 	VS_SKINNED_DATA skinData; // constant buffer struct for inverse bindpose matrices.
+	int currentAnimIndex;
 
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();

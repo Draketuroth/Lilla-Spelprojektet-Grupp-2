@@ -32,6 +32,7 @@ void SceneContainer::releaseAll() {
 	lightShaders.ReleaseAll();
 
 	bulletPhysicsHandler.ReleaseAll();
+	fbxImporter.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
