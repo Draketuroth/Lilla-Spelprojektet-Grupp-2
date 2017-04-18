@@ -10,6 +10,7 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
+	enemy = Enemy(0, { 0,0,2 });
 
 	bulletPhysicsHandler = BulletComponents();
 
@@ -26,6 +27,7 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	character.releaseAll();
+	enemy.releaseAll();
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
@@ -104,6 +106,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler);
+	enemy.Spawn(gHandler.gDevice);
 
 	return true;
 
@@ -164,6 +167,7 @@ void SceneContainer::render() {
 	//renderDeferred();
 
 	renderCharacters();
+	renderEnemies();
 	renderScene();
 }
 
@@ -255,8 +259,8 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
-	UINT32 vertexSize = sizeof(TriangleVertex);
-	UINT32 offset = 0;
+	//UINT32 vertexSize = sizeof(TriangleVertex);
+	//UINT32 offset = 0;
 
 	ID3D11Buffer* nullBuffer = { nullptr };
 	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
@@ -265,8 +269,33 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 
 	character.draw(gHandler.gDeviceContext);
+	
 
 	character.resetWorldMatrix();
+	
+}
+
+void SceneContainer::renderEnemies()
+{
+	
+	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	//gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
+	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
+	
+
+	ID3D11Buffer* nullBuffer = { nullptr };
+	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
+	enemy.draw(gHandler.gDeviceContext);
+
 	
 }
 

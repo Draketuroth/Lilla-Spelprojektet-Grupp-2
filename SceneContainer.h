@@ -22,6 +22,7 @@
 #include "BulletComponents.h"
 
 #include "MainCharacter.h"
+#include "Enemies.h"
 
 class SceneContainer {
 
@@ -47,6 +48,8 @@ public:
 
 	MainCharacter character;
 
+	Enemy enemy;
+
 	BulletComponents bulletPhysicsHandler;
 
 	//------------------------------------------------------------//
@@ -66,6 +69,7 @@ public:
 
 	void renderScene();
 	void renderCharacters();
+	void renderEnemies();
 
 
 

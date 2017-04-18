@@ -24,7 +24,7 @@ public:
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle);
 	void rangeAttack(HWND windowHandle);
-	void FillVertexBuffer();
+	
 
 
 	Camera camera;

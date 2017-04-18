@@ -13,16 +13,16 @@ public:
 	XMFLOAT3 getSpawnPos()const;
 	void setSpawnPos(XMFLOAT3 spawnPos);
 
-	void Spawn();
-	struct EnemyCube
-	{
-		XMFLOAT3 VPos[33];
-	};
+	void Spawn(ID3D11Device* graphicDevice);
+	
+
+	
 private:
 	ID3D11Buffer* gEnemieVertexBuffer;
 	int Type;
 	XMFLOAT3 SpawnPos;
-
+	vector<TriangleVertex>vertices;
+	vector<unsigned int>indices;
 
 
 };

@@ -320,10 +320,7 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 	}
 
 }
-void MainCharacter::FillVertexBuffer()
-{
 
-}
 
 
 //Don't need this
