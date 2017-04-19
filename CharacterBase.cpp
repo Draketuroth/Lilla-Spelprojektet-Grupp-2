@@ -236,11 +236,11 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 ex
 	
 	// Set the rigid body to the current platform 
 	this->rigidBody = playerRigidBody;
+	this->rigidBody->setActivationState(DISABLE_DEACTIVATION);
 
 	// Add the new rigid body to the dynamic world
 	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
 	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
-
 	
 
 }
