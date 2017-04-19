@@ -8,6 +8,7 @@ MainCharacter::MainCharacter()
 	cameraDistanceY = 6.0f;
 	cameraDistanceZ = 3.0f;
 	playerHeight = 2.0f;
+	currentAnimIndex = 0;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
@@ -18,14 +19,16 @@ MainCharacter::~MainCharacter()
 
 }
 
-void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle) {
+void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter) {
+
+	currentAnimIndex = 0;
 
 	// Main character function
-	loadVertices();
+	loadVertices(fbxImporter, graphicDevice);
 
 	// Base character functions
-	createBuffers(graphicDevice, vertices, indices);
-	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.3, 0.3, 0.3), bulletPhysicsHandle);
+	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -48,8 +51,9 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMFLOAT3 oldpos = this->getPos();
 
 	XMMATRIX R = rotate(windowhandle);
-	updateWorldMatrix(oldpos, R);
-
+	XMMATRIX scale = XMMatrixScaling(0.2, 0.2, 0.2);
+	updateWorldMatrix(R, scale);
+	
 	CheckInput();
 
 	XMMATRIX transform;
@@ -81,25 +85,39 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 
 void MainCharacter::CheckInput() {
 
+	bool isIdle = true;
 	this->rigidBody->setFriction(4);
 
 	if (GetAsyncKeyState('W'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
+		cout << "W" << endl;
 		this->rigidBody->setFriction(3);
-		this->rigidBody->applyCentralForce(btVector3(0, 0, 7));	
+		this->rigidBody->applyCentralForce(btVector3(0, 0, 7));
 	}
 	if (GetAsyncKeyState('S'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
+		cout << "S" << endl;
+
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(0, 0, -7));	
 	}
 	if (GetAsyncKeyState('A'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
+		cout << "A" << endl;
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(-7, 0, 0));
 	}
 	if (GetAsyncKeyState('D'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
+		cout << "D" << endl;
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(7, 0, 0));	
 	}
@@ -126,6 +144,13 @@ void MainCharacter::CheckInput() {
 	{
 		speed.setZ(minSpeed);
 	}
+
+	if (isIdle == true){
+
+		currentAnimIndex = 1;
+
+	}
+
 	this->rigidBody->setLinearVelocity(speed);
 }
 
@@ -148,98 +173,19 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 	return angle;
 }
 
-void MainCharacter::loadVertices() {
+void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice) {
 
 	HRESULT hr;
-	int i;
 
-	float scaleFactor = 0.3f;
+	fbxImporter.LoadFBX(&fbxVector); //load mesh vertices
 
-	TriangleVertex cubeVertices[24] =
-	{
-		//Front face
+	for (unsigned int i = 0; i < fbxImporter.meshSkeleton.hierarchy.size(); i++) {
 
-		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
-		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
-		-scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
-		scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
+		XMMATRIX inversedBindPose = fbxImporter.Load4X4JointTransformations(fbxImporter.meshSkeleton.hierarchy[i], i); // converts from float4x4 too xmmatrix
 
-		// Back face
+		skinData.gBoneTransform[i] = inversedBindPose;
+		fbxImporter.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
-		scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
-		-scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
-		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
-		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 1.0f,
-
-		// Left face
-
-		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
-		-scaleFactor, scaleFactor, -scaleFactor, 1.0f, 0.0f,
-		-scaleFactor, -scaleFactor, scaleFactor, 0.0f, 1.0f,
-		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f,
-
-		// Right face
-
-		scaleFactor, scaleFactor, -scaleFactor, 0.0f, 0.0f,
-		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
-		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
-		scaleFactor, -scaleFactor,  scaleFactor, 1.0f, 1.0f,
-
-		// Top face
-
-		-scaleFactor, scaleFactor, scaleFactor, 0.0f, 0.0f,
-		scaleFactor, scaleFactor, scaleFactor, 1.0f, 0.0f,
-		-scaleFactor, scaleFactor, -scaleFactor, 0.0f, 1.0f,
-		scaleFactor, scaleFactor, -scaleFactor, 1.0f, 1.0f,
-
-		// Bottom face
-
-		scaleFactor, -scaleFactor, scaleFactor, 0.0f, 0.0f,
-		-scaleFactor, -scaleFactor, scaleFactor, 1.0f, 0.0f,
-		scaleFactor, -scaleFactor, -scaleFactor, 0.0f, 1.0f,
-		-scaleFactor, -scaleFactor, -scaleFactor, 1.0f, 1.0f
-	};
-
-	for (i = 0; i < 24; i++) {
-
-		vertices.push_back(cubeVertices[i]);
-	}
-
-	// Create Indices
-	unsigned int cubeIndices[36] = {
-
-		// Front face
-		0,1,2,
-		2,1,3,
-
-		// Back face
-
-		4,5,6,
-		6,5,7,
-
-		// Left face
-
-		8,9,10,
-		10,9,11,
-
-		// Right face
-
-		12,13,14,
-		14,13,15,
-
-		// Top face
-
-		16,17,18,
-		18,17,19,
-
-		// Bottom face
-
-		20,21,22,
-		22,21,23 };
-
-	for (i = 0; i < 36; i++) {
-
-		indices.push_back(cubeIndices[i]);
 	}
 }
 
