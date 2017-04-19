@@ -30,7 +30,8 @@ CharacterBase::~CharacterBase()
 
 void CharacterBase::releaseAll() {
 
-	//SAFE_RELEASE(vertexBuffer);
+	SAFE_RELEASE(vertexBuffer);
+	SAFE_RELEASE(indexBuffer);
 }
 
 int CharacterBase::getHealth()const
@@ -257,13 +258,22 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexC
 
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 
+	ID3D11ShaderResourceView* nullSRV = nullptr;
 
+	graphicDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+
+	graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
+	graphicDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	graphicDeviceContext->DrawIndexed(36, 0, 0);
 }
 
 //-----------------------------------------------------------
 //-------------Move and WorldMatrix -------------------------
 
-void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
+void CharacterBase::updateWorldMatrix(XMMATRIX rotation)
 {
 	// Prepare matrices for conversion
 	XMMATRIX transform;
@@ -279,7 +289,26 @@ void CharacterBase::updateWorldMatrix(XMFLOAT3 newPos, XMMATRIX rotation)
 	// Load it into an XMMATRIX
 	transform = XMLoadFloat4x4(&data);
 
-	XMMATRIX scale = XMMatrixScaling(0.2, 0.2, 0.2);
+	// Build the new world matrix
+	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
+
+}
+
+void CharacterBase::updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale)
+{
+	// Prepare matrices for conversion
+	XMMATRIX transform;
+	XMFLOAT4X4 data;
+
+	// Gather the rigid body matrix
+	btTransform btRigidTransform;
+	this->rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+
+	// Load it into an XMFLOAT4x4
+	btRigidTransform.getOpenGLMatrix((float*)&data);
+
+	// Load it into an XMMATRIX
+	transform = XMLoadFloat4x4(&data);
 
 	transform = XMMatrixMultiply(scale, transform);
 

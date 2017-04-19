@@ -136,7 +136,7 @@ void Enemy::EnemyPhysics()
 	XMFLOAT3 oldpos = this->getPos();
 
 	XMMATRIX R = XMMatrixIdentity();
-	updateWorldMatrix(oldpos, R);
+	updateWorldMatrix(R);
 
 	
 

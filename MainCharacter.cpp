@@ -51,7 +51,8 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMFLOAT3 oldpos = this->getPos();
 
 	XMMATRIX R = rotate(windowhandle);
-	updateWorldMatrix(oldpos, R);
+	XMMATRIX scale = XMMatrixScaling(0.2, 0.2, 0.2);
+	updateWorldMatrix(R, scale);
 	
 	CheckInput(direction);
 

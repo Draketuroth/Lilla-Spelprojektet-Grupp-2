@@ -59,7 +59,9 @@ public:
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
 
 	//Matrices
-	void updateWorldMatrix(XMFLOAT3 direction, XMMATRIX rotation);
+
+	void updateWorldMatrix(XMMATRIX rotation);
+	void updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale);
 	void resetWorldMatrix();
 
 	string toString();
