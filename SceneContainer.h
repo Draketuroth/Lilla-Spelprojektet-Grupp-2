@@ -22,6 +22,7 @@
 #include "BulletComponents.h"
 
 #include "MainCharacter.h"
+#include "Enemies.h"
 
 #include "FBXLoader.h"
 
@@ -50,6 +51,8 @@ public:
 	MainCharacter character;
 	FbxImport fbxImporter;
 
+	Enemy enemy;
+
 	BulletComponents bulletPhysicsHandler;
 
 	//------------------------------------------------------------//
@@ -69,6 +72,7 @@ public:
 
 	void renderScene();
 	void renderCharacters();
+	void renderEnemies();
 
 };
 

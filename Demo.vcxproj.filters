@@ -85,11 +85,8 @@
     <Filter Include="Source Files\BulletComponents">
       <UniqueIdentifier>{9745d815-8387-443e-a7d7-872d87d6c5a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\FBXLoader">
-      <UniqueIdentifier>{730637f4-9395-4c2c-8245-7ab3388ffcbc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FBXLoader">
-      <UniqueIdentifier>{adf65207-ee3f-4b16-8095-070be4e0fc5a}</UniqueIdentifier>
+    <Filter Include="Source Files\HLSL\EnemyShaders">
+      <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -138,14 +135,14 @@
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\GameState</Filter>
     </ClCompile>
-    <ClCompile Include="BasicMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BulletComponents.cpp">
       <Filter>Source Files\BulletComponents</Filter>
     </ClCompile>
-    <ClCompile Include="FBXLoader.cpp">
-      <Filter>Source Files\FBXLoader</Filter>
+    <ClCompile Include="BasicMath.cpp">
+      <Filter>Source Files\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemies.cpp">
+      <Filter>Source Files\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -197,14 +194,14 @@
     <ClInclude Include="GameState.h">
       <Filter>Header Files\GameState</Filter>
     </ClInclude>
-    <ClInclude Include="BasicMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BulletComponents.h">
       <Filter>Header Files\BulletComponents</Filter>
     </ClInclude>
-    <ClInclude Include="FBXLoader.h">
-      <Filter>Header Files\FBXLoader</Filter>
+    <ClInclude Include="BasicMath.h">
+      <Filter>Header Files\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemies.h">
+      <Filter>Header Files\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +243,15 @@
     </FxCompile>
     <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
       <Filter>Source Files\HLSL\MenuShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyGeometryShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyPixelShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

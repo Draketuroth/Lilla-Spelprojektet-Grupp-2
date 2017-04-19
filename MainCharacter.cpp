@@ -3,7 +3,7 @@
 #include"Window.h"
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
+	:CharacterBase(true, 10, 5.0f, 1, {2, 20, 5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 6.0f;
 	cameraDistanceZ = 3.0f;
@@ -52,7 +52,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 
 	XMMATRIX R = rotate(windowhandle);
 	updateWorldMatrix(oldpos, R);
-
+	
 	CheckInput(direction);
 
 	XMMATRIX transform;
@@ -108,7 +108,8 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 		currentAnimIndex = 0;
 		isIdle = false;
 		direction.z = 1.0;
-		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
+		this->rigidBody->applyCentralForce(btVector3(0, 0, 2));
+		cout << "W" << endl;
 
 	}
 	if (GetAsyncKeyState('S'))
@@ -116,7 +117,8 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 		currentAnimIndex = 0;
 		isIdle = false;
 		direction.z = -1.0;
-		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));
+		this->rigidBody->applyCentralForce(btVector3(0, 0, -2));
+		cout << "S" << endl;
 
 	}
 	if (GetAsyncKeyState('A'))
@@ -124,16 +126,16 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 		currentAnimIndex = 0;
 		isIdle = false;
 		direction.x = -1.0;
-		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
-
+		this->rigidBody->applyCentralForce(btVector3(-2, 0, 0));
+		cout << "A" << endl;
 	}
 	if (GetAsyncKeyState('D'))
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
 		direction.x = 1.0;
-		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));
-
+		this->rigidBody->applyCentralForce(btVector3(2, 0, 0));
+		cout << "D" << endl;
 	}
 
 	if (isIdle == true){
@@ -184,12 +186,15 @@ void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicD
 XMMATRIX MainCharacter::rotate(HWND windowhandle)
 {
 	XMMATRIX R;
-
 	float angle = characterLookAt(windowhandle);
+
 	R = XMMatrixRotationY(angle);
 
 	return R;
 }
+
+
+
 
 void MainCharacter::meleeAttack(HWND windowHandle)
 {
@@ -257,7 +262,10 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 
 }
 
+void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
+{
 
+}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()

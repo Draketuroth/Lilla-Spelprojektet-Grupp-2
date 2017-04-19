@@ -10,6 +10,7 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
+	enemy = Enemy(0, { 0.3f,20,5 });
 
 	bulletPhysicsHandler = BulletComponents();
 
@@ -26,6 +27,7 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	character.releaseAll();
+	enemy.releaseAll();
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
@@ -104,7 +106,9 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler);
+	//enemy.setSpawnPos(XMFLOAT3(4, 2, 5));
+	enemy.Spawn(gHandler.gDevice,bulletPhysicsHandler);
 
 	return true;
 
@@ -165,6 +169,7 @@ void SceneContainer::render() {
 	//renderDeferred();
 
 	renderCharacters();
+	renderEnemies();
 	renderScene();
 }
 
@@ -270,6 +275,29 @@ void SceneContainer::renderCharacters()
 	character.draw(gHandler.gDeviceContext, fbxImporter.vertices.size());
 
 	character.resetWorldMatrix();
+	
+}
+
+void SceneContainer::renderEnemies()
+{
+	
+	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
+	gHandler.gDeviceContext->GSSetShader(gHandler.gEnemyGeometryShader, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
+
+	ID3D11Buffer* nullBuffer = { nullptr };
+	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
+	enemy.draw(gHandler.gDeviceContext);
+
 	
 }
 
