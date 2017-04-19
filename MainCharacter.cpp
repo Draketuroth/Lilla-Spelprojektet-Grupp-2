@@ -50,7 +50,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMMATRIX R = rotate(windowhandle);
 	updateWorldMatrix(oldpos, R);
 
-	CheckInput(direction);
+	CheckInput();
 
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
@@ -76,57 +76,60 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	newCameraPos = { rigidPos.x, rigidPos.y + cameraDistanceY, rigidPos.z - cameraDistanceZ };
 	camera.SetPosition(newCameraPos);
 
-//#if defined (DEBUG) || defined(_DEBUG)
-//
-//	if (oldpos.z != this->getPos().z)
-//	{
-//		cout << "Position Z: " << this->getPos().z << endl;
-//	}
-//	if (oldpos.x != this->getPos().x)
-//	{
-//		cout << "Position X: " << this->getPos().x << endl;
-//	}
-//
-//#endif
-
 	timer.updateCurrentTime();
 }
 
-bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
+void MainCharacter::CheckInput() {
 
-	bool negativePosVec = false;
-
-	/*direction.x = 0;
-	direction.z = 0;*/
 	this->rigidBody->clearForces();
+	this->rigidBody->setFriction(3);
+
 
 
 	if (GetAsyncKeyState('W'))
 	{
-		//direction.z = 1.0;
-		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
-
+		this->rigidBody->setFriction(0.5);
+		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));	
 	}
 	if (GetAsyncKeyState('S'))
 	{
-		//direction.z = -1.0;
-		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));
-
+		this->rigidBody->setFriction(0.5);
+		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));	
 	}
 	if (GetAsyncKeyState('A'))
 	{
-		//direction.x = -1.0;
+		this->rigidBody->setFriction(0.5);
 		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
-
 	}
 	if (GetAsyncKeyState('D'))
 	{
-		//direction.x = 1.0;
-		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));
-
+		this->rigidBody->setFriction(0.5);
+		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));	
 	}
 
-	return negativePosVec;
+	float maxSpeed = this->getMovementSpeed();
+	float minSpeed = -this->getMovementSpeed();
+	btVector3 speed = this->rigidBody->getLinearVelocity();
+	
+
+	if (speed.getX() > maxSpeed)
+	{
+		speed.setX(maxSpeed);
+	}
+	if (speed.getX() < minSpeed)
+	{
+		speed.setX(minSpeed);
+	}
+
+	if (speed.getZ() > maxSpeed)
+	{
+		speed.setZ(maxSpeed);
+	}
+	if (speed.getZ() < minSpeed)
+	{
+		speed.setZ(minSpeed);
+	}
+	this->rigidBody->setLinearVelocity(speed);
 }
 
 float MainCharacter::characterLookAt(HWND windowHandle)

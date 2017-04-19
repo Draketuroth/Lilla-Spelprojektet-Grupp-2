@@ -15,7 +15,7 @@ public:
 	void update(HWND windowhandle);
 
 	void CharacterMove(HWND windowhandle);
-	bool CheckInput(XMFLOAT3 &direction);
+	void CheckInput();
 
 	float characterLookAt(HWND windowHandle);
 
