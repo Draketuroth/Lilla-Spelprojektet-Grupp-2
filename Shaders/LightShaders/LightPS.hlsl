@@ -62,7 +62,7 @@ float4 PS_main(PS_IN input) : SV_TARGET
 
 		float3 lightDir = normalize(lPosition[i] - FragPos);
 		float3 reflection = reflect(-lightDir.xyz, Normal);
-		float3 specular = pow(max(dot(reflection, viewDir), 0.0f), 16.0f);
+		float3 specular = pow(max(dot(reflection, viewDir), 0.0f), 8.0f);
 		float3 diffuse = max(dot(Normal, lightDir), 0.0f) * Albedo * lColor[i];
 		lightning += diffuse + specular;
 
