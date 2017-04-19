@@ -88,6 +88,12 @@
     <Filter Include="Source Files\HLSL\EnemyShaders">
       <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FBXLoader">
+      <UniqueIdentifier>{ca687104-ab80-4b4d-852f-d78d765678bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FBXLoader">
+      <UniqueIdentifier>{8cfddf11-de59-4c20-b21a-664f0fd787d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -143,6 +149,9 @@
     </ClCompile>
     <ClCompile Include="Enemies.cpp">
       <Filter>Source Files\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXLoader.cpp">
+      <Filter>Source Files\FBXLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="Enemies.h">
       <Filter>Header Files\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXLoader.h">
+      <Filter>Header Files\FBXLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
