@@ -177,7 +177,8 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 	return angle;
 }
 
-void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice) {
+void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice)
+{
 
 	HRESULT hr;
 	int i;
@@ -188,7 +189,7 @@ void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicD
 	{
 		//Front face
 
-	fbxImporter.LoadFBX(&fbxVector); //load mesh vertices
+		fbxImporter.LoadFBX(&fbxVector); //load mesh vertices
 
 	for (unsigned int i = 0; i < fbxImporter.meshSkeleton.hierarchy.size(); i++) {
 
