@@ -24,6 +24,8 @@
 #include "MainCharacter.h"
 #include "Enemies.h"
 
+#include "FBXLoader.h"
+
 #include "Lava.h"
 class SceneContainer {
 
@@ -48,6 +50,7 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
+	FbxImport fbxImporter;
 	Lava lava; 
 
 	Enemy enemy;

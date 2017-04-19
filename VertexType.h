@@ -15,6 +15,16 @@ struct TriangleVertex{
 	float u, v;
 };
 
+struct Vertex_Bone { // Stores the attributes of a vertex such as position, uv coordinates and normals
+
+	XMFLOAT3 pos;
+	XMFLOAT2 uv;
+	XMFLOAT3 normal;
+	float weights[4];
+	UINT boneIndices[4];
+
+};
+
 struct OBJStruct
 {
 	XMFLOAT3 Varr;

@@ -11,15 +11,15 @@ public:
 	MainCharacter();
 	~MainCharacter();
 
-	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle);
+	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter);
 	void update(HWND windowhandle);
 
 	void CharacterMove(HWND windowhandle);
-	bool CheckInput(XMFLOAT3 &direction);
+	void CheckInput();
 
 	float characterLookAt(HWND windowHandle);
 
-	void loadVertices();
+	void loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice);
 
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle);
@@ -39,8 +39,9 @@ public:
 	XMVECTOR directionVec;
 	XMFLOAT3 floatPos;
 	
-	vector<TriangleVertex>vertices;
-	vector<unsigned int>indices;
+	vector<Vertex_Bone> fbxVector;
+	VS_SKINNED_DATA skinData; // constant buffer struct for inverse bindpose matrices.
+	int currentAnimIndex;
 
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();

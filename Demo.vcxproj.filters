@@ -88,12 +88,6 @@
     <Filter Include="Source Files\HLSL\EnemyShaders">
       <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Lava">
-      <UniqueIdentifier>{d23c1a37-f0b7-4ac3-85f2-5683b8b38a5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Lava">
-      <UniqueIdentifier>{fd924431-ca77-4446-8745-694f67022a0d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -149,9 +143,6 @@
     </ClCompile>
     <ClCompile Include="Enemies.cpp">
       <Filter>Source Files\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Lava.cpp">
-      <Filter>Source Files\Lava</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,8 +203,8 @@
     <ClInclude Include="Enemies.h">
       <Filter>Header Files\Character</Filter>
     </ClInclude>
-    <ClInclude Include="Lava.h">
-      <Filter>Header Files\Lava</Filter>
+    <ClInclude Include="BasicMath.h">
+      <Filter>Header Files\Global</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
