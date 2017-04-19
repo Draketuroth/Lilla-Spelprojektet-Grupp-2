@@ -54,7 +54,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMMATRIX scale = XMMatrixScaling(0.2, 0.2, 0.2);
 	updateWorldMatrix(R, scale);
 	
-	CheckInput(direction);
+	CheckInput();
 
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
@@ -85,7 +85,6 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 
 void MainCharacter::CheckInput() {
 
-	bool negativePosVec = false;
 	bool isIdle = true;
 	this->rigidBody->setFriction(4);
 
@@ -116,6 +115,9 @@ void MainCharacter::CheckInput() {
 	}
 	if (GetAsyncKeyState('D'))
 	{
+		currentAnimIndex = 0;
+		isIdle = false;
+		cout << "D" << endl;
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(7, 0, 0));	
 	}
@@ -141,9 +143,6 @@ void MainCharacter::CheckInput() {
 	if (speed.getZ() < minSpeed)
 	{
 		speed.setZ(minSpeed);
-		currentAnimIndex = 0;
-		isIdle = false;
-		cout << "D" << endl;
 	}
 
 	if (isIdle == true){
@@ -152,7 +151,6 @@ void MainCharacter::CheckInput() {
 
 	}
 
-	return negativePosVec;
 	this->rigidBody->setLinearVelocity(speed);
 }
 
