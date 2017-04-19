@@ -24,6 +24,8 @@
 #include "MainCharacter.h"
 #include "Enemies.h"
 
+#include "FBXLoader.h"
+
 class SceneContainer {
 
 private:
@@ -47,6 +49,7 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
+	FbxImport fbxImporter;
 
 	Enemy enemy;
 
@@ -70,8 +73,6 @@ public:
 	void renderScene();
 	void renderCharacters();
 	void renderEnemies();
-
-
 
 };
 
