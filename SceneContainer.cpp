@@ -224,7 +224,7 @@ bool SceneContainer::renderSceneToTexture() {
 	deferredObject.SetRenderTargets(gHandler.gDeviceContext);
 
 	// Clear the render buffers
-	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 1.0f, 1.0f);
+	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Set the object vertex buffer to prepare it for drawing
 	deferredObject.SetObjectBuffer(gHandler.gDeviceContext);
