@@ -185,8 +185,7 @@ void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicD
 
 	float scaleFactor = 0.3f;
 
-	TriangleVertex cubeVertices[24] =
-	{
+	
 		//Front face
 
 		fbxImporter.LoadFBX(&fbxVector); //load mesh vertices
@@ -198,12 +197,7 @@ void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicD
 		skinData.gBoneTransform[i] = inversedBindPose;
 		fbxImporter.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
-		20,21,22,
-		22,21,23 };
-
-	for (i = 0; i < 36; i++) {
-
-		indices.push_back(cubeIndices[i]);
+		
 	}
 }
 
