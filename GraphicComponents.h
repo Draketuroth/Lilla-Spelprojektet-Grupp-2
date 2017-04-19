@@ -46,6 +46,15 @@ public:
 	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
 	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture
 
+
+	ID3D11InputLayout* gEnemyVertexLayout;
+	ID3D11VertexShader* gEnemyVertexShader;
+	ID3D11PixelShader* gEnemyPixelShader;
+	ID3D11GeometryShader* gEnemyGeometryShader;
+
+
+
+
 	bool InitalizeDirect3DContext(HWND &windowHandle);	// Function called to initalize the necessary components, as listen below
 	bool CreateDepthStencil();
 	bool CreateRenderTargetView();	// We require a render target view for rendering and we create this by taking the back buffer from the swap chain
@@ -54,6 +63,7 @@ public:
 	bool CreateMenuShaders();
 	bool CreateStandardShaders();
 	bool CreatePlatformShaders();
+	bool CreateEnemyShaders();
 	bool CreateLavaShaders(); 
 	void SetViewport();		// Functions to define the properties of our viewport
 

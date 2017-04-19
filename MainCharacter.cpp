@@ -3,7 +3,7 @@
 #include"Window.h"
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
+	:CharacterBase(true, 10, 5.0f, 1, {2, 20, 5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 6.0f;
 	cameraDistanceZ = 3.0f;
@@ -25,7 +25,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, vertices, indices);
-	CreateBoundingBox(0.10, this->getPos(), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.3, 0.3, 0.3), bulletPhysicsHandle);
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -49,7 +49,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 
 	XMMATRIX R = rotate(windowhandle);
 	updateWorldMatrix(oldpos, R);
-
+	
 	CheckInput(direction);
 
 	XMMATRIX transform;
@@ -102,28 +102,34 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	if (GetAsyncKeyState('W'))
 	{
 		direction.z = 1.0;
-		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
+		this->rigidBody->applyCentralForce(btVector3(0, 0, 2));
+		cout << "W" << endl;
 
 	}
 	if (GetAsyncKeyState('S'))
 	{
 		direction.z = -1.0;
-		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));
+		this->rigidBody->applyCentralForce(btVector3(0, 0, -2));
+		cout << "S" << endl;
 
 	}
 	if (GetAsyncKeyState('A'))
 	{
 		direction.x = -1.0;
-		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
-
+		this->rigidBody->applyCentralForce(btVector3(-2, 0, 0));
+		cout << "A" << endl;
 	}
 	if (GetAsyncKeyState('D'))
 	{
 		direction.x = 1.0;
-		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));
-
+		this->rigidBody->applyCentralForce(btVector3(2, 0, 0));
+		cout << "D" << endl;
 	}
-
+	if (GetAsyncKeyState(0x20))
+	{
+		this->rigidBody->applyCentralForce(btVector3(0, 2, 0));
+	}
+	this->rigidBody->getTotalForce();
 	return negativePosVec;
 }
 
@@ -151,7 +157,7 @@ void MainCharacter::loadVertices() {
 	HRESULT hr;
 	int i;
 
-	float scaleFactor = 0.3;
+	float scaleFactor = 0.3f;
 
 	TriangleVertex cubeVertices[24] =
 	{
@@ -245,12 +251,15 @@ void MainCharacter::loadVertices() {
 XMMATRIX MainCharacter::rotate(HWND windowhandle)
 {
 	XMMATRIX R;
-
 	float angle = characterLookAt(windowhandle);
+
 	R = XMMatrixRotationY(angle);
 
 	return R;
 }
+
+
+
 
 void MainCharacter::meleeAttack(HWND windowHandle)
 {
@@ -318,7 +327,10 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 
 }
 
+void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
+{
 
+}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()

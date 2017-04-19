@@ -22,6 +22,8 @@
 #include "BulletComponents.h"
 
 #include "MainCharacter.h"
+#include "Enemies.h"
+
 #include "Lava.h"
 class SceneContainer {
 
@@ -48,6 +50,8 @@ public:
 	MainCharacter character;
 	Lava lava; 
 
+	Enemy enemy;
+
 	BulletComponents bulletPhysicsHandler;
 
 	//------------------------------------------------------------//
@@ -67,6 +71,7 @@ public:
 
 	void renderScene();
 	void renderCharacters();
+	void renderEnemies();
 
 	void renderLava(); 
 

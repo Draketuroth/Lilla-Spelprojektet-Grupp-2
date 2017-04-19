@@ -85,14 +85,8 @@
     <Filter Include="Source Files\BulletComponents">
       <UniqueIdentifier>{9745d815-8387-443e-a7d7-872d87d6c5a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Lava">
-      <UniqueIdentifier>{6bbe6e5e-4c07-4f57-8da7-df0d3f3ae563}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Lava">
-      <UniqueIdentifier>{0a9c9b18-33e4-46ff-8b4a-df8974fd008c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\HLSL\LavaShaders">
-      <UniqueIdentifier>{5215d500-9018-41ee-9566-e259721128be}</UniqueIdentifier>
+    <Filter Include="Source Files\HLSL\EnemyShaders">
+      <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -141,14 +135,14 @@
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\GameState</Filter>
     </ClCompile>
-    <ClCompile Include="BasicMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BulletComponents.cpp">
       <Filter>Source Files\BulletComponents</Filter>
     </ClCompile>
-    <ClCompile Include="Lava.cpp">
-      <Filter>Source Files\Lava</Filter>
+    <ClCompile Include="BasicMath.cpp">
+      <Filter>Source Files\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemies.cpp">
+      <Filter>Source Files\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,14 +194,14 @@
     <ClInclude Include="GameState.h">
       <Filter>Header Files\GameState</Filter>
     </ClInclude>
-    <ClInclude Include="BasicMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BulletComponents.h">
       <Filter>Header Files\BulletComponents</Filter>
     </ClInclude>
-    <ClInclude Include="Lava.h">
-      <Filter>Header Files\Lava</Filter>
+    <ClInclude Include="BasicMath.h">
+      <Filter>Header Files\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemies.h">
+      <Filter>Header Files\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -250,14 +244,14 @@
     <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
       <Filter>Source Files\HLSL\MenuShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
-      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyGeometryShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
-      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyPixelShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
-      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
