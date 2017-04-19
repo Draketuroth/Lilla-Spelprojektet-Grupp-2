@@ -52,16 +52,18 @@ public:
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
-	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
 	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler);
-	void draw(ID3D11DeviceContext* &graphicDeviceContext);
+	
+	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
+	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
 	//Matrices
 
 	void updateWorldMatrix(XMMATRIX rotation);
 	void updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale);
+
 	void resetWorldMatrix();
 
 	string toString();
