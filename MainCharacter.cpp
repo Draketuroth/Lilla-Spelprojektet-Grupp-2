@@ -103,33 +103,36 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	{
 		direction.z = 1.0;
 		this->rigidBody->applyCentralForce(btVector3(0, 0, 2));
-		cout << "W" << endl;
+		//cout << "W" << endl;
 
 	}
 	if (GetAsyncKeyState('S'))
 	{
 		direction.z = -1.0;
 		this->rigidBody->applyCentralForce(btVector3(0, 0, -2));
-		cout << "S" << endl;
+		//cout << "S" << endl;
 
 	}
 	if (GetAsyncKeyState('A'))
 	{
 		direction.x = -1.0;
 		this->rigidBody->applyCentralForce(btVector3(-2, 0, 0));
-		cout << "A" << endl;
+		//cout << "A" << endl;
 	}
 	if (GetAsyncKeyState('D'))
 	{
 		direction.x = 1.0;
 		this->rigidBody->applyCentralForce(btVector3(2, 0, 0));
-		cout << "D" << endl;
+		//cout << "D" << endl;
 	}
 	if (GetAsyncKeyState(0x20))
 	{
 		this->rigidBody->applyCentralForce(btVector3(0, 2, 0));
 	}
-	this->rigidBody->getTotalForce();
+	btVector3 force;
+	force = this->rigidBody->getTotalForce();
+
+	cout << force.x() << " " << force.y() << " " << force.z() << endl;
 	return negativePosVec;
 }
 
