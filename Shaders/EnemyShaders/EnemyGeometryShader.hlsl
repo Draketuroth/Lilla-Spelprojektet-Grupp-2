@@ -1,13 +1,3 @@
-//----------------------------------------------------------------------------------------------------------------------------------//
-// Geometry Shader DirectX11
-//
-// Philip Velandria, Jonathan Sundberg, Linnea Vajda, Fredrik Linde
-//----------------------------------------------------------------------------------------------------------------------------------//
-
-// The registers are underlying hardware registers on the GPU where all data is stored during execution of the shaders
-// There are different types of register for different types of data
-// - Buffers uses "b"
-
 cbuffer GS_CONSTANT_BUFFER : register(b0) {
 
 	matrix worldViewProj;
@@ -16,6 +6,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 	matrix matrixProjection;
 	matrix inverseViewProjection;
 	float4 cameraPos;
+
 };
 
 cbuffer PLAYER_TRANSFORM : register(b1) {
@@ -23,6 +14,7 @@ cbuffer PLAYER_TRANSFORM : register(b1) {
 	matrix matrixW;
 	matrix matrixWVP;
 }
+
 
 struct GS_IN
 {
@@ -37,13 +29,8 @@ struct GS_OUT
 	float2 Tex: TEXCOORD;
 	float4 Pos : SV_POSITION;
 	float3 WPos : WPOSITION;
-	float3 ViewPos : CAMERAPOS;
-
+	float3 ViewPos : POSITION1;
 };
-
-// The geometry shader takes an entire primitive as an array as its input, but it also require an upper limit for the amount of 
-// vertices to output. Therefore the program runs for every primitive. Because we are going to output two triangles, the total 
-// vertex count must be a total of 6
 
 [maxvertexcount(6)]
 void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)

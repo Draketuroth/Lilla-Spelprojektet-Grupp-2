@@ -135,19 +135,25 @@ int RunApplication() {
 	return 0;
 }
 
-void updateCharacter(HWND windowhandle) {
+void updateCharacter(HWND windowhandle) 
+{
 
 	sceneContainer.character.update(windowhandle);
+	sceneContainer.enemy.EnemyPhysics();
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 }
 
-void updateBuffers() {
+void updateBuffers() 
+{
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
+	D3D11_MAPPED_SUBRESOURCE EnemyMappedResource;
+	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
 	XMMATRIX tCameraInverseViewProj = XMMatrixTranspose(XMMatrixInverse(nullptr, sceneContainer.character.camera.ViewProj()));
@@ -187,6 +193,22 @@ void updateBuffers() {
 	playerTransformPointer->matrixWVP = tCameraViewProj * tCharacterTranslation;
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gPlayerTransformBuffer, 0);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// ENEMY TRANSFORM BUFFER UPDATE
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
+
+	PLAYER_TRANSFORM* EnemyTransformPointer = (PLAYER_TRANSFORM*)EnemyMappedResource.pData;
+
+	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemy.tPlayerTranslation);
+
+	EnemyTransformPointer->matrixW = tEnemyTranslation;
+
+	EnemyTransformPointer->matrixWVP = tCameraViewProj * tEnemyTranslation;
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
 }
 
 
