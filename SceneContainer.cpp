@@ -26,7 +26,7 @@ void SceneContainer::releaseAll() {
 	bHandler.ReleaseAll();
 	tHandler.ReleaseAll();
 
-	//character.releaseAll();
+	character.releaseAll();
 	enemy.releaseAll();
 
 	deferredObject.ReleaseAll();
