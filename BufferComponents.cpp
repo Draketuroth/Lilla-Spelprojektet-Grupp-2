@@ -73,17 +73,17 @@ bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice, BulletComponen
 	// INITIALIZE OFFSET VARIABLES
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	float spacing = 2.3f;
+	float spacing = 2;
 
-	DrawCubeRow(gDevice, -4.6f, 0.0f, spacing, 6, bulletPhysicsHandler);
+	DrawCubeRow(gDevice, -4.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
 	DrawCubeRow(gDevice, -2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 0.0f, 0.0f, spacing, 6, bulletPhysicsHandler);
+	DrawCubeRow(gDevice, -0.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
+	DrawCubeRow(gDevice, 1.7f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
-	DrawCubeRow(gDevice, 4.6f, 0.0f, spacing, 6, bulletPhysicsHandler);
+	DrawCubeRow(gDevice, 3.7f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RENDER CHECK TEST
@@ -267,7 +267,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		transform.setFromOpenGLMatrix((float*)&d);
 
 		// Define the kind of shape we want and construct rigid body information
-		btBoxShape* boxShape = new btBoxShape(btVector3(0.1, 0.1, 0.1));
+		btBoxShape* boxShape = new btBoxShape(btVector3(1, 1, 1));
 		btMotionState* motion = new btDefaultMotionState(transform);
 
 		// Definition of the rigid body

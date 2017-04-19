@@ -10,7 +10,7 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemy = Enemy(0, { 0.3f,20,1 });
+	enemy = Enemy(0, { 0.3f,20,5 });
 
 	bulletPhysicsHandler = BulletComponents();
 
@@ -106,7 +106,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler);
-	enemy.setSpawnPos(XMFLOAT3(4, 2, 5));
+	//enemy.setSpawnPos(XMFLOAT3(4, 2, 5));
 	enemy.Spawn(gHandler.gDevice,bulletPhysicsHandler);
 
 	return true;

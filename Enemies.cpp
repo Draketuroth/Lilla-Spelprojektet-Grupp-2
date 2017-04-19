@@ -13,11 +13,11 @@ Enemy::~Enemy()
 }
 
 Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
-	:CharacterBase(true, 2, 5.0f, 1, { 1,1,5 }, XMMatrixIdentity())
+	:CharacterBase(true, 2, 5.0f, 1,this->getPos(), XMMatrixIdentity())
 {
 	
 	this->Type = Type;
-	this->SpawnPos = SpawnPos;
+	this->setPos(SpawnPos);
 }
 
 
@@ -121,13 +121,13 @@ void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHa
 	}
 	
 	createBuffers(graphicDevice, vertices, indices);
-	CreateBoundingBox(0.10, this->SpawnPos, XMFLOAT3(1.3, 1.3, 1.3), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
 	
 }
 
 void Enemy::EnemyPhysics()
 {
-
+	XMFLOAT3 pos;
 
 	float time = timer.getDeltaTime();
 
@@ -140,6 +140,9 @@ void Enemy::EnemyPhysics()
 
 	
 
+	
+	
+	
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
 

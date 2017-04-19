@@ -25,7 +25,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, vertices, indices);
-	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1.3, 1.3, 1.3), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.3, 0.3, 0.3), bulletPhysicsHandle);
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -49,7 +49,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 
 	XMMATRIX R = rotate(windowhandle);
 	updateWorldMatrix(oldpos, R);
-
+	
 	CheckInput(direction);
 
 	XMMATRIX transform;
@@ -102,29 +102,31 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 	if (GetAsyncKeyState('W'))
 	{
 		direction.z = 1.0;
-		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
+		this->rigidBody->applyCentralForce(btVector3(0, 0, 2));
+		cout << "W" << endl;
 
 	}
 	if (GetAsyncKeyState('S'))
 	{
 		direction.z = -1.0;
-		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));
+		this->rigidBody->applyCentralForce(btVector3(0, 0, -2));
+		cout << "S" << endl;
 
 	}
 	if (GetAsyncKeyState('A'))
 	{
 		direction.x = -1.0;
-		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
-
+		this->rigidBody->applyCentralForce(btVector3(-2, 0, 0));
+		cout << "A" << endl;
 	}
 	if (GetAsyncKeyState('D'))
 	{
 		direction.x = 1.0;
-		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));
-
+		this->rigidBody->applyCentralForce(btVector3(2, 0, 0));
+		cout << "D" << endl;
 	}
-
-	return negativePosVec;
+	this->rigidBody->getTotalForce()
+	//return negativePosVec;
 }
 
 float MainCharacter::characterLookAt(HWND windowHandle)
