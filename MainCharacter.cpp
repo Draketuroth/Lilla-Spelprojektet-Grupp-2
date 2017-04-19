@@ -81,37 +81,34 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 
 void MainCharacter::CheckInput() {
 
-	this->rigidBody->clearForces();
-	this->rigidBody->setFriction(3);
-
-
+	this->rigidBody->setFriction(4);
 
 	if (GetAsyncKeyState('W'))
 	{
-		this->rigidBody->setFriction(0.5);
-		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));	
+		this->rigidBody->setFriction(3);
+		this->rigidBody->applyCentralForce(btVector3(0, 0, 7));	
 	}
 	if (GetAsyncKeyState('S'))
 	{
-		this->rigidBody->setFriction(0.5);
-		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));	
+		this->rigidBody->setFriction(3);
+		this->rigidBody->applyCentralForce(btVector3(0, 0, -7));	
 	}
 	if (GetAsyncKeyState('A'))
 	{
-		this->rigidBody->setFriction(0.5);
-		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
+		this->rigidBody->setFriction(3);
+		this->rigidBody->applyCentralForce(btVector3(-7, 0, 0));
 	}
 	if (GetAsyncKeyState('D'))
 	{
-		this->rigidBody->setFriction(0.5);
-		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));	
+		this->rigidBody->setFriction(3);
+		this->rigidBody->applyCentralForce(btVector3(7, 0, 0));	
 	}
 
-	float maxSpeed = this->getMovementSpeed();
-	float minSpeed = -this->getMovementSpeed();
+	float maxSpeed = 4;
+	float minSpeed = -4;
 	btVector3 speed = this->rigidBody->getLinearVelocity();
 	
-
+	//X-led
 	if (speed.getX() > maxSpeed)
 	{
 		speed.setX(maxSpeed);
@@ -120,7 +117,7 @@ void MainCharacter::CheckInput() {
 	{
 		speed.setX(minSpeed);
 	}
-
+	//Z-led
 	if (speed.getZ() > maxSpeed)
 	{
 		speed.setZ(maxSpeed);
