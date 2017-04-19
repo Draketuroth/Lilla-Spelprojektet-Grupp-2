@@ -96,38 +96,32 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 
 	bool negativePosVec = false;
 
-	direction.x = 0;
-	direction.z = 0;
+	/*direction.x = 0;
+	direction.z = 0;*/
 	this->rigidBody->clearForces();
 
 
 	if (GetAsyncKeyState('W'))
 	{
-		direction.z = 1.0;
-
-		XMFLOAT3 posF = getPos();
-		btVector3 pos = { posF.x, posF.y, posF.z };
-
-		//this->rigidBody->applyForce(btVector3(0, 0, 1), pos);
-
+		//direction.z = 1.0;
 		this->rigidBody->applyCentralForce(btVector3(0, 0, 1));
 
 	}
 	if (GetAsyncKeyState('S'))
 	{
-		direction.z = -1.0;
+		//direction.z = -1.0;
 		this->rigidBody->applyCentralForce(btVector3(0, 0, -1));
 
 	}
 	if (GetAsyncKeyState('A'))
 	{
-		direction.x = -1.0;
+		//direction.x = -1.0;
 		this->rigidBody->applyCentralForce(btVector3(-1, 0, 0));
 
 	}
 	if (GetAsyncKeyState('D'))
 	{
-		direction.x = 1.0;
+		//direction.x = 1.0;
 		this->rigidBody->applyCentralForce(btVector3(1, 0, 0));
 
 	}
