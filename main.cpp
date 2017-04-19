@@ -155,7 +155,6 @@ void updateLava()
 	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 
-void updateBuffers() {
 void updateBuffers() 
 {
 

@@ -33,7 +33,7 @@ void Lava::LoadRawFile()
 	heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
 	for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
 	{
-		heightMap[i] = ((in[i] / 255.0f)*LAVAMAXHEIGHT)* -4;
+		heightMap[i] = ((in[i] / 255.0f)*LAVAMAXHEIGHT)* -2;
 	}
 }
 
@@ -101,21 +101,44 @@ void Lava::IBuffer(ID3D11Device* device)
 	HRESULT hr;
 	int k = 0;
 
+
 	index.resize(NrOfVert* 4);
 
-	for (unsigned int i = 0; i < rows - 1; ++i)
+	//for (unsigned int i = 0; i < rows - 1; ++i)
+	//{
+	//	for (unsigned int j = 0; j < cols - 1; ++j)
+	//	{
+	//		//top row 2x2 quad
+	//		index[k] = i*cols + j; 
+	//		index[k + 1] = i*cols + j + 1; 
+	//		//bottom row 2x2 quad
+	//		index[k + 2] = (i + 1)*cols + j; 
+	//		index[k + 3] = (i + 1)*cols + j + 1;
+	//		//next quad
+	//		k += 4; 
+	//		indexCounter += 4; 
+	//	}
+	//}
+
+
+	index.resize(NrOfVert * 6);
+
+	for (unsigned int i = 0; i < rows - 1; i++)
 	{
-		for (unsigned int j = 0; j < cols - 1; ++j)
+		for (unsigned int j = 0; j < cols - 1; j++)
 		{
-			//top row 2x2 quad
-			index[k] = i*cols + j; 
-			index[k + 1] = i*cols + j + 1; 
-			//bottom row 2x2 quad
-			index[k + 2] = (i + 1)*cols + j; 
-			index[k + 3] = (i + 1)*cols + j + 1;
+			index[k + 5] = (i + 1) * cols + j + 1;
+			index[k + 4] = i * cols + j + 1;
+			index[k + 3] = (i + 1) * cols + j;
+
+			index[k + 2] = (i + 1) * cols + j;
+			index[k + 1] = i * cols + j + 1;
+			index[k] = i * cols + j;
+
 			//next quad
-			k += 4; 
-			indexCounter += 4; 
+			k += 6;
+			indexCounter += 6;
+
 		}
 	}
 
