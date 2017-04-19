@@ -28,7 +28,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
-	CreateBoundingBox(0.10, this->getPos(), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
 }
 
 void MainCharacter::update(HWND windowhandle)

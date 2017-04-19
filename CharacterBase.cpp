@@ -141,6 +141,8 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bo
 	return true;
 }
 
+
+
 void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler) {
 
 	//----------------------------------------------------------------------//
