@@ -203,6 +203,9 @@
     <ClInclude Include="Enemies.h">
       <Filter>Header Files\Character</Filter>
     </ClInclude>
+    <ClInclude Include="BasicMath.h">
+      <Filter>Header Files\Global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\StandardShaders\Fragment.hlsl">
