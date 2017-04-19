@@ -165,11 +165,11 @@ void SceneContainer::render() {
 	//Characters need to be rendered first since they will be moving
 	clear();
 
-	//renderDeferred();
-	renderLava(); 
-	renderCharacters();
-	renderEnemies();
-	renderScene();
+	renderDeferred();
+	//renderLava(); 
+	//renderCharacters();
+	//renderEnemies();
+	//renderScene();
 }
 
 bool SceneContainer::renderDeferred() {
@@ -205,13 +205,11 @@ bool SceneContainer::renderDeferred() {
 
 	// Step 4: 2D rendering of light calculations
 
-	XMFLOAT3 lightDirection = { 1.0f, 1.0f, 0.0f };
 	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
 									deferredObject.d_shaderResourceViewArray[0],
 									deferredObject.d_shaderResourceViewArray[1],
 									deferredObject.d_shaderResourceViewArray[2],
-									deferredObject.d_depthResourceView,
-									lightDirection);
+									deferredObject.d_depthResourceView);
 
 	gHandler.gDeviceContext->PSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);
 									

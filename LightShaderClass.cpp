@@ -48,7 +48,7 @@ bool LightShaderClass::Initialize(ID3D11Device* gDevice) {
 
 		MessageBox(
 			NULL,
-			L"CRITICAL ERROR: Light Texture Sampler couldn't be created\nClosing application...",
+			L"CRITICAL ERROR: Light Buffer couldn't be created\nClosing application...",
 			L"ERROR",
 			MB_OK);
 	}
@@ -220,36 +220,60 @@ bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 	return true;
 }
 
-bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, ID3D11ShaderResourceView* worldTexture, ID3D11ShaderResourceView* depthTexture, XMFLOAT3 lightDirection) {
+float LightShaderClass::RandomNumber(float Minimum, float Maximum) {
+
+	return ((float(rand()) / float(RAND_MAX)) * (Maximum - Minimum)) + Minimum;
+}
+
+bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, ID3D11ShaderResourceView* worldTexture, ID3D11ShaderResourceView* depthTexture) {
 
 	HRESULT hr;
 
-	unsigned int bufferNumber;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ZeroMemory(&mappedResource, sizeof(mappedResource));
+	/*D3D11_MAPPED_SUBRESOURCE mappedResource;
+	ZeroMemory(&mappedResource, sizeof(mappedResource));*/
 
 	gDeviceContext->PSSetShaderResources(0, 1, &colorTexture);
 	gDeviceContext->PSSetShaderResources(1, 1, &normalTexture);
 	gDeviceContext->PSSetShaderResources(2, 1, &worldTexture);
 	gDeviceContext->PSSetShaderResources(3, 1, &depthTexture);
 
-	hr = gDeviceContext->Map(l_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	//hr = gDeviceContext->Map(l_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
-	if (FAILED(hr)) {
+	//if (FAILED(hr)) {
 
-		return false;
-	}
+	//	return false;
+	//}
 
-	LightBufferType* lightPointer = (LightBufferType*)mappedResource.pData;
+	//srand(time(NULL));
 
-	lightPointer->lightDirection = lightDirection;
-	lightPointer->padding = 0.0f;
+	//float red = 0.0f;
+	//float green = 0.0f;
+	//float blue = 0.0f;
+	//
+	//float xOffset = 0.0f;
+	//float yOffset = 0.0f;
+	//float zOffset = 0.0f;
 
-	gDeviceContext->Unmap(l_lightBuffer, 0);
+	//LightBufferType* lightPointer = (LightBufferType*)mappedResource.pData;
 
-	bufferNumber = 0;
+	//for(int i = 0; i < 3; i++){
 
-	gDeviceContext->PSSetConstantBuffers(bufferNumber, 1, &l_lightBuffer);
+	//	red = RandomNumber(0, 5);
+	//	green = RandomNumber(0, 5);
+	//	blue = RandomNumber(0, 5);
+
+	//	xOffset = RandomNumber(-15, 15);
+	//	yOffset = RandomNumber(5, 15);
+	//	zOffset = RandomNumber(-15, 15);
+
+	//	lightPointer->Position[i] = { xOffset, yOffset, zOffset, 1.0f };
+	//	lightPointer->Color[i] = { red, green, blue, 1.0f };;
+
+	//}
+
+	//gDeviceContext->Unmap(l_lightBuffer, 0);
+
+	gDeviceContext->PSSetConstantBuffers(0, 1, &l_lightBuffer);
 
 	return true;
 
