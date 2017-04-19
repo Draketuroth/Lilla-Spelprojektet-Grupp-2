@@ -286,7 +286,7 @@ void SceneContainer::renderLava()
 	//Set index buffer
 	gHandler.gDeviceContext->IASetIndexBuffer(lava.LavaIB, DXGI_FORMAT_R32_UINT, offset);
 	//set triagel list
-	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaVertexLayout);
 
 	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);

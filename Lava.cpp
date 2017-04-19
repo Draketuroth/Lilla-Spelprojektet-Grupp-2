@@ -3,6 +3,9 @@
 Lava::Lava()
 {
 	map.filename = L"Textures\\HMap.raw";
+	rows = LAVADEPTH; 
+	cols = LAVAWIDTH;
+	NrOfVert = LAVADEPTH*LAVAWIDTH; 
 }
 
 Lava::~Lava()
@@ -30,7 +33,7 @@ void Lava::LoadRawFile()
 	heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
 	for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
 	{
-		heightMap[i] = (in[i] / 255.0f)*LAVAMAXHEIGHT;
+		heightMap[i] = ((in[i] / 255.0f)*LAVAMAXHEIGHT)* -4;
 	}
 }
 
@@ -52,38 +55,31 @@ float Lava::GetDepth()const
 
 void Lava::VBuffer(ID3D11Device* device)
 {
-	vector<LavaVertex> verticis(LAVADEPTH*LAVAWIDTH);
+	vector<LavaVertex> verticis(rows*cols);
 
 	float halfWidth = 0.5*GetWidth(); 
 	float halfDepth = 0.5f*GetDepth(); 
 
-	float patchWidth = GetWidth() / (LAVAWIDTH - 1);
-	float patchDepth = GetDepth() / (LAVADEPTH - 1);
+	float patchWidth = GetWidth() / (cols - 1);
+	float patchDepth = GetDepth() / (rows - 1);
 
-	float u = 1.0f / (LAVAWIDTH - 1);
-	float v = 1.0f / (LAVADEPTH - 1);
-	int k = 0;
+	float u = 1.0f / (rows -1);
+	float v = 1.0f / (cols -1);
 
-	for (UINT i = 0; i < LAVAWIDTH; ++i)
+	for (UINT i = 0; i < rows; ++i)
 	{
-		float z = 0;
-		for (UINT j = 0; j < LAVADEPTH; ++j)
+		float z = halfDepth - i * patchDepth;
+		for (UINT j = 0; j < cols; ++j)
 		{
-			float x = 0;
-			float y = 0;
-
-			x = -halfDepth + j;
-			y = heightMap[i*LAVAWIDTH + j];
-			z = halfDepth - i;
-
-			//cout << heightMap[i] << endl;
-			verticis[i*LAVAWIDTH + j].pos = XMFLOAT3(x, y, z);
+			float x = -halfDepth + j * patchWidth;
+			float y = heightMap[i*cols + j];
+			
+			verticis[i*cols + j].pos = XMFLOAT3(x, y, z);
 
 			//sträcka texturen över griden
-			verticis[i*LAVAWIDTH + j].pos.y = j*u;
-			verticis[i*LAVAWIDTH + j].pos.x = i*v;
+			verticis[i*cols + j].uv.y = j*u;
+			verticis[i*cols + j].uv.x = i*v;
 
-			k++;
 		}
 	}
 
@@ -105,24 +101,21 @@ void Lava::IBuffer(ID3D11Device* device)
 	HRESULT hr;
 	int k = 0;
 
-	index.resize((LAVADEPTH * LAVAWIDTH) * 6);
+	index.resize(NrOfVert* 4);
 
-	for (unsigned int i = 0; i < LAVAWIDTH - 1; i++)
+	for (unsigned int i = 0; i < rows - 1; ++i)
 	{
-		for (unsigned int j = 0; j < LAVAWIDTH - 1; j++)
+		for (unsigned int j = 0; j < cols - 1; ++j)
 		{
-			index[k + 5] = (i + 1) * LAVAWIDTH + j + 1;
-			index[k + 4] = i * LAVAWIDTH + j + 1;
-			index[k + 3] = (i + 1) * LAVAWIDTH + j;
-
-			index[k + 2] = (i + 1) * LAVAWIDTH + j;
-			index[k + 1] = i * LAVAWIDTH + j + 1;
-			index[k] = i * LAVAWIDTH + j;
-
+			//top row 2x2 quad
+			index[k] = i*cols + j; 
+			index[k + 1] = i*cols + j + 1; 
+			//bottom row 2x2 quad
+			index[k + 2] = (i + 1)*cols + j; 
+			index[k + 3] = (i + 1)*cols + j + 1;
 			//next quad
-			k += 6;
-			indexCounter += 6;
-
+			k += 4; 
+			indexCounter += 4; 
 		}
 	}
 

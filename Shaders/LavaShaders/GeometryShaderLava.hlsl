@@ -38,21 +38,6 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 
 	float3 normalAB = normalize(cross(sideA, sideB));
 
-	float3 normal, viewVector;
-
-	// Calculate the normal to determine the direction for the new triangle to be created ( closer to the camera )
-
-	float4 position = mul(float4(input[0].Pos, 1.0f), worldViewProj);
-	float4 position2 = mul(float4(input[1].Pos, 1.0f), worldViewProj);
-	float4 position3 = mul(float4(input[2].Pos, 1.0f), worldViewProj);
-
-	float3 triangleSideA = (position - position2).xyz;
-	float3 triangleSideB = (position - position3).xyz;
-
-	normal = normalize(cross(triangleSideA, triangleSideB));
-
-	if (dot(normal.xyz, -position.xyz) > 0.0f) {
-
 		for (i = 0; i < 3; i++)
 		{
 			float3 worldPosition = mul(float4(input[i].Pos, 1.0f), matrixWorld).xyz;
@@ -67,6 +52,4 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 
 			triStream.Append(output);
 		}
-
-	}
 };

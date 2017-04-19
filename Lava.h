@@ -9,11 +9,6 @@
 #include "VertexType.h"
 #include "MacroDefinitions.h"
 
-#define LAVADEPTH 100
-#define LAVAWIDTH 100 
-#define LAVAMAXHEIGHT 10
-#define LAVAQUADSIZE 1
-
 using namespace std; 
 
 class Lava
@@ -49,7 +44,10 @@ private:
 	
 	HMap map; 
 	vector<float> heightMap;
-	
+	int rows; 
+	int cols; 
+	int NrOfVert;
+
 };
 
 
