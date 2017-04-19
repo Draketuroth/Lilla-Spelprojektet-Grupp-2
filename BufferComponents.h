@@ -59,6 +59,7 @@ public:
 
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
 	ID3D11Buffer* gPlayerTransformBuffer;
+	ID3D11Buffer* gEnemyTransformBuffer;
 
 	ID3D11Buffer* gCylinderBuffer;
 	ID3D11Buffer* gCylinderIndexBuffer;
@@ -76,6 +77,7 @@ public:
 
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
+	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
 
 private:
 

@@ -25,6 +25,9 @@ public:
 	void meleeAttack(HWND windowHandle);
 	void rangeAttack(HWND windowHandle);
 	
+	void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
+
+
 	Camera camera;
 
 	float cameraDistanceY;
@@ -43,6 +46,14 @@ public:
 	//XMVECTOR getPlane();
 	//XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);
 	//bool IntersectionInRange(XMFLOAT3 MousePos);
+	
+	
+	
+
+
+
+
+
 
 };
 

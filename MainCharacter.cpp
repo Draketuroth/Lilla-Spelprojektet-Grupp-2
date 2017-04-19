@@ -3,7 +3,7 @@
 #include"Window.h"
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 5.0f, 1, {2, 2, 5}, XMMatrixIdentity())
+	:CharacterBase(true, 10, 5.0f, 1, {2, 20, 5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 6.0f;
 	cameraDistanceZ = 3.0f;
@@ -25,7 +25,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, vertices, indices);
-	CreateBoundingBox(0.10, this->getPos(), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.3, 0.3, 0.3), bulletPhysicsHandle);
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -153,7 +153,7 @@ void MainCharacter::loadVertices() {
 	HRESULT hr;
 	int i;
 
-	float scaleFactor = 0.3;
+	float scaleFactor = 0.3f;
 
 	TriangleVertex cubeVertices[24] =
 	{
@@ -247,12 +247,15 @@ void MainCharacter::loadVertices() {
 XMMATRIX MainCharacter::rotate(HWND windowhandle)
 {
 	XMMATRIX R;
-
 	float angle = characterLookAt(windowhandle);
+
 	R = XMMatrixRotationY(angle);
 
 	return R;
 }
+
+
+
 
 void MainCharacter::meleeAttack(HWND windowHandle)
 {
@@ -312,7 +315,10 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 	//The projectile needs to be able to sort through the list of enemies.
 }
 
+void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
+{
 
+}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()

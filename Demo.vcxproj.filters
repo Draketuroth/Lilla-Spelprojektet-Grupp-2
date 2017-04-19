@@ -85,6 +85,9 @@
     <Filter Include="Source Files\BulletComponents">
       <UniqueIdentifier>{9745d815-8387-443e-a7d7-872d87d6c5a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\EnemyShaders">
+      <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -137,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="BasicMath.cpp">
       <Filter>Source Files\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemies.cpp">
+      <Filter>Source Files\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +200,12 @@
     <ClInclude Include="BasicMath.h">
       <Filter>Header Files\Global</Filter>
     </ClInclude>
+    <ClInclude Include="Enemies.h">
+      <Filter>Header Files\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMath.h">
+      <Filter>Header Files\Global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\StandardShaders\Fragment.hlsl">
@@ -234,6 +246,15 @@
     </FxCompile>
     <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
       <Filter>Source Files\HLSL\MenuShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyGeometryShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyPixelShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
