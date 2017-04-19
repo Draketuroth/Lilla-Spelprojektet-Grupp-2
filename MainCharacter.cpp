@@ -125,8 +125,12 @@ bool MainCharacter::CheckInput(XMFLOAT3 &direction) {
 		this->rigidBody->applyCentralForce(btVector3(2, 0, 0));
 		cout << "D" << endl;
 	}
-	this->rigidBody->getTotalForce()
-	//return negativePosVec;
+	if (GetAsyncKeyState(0x20))
+	{
+		this->rigidBody->applyCentralForce(btVector3(0, 2, 0));
+	}
+	this->rigidBody->getTotalForce();
+	return negativePosVec;
 }
 
 float MainCharacter::characterLookAt(HWND windowHandle)
