@@ -106,8 +106,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler);
-	//enemy.setSpawnPos(XMFLOAT3(4, 2, 5));
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
 	enemy.Spawn(gHandler.gDevice,bulletPhysicsHandler);
 
 	return true;

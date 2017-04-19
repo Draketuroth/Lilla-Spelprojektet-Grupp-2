@@ -55,7 +55,6 @@ public:
 	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData);
-	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, BulletComponents &bulletPhysicsHandler);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
 
 	//Matrices
