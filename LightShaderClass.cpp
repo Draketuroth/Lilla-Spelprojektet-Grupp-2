@@ -180,19 +180,21 @@ void LightShaderClass::LoadLights() {
 	float xOffset = 0.0f;
 	float yOffset = 0.0f;
 	float zOffset = 0.0f;
+	float Radius = 0.0f;
 
 	for(int i = 0; i < 3; i++){
 
-		red = RandomNumber(0, 5);
-		green = RandomNumber(0, 5);
-		blue = RandomNumber(0, 5);
+		red = RandomNumber(0, 10);
+		green = RandomNumber(0, 10);
+		blue = RandomNumber(0, 10);
 
-		xOffset = i * 5;
-		yOffset = i * 5;
-		zOffset = i * 5;
+		xOffset = RandomNumber(-60, 60);
+		yOffset = RandomNumber(-60, 60);
+		zOffset = RandomNumber(-60, 60);
+		Radius = 70;
 
-		lights.Position[i] = { xOffset, yOffset, zOffset, 1.0f };
-		lights.Color[i] = { red, green, blue, 1.0f };;
+		lights.Position[i] = { xOffset, yOffset, zOffset, Radius };
+		lights.Color[i] = { red, green, blue, 1.0f };
 
 	}
 }

@@ -33,7 +33,7 @@ void BulletComponents::InitializeBulletPhysics() {
 	bulletDynamicsWorld = new btDiscreteDynamicsWorld(bulletDispatcher, bulletBroadPhase, bulletConstraintSolver, bulletCollisionConfig);
 
 	// Immediately set the gravity after initializing main Bullet Physics components
-	bulletDynamicsWorld->setGravity(btVector3(0.0f, -10, 0));
+	bulletDynamicsWorld->setGravity(btVector3(0.0f, 0, 0));
 
 }
 

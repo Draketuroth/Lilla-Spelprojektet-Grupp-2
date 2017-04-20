@@ -29,39 +29,48 @@ struct PS_IN {
 
 float4 PS_main(PS_IN input) : SV_TARGET
 {
-	float lRadius[3];
-
-	lRadius[0] = 10.5f;
-	lRadius[1] = 20.0f;
-	lRadius[2] = 40.0f;
 
 	// Retrieve data from G-buffer
-	float3 FragPos = gPositionTexture.Sample(PointSampler, input.tex);
-	float3 Normal = gNormalTexture.Sample(PointSampler, input.tex);
-	float3 Albedo = gAlbedoSpecTexture.Sample(PointSampler, input.tex);
+	float3 FragPos = gPositionTexture.Sample(PointSampler, input.tex).xyz;
+	float3 Normal = gNormalTexture.Sample(PointSampler, input.tex).xyz;
+	float3 Albedo = gAlbedoSpecTexture.Sample(PointSampler, input.tex).xyz;
+	float Specular = gAlbedoSpecTexture.Sample(PointSampler, input.tex).w;
 
-	Normal = mul(Normal, inverseViewProjection);
+	// Initialize the lightning
+	float3 lightning = Albedo * 0.1;
 
-	// Then calculate lightning as usual
-	float3 lightning = float3(0.1f, 0.1f, 0.1f);
-	float3 viewDir = normalize(cameraPos - FragPos).xyz;
+	// Get the direction to the viewer
+	float3 viewDir = normalize(cameraPos.xyz - FragPos).xyz;
 
 	for (int i = 0; i < 3; i++) {
 
-		float distance = length(Position[i] - FragPos);
+		// Calculate the distance between the light and the fragment position
+		float lightDistance = length(Position[i].xyz - FragPos);
 
-		if (distance < lRadius[i]){
+		// If the distance is smaller than the light radius, this light should contribute to the final color
+		if (lightDistance < Position[i].w) {
 
-		float3 lightDir = normalize(Position[i] - FragPos);
-		float3 reflection = reflect(-lightDir.xyz, Normal);
+			// Diffuse
+			float3 lightDir = normalize(Position[i].xyz - FragPos);
+			float3 diffuse = max(dot(Normal, lightDir), 0.0f) * Albedo * Color[i].xyz;
 
-		float3 specular = pow(max(dot(reflection, viewDir), 0.0f), 8.0f);
-		float3 diffuse = max(dot(Normal, lightDir), 0.0f);
+			// Specular
+			float3 halfwayDir = normalize(lightDir + viewDir);
+			float spec = pow(max(dot(Normal, halfwayDir), 0.0f), 16.0f);
+			float3 specular = Color[i].xyz * spec * Specular;
 
-		lightning += (diffuse + specular) * Color[i];
+			// Attenuation
+			float distance = length(Position[i].xyz - FragPos);
+			float attenuation = 0.1f;
+			diffuse *= attenuation;
+			specular *= attenuation;
+
+			lightning += diffuse + specular;
 
 		}
+
 	}
 
-	return float4(lightning * Albedo, 1.0f);
-}
+		return float4(lightning, 1.0f);
+
+	}
