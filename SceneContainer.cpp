@@ -14,6 +14,7 @@ SceneContainer::SceneContainer() {
 
 	bulletPhysicsHandler = BulletComponents();
 
+	this->nrOfEnemies = 0;
 }
 
 SceneContainer::~SceneContainer() {
@@ -113,6 +114,17 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 }
 
+void SceneContainer::update(HWND &windowHandle)
+{
+	//FIX LATER PLZ
+	enemies[0] = enemy;
+	nrOfEnemies = 1;
+
+	character.meleeAttack(windowHandle, this->nrOfEnemies, enemies);
+
+	render();
+}
+
 void SceneContainer::drawPlatforms() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
@@ -159,14 +171,12 @@ void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
 
-void SceneContainer::render() {
-
-	//we clear in here since characters are rendered before the scene
-	//Characters need to be rendered first since they will be moving
+void SceneContainer::render() 
+{
 	clear();
 
 	//renderDeferred();
-
+	renderLava(); 
 	renderCharacters();
 	renderEnemies();
 	renderScene();
@@ -301,5 +311,24 @@ void SceneContainer::renderEnemies()
 }
 
 
+void SceneContainer::renderLava()
+{
 
+	gHandler.gDeviceContext->VSSetShader(gHandler.gLavaVertexShader, nullptr, 0);	//vs
+	gHandler.gDeviceContext->GSSetShader(gHandler.gLavaGeometryShader, nullptr, 0); //gs
+	gHandler.gDeviceContext->PSSetShader(gHandler.gLavaPixelShader, nullptr, 0); //ps
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	 
+	UINT32 vertexSize = sizeof(LavaVertex);
+	UINT32 offset = 0;
 
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &lava.LavaVB, &vertexSize, &offset);
+	//Set index buffer
+	gHandler.gDeviceContext->IASetIndexBuffer(lava.LavaIB, DXGI_FORMAT_R32_UINT, offset);
+	//set triagel list
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaVertexLayout);
+
+	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);
+}

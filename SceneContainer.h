@@ -26,6 +26,7 @@
 
 #include "FBXLoader.h"
 
+#include "Lava.h"
 class SceneContainer {
 
 private:
@@ -39,6 +40,7 @@ public:
 	void releaseAll();
 
 	bool initialize(HWND &windowHandle);
+	void update(HWND &windowHandle);
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;
@@ -50,10 +52,14 @@ public:
 
 	MainCharacter character;
 	FbxImport fbxImporter;
+	Lava lava; 
 
 	Enemy enemy;
+	Enemy enemies[3];
 
 	BulletComponents bulletPhysicsHandler;
+
+	int nrOfEnemies;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
@@ -73,6 +79,8 @@ public:
 	void renderScene();
 	void renderCharacters();
 	void renderEnemies();
+
+	void renderLava(); 
 
 };
 

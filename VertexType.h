@@ -33,5 +33,11 @@ struct OBJStruct
 
 };
 
+struct LavaVertex
+{
+	XMFLOAT3 pos; 
+	XMFLOAT2 uv; 
+	XMFLOAT3 normal; 
+};
 
 #endif

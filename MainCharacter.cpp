@@ -34,8 +34,6 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 void MainCharacter::update(HWND windowhandle)
 {
 	CharacterMove(windowhandle);
-	/*meleeAttack(windowhandle);
-	rangeAttack(windowhandle);*/
 }
 
 //--------- Changing the character's position --------------
@@ -92,7 +90,7 @@ void MainCharacter::CheckInput() {
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
-		cout << "W" << endl;
+
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(0, 0, 7));
 	}
@@ -100,7 +98,6 @@ void MainCharacter::CheckInput() {
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
-		cout << "S" << endl;
 
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(0, 0, -7));	
@@ -109,7 +106,7 @@ void MainCharacter::CheckInput() {
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
-		cout << "A" << endl;
+
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(-7, 0, 0));
 	}
@@ -117,7 +114,7 @@ void MainCharacter::CheckInput() {
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
-		cout << "D" << endl;
+
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(7, 0, 0));	
 	}
@@ -203,41 +200,41 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 
 
-void MainCharacter::meleeAttack(HWND windowHandle)
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[])
 {
 	if (GetAsyncKeyState(MK_LBUTTON))
 	{
 
-		cout << "MELEE ATTACK" << endl;
+		//cout << "MELEE ATTACK" << endl;
 		//this is the way the character will be facing
 		float angle = characterLookAt(windowHandle);
 		
 		//create boundingBox within the angle of the attack that
 		//covers the range between the character and the attack range
 		XMFLOAT3 characterPos = getPos();
-		float centerX = 0.5 * cos(angle * (2 * PI)); //0.5 eftersom 1 boxRange
-		float centerZ = 0.5 * sin(angle * (2 * PI));
+		XMFLOAT3 characterBoxExtents = this->getBoundingBox().Extents;
+
+		float centerX =  (characterBoxExtents.x + 2) * cos(angle); //cos(angle * (2 * PI)
+		float centerZ = (characterBoxExtents.z + 2) * sin(angle);
+
 		XMFLOAT3 boxCenter = {centerX, 0, centerZ };  
-		XMFLOAT3 boxRange = { 1, 1, 1 };
+		XMFLOAT3 boxRange = { 4, 4, 4 };
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		
-		//filter down the list of enemies, 
-
-		int nrOfEnemies; //= getNrOfEnemies();
-
-		for (int i = 0; i < nrOfEnemies, i++;)
+		for (int i = 0; i < nrOfEnemies; i++)
 		{
-			float enemyDistance; //= getDistanceFromCharacter(float object);
-			if (enemyDistance <= 1.0)
+			//Take extents and create boundingbox for enemy 
+			BoundingBox enemyBox = enemyArray[i].getBoundingBox();
+			if (enemyBox.Intersects(meleeBox))
 			{
-				if (/*characterBoundingBox intersects(enemyBoundingBox)*/1)
-				{
-					//enemyHealth--;
-				}
+				cout << "HIT" << endl;
+				cout << " ENEMY Position X: " << enemyBox.Center.x << " Position Z: " << enemyBox.Center.z << endl;
+				cout << " MELEE Position X: " << centerX << " Position Z: " << centerZ << endl;
+				//enemyArray[i].setHealth(getHealth() - 1);
 			}
 		}
-		//attack done 
+		
 	}
 }
 
