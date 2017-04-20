@@ -19,3 +19,8 @@
 #define GAME_OVER 12
 #define PAUSE_MENU 13
 #define START_GAME 14
+
+#define LAVADEPTH 64
+#define LAVAWIDTH 64
+#define LAVAMAXHEIGHT 10
+#define LAVAQUADSIZE 1.0

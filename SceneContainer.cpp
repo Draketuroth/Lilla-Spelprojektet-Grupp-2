@@ -176,7 +176,7 @@ void SceneContainer::render()
 	clear();
 
 	//renderDeferred();
-
+	renderLava(); 
 	renderCharacters();
 	renderEnemies();
 	renderScene();
@@ -311,5 +311,24 @@ void SceneContainer::renderEnemies()
 }
 
 
+void SceneContainer::renderLava()
+{
 
+	gHandler.gDeviceContext->VSSetShader(gHandler.gLavaVertexShader, nullptr, 0);	//vs
+	gHandler.gDeviceContext->GSSetShader(gHandler.gLavaGeometryShader, nullptr, 0); //gs
+	gHandler.gDeviceContext->PSSetShader(gHandler.gLavaPixelShader, nullptr, 0); //ps
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	 
+	UINT32 vertexSize = sizeof(LavaVertex);
+	UINT32 offset = 0;
 
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &lava.LavaVB, &vertexSize, &offset);
+	//Set index buffer
+	gHandler.gDeviceContext->IASetIndexBuffer(lava.LavaIB, DXGI_FORMAT_R32_UINT, offset);
+	//set triagel list
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaVertexLayout);
+
+	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);
+}

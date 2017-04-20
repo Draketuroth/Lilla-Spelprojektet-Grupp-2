@@ -33,6 +33,7 @@ Timer timer;
 int RunApplication();
 void updateCharacter(HWND windowhandle);
 void updateBuffers();
+void updateLava();
 
 int main() {
 
@@ -42,6 +43,7 @@ int main() {
 	
 	sceneContainer.initialize(windowHandle);
 
+	
 	return RunApplication();
 }
 
@@ -61,6 +63,7 @@ int RunApplication() {
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
+	updateLava(); 
 
 	menuState.createBufferData(sceneContainer.gHandler.gDevice);
 	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
@@ -130,6 +133,7 @@ int RunApplication() {
 
 	sceneContainer.releaseAll();
 	menuState.releaseAll();
+	sceneContainer.lava.ReleaseAll();
 	DestroyWindow(windowHandle);
 
 	return 0;
@@ -151,6 +155,13 @@ void updateCharacter(HWND windowhandle)
 	}
 
 	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex);
+}
+
+void updateLava()
+{
+	sceneContainer.lava.LoadRawFile();
+	sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice);
+	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 
 void updateBuffers() 
