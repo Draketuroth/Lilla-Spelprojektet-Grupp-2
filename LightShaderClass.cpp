@@ -44,6 +44,8 @@ bool LightShaderClass::Initialize(ID3D11Device* gDevice) {
 			MB_OK);
 	}
 
+	LoadLights();
+
 	if (!CreateLightBuffer(gDevice)) {
 
 		MessageBox(
@@ -167,6 +169,34 @@ bool LightShaderClass::InitializeShader(ID3D11Device* gDevice) {
 
 }
 
+void LightShaderClass::LoadLights() {
+
+	srand(time(NULL));
+
+	float red = 0.0f;
+	float green = 0.0f;
+	float blue = 0.0f;
+	
+	float xOffset = 0.0f;
+	float yOffset = 0.0f;
+	float zOffset = 0.0f;
+
+	for(int i = 0; i < 3; i++){
+
+		red = RandomNumber(0, 5);
+		green = RandomNumber(0, 5);
+		blue = RandomNumber(0, 5);
+
+		xOffset = RandomNumber(-15, 15);
+		yOffset = RandomNumber(5, 15);
+		zOffset = RandomNumber(-15, 15);
+
+		lights.Position[i] = { xOffset, yOffset, zOffset, 1.0f };
+		lights.Color[i] = { red, green, blue, 1.0f };;
+
+	}
+}
+
 bool LightShaderClass::CreatePointSampler(ID3D11Device* gDevice) {
 
 	HRESULT hr;
@@ -201,7 +231,19 @@ bool LightShaderClass::CreatePointSampler(ID3D11Device* gDevice) {
 bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 
 	HRESULT hr;
+
+	// Gather the loaded lights
+	LightBufferType lightBufferConstData;
+
+	for (int i = 0; i < 3; i++) {
+
+		lightBufferConstData.Position[i] = lights.Position[i];
+		lightBufferConstData.Color[i] = lights.Color[i];
+		
+	}
+
 	D3D11_BUFFER_DESC lightBufferDesc;
+	ZeroMemory(&lightBufferDesc, sizeof(lightBufferDesc));
 
 	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	lightBufferDesc.ByteWidth = sizeof(LightBufferType);
@@ -210,7 +252,12 @@ bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 	lightBufferDesc.MiscFlags = 0;
 	lightBufferDesc.StructureByteStride = 0;
 
-	hr = gDevice->CreateBuffer(&lightBufferDesc, NULL, &l_lightBuffer);
+	D3D11_SUBRESOURCE_DATA constData;
+	constData.pSysMem = &lightBufferConstData;
+	constData.SysMemPitch = 0;
+	constData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&lightBufferDesc, &constData, &l_lightBuffer);
 	
 	if (FAILED(hr))
 	{
@@ -227,51 +274,10 @@ float LightShaderClass::RandomNumber(float Minimum, float Maximum) {
 
 bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, ID3D11ShaderResourceView* worldTexture, ID3D11ShaderResourceView* depthTexture) {
 
-	HRESULT hr;
-
-	/*D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ZeroMemory(&mappedResource, sizeof(mappedResource));*/
-
 	gDeviceContext->PSSetShaderResources(0, 1, &colorTexture);
 	gDeviceContext->PSSetShaderResources(1, 1, &normalTexture);
 	gDeviceContext->PSSetShaderResources(2, 1, &worldTexture);
 	gDeviceContext->PSSetShaderResources(3, 1, &depthTexture);
-
-	//hr = gDeviceContext->Map(l_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-
-	//if (FAILED(hr)) {
-
-	//	return false;
-	//}
-
-	//srand(time(NULL));
-
-	//float red = 0.0f;
-	//float green = 0.0f;
-	//float blue = 0.0f;
-	//
-	//float xOffset = 0.0f;
-	//float yOffset = 0.0f;
-	//float zOffset = 0.0f;
-
-	//LightBufferType* lightPointer = (LightBufferType*)mappedResource.pData;
-
-	//for(int i = 0; i < 3; i++){
-
-	//	red = RandomNumber(0, 5);
-	//	green = RandomNumber(0, 5);
-	//	blue = RandomNumber(0, 5);
-
-	//	xOffset = RandomNumber(-15, 15);
-	//	yOffset = RandomNumber(5, 15);
-	//	zOffset = RandomNumber(-15, 15);
-
-	//	lightPointer->Position[i] = { xOffset, yOffset, zOffset, 1.0f };
-	//	lightPointer->Color[i] = { red, green, blue, 1.0f };;
-
-	//}
-
-	//gDeviceContext->Unmap(l_lightBuffer, 0);
 
 	gDeviceContext->PSSetConstantBuffers(0, 1, &l_lightBuffer);
 

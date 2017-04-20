@@ -22,6 +22,7 @@ private:
 
 		XMFLOAT4 Position[3];
 		XMFLOAT4 Color[3];
+		float Radius[3];
 	};
 
 public:
@@ -38,7 +39,10 @@ public:
 	bool SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, ID3D11ShaderResourceView* worldTexture, ID3D11ShaderResourceView* depthTexture);
 	void Render(ID3D11DeviceContext* gDeviceContext, int indexCount);
 
-	float LightShaderClass::RandomNumber(float Minimum, float Maximum);
+	float RandomNumber(float Minimum, float Maximum);
+	void LoadLights();
+
+	LightBufferType lights;
 
 private:
 
