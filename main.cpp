@@ -35,6 +35,7 @@ int RunApplication();
 void updateCharacter(HWND windowhandle);
 void updateBuffers();
 void updateLava();
+void lavamovmentUpdate(); 
 
 int main() {
 
@@ -105,7 +106,7 @@ int RunApplication() {
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateBuffers();
-				sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
+				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
 				if(GetAsyncKeyState('L')) {
@@ -160,9 +161,16 @@ void updateCharacter(HWND windowhandle)
 	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex);
 }
 
+void lavamovmentUpdate()
+{
+	sceneContainer.lava.swap(timer.getFrameCount());
+	sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
+}
+
 void updateLava()
 {
 	sceneContainer.lava.LoadRawFile();
+	sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
 	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 
