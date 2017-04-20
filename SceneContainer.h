@@ -76,7 +76,7 @@ public:
 	void renderCharacters();
 	void renderEnemies();
 
-	void renderLava(); 
+	void renderLava();
 
 };
 

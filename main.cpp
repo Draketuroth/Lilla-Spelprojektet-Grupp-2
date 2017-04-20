@@ -8,6 +8,7 @@
 
 
 #include "SceneContainer.h"
+#include "Timer.h"
 #include "GameState.h"
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
@@ -63,7 +64,9 @@ int RunApplication() {
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
-	updateLava(); 
+	sceneContainer.lava.time.initialize();
+	updateLava();
+
 
 	menuState.createBufferData(sceneContainer.gHandler.gDevice);
 	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
@@ -102,7 +105,7 @@ int RunApplication() {
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateBuffers();
-
+				sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
 				if(GetAsyncKeyState('L')) {
@@ -160,7 +163,6 @@ void updateCharacter(HWND windowhandle)
 void updateLava()
 {
 	sceneContainer.lava.LoadRawFile();
-	sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice);
 	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 

@@ -27,7 +27,7 @@ public:
 	//hämta raw filerna
 	void LoadRawFile(); 
 
-	void VBuffer(ID3D11Device* device); 
+	void VBuffer(ID3D11Device* device, int current); 
 	void IBuffer(ID3D11Device* device);
 
 	float GetWidth()const;
@@ -35,7 +35,9 @@ public:
 
 	void ReleaseAll(); 
 
-	void swap();
+	int swap(int frameCount);
+
+	void smooth(int currentMap); 
 
 	ID3D11Buffer* LavaVB;
 	ID3D11Buffer* LavaIB;
@@ -43,6 +45,9 @@ public:
 	vector<int> index;
 
 	unsigned int indexCounter = 0;
+	Timer time;
+	
+
 private:
 	
 	HMap map[2]; 

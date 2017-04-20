@@ -40,7 +40,7 @@ void Lava::LoadRawFile()
 		map[j].heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
 		for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
 		{
-			map[j].heightMap[i] = ((map[j].in[i] / 255.0f)*LAVAMAXHEIGHT)* -2;
+			map[j].heightMap[i] = ((map[j].in[i] / 255.0f)*LAVAMAXHEIGHT)* -6;
 		}
 	}
 	
@@ -62,7 +62,7 @@ float Lava::GetDepth()const
 	return (LAVADEPTH - 1)*LAVAQUADSIZE;
 }
 
-void Lava::VBuffer(ID3D11Device* device)
+void Lava::VBuffer(ID3D11Device* device, int current)
 {
 	vector<LavaVertex> verticis(rows*cols);
 
@@ -81,7 +81,7 @@ void Lava::VBuffer(ID3D11Device* device)
 		for (UINT j = 0; j < cols; ++j)
 		{
 			float x = -halfDepth + j * patchWidth;
-			float y = map[1].heightMap[i*cols + j];
+			float y = map[current].heightMap[i*cols + j];
 			
 			verticis[i*cols + j].pos = XMFLOAT3(x, y, z);
 
@@ -170,7 +170,24 @@ void Lava::IBuffer(ID3D11Device* device)
 	}
 }
 
-void Lava::swap()
+int Lava::swap(int frameCounter)
 {
+	int currentMap = 0; 
 	
+
+	if (frameCounter <= 150)
+	{
+		currentMap = 0; 
+	}
+	else
+	{
+		currentMap = 1;
+	}
+	this->smooth(currentMap); 
+	return currentMap; 
+}
+
+void Lava::smooth(int currentMap)
+{
+
 }
