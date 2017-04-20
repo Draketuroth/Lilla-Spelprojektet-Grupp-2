@@ -27,6 +27,8 @@ private:
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
 
+	XMFLOAT3 boundingBoxExtents;
+
 public:
 
 	XMMATRIX tPlayerTranslation;
@@ -53,7 +55,8 @@ public:
 	void setPos(const XMFLOAT3 newPos);
 
 	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler);
-	
+	BoundingBox getBoundingBox();
+
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);

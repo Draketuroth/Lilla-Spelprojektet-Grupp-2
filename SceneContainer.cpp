@@ -14,6 +14,7 @@ SceneContainer::SceneContainer() {
 
 	bulletPhysicsHandler = BulletComponents();
 
+	this->nrOfEnemies = 0;
 }
 
 SceneContainer::~SceneContainer() {
@@ -113,6 +114,17 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 }
 
+void SceneContainer::update(HWND &windowHandle)
+{
+	//FIX LATER PLZ
+	enemies[0] = enemy;
+	nrOfEnemies = 1;
+
+	character.meleeAttack(windowHandle, this->nrOfEnemies, enemies);
+
+	render();
+}
+
 void SceneContainer::drawPlatforms() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
@@ -159,10 +171,8 @@ void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
 
-void SceneContainer::render() {
-
-	//we clear in here since characters are rendered before the scene
-	//Characters need to be rendered first since they will be moving
+void SceneContainer::render() 
+{
 	clear();
 
 	//renderDeferred();

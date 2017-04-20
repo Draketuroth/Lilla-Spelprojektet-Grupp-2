@@ -112,7 +112,7 @@ int RunApplication() {
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
 
-				sceneContainer.render();
+				sceneContainer.update(windowHandle);
 
 				showFPS(windowHandle, deltaTime);
 

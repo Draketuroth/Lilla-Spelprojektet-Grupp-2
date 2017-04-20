@@ -230,6 +230,8 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 ex
 	// Definition of the rigid body
 	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape, inertia);
 
+	this->boundingBoxExtents = extents;
+
 	// Create the rigid body
 	btRigidBody* playerRigidBody = new btRigidBody(info);
 	
@@ -242,8 +244,16 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 ex
 	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
 	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
 	
-
 }
+
+BoundingBox CharacterBase::getBoundingBox()
+{
+	//we need the center and the extents, both as XMFLOAT3
+	XMFLOAT3 center = this->position;
+	XMFLOAT3 extents = this->boundingBoxExtents;
+	return BoundingBox(center, extents);
+}
+
 
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount) {
 
