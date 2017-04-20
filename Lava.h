@@ -18,6 +18,7 @@ public:
 	{
 		wstring	filename;  
 		vector<float> heightMap;
+		vector<unsigned char> in; 
 	};
 
 	Lava();
@@ -51,6 +52,5 @@ private:
 	int NrOfVert;
 
 };
-
 
 #endif
