@@ -22,7 +22,6 @@ private:
 
 		XMFLOAT4 Position[3];
 		XMFLOAT4 Color[3];
-		float Radius[3];
 	};
 
 public:

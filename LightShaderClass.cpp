@@ -187,9 +187,9 @@ void LightShaderClass::LoadLights() {
 		green = RandomNumber(0, 5);
 		blue = RandomNumber(0, 5);
 
-		xOffset = RandomNumber(-15, 15);
-		yOffset = RandomNumber(5, 15);
-		zOffset = RandomNumber(-15, 15);
+		xOffset = i * 5;
+		yOffset = i * 5;
+		zOffset = i * 5;
 
 		lights.Position[i] = { xOffset, yOffset, zOffset, 1.0f };
 		lights.Color[i] = { red, green, blue, 1.0f };;
