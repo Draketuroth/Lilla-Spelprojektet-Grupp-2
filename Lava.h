@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include "VertexType.h"
-#include "MacroDefinitions.h"
+
 
 using namespace std; 
 
@@ -17,6 +17,7 @@ public:
 	struct HMap
 	{
 		wstring	filename;  
+		vector<float> heightMap;
 	};
 
 	Lava();
@@ -32,7 +33,8 @@ public:
 	float GetDepth()const;
 
 	void ReleaseAll(); 
-	vector<float> hightmap; 
+
+	void swap();
 
 	ID3D11Buffer* LavaVB;
 	ID3D11Buffer* LavaIB;
@@ -42,8 +44,8 @@ public:
 	unsigned int indexCounter = 0;
 private:
 	
-	HMap map; 
-	vector<float> heightMap;
+	HMap map[2]; 
+	
 	int rows; 
 	int cols; 
 	int NrOfVert;

@@ -1,8 +1,11 @@
 #include "Lava.h"
+#include "MacroDefinitions.h"
 
 Lava::Lava()
 {
-	map.filename = L"Textures\\HMap.raw";
+	map[0].filename = L"Textures\\HMap.raw";
+	map[1].filename = L"Textures\\heightmapSack.raw";
+
 	rows = LAVADEPTH; 
 	cols = LAVAWIDTH;
 	NrOfVert = LAVADEPTH*LAVAWIDTH; 
@@ -17,24 +20,28 @@ void Lava::LoadRawFile()
 	vector<unsigned char> in(LAVADEPTH * LAVAWIDTH);
 
 	ifstream inFile; 
-	inFile.open(map.filename.c_str(), std::ios_base::binary); 
-
-	if (!inFile)
+	for (int j = 0; j < 2; j++)
 	{
-		cout << "height map not found" << endl; 
-	}
+		inFile.open(map[j].filename.c_str(), std::ios_base::binary);
 
-	if (inFile)
-	{
-		inFile.read((char*)&in[0], (std::streamsize)in.size()); 
-		inFile.close(); 
-	}
+		if (!inFile)
+		{
+			cout << "height map not found" << endl;
+		}
 
-	heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
-	for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
-	{
-		heightMap[i] = ((in[i] / 255.0f)*LAVAMAXHEIGHT)* -2;
+		if (inFile)
+		{
+			inFile.read((char*)&in[0], (std::streamsize)in.size());
+			inFile.close();
+		}
+		
+		map[j].heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
+		for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
+		{
+			map[j].heightMap[i] = ((in[i] / 255.0f)*LAVAMAXHEIGHT)* -2;
+		}
 	}
+	
 }
 
 void Lava::ReleaseAll()
@@ -72,7 +79,7 @@ void Lava::VBuffer(ID3D11Device* device)
 		for (UINT j = 0; j < cols; ++j)
 		{
 			float x = -halfDepth + j * patchWidth;
-			float y = heightMap[i*cols + j];
+			float y = map[0].heightMap[i*cols + j];
 			
 			verticis[i*cols + j].pos = XMFLOAT3(x, y, z);
 
@@ -159,4 +166,9 @@ void Lava::IBuffer(ID3D11Device* device)
 	{
 		cout << "Error Index buffer" << endl;
 	}
+}
+
+void Lava::swap()
+{
+	
 }
