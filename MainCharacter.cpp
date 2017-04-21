@@ -168,6 +168,7 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 
 	angle = atan2(mouseXNDC, mouseYNDC);
 
+	//returns in radians?
 	return angle;
 }
 
@@ -205,35 +206,43 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 {
 	if (GetAsyncKeyState(MK_LBUTTON))
 	{
-
 		//cout << "MELEE ATTACK" << endl;
 		//this is the way the character will be facing
 		float angle = characterLookAt(windowHandle);
-		
 		//create boundingBox within the angle of the attack that
 		//covers the range between the character and the attack range
-		XMFLOAT3 characterPos = getPos();
+		XMFLOAT3 characterPos = this->getBoundingBox().Center;
 		XMFLOAT3 characterBoxExtents = this->getBoundingBox().Extents;
+		XMMATRIX playerTranslation = getPlayerTanslationMatrix();
 
-		float centerX =  (characterBoxExtents.x + 2) * cos(angle); //cos(angle * (2 * PI)
-		float centerZ = (characterBoxExtents.z + 2) * sin(angle);
+		XMFLOAT3 forward; 
+		XMStoreFloat3(&forward, getForwardVector());
 
-		XMFLOAT3 boxCenter = {centerX, 0, centerZ };  
-		XMFLOAT3 boxRange = { 4, 4, 4 };
+		//XMFLOAT3 forwardDist = { forward.x * distance, forward.y * distance, forward.z * distance };
+
+		//YES
+		float distance = (characterBoxExtents.x + 2.0f);
+		//YES
+		float centerX = characterPos.x + forward * distance; 
+		float centerZ = characterPos.z + forward * distance;
+
+		XMFLOAT3 boxCenter = {centerX , 0, centerZ };  
+		XMFLOAT3 boxRange = { 2, 2, 2 };
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
+		meleeBox.Transform(meleeBox, playerTranslation);
 		
 		for (int i = 0; i < nrOfEnemies; i++)
 		{
 			//Take extents and create boundingbox for enemy 
 			BoundingBox enemyBox = enemyArray[i].getBoundingBox();
-			if (enemyBox.Intersects(meleeBox))
-			{
-				cout << "HIT" << endl;
-				cout << " ENEMY Position X: " << enemyBox.Center.x << " Position Z: " << enemyBox.Center.z << endl;
-				cout << " MELEE Position X: " << centerX << " Position Z: " << centerZ << endl;
+			//if (enemyBox.Intersects(meleeBox))
+			//{
+				cout << "PLAYER X: " << characterPos.x << " PLAYER Z: " << characterPos.z << endl;
+				cout << "ENEMY X: " << enemyBox.Center.x << " ENEMY Z: " << enemyBox.Center.z << endl;
+				cout << "MELEE X: " << centerX << " MELEE Z: " << centerZ << endl << endl;
 				//enemyArray[i].setHealth(getHealth() - 1);
-			}
+			//}
 		}
 		
 	}

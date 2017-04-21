@@ -254,6 +254,11 @@ BoundingBox CharacterBase::getBoundingBox()
 	return BoundingBox(center, extents);
 }
 
+XMMATRIX CharacterBase::getPlayerTanslationMatrix()
+{
+	return this->tPlayerTranslation;
+}
+
 
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount) {
 
@@ -302,6 +307,8 @@ void CharacterBase::updateWorldMatrix(XMMATRIX rotation)
 	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
 
+	this->forwardVector = XMVector3Transform(XMVECTOR{ 0,0,1 }, rotation);
+
 }
 
 void CharacterBase::updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale)
@@ -325,6 +332,11 @@ void CharacterBase::updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale)
 	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
 
+}
+
+XMFLOAT3 CharacterBase::getForwardVector()
+{
+	return this->forwardVector;
 }
 
 void CharacterBase::resetWorldMatrix()
