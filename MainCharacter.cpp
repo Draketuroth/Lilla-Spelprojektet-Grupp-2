@@ -205,26 +205,12 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[])
 {
 	if (GetAsyncKeyState(MK_LBUTTON))
-	{
-		//cout << "MELEE ATTACK" << endl;
-		//this is the way the character will be facing
+	{ 
 		float angle = characterLookAt(windowHandle);
-		//create boundingBox within the angle of the attack that
-		//covers the range between the character and the attack range
+
 		XMFLOAT3 characterPos = this->getBoundingBox().Center;
-		XMFLOAT3 characterBoxExtents = this->getBoundingBox().Extents;
 		XMMATRIX playerTranslation = getPlayerTanslationMatrix();
 
-
-
-		/*XMFLOAT3 forward; 
-		XMStoreFloat3(&forward, getForwardVector());*/
-
-		float distance = (characterBoxExtents.x + 2.0f);
-
-		
-
-		//YES
 		float centerX = characterPos.x + sin(angle);
 		float centerZ = characterPos.z + cos(angle);
 
@@ -234,18 +220,20 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		meleeBox.Transform(meleeBox, playerTranslation);
 		
-		for (int i = 0; i < nrOfEnemies; i++)
-		{
-			//Take extents and create boundingbox for enemy 
-			BoundingBox enemyBox = enemyArray[i].getBoundingBox();
-			//if (enemyBox.Intersects(meleeBox))
-			//{
-				cout << "PLAYER X: " << characterPos.x << " PLAYER Z: " << characterPos.z << endl;
-				//cout << "ENEMY X: " << enemyBox.Center.x << " ENEMY Z: " << enemyBox.Center.z << endl;
-				cout << "MELEE X: " << centerX << " MELEE Z: " << centerZ << endl << endl;
-				//enemyArray[i].setHealth(getHealth() - 1);
-			//}
-		}
+		/*for (int i = 0; i < nrOfEnemies; i++)
+		{*/
+			BoundingBox enemyBox = enemyArray[0].getBoundingBox();
+			if (enemyBox.Intersects(meleeBox))
+			{
+				cout << "HIT!" << endl;
+				enemyArray[0].setHealth(enemyArray[0].getHealth() -1);
+				if (enemyArray[0].getHealth() <= 0)
+				{
+					//enemyArray[i].setAlive(false);
+					cout << "ENEMY DOWN" << endl;
+				}
+			}
+		/*}*/
 		
 	}
 }
@@ -270,10 +258,10 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 	//The projectile needs to be able to sort through the list of enemies.
 }
 
-void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
-{
-
-}
+//void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
+//{
+//
+//}
 
 void MainCharacter::calculateProjectile()
 {

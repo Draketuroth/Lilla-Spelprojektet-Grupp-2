@@ -10,7 +10,7 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemy = Enemy(0, { 0.3f,20,5 });
+	enemies[0] = Enemy(0, { 0, 20, 10 });
 
 	bulletPhysicsHandler = BulletComponents();
 
@@ -28,7 +28,7 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	//character.releaseAll();
-	enemy.releaseAll();
+	enemies[0].releaseAll();
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
@@ -108,19 +108,17 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
-	enemy.Spawn(gHandler.gDevice,bulletPhysicsHandler);
+	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
 
+	
 	return true;
 
 }
 
 void SceneContainer::update(HWND &windowHandle)
 {
-	//FIX LATER PLZ
-	enemies[0] = enemy;
 	nrOfEnemies = 1;
-
-	character.meleeAttack(windowHandle, this->nrOfEnemies, enemies);
+	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies);
 
 	render();
 }
@@ -305,7 +303,7 @@ void SceneContainer::renderEnemies()
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
-	enemy.draw(gHandler.gDeviceContext);
+	enemies[0].draw(gHandler.gDeviceContext);
 
 	
 }
