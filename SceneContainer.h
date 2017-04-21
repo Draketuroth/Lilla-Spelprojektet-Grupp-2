@@ -40,6 +40,7 @@ public:
 	void releaseAll();
 
 	bool initialize(HWND &windowHandle);
+	void update(HWND &windowHandle);
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;
@@ -54,8 +55,11 @@ public:
 	Lava lava; 
 
 	Enemy enemy;
+	Enemy enemies[3];
 
 	BulletComponents bulletPhysicsHandler;
+
+	int nrOfEnemies;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
