@@ -37,7 +37,7 @@ float Timer::getDeltaTime()
 void Timer::updateCurrentTime()
 {
 	this->previousTime = this->currentTime;
-	if (this->frameCount ==	300)
+	if (this->frameCount ==	2000)
 	{
 		this->frameCount = 0;
 	}

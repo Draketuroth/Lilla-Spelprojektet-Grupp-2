@@ -163,14 +163,13 @@ void updateCharacter(HWND windowhandle)
 
 void lavamovmentUpdate()
 {
-	sceneContainer.lava.swap(timer.getFrameCount());
-	sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
+	sceneContainer.lava.swap(timer.getFrameCount(), sceneContainer.gHandler.gDevice);
 }
 
 void updateLava()
 {
 	sceneContainer.lava.LoadRawFile();
-	sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
+	//sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
 	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 
