@@ -165,11 +165,11 @@ void SceneContainer::render() {
 	//Characters need to be rendered first since they will be moving
 	clear();
 
-	renderDeferred();
-	//renderLava(); 
-	//renderCharacters();
-	//renderEnemies();
-	//renderScene();
+	//renderDeferred();
+	renderLava(); 
+	renderCharacters();
+	renderEnemies();
+	renderScene();
 }
 
 bool SceneContainer::renderDeferred() {
