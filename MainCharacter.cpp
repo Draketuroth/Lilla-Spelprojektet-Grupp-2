@@ -215,18 +215,20 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 		XMFLOAT3 characterBoxExtents = this->getBoundingBox().Extents;
 		XMMATRIX playerTranslation = getPlayerTanslationMatrix();
 
-		XMFLOAT3 forward; 
-		XMStoreFloat3(&forward, getForwardVector());
 
-		//XMFLOAT3 forwardDist = { forward.x * distance, forward.y * distance, forward.z * distance };
 
-		//YES
+		/*XMFLOAT3 forward; 
+		XMStoreFloat3(&forward, getForwardVector());*/
+
 		float distance = (characterBoxExtents.x + 2.0f);
-		//YES
-		float centerX = characterPos.x + forward * distance; 
-		float centerZ = characterPos.z + forward * distance;
 
-		XMFLOAT3 boxCenter = {centerX , 0, centerZ };  
+		
+
+		//YES
+		float centerX = characterPos.x + sin(angle);
+		float centerZ = characterPos.z + cos(angle);
+
+		XMFLOAT3 boxCenter = { centerX, 0, centerZ };
 		XMFLOAT3 boxRange = { 2, 2, 2 };
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
@@ -239,7 +241,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 			//if (enemyBox.Intersects(meleeBox))
 			//{
 				cout << "PLAYER X: " << characterPos.x << " PLAYER Z: " << characterPos.z << endl;
-				cout << "ENEMY X: " << enemyBox.Center.x << " ENEMY Z: " << enemyBox.Center.z << endl;
+				//cout << "ENEMY X: " << enemyBox.Center.x << " ENEMY Z: " << enemyBox.Center.z << endl;
 				cout << "MELEE X: " << centerX << " MELEE Z: " << centerZ << endl << endl;
 				//enemyArray[i].setHealth(getHealth() - 1);
 			//}
