@@ -9,7 +9,7 @@ MainCharacter::MainCharacter()
 	cameraDistanceZ = 3.0f;
 	playerHeight = 2.0f;
 	currentAnimIndex = 0;
-
+	this->fwdVec = { 0, 0, 1 };
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 }
@@ -52,6 +52,7 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMMATRIX scale = XMMatrixScaling(0.2, 0.2, 0.2);
 	updateWorldMatrix(R, scale);
 	
+
 	CheckInput();
 
 	XMMATRIX transform;
@@ -247,7 +248,7 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 
 	//check which way the charater is looking
 	float angle = characterLookAt(windowHandle);
-
+	
 	//fireProjectile(angle);
 
 	//fireProjectile have to create and follow up the projectile and see it it hits anything.
@@ -260,6 +261,17 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 
 void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
 {
+
+}
+
+void MainCharacter::calculateProjectile()
+{
+	Projectile bullet;
+	bullet.Velocity = { 5, 0, 5 };
+	bullet.Direction;
+	
+
+
 
 }
 

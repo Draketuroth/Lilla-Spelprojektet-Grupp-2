@@ -6,6 +6,12 @@
 class MainCharacter: public CharacterBase
 {
 private:
+	struct Projectile
+	{
+		XMFLOAT3 Velocity;
+		XMFLOAT3 Direction;
+		BoundingSphere proj;
+	};
 
 
 public:
@@ -27,7 +33,7 @@ public:
 	void rangeAttack(HWND windowHandle);
 	
 	void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
-
+	void calculateProjectile();
 
 	Camera camera;
 
@@ -35,6 +41,7 @@ public:
 	float cameraDistanceZ;
 	float playerHeight;
 
+	XMVECTOR fwdVec;
 	XMFLOAT3 direction;
 	XMFLOAT3 newCameraPos;
 	XMVECTOR directionVec;
