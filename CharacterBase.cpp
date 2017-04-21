@@ -334,7 +334,7 @@ void CharacterBase::updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale)
 
 }
 
-XMFLOAT3 CharacterBase::getForwardVector()
+XMVECTOR CharacterBase::getForwardVector()
 {
 	return this->forwardVector;
 }
