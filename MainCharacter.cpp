@@ -9,7 +9,6 @@ MainCharacter::MainCharacter()
 	cameraDistanceZ = 3.0f;
 	playerHeight = 2.0f;
 	currentAnimIndex = 0;
-	this->fwdVec = { 0, 0, 1 };
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 }
@@ -263,16 +262,6 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 //
 //}
 
-void MainCharacter::calculateProjectile()
-{
-	Projectile bullet;
-	bullet.Velocity = { 5, 0, 5 };
-	bullet.Direction;
-	
-
-
-
-}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()
