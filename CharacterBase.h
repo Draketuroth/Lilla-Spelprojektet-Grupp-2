@@ -44,7 +44,7 @@ public:
 
 	//GET-SET
 	int getHealth()const;
-	void setHealth(const int newHealth);
+	void setHealth(int newHealth);
 	float getMovementSpeed()const;
 	void setMovementSpeed(const float newMSpeed);
 	int getUnitID()const;

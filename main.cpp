@@ -141,7 +141,7 @@ void updateCharacter(HWND windowhandle)
 {
 
 	sceneContainer.character.update(windowhandle);
-	sceneContainer.enemy.EnemyPhysics();
+	sceneContainer.enemies[0].EnemyPhysics();
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
@@ -220,7 +220,7 @@ void updateBuffers()
 
 	PLAYER_TRANSFORM* EnemyTransformPointer = (PLAYER_TRANSFORM*)EnemyMappedResource.pData;
 
-	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemy.tPlayerTranslation);
+	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemies[0].tPlayerTranslation);
 
 	EnemyTransformPointer->matrixW = tEnemyTranslation;
 
