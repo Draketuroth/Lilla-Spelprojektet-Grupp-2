@@ -106,8 +106,8 @@ int RunApplication() {
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
 				
-				//btCollisionWorld::ContactResultCallback* collisionResult;
-				//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, &collisionResult);
+				MyContactResultCallback callback(&sceneContainer.character);
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, callback);
 				
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER

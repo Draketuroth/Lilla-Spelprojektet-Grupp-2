@@ -30,7 +30,7 @@
 
 struct MyContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
-	MyContactResultCallback(MainCharacter* ptr) : context(ptr) {}
+	MyContactResultCallback(MainCharacter* ptr) : character(ptr) {}
 
 	btScalar addSingleResult(btManifoldPoint& cp,
 		const btCollisionObjectWrapper* colObj0Wrap,
@@ -40,10 +40,14 @@ struct MyContactResultCallback : public btCollisionWorld::ContactResultCallback
 		int partId1,
 		int index1)
 	{
-		//context->
+		btTransform t;
+		t.setIdentity();
+		t.setOrigin(btVector3(2, 2, 5));
+		character->rigidBody->setWorldTransform(t);
+		return 0;
 	}
 
-	MainCharacter* context;
+	MainCharacter* character;
 };
 
 class SceneContainer {
