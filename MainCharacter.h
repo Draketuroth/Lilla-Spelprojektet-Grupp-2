@@ -26,7 +26,7 @@ public:
 	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[]);
 	void rangeAttack(HWND windowHandle);
 	
-	void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
+	//void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
 
 
 	Camera camera;
