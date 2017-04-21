@@ -27,6 +27,25 @@
 #include "FBXLoader.h"
 
 #include "Lava.h"
+
+struct MyContactResultCallback : public btCollisionWorld::ContactResultCallback
+{
+	MyContactResultCallback(MainCharacter* ptr) : context(ptr) {}
+
+	btScalar addSingleResult(btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,
+		int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,
+		int index1)
+	{
+		//context->
+	}
+
+	MainCharacter* context;
+};
+
 class SceneContainer {
 
 private:
