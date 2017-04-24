@@ -13,7 +13,7 @@ FileImporter::~FileImporter() {
 
 void FileImporter::readFormat() {
 
-	Header headerContent;
+	char headerContent[3];
 
 	ifstream in("Format//vertexBinaryData.txt", ios::in | ios::binary);
 
@@ -21,9 +21,9 @@ void FileImporter::readFormat() {
 
 	in.read(reinterpret_cast<char*>(&headerContent), sizeof(Header));
 
-	cout << "Number of meshes: " << headerContent.nrOfMeshes << endl;
-	cout << "Number of lights: " << headerContent.nrOfLights << endl;
-	cout << "Number of cameras: " << headerContent.nrOfCameras << endl;
+	cout << "Number of meshes: " << (uint32_t)headerContent[0] << endl;
+	cout << "Number of lights: " << (uint32_t)headerContent[1] << endl;
+	cout << "Number of cameras: " << (uint32_t)headerContent[2] << endl;
 
 	}
 
