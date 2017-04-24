@@ -243,7 +243,7 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 	{
 		cout << "RANGED ATTACK" << endl;
 	}
-
+	
 	//check which way the charater is looking
 	float angle = characterLookAt(windowHandle);
 	
