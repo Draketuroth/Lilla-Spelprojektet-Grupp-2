@@ -27,6 +27,8 @@ private:
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
 
+	XMFLOAT3 boundingBoxExtents;
+
 public:
 
 	XMMATRIX tPlayerTranslation;
@@ -38,11 +40,11 @@ public:
 	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID, const XMFLOAT3 position, const XMMATRIX tPlayerTranslation);
 	~CharacterBase();
 
-	void releaseAll();
+	void releaseAll(btDynamicsWorld* bulletDynamicsWorld);
 
 	//GET-SET
 	int getHealth()const;
-	void setHealth(const int newHealth);
+	void setHealth(int newHealth);
 	float getMovementSpeed()const;
 	void setMovementSpeed(const float newMSpeed);
 	int getUnitID()const;
@@ -52,8 +54,12 @@ public:
 	XMFLOAT3 getPos()const;
 	void setPos(const XMFLOAT3 newPos);
 
+	XMVECTOR forwardVector;
+
 	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler);
-	
+	BoundingBox getBoundingBox();
+	XMMATRIX getPlayerTanslationMatrix();
+
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
@@ -63,6 +69,7 @@ public:
 
 	void updateWorldMatrix(XMMATRIX rotation);
 	void updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale);
+	XMVECTOR getForwardVector();
 
 	void resetWorldMatrix();
 

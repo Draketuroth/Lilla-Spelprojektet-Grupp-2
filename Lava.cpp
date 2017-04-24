@@ -236,5 +236,6 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 	}
 
 	this->VBuffer(device, currentMap, weightScalar);
+
 	return currentMap; 
 }

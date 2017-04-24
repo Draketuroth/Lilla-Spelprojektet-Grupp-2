@@ -44,11 +44,13 @@ bool LightShaderClass::Initialize(ID3D11Device* gDevice) {
 			MB_OK);
 	}
 
+	LoadLights();
+
 	if (!CreateLightBuffer(gDevice)) {
 
 		MessageBox(
 			NULL,
-			L"CRITICAL ERROR: Light Texture Sampler couldn't be created\nClosing application...",
+			L"CRITICAL ERROR: Light Buffer couldn't be created\nClosing application...",
 			L"ERROR",
 			MB_OK);
 	}
@@ -167,6 +169,36 @@ bool LightShaderClass::InitializeShader(ID3D11Device* gDevice) {
 
 }
 
+void LightShaderClass::LoadLights() {
+
+	srand(time(NULL));
+
+	float red = 0.0f;
+	float green = 0.0f;
+	float blue = 0.0f;
+	
+	float xOffset = 0.0f;
+	float yOffset = 0.0f;
+	float zOffset = 0.0f;
+	float Radius = 0.0f;
+
+	for(int i = 0; i < 3; i++){
+
+		red = RandomNumber(0, 10);
+		green = RandomNumber(0, 10);
+		blue = RandomNumber(0, 10);
+
+		xOffset = RandomNumber(-60, 60);
+		yOffset = RandomNumber(-60, 60);
+		zOffset = RandomNumber(-60, 60);
+		Radius = 70;
+
+		lights.Position[i] = { xOffset, yOffset, zOffset, Radius };
+		lights.Color[i] = { red, green, blue, 1.0f };
+
+	}
+}
+
 bool LightShaderClass::CreatePointSampler(ID3D11Device* gDevice) {
 
 	HRESULT hr;
@@ -201,7 +233,19 @@ bool LightShaderClass::CreatePointSampler(ID3D11Device* gDevice) {
 bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 
 	HRESULT hr;
+
+	// Gather the loaded lights
+	LightBufferType lightBufferConstData;
+
+	for (int i = 0; i < 3; i++) {
+
+		lightBufferConstData.Position[i] = lights.Position[i];
+		lightBufferConstData.Color[i] = lights.Color[i];
+		
+	}
+
 	D3D11_BUFFER_DESC lightBufferDesc;
+	ZeroMemory(&lightBufferDesc, sizeof(lightBufferDesc));
 
 	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	lightBufferDesc.ByteWidth = sizeof(LightBufferType);
@@ -210,7 +254,12 @@ bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 	lightBufferDesc.MiscFlags = 0;
 	lightBufferDesc.StructureByteStride = 0;
 
-	hr = gDevice->CreateBuffer(&lightBufferDesc, NULL, &l_lightBuffer);
+	D3D11_SUBRESOURCE_DATA constData;
+	constData.pSysMem = &lightBufferConstData;
+	constData.SysMemPitch = 0;
+	constData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&lightBufferDesc, &constData, &l_lightBuffer);
 	
 	if (FAILED(hr))
 	{
@@ -220,36 +269,19 @@ bool LightShaderClass::CreateLightBuffer(ID3D11Device* gDevice) {
 	return true;
 }
 
-bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, ID3D11ShaderResourceView* worldTexture, ID3D11ShaderResourceView* depthTexture, XMFLOAT3 lightDirection) {
+float LightShaderClass::RandomNumber(float Minimum, float Maximum) {
 
-	HRESULT hr;
+	return ((float(rand()) / float(RAND_MAX)) * (Maximum - Minimum)) + Minimum;
+}
 
-	unsigned int bufferNumber;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ZeroMemory(&mappedResource, sizeof(mappedResource));
+bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* gDeviceContext, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture, ID3D11ShaderResourceView* worldTexture, ID3D11ShaderResourceView* depthTexture) {
 
 	gDeviceContext->PSSetShaderResources(0, 1, &colorTexture);
 	gDeviceContext->PSSetShaderResources(1, 1, &normalTexture);
 	gDeviceContext->PSSetShaderResources(2, 1, &worldTexture);
 	gDeviceContext->PSSetShaderResources(3, 1, &depthTexture);
 
-	hr = gDeviceContext->Map(l_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	LightBufferType* lightPointer = (LightBufferType*)mappedResource.pData;
-
-	lightPointer->lightDirection = lightDirection;
-	lightPointer->padding = 0.0f;
-
-	gDeviceContext->Unmap(l_lightBuffer, 0);
-
-	bufferNumber = 0;
-
-	gDeviceContext->PSSetConstantBuffers(bufferNumber, 1, &l_lightBuffer);
+	gDeviceContext->PSSetConstantBuffers(0, 1, &l_lightBuffer);
 
 	return true;
 

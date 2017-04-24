@@ -109,17 +109,23 @@ int RunApplication() {
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				if(GetAsyncKeyState('L')) {
-
-					SAFE_RELEASE(sceneContainer.bHandler.cubeObjects[14].gCubeVertexBuffer);
-					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sceneContainer.bulletPhysicsHandler.rigidBodies[14]);
-				}
 				
+				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
+				MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[0]);
+
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[0].rigidBody, enemyCallBack);
+
+				if (sceneContainer.enemies[0].getAlive() == false) {
+
+					sceneContainer.enemies[0].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+				}
+
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
 
-				sceneContainer.render();
+				sceneContainer.update(windowHandle);
 
 				showFPS(windowHandle, deltaTime);
 
@@ -137,7 +143,6 @@ int RunApplication() {
 
 	sceneContainer.releaseAll();
 	menuState.releaseAll();
-	sceneContainer.lava.ReleaseAll();
 	DestroyWindow(windowHandle);
 
 	return 0;
@@ -147,7 +152,12 @@ void updateCharacter(HWND windowhandle)
 {
 
 	sceneContainer.character.update(windowhandle);
-	sceneContainer.enemy.EnemyPhysics();
+	
+	if(sceneContainer.enemies[0].getAlive() == true){
+	
+		sceneContainer.enemies[0].EnemyPhysics();
+
+	}
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
@@ -163,6 +173,7 @@ void updateCharacter(HWND windowhandle)
 
 void lavamovmentUpdate()
 {
+	SAFE_RELEASE(sceneContainer.lava.LavaVB);
 	sceneContainer.lava.swap(timer.getFrameCount(), sceneContainer.gHandler.gDevice);
 }
 
@@ -231,7 +242,7 @@ void updateBuffers()
 
 	PLAYER_TRANSFORM* EnemyTransformPointer = (PLAYER_TRANSFORM*)EnemyMappedResource.pData;
 
-	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemy.tPlayerTranslation);
+	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemies[0].tPlayerTranslation);
 
 	EnemyTransformPointer->matrixW = tEnemyTranslation;
 

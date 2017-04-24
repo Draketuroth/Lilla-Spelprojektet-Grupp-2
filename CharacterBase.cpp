@@ -28,10 +28,11 @@ CharacterBase::~CharacterBase()
 	//Safe release
 }
 
-void CharacterBase::releaseAll() {
+void CharacterBase::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
 	SAFE_RELEASE(vertexBuffer);
 	SAFE_RELEASE(indexBuffer);
+	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
 int CharacterBase::getHealth()const
@@ -230,6 +231,8 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 ex
 	// Definition of the rigid body
 	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape, inertia);
 
+	this->boundingBoxExtents = extents;
+
 	// Create the rigid body
 	btRigidBody* playerRigidBody = new btRigidBody(info);
 	
@@ -242,8 +245,21 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 ex
 	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
 	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
 	
-
 }
+
+BoundingBox CharacterBase::getBoundingBox()
+{
+	//we need the center and the extents, both as XMFLOAT3
+	XMFLOAT3 center = this->position;
+	XMFLOAT3 extents = this->boundingBoxExtents;
+	return BoundingBox(center, extents);
+}
+
+XMMATRIX CharacterBase::getPlayerTanslationMatrix()
+{
+	return this->tPlayerTranslation;
+}
+
 
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount) {
 
@@ -292,6 +308,8 @@ void CharacterBase::updateWorldMatrix(XMMATRIX rotation)
 	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
 
+	this->forwardVector = XMVector3Transform(XMVECTOR{ 0,0,1 }, rotation);
+
 }
 
 void CharacterBase::updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale)
@@ -315,6 +333,11 @@ void CharacterBase::updateWorldMatrix(XMMATRIX rotation, XMMATRIX scale)
 	// Build the new world matrix
 	tPlayerTranslation = XMMatrixMultiply(rotation, transform);
 
+}
+
+XMVECTOR CharacterBase::getForwardVector()
+{
+	return this->forwardVector;
 }
 
 void CharacterBase::resetWorldMatrix()

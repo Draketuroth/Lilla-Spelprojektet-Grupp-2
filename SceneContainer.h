@@ -27,6 +27,48 @@
 #include "FBXLoader.h"
 
 #include "Lava.h"
+
+struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
+{
+	MyCharacterContactResultCallback(CharacterBase* ptr) : character(ptr) {}
+
+	btScalar addSingleResult(btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,
+		int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,
+		int index1)
+	{
+		btTransform t;
+		t.setIdentity();
+		t.setOrigin(btVector3(2, 2, 5));
+		character->rigidBody->setWorldTransform(t);
+		return 0;
+	}
+
+	CharacterBase* character;
+};
+
+struct MyEnemyContactResultCallback : public btCollisionWorld::ContactResultCallback
+{
+	MyEnemyContactResultCallback(Enemy* ptr) : enemy(ptr) {}
+
+	btScalar addSingleResult(btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,
+		int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,
+		int index1)
+	{
+		enemy->setAlive(false);
+		return 0;
+	}
+
+	Enemy* enemy;
+};
+
 class SceneContainer {
 
 private:
@@ -40,6 +82,7 @@ public:
 	void releaseAll();
 
 	bool initialize(HWND &windowHandle);
+	void update(HWND &windowHandle);
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;
@@ -54,8 +97,11 @@ public:
 	Lava lava; 
 
 	Enemy enemy;
+	Enemy enemies[3];
 
 	BulletComponents bulletPhysicsHandler;
+
+	int nrOfEnemies;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS

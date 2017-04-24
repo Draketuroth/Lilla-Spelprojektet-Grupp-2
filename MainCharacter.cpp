@@ -34,8 +34,6 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 void MainCharacter::update(HWND windowhandle)
 {
 	CharacterMove(windowhandle);
-	/*meleeAttack(windowhandle);
-	rangeAttack(windowhandle);*/
 }
 
 //--------- Changing the character's position --------------
@@ -92,7 +90,7 @@ void MainCharacter::CheckInput() {
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
-		cout << "W" << endl;
+
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(0, 0, 7));
 	}
@@ -100,7 +98,6 @@ void MainCharacter::CheckInput() {
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
-		cout << "S" << endl;
 
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(0, 0, -7));	
@@ -109,7 +106,7 @@ void MainCharacter::CheckInput() {
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
-		cout << "A" << endl;
+
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(-7, 0, 0));
 	}
@@ -117,7 +114,7 @@ void MainCharacter::CheckInput() {
 	{
 		currentAnimIndex = 0;
 		isIdle = false;
-		cout << "D" << endl;
+
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(7, 0, 0));	
 	}
@@ -170,6 +167,7 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 
 	angle = atan2(mouseXNDC, mouseYNDC);
 
+	//returns in radians?
 	return angle;
 }
 
@@ -203,42 +201,57 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 
 
-void MainCharacter::meleeAttack(HWND windowHandle)
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
 {
+	float attackDuration;
+
 	if (GetAsyncKeyState(MK_LBUTTON))
 	{
+		attackDuration = 0.5f;
 
-		cout << "MELEE ATTACK" << endl;
-		//this is the way the character will be facing
+		while (attackDuration > 0)
+		{
+			attackDuration -= timer.getDeltaTime();
+		}
+
+		//-----------------Calculate the hit area-----------------------
 		float angle = characterLookAt(windowHandle);
-		
-		//create boundingBox within the angle of the attack that
-		//covers the range between the character and the attack range
-		XMFLOAT3 characterPos = getPos();
-		float centerX = 0.5 * cos(angle * (2 * PI)); //0.5 eftersom 1 boxRange
-		float centerZ = 0.5 * sin(angle * (2 * PI));
-		XMFLOAT3 boxCenter = {centerX, 0, centerZ };  
-		XMFLOAT3 boxRange = { 1, 1, 1 };
+
+		XMFLOAT3 characterPos = this->getBoundingBox().Center;
+		XMMATRIX playerTranslation = getPlayerTanslationMatrix();
+
+		float centerX = characterPos.x + sin(angle);
+		float centerZ = characterPos.z + cos(angle);
+
+		XMFLOAT3 boxCenter = { centerX, 0, centerZ };
+		XMFLOAT3 boxRange = { 2, 2, 2 };
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
-		
-		//filter down the list of enemies, 
+		meleeBox.Transform(meleeBox, playerTranslation);
+		//---------------------------------------------------------------
+		//---------Attack------------------------------------------------
 
-		int nrOfEnemies; //= getNrOfEnemies();
-
-		for (int i = 0; i < nrOfEnemies, i++;)
+		for (int i = 0; i < nrOfEnemies; i++)
 		{
-			float enemyDistance; //= getDistanceFromCharacter(float object);
-			if (enemyDistance <= 1.0)
+			BoundingBox enemyBox = enemyArray[0].getBoundingBox();
+			if (enemyBox.Intersects(meleeBox))
 			{
-				if (/*characterBoundingBox intersects(enemyBoundingBox)*/1)
+				cout << "HIT!" << endl;
+				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
 				{
-					//enemyHealth--;
+					enemyArray[0].setAlive(false);
+					cout << "ENEMY DOWN" << endl;
+
+					enemyArray[0].releaseAll(bulletDynamicsWorld);
+
 				}
 			}
+			/*}*/
+
 		}
-		//attack done 
 	}
+
 }
 
 void MainCharacter::rangeAttack(HWND windowHandle)
@@ -261,10 +274,10 @@ void MainCharacter::rangeAttack(HWND windowHandle)
 	//The projectile needs to be able to sort through the list of enemies.
 }
 
-void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
-{
-
-}
+//void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
+//{
+//
+//}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()

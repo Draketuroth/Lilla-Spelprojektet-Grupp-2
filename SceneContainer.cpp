@@ -10,10 +10,11 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemy = Enemy(0, { 0.3f,20,5 });
+	enemies[0] = Enemy(0, { 0, 20, 10 });
 
 	bulletPhysicsHandler = BulletComponents();
 
+	this->nrOfEnemies = 0;
 }
 
 SceneContainer::~SceneContainer() {
@@ -27,14 +28,15 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	//character.releaseAll();
-	enemy.releaseAll();
+	enemies[0].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
 	lightShaders.ReleaseAll();
 
-	bulletPhysicsHandler.ReleaseAll();
+	lava.ReleaseAll();
 	fbxImporter.ReleaseAll();
+	bulletPhysicsHandler.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -107,10 +109,19 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
-	enemy.Spawn(gHandler.gDevice,bulletPhysicsHandler);
+	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
 
+	
 	return true;
 
+}
+
+void SceneContainer::update(HWND &windowHandle)
+{
+	nrOfEnemies = 1;
+	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
+
+	render();
 }
 
 void SceneContainer::drawPlatforms() {
@@ -159,10 +170,8 @@ void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
 
-void SceneContainer::render() {
-
-	//we clear in here since characters are rendered before the scene
-	//Characters need to be rendered first since they will be moving
+void SceneContainer::render() 
+{
 	clear();
 
 	//renderDeferred();
@@ -205,13 +214,11 @@ bool SceneContainer::renderDeferred() {
 
 	// Step 4: 2D rendering of light calculations
 
-	XMFLOAT3 lightDirection = { 1.0f, 1.0f, 0.0f };
 	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
 									deferredObject.d_shaderResourceViewArray[0],
 									deferredObject.d_shaderResourceViewArray[1],
 									deferredObject.d_shaderResourceViewArray[2],
-									deferredObject.d_depthResourceView,
-									lightDirection);
+									deferredObject.d_depthResourceView);
 
 	gHandler.gDeviceContext->PSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);
 									
@@ -226,7 +233,7 @@ bool SceneContainer::renderSceneToTexture() {
 	deferredObject.SetRenderTargets(gHandler.gDeviceContext);
 
 	// Clear the render buffers
-	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 1.0f, 1.0f);
+	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Set the object vertex buffer to prepare it for drawing
 	deferredObject.SetObjectBuffer(gHandler.gDeviceContext);
@@ -279,6 +286,8 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderEnemies()
 {
+
+	if(enemies[0].getAlive() == true){
 	
 	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -295,8 +304,9 @@ void SceneContainer::renderEnemies()
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
-	enemy.draw(gHandler.gDeviceContext);
+	enemies[0].draw(gHandler.gDeviceContext);
 
+	}
 	
 }
 
