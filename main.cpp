@@ -110,9 +110,17 @@ int RunApplication() {
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
 				
-				MyContactResultCallback callback(&sceneContainer.character);
-				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, callback);
-				
+				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
+				MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[0]);
+
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[0].rigidBody, enemyCallBack);
+
+				if (sceneContainer.enemies[0].getAlive() == false) {
+
+					sceneContainer.enemies[0].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+				}
+
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
@@ -144,7 +152,12 @@ void updateCharacter(HWND windowhandle)
 {
 
 	sceneContainer.character.update(windowhandle);
-	sceneContainer.enemies[0].EnemyPhysics();
+	
+	if(sceneContainer.enemies[0].getAlive() == true){
+	
+		sceneContainer.enemies[0].EnemyPhysics();
+
+	}
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 

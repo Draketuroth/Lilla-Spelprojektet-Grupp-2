@@ -28,10 +28,11 @@ CharacterBase::~CharacterBase()
 	//Safe release
 }
 
-void CharacterBase::releaseAll() {
+void CharacterBase::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
 	SAFE_RELEASE(vertexBuffer);
 	SAFE_RELEASE(indexBuffer);
+	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
 int CharacterBase::getHealth()const

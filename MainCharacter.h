@@ -23,7 +23,7 @@ public:
 	void loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice);
 
 	XMMATRIX rotate(HWND windowhandle);
-	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[]);
+	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* bulletDynamicsWorld);
 	void rangeAttack(HWND windowHandle);
 	
 	//void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
