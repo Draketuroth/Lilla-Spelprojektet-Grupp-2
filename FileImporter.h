@@ -19,8 +19,8 @@
 struct Header {
 
 	uint32_t nrOfMeshes;
-	uint32_t nrOfLights;
 	uint32_t nrOfCameras;
+	uint32_t nrOfLights;
 };
 
 class FileImporter {
