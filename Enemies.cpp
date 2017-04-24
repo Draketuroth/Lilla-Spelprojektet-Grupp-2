@@ -13,7 +13,7 @@ Enemy::~Enemy()
 }
 
 Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
-	:CharacterBase(true, 2, 5.0f, 1,this->getPos(), XMMatrixIdentity())
+	:CharacterBase(true, 5, 5.0f, 1,this->getPos(), XMMatrixIdentity())
 {
 	
 	this->Type = Type;

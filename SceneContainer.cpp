@@ -28,15 +28,15 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	//character.releaseAll();
-	enemies[0].releaseAll();
+	enemies[0].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
 	lightShaders.ReleaseAll();
 
-	bulletPhysicsHandler.ReleaseAll();
 	lava.ReleaseAll();
 	fbxImporter.ReleaseAll();
+	bulletPhysicsHandler.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -119,8 +119,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 void SceneContainer::update(HWND &windowHandle)
 {
 	nrOfEnemies = 1;
-	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies);
-	character.rangeAttack(windowHandle, this->enemies);
+	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 
 	render();
 }
@@ -287,6 +286,8 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderEnemies()
 {
+
+	if(enemies[0].getAlive() == true){
 	
 	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -305,6 +306,7 @@ void SceneContainer::renderEnemies()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 	enemies[0].draw(gHandler.gDeviceContext);
 
+	}
 	
 }
 

@@ -5,13 +5,18 @@
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {2, 20, 5}, XMMatrixIdentity())
 {
-	this->shot = false;
 	cameraDistanceY = 6.0f;
 	cameraDistanceZ = 3.0f;
 	playerHeight = 2.0f;
 	currentAnimIndex = 0;
+
+	this->attacking = false;
+	this->attackTimer = 0.0f;
+	this->attackCd = 0.5f;
+
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
+	this->test = 0;
 }
 
 MainCharacter::~MainCharacter()
@@ -52,7 +57,6 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMMATRIX scale = XMMatrixScaling(0.2, 0.2, 0.2);
 	updateWorldMatrix(R, scale);
 	
-
 	CheckInput();
 
 	XMMATRIX transform;
@@ -202,10 +206,13 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 
 
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[])
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
 {
-	if (GetAsyncKeyState(MK_LBUTTON))
-	{ 
+	if (GetAsyncKeyState(MK_LBUTTON) && ! attacking && attackTimer <= 0)
+	{
+		attacking = true;
+		attackTimer = attackCd;
+		//-----------------Calculate the hit area-----------------------
 		float angle = characterLookAt(windowHandle);
 
 		XMFLOAT3 characterPos = this->getBoundingBox().Center;
@@ -219,70 +226,50 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		meleeBox.Transform(meleeBox, playerTranslation);
+		//---------------------------------------------------------------
+		//---------Attack------------------------------------------------
 		
-		/*for (int i = 0; i < nrOfEnemies; i++)
-		{*/
+		for (int i = 0; i < nrOfEnemies; i++)
+		{
 			BoundingBox enemyBox = enemyArray[0].getBoundingBox();
 			if (enemyBox.Intersects(meleeBox))
 			{
-				cout << "HIT!" << endl;
-				enemyArray[0].setHealth(enemyArray[0].getHealth() -1);
+				test++;
+				cout << "HIT!" << test << endl;
+				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+
+
 				if (enemyArray[0].getHealth() <= 0)
 				{
-					//enemyArray[i].setAlive(false);
-					cout << "ENEMY DOWN" << endl;
+					enemyArray[0].setAlive(false);
+					cout << "ENEMY DEAD" << endl;
 				}
 			}
-		/*}*/
-		
+		}
 	}
+
+	if (attacking)
+	{
+		if (attackTimer > 0)
+			attackTimer -= timer.getDeltaTime();
+		else
+		{
+			attacking = false;
+		}
+	}
+
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle, Enemy enemyArray[])
+void MainCharacter::rangeAttack(HWND windowHandle)
 {
-	BoundingBox bullet;
-	BoundingBox enemyBB = enemyArray[0].getBoundingBox();
-	XMVECTOR r0 = { 1, 0, 0, 0 };
-	XMVECTOR r1 = { 0, 1, 0, 0 };
-	XMVECTOR r2 = { 0, 0, 1, 0 };
-	XMVECTOR r3 = { 0, 0, 1, 1 };
-	XMMATRIX translateBullet = XMMATRIX(r0, r1, r2, r3);
-	XMMatrixTranspose(translateBullet);
-	XMVECTOR fwdVec = this->getForwardVector();
-	
-	float dt = this->timer.getDeltaTime();
-	this->timer.updateCurrentTime();
 	if (GetAsyncKeyState(MK_RBUTTON))
 	{
 		cout << "RANGED ATTACK" << endl;
-		
-		bullet.Center = this->getBoundingBox().Center;
-		bullet.Extents = { 0.03f, 0.03f, 0.03f };
-		this->shot = true;
 	}
 
 	//check which way the charater is looking
 	float angle = characterLookAt(windowHandle);
-	if (this->shot = true)
-	{
-	
-		fwdVec *= dt * 50;
-		bullet.Transform(bullet, translateBullet);
-		if (enemyBB.Intersects(bullet))
-		{
-			cout << "Enemy hit!\n";
-			this->shot = false;
-			enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
-		}
-		else if (dt == 5)
-		{
-			this->shot = false;
-		}
 
-
-
-	}
-	
 	//fireProjectile(angle);
 
 	//fireProjectile have to create and follow up the projectile and see it it hits anything.
@@ -297,7 +284,6 @@ void MainCharacter::rangeAttack(HWND windowHandle, Enemy enemyArray[])
 //{
 //
 //}
-
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()

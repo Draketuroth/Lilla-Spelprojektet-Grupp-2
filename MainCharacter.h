@@ -1,8 +1,7 @@
 #pragma once
 #include "CharacterBase.h"
 #include "Enemies.h"
-#include <chrono>
-using namespace chrono;
+
 
 class MainCharacter: public CharacterBase
 {
@@ -24,11 +23,11 @@ public:
 	void loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice);
 
 	XMMATRIX rotate(HWND windowhandle);
-	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[]);
-	void rangeAttack(HWND windowHandle, Enemy enemyArray[]);
+	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* bulletDynamicsWorld);
+	void rangeAttack(HWND windowHandle);
 	
 	//void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
-	bool shot;
+	int test;
 
 	Camera camera;
 
@@ -44,6 +43,10 @@ public:
 	vector<Vertex_Bone> fbxVector;
 	VS_SKINNED_DATA skinData; // constant buffer struct for inverse bindpose matrices.
 	int currentAnimIndex;
+
+	bool attacking;
+	float attackTimer;
+	float attackCd;
 
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();
