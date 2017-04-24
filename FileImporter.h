@@ -16,6 +16,13 @@
 #include "VertexType.h"
 #include "MacroDefinitions.h"
 
+struct Header {
+
+	uint32_t nrOfMeshes;
+	uint32_t nrOfLights;
+	uint32_t nrOfCameras;
+};
+
 class FileImporter {
 
 public:
