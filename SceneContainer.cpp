@@ -35,6 +35,7 @@ void SceneContainer::releaseAll() {
 	lightShaders.ReleaseAll();
 
 	bulletPhysicsHandler.ReleaseAll();
+	lava.ReleaseAll();
 	fbxImporter.ReleaseAll();
 }
 

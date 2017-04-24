@@ -135,7 +135,6 @@ int RunApplication() {
 
 	sceneContainer.releaseAll();
 	menuState.releaseAll();
-	sceneContainer.lava.ReleaseAll();
 	DestroyWindow(windowHandle);
 
 	return 0;
