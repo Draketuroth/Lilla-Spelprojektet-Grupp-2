@@ -128,6 +128,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
     <ClCompile Include="BasicMath.cpp" />
     <ClCompile Include="BufferComponents.cpp" />
     <ClCompile Include="BulletComponents.cpp">
@@ -153,6 +154,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
     <ClInclude Include="BasicMath.h" />
     <ClInclude Include="BufferComponents.h" />
     <ClInclude Include="BulletComponents.h">

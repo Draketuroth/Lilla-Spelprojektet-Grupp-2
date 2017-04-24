@@ -53,13 +53,6 @@ public:
 	//XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);
 	//bool IntersectionInRange(XMFLOAT3 MousePos);
 	
-	
-	
-
-
-
-
-
 
 };
 

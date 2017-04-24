@@ -1,5 +1,5 @@
 #pragma once
-#include "CharacterBase.h"
+#include "MainCharacter.h"
 class Enemy: public CharacterBase
 {
 public:
@@ -15,6 +15,9 @@ public:
 
 	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void EnemyPhysics();
+
+	void meleeAttack(float distance, MainCharacter player);
+	void rangedAttack(float distance, MainCharacter player);
 	
 private:
 	ID3D11Buffer* gEnemieVertexBuffer;
@@ -22,6 +25,10 @@ private:
 	XMFLOAT3 SpawnPos;
 	vector<TriangleVertex>vertices;
 	vector<unsigned int>indices;
+
+	bool attacking;
+	float attackTimer;
+	float attackCd;
 
 
 };

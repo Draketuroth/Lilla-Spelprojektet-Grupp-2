@@ -5,6 +5,10 @@ Enemy::Enemy()
 {
 	this->Type = 0;
 	this->SpawnPos = { 0,0,0 };
+
+	this->attacking = false;
+	this->attackTimer = 0;
+	this->attackCd = 0.6;
 }
 
 Enemy::~Enemy()
@@ -169,4 +173,52 @@ void Enemy::EnemyPhysics()
 	
 
 	timer.updateCurrentTime();
+}
+
+void Enemy::meleeAttack(float distance, MainCharacter player)
+{
+	if (!attacking && attackTimer <= 0)
+	{
+		attacking = true;
+		attackTimer = attackCd;
+
+		if (distance <= 2)
+		{
+			player.setHealth(getHealth() - 1);
+		}
+	}
+
+	if (attacking)
+	{
+		if (attackTimer > 0)
+			attackTimer -= timer.getDeltaTime();
+		else
+		{
+			attacking = false;
+		}
+	}
+
+}
+void Enemy::rangedAttack(float distance, MainCharacter player)
+{
+	if (!attacking && attackTimer <= 0)
+	{
+		attacking = true;
+		attackTimer = attackCd;
+
+		if (distance <= 8)
+		{
+			player.setHealth(getHealth() - 1);
+		}
+	}
+
+	if (attacking)
+	{
+		if (attackTimer > 0)
+			attackTimer -= timer.getDeltaTime();
+		else
+		{
+			attacking = false;
+		}
+	}
 }

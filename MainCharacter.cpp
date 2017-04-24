@@ -208,7 +208,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
 {
-	if (GetAsyncKeyState(MK_LBUTTON) && ! attacking && attackTimer <= 0)
+	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
 		attacking = true;
 		attackTimer = attackCd;
@@ -227,6 +227,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		meleeBox.Transform(meleeBox, playerTranslation);
 		//---------------------------------------------------------------
+
 		//---------Attack------------------------------------------------
 		
 		for (int i = 0; i < nrOfEnemies; i++)
@@ -237,7 +238,6 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 				test++;
 				cout << "HIT!" << test << endl;
 				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
-
 
 				if (enemyArray[0].getHealth() <= 0)
 				{
