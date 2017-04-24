@@ -49,6 +49,8 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 		return false;
 	}
 
+	CreateCollisionPlane(bulletPhysicsHandler, XMFLOAT3(0, -4, 0));
+
 	if (!CreateConstantBuffer(gDevice)) {
 
 		return false;
@@ -153,6 +155,22 @@ bool BufferComponents::CreateCubeIndices(ID3D11Device* &gDevice) {
 	}
 
 	return true;
+}
+
+void BufferComponents::CreateCollisionPlane(BulletComponents &bulletPhysicsHandler, XMFLOAT3 translation) {
+
+	btTransform planeTransform;
+	planeTransform.setIdentity();
+	planeTransform.setOrigin(btVector3(translation.x, translation.y, translation.z));
+
+	btStaticPlaneShape* staticPlaneShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
+	btMotionState* planeMotion = new btDefaultMotionState(planeTransform);
+	btRigidBody::btRigidBodyConstructionInfo planeRigidBodyInfo(0, planeMotion, staticPlaneShape);
+	btRigidBody* planeRigidBody = new btRigidBody(planeRigidBodyInfo);
+
+	this->lavaPitRigidBody = planeRigidBody;
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(planeRigidBody);
+	bulletPhysicsHandler.rigidBodies.push_back(planeRigidBody);
 }
 
 bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler) {

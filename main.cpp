@@ -8,6 +8,7 @@
 
 
 #include "SceneContainer.h"
+#include "Timer.h"
 #include "GameState.h"
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
@@ -34,6 +35,7 @@ int RunApplication();
 void updateCharacter(HWND windowhandle);
 void updateBuffers();
 void updateLava();
+void lavamovmentUpdate(); 
 
 int main() {
 
@@ -63,7 +65,9 @@ int RunApplication() {
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
-	updateLava(); 
+	sceneContainer.lava.time.initialize();
+	updateLava();
+
 
 	menuState.createBufferData(sceneContainer.gHandler.gDevice);
 	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
@@ -102,14 +106,12 @@ int RunApplication() {
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateBuffers();
-
+				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				if(GetAsyncKeyState('L')) {
-
-					SAFE_RELEASE(sceneContainer.bHandler.cubeObjects[14].gCubeVertexBuffer);
-					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sceneContainer.bulletPhysicsHandler.rigidBodies[14]);
-				}
+				
+				MyContactResultCallback callback(&sceneContainer.character);
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, callback);
 				
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
@@ -133,7 +135,6 @@ int RunApplication() {
 
 	sceneContainer.releaseAll();
 	menuState.releaseAll();
-	sceneContainer.lava.ReleaseAll();
 	DestroyWindow(windowHandle);
 
 	return 0;
@@ -157,10 +158,16 @@ void updateCharacter(HWND windowhandle)
 	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex);
 }
 
+void lavamovmentUpdate()
+{
+	SAFE_RELEASE(sceneContainer.lava.LavaVB);
+	sceneContainer.lava.swap(timer.getFrameCount(), sceneContainer.gHandler.gDevice);
+}
+
 void updateLava()
 {
 	sceneContainer.lava.LoadRawFile();
-	sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice);
+	//sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
 	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 
