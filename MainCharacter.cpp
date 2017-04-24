@@ -10,8 +10,13 @@ MainCharacter::MainCharacter()
 	playerHeight = 2.0f;
 	currentAnimIndex = 0;
 
+	this->attacking = false;
+	this->attackTimer = 0.0f;
+	this->attackCd = 0.5f;
+
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
+	this->test = 0;
 }
 
 MainCharacter::~MainCharacter()
@@ -203,17 +208,10 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[])
 {
-	float attackDuration;
-
-	if (GetAsyncKeyState(MK_LBUTTON))
+	if (GetAsyncKeyState(MK_LBUTTON) && ! attacking && attackTimer <= 0)
 	{
-		attackDuration = 0.5f;
-
-		while (attackDuration > 0)
-		{
-			attackDuration -= timer.getDeltaTime();
-		}
-
+		attacking = true;
+		attackTimer = attackCd;
 		//-----------------Calculate the hit area-----------------------
 		float angle = characterLookAt(windowHandle);
 
@@ -230,14 +228,17 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 		meleeBox.Transform(meleeBox, playerTranslation);
 		//---------------------------------------------------------------
 		//---------Attack------------------------------------------------
-
+		
 		for (int i = 0; i < nrOfEnemies; i++)
 		{
 			BoundingBox enemyBox = enemyArray[0].getBoundingBox();
 			if (enemyBox.Intersects(meleeBox))
 			{
-				cout << "HIT!" << endl;
+				test++;
+				cout << "HIT!" << test << endl;
 				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+
+
 				if (enemyArray[0].getHealth() <= 0)
 				{
 					enemyArray[0].setAlive(false);
@@ -245,8 +246,18 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 				}
 			}
 		}
-
 	}
+
+	if (attacking)
+	{
+		if (attackTimer > 0)
+			attackTimer -= timer.getDeltaTime();
+		else
+		{
+			attacking = false;
+		}
+	}
+
 }
 
 void MainCharacter::rangeAttack(HWND windowHandle)
