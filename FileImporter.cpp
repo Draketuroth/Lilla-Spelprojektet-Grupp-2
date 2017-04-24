@@ -18,4 +18,6 @@ void FileImporter::readFormat() {
 	ifstream in("Format\\vertexBinaryData", ios::binary);
 
 	in.read(reinterpret_cast<char*>(&headerContent), sizeof(headerContent));
+
+
 }
