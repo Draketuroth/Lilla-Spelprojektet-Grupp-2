@@ -45,8 +45,9 @@ int main() {
 	
 	sceneContainer.initialize(windowHandle);
 
-	
-	return RunApplication();
+	getchar();
+	return 0;
+	//return RunApplication();
 }
 
 int RunApplication() {

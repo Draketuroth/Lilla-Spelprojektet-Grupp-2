@@ -94,6 +94,12 @@
     <Filter Include="Source Files\FBXLoader">
       <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\FileImporter">
+      <UniqueIdentifier>{d166d049-d3fa-4c44-a726-2b8b30f3c237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FileImporter">
+      <UniqueIdentifier>{c5aaa559-12c4-4328-a03b-ba79cc927a96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -155,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="FBXLoader.cpp">
       <Filter>Source Files\FBXLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="FileImporter.cpp">
+      <Filter>Source Files\FileImporter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -223,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="FBXLoader.h">
       <Filter>Header Files\FBXLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="FileImporter.h">
+      <Filter>Header Files\FileImporter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

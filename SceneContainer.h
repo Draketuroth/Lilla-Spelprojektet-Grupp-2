@@ -25,6 +25,7 @@
 #include "Enemies.h"
 
 #include "FBXLoader.h"
+#include "FileImporter.h"
 
 #include "Lava.h"
 
@@ -83,6 +84,8 @@ public:
 
 	bool initialize(HWND &windowHandle);
 	void update(HWND &windowHandle);
+
+	FileImporter importer;
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;

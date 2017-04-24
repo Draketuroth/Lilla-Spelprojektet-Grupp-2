@@ -52,16 +52,16 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 	}
 
-	if (!gHandler.InitalizeDirect3DContext(windowHandle)) {
+	/*if (!gHandler.InitalizeDirect3DContext(windowHandle)) {
 
 		MessageBox(
 			NULL,
 			L"CRITICAL ERROR: DirectX couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
-	}
+	}*/
 
-	bulletPhysicsHandler.InitializeBulletPhysics();
+	/*bulletPhysicsHandler.InitializeBulletPhysics();
 
 	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler)) {
 
@@ -109,8 +109,9 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
-	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
+	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);*/
 
+	importer.readFormat();
 	
 	return true;
 
