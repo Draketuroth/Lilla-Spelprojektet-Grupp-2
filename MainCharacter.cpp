@@ -243,8 +243,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 					enemyArray[0].setAlive(false);
 					cout << "ENEMY DOWN" << endl;
 
-					enemyArray[0].releaseAll();
-					bulletDynamicsWorld->removeCollisionObject(enemyArray[0].rigidBody);
+					enemyArray[0].releaseAll(bulletDynamicsWorld);
 
 				}
 			}

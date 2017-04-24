@@ -28,15 +28,15 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	//character.releaseAll();
-	enemies[0].releaseAll();
+	enemies[0].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
 	lightShaders.ReleaseAll();
 
-	bulletPhysicsHandler.ReleaseAll();
 	lava.ReleaseAll();
 	fbxImporter.ReleaseAll();
+	bulletPhysicsHandler.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
