@@ -4,11 +4,14 @@
 Lava::Lava()
 {
 	map[0].filename = L"Textures\\HMap.raw";
-	map[1].filename = L"Textures\\HMap1.raw";
-	map[2].filename = L"Textures\\HMap2.raw";
+	map[1].filename = L"Textures\\island-tut4.raw";
+	map[2].filename = L"Textures\\island-tut4.raw";
 	map[3].filename = L"Textures\\HMap3.raw";
+
 	weightScalar = 1;
 	lastMap = 1;
+	currentMap = 0;
+
 	rows = LAVADEPTH; 
 	cols = LAVAWIDTH;
 	NrOfVert = LAVADEPTH*LAVAWIDTH; 
@@ -84,8 +87,8 @@ void Lava::VBuffer(ID3D11Device* device, int current, float weightScalar)
 		for (UINT j = 0; j < cols; ++j)
 		{
 			float x = -halfDepth + j * patchWidth;
-			float y = map[current].heightMap[i*cols + j] * weightScalar;
-			y += map[lastMap].heightMap[i*cols + j] * secondWeightScalar;
+			float y = map[2].heightMap[i*cols + j] * weightScalar;
+			y += map[3].heightMap[i*cols + j] * secondWeightScalar;
 			if (secondWeightScalar > 0)
 			{
 				int hablababbla = 0;
@@ -118,7 +121,7 @@ void Lava::IBuffer(ID3D11Device* device)
 	int k = 0;
 
 
-	index.resize(NrOfVert* 4);
+	//index.resize(NrOfVert* 4);
 
 	//for (unsigned int i = 0; i < rows - 1; ++i)
 	//{
@@ -180,19 +183,30 @@ void Lava::IBuffer(ID3D11Device* device)
 int Lava::swap(int frameCounter, ID3D11Device* device)
 {
 	
-	currentMap = 0;
-	
-	
 	if (frameCounter <= 1000)
 	{
+		currentMap = 0;
 		
 		weightSwap = true;
 	}
 	else
 	{
+		lastMap = 1;
 		weightSwap = false;
 		
 	}
+
+	if (frameCounter >= 2000 && frameCounter <= 3000)
+	{
+		currentMap = 2;
+		weightSwap = true;
+	}
+	else if (frameCounter > 3000)
+	{
+		lastMap = 3;
+		weightSwap = false;
+	}
+
 
 	if (weightSwap)
 	{
@@ -220,8 +234,6 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 			weightScalar -= 0.001f;
 		}
 	}
-
-	
 
 	this->VBuffer(device, currentMap, weightScalar);
 	return currentMap; 
