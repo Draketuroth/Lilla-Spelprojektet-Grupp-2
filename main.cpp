@@ -160,6 +160,7 @@ void updateCharacter(HWND windowhandle)
 
 void lavamovmentUpdate()
 {
+	SAFE_RELEASE(sceneContainer.lava.LavaVB);
 	sceneContainer.lava.swap(timer.getFrameCount(), sceneContainer.gHandler.gDevice);
 }
 
