@@ -87,8 +87,8 @@ void Lava::VBuffer(ID3D11Device* device, int current, float weightScalar)
 		for (UINT j = 0; j < cols; ++j)
 		{
 			float x = -halfDepth + j * patchWidth;
-			float y = map[2].heightMap[i*cols + j] * weightScalar;
-			y += map[3].heightMap[i*cols + j] * secondWeightScalar;
+			float y = map[current].heightMap[i*cols + j] * weightScalar;
+			y += map[lastMap].heightMap[i*cols + j] * secondWeightScalar;
 			if (secondWeightScalar > 0)
 			{
 				int hablababbla = 0;
