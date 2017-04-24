@@ -67,11 +67,13 @@ public:
 
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
+	btRigidBody* lavaPitRigidBody;
 
 	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 
 	bool CreateCubeVertices(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
+	void CreateCollisionPlane(BulletComponents &bulletPhysicsHandler, XMFLOAT3 translation);
 	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler);
 	float RandomNumber(float Minimum, float Maximum);
 

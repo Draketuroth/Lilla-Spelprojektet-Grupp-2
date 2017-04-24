@@ -105,11 +105,9 @@ int RunApplication() {
 
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				if(GetAsyncKeyState('L')) {
-
-					SAFE_RELEASE(sceneContainer.bHandler.cubeObjects[14].gCubeVertexBuffer);
-					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sceneContainer.bulletPhysicsHandler.rigidBodies[14]);
-				}
+				
+				MyContactResultCallback callback(&sceneContainer.character);
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, callback);
 				
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER

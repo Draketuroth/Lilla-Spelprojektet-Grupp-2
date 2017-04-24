@@ -213,13 +213,11 @@ bool SceneContainer::renderDeferred() {
 
 	// Step 4: 2D rendering of light calculations
 
-	XMFLOAT3 lightDirection = { 1.0f, 1.0f, 0.0f };
 	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
 									deferredObject.d_shaderResourceViewArray[0],
 									deferredObject.d_shaderResourceViewArray[1],
 									deferredObject.d_shaderResourceViewArray[2],
-									deferredObject.d_depthResourceView,
-									lightDirection);
+									deferredObject.d_depthResourceView);
 
 	gHandler.gDeviceContext->PSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);
 									
@@ -234,7 +232,7 @@ bool SceneContainer::renderSceneToTexture() {
 	deferredObject.SetRenderTargets(gHandler.gDeviceContext);
 
 	// Clear the render buffers
-	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 1.0f, 1.0f);
+	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Set the object vertex buffer to prepare it for drawing
 	deferredObject.SetObjectBuffer(gHandler.gDeviceContext);
