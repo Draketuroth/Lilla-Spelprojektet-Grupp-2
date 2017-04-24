@@ -203,8 +203,18 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[])
 {
+	float attackDuration;
+
 	if (GetAsyncKeyState(MK_LBUTTON))
-	{ 
+	{
+		attackDuration = 0.5f;
+
+		while (attackDuration > 0)
+		{
+			attackDuration -= timer.getDeltaTime();
+		}
+
+		//-----------------Calculate the hit area-----------------------
 		float angle = characterLookAt(windowHandle);
 
 		XMFLOAT3 characterPos = this->getBoundingBox().Center;
@@ -218,22 +228,24 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		meleeBox.Transform(meleeBox, playerTranslation);
-		
-		/*for (int i = 0; i < nrOfEnemies; i++)
-		{*/
+		//---------------------------------------------------------------
+		//---------Attack------------------------------------------------
+
+		for (int i = 0; i < nrOfEnemies; i++)
+		{
 			BoundingBox enemyBox = enemyArray[0].getBoundingBox();
 			if (enemyBox.Intersects(meleeBox))
 			{
 				cout << "HIT!" << endl;
-				enemyArray[0].setHealth(enemyArray[0].getHealth() -1);
+				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
 				if (enemyArray[0].getHealth() <= 0)
 				{
-					//enemyArray[i].setAlive(false);
-					cout << "ENEMY DOWN" << endl;
+					enemyArray[0].setAlive(false);
+					cout << "ENEMY DEAD" << endl;
 				}
 			}
-		/*}*/
-		
+		}
+
 	}
 }
 
