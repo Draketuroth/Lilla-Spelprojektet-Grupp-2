@@ -1,4 +1,4 @@
-
+#pragma once
 #include <windows.h>
 
 
@@ -14,7 +14,7 @@ private:
 	__int64 currentTime;
 
 	float deltaTime;
-
+	int frameCount;
 public:
 	Timer();
 	~Timer();
@@ -23,5 +23,6 @@ public:
 	float getDeltaTime();
 	void updateCurrentTime();
 	void resetTimer();
+	int getFrameCount();
 };
 

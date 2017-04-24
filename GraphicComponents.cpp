@@ -17,6 +17,11 @@ GraphicComponents::GraphicComponents() {
 	gEnemyVertexShader = nullptr;
 	gEnemyPixelShader = nullptr;
 	gEnemyGeometryShader = nullptr;
+
+	gLavaVertexLayout = nullptr; 
+	gLavaVertexShader = nullptr; 
+	gLavaPixelShader = nullptr; 
+	gLavaGeometryShader = nullptr; 
 }
 
 GraphicComponents::~GraphicComponents() {
@@ -43,6 +48,11 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(depthStencil);
 	SAFE_RELEASE(depthView);
 	SAFE_RELEASE(depthState);
+
+	SAFE_RELEASE(gLavaVertexLayout); 
+	SAFE_RELEASE(gLavaVertexShader); 
+	SAFE_RELEASE(gLavaPixelShader); 
+	SAFE_RELEASE(gLavaGeometryShader); 
 
 	SAFE_RELEASE(gMenuLayout);
 	SAFE_RELEASE(gMenuVertex);
@@ -90,6 +100,10 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 	if (!CreateEnemyShaders())
 	{
 		return false;
+	}
+	if (!CreateLavaShaders())
+	{
+		return false; 
 	}
 
 	return true;
@@ -573,6 +587,133 @@ bool GraphicComponents::CreatePlatformShaders() {
 
 	return true;
 }
+
+bool GraphicComponents::CreateLavaShaders()
+{
+	HRESULT hr; 
+
+	ID3DBlob* vsBlob = nullptr; 
+	ID3DBlob* vsErrorBlob = nullptr; 
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\LavaShaders\\VertexShaderLava.hlsl",
+		nullptr, 
+		nullptr, 
+		"VS_main", 
+		"vs_5_0", 
+		D3DCOMPILE_DEBUG,
+		0, 
+		&vsBlob, 
+		&vsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+		cout << "Vertex shader Lava Error: Vertex shader could not be compiled or loaded from file" << endl;
+
+		if (vsErrorBlob) {
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer()); 
+			vsErrorBlob->Release(); 
+		}
+
+		return false; 
+	}
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gLavaVertexShader); 
+
+	if (FAILED(hr)) {
+		cout << "Vertex Shader Lava Error: Vertex Shader could not be created" << endl; 
+		return false; 
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vetrexInputDesc[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	int inputLayoutSize = sizeof(vetrexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	hr = gDevice->CreateInputLayout(vetrexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gLavaVertexLayout); 
+
+	if (FAILED(hr)) {
+		cout << "Vertex Shader Lava Error: Shader Input Layout could not be created" << endl; 
+	}
+
+	vsBlob->Release(); 
+
+	ID3DBlob* psBlob = nullptr; 
+	ID3DBlob* psErrorBlob = nullptr; 
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\LavaShaders\\FragmentShaderLava.hlsl",
+		nullptr,
+		nullptr,
+		"PS_main",
+		"ps_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&psBlob,
+		&psErrorBlob
+	); 
+
+	if (FAILED(hr)) {
+		cout << "Fragment shader Lava Error: Fragment Shader could not be compiled or loaded from file" << endl; 
+
+		if (psErrorBlob)
+		{
+			OutputDebugStringA((char*)psErrorBlob->GetBufferPointer()); 
+			psErrorBlob->Release();
+		}
+
+		return false; 
+	}
+
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gLavaPixelShader); 
+
+	if (FAILED(hr)) {
+		cout << "Pixel Shader Lava Error: Pixel Shader could not be created" << endl; 
+		return false; 
+	}
+
+	psBlob->Release(); 
+
+	ID3DBlob* gsBlob = nullptr; 
+	ID3DBlob* gsErrorBlob = nullptr; 
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\LavaShaders\\GeometryShaderLava.hlsl",
+		nullptr,
+		nullptr,
+		"GS_main",
+		"gs_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&gsBlob,
+		&gsErrorBlob
+	); 
+
+	if (FAILED(hr))
+	{
+		cout << "Geometry Shader Lava Error: Geometry Shader could not be compiled or loaded from file" << endl;
+		if (gsErrorBlob) {
+			OutputDebugStringA((char*)gsBlob->GetBufferPointer()); 
+			gsErrorBlob->Release();
+		}
+
+	}
+
+	hr = gDevice->CreateGeometryShader(gsBlob->GetBufferPointer(), gsBlob->GetBufferSize(), nullptr, &gLavaGeometryShader); 
+
+	if (FAILED(hr)) {
+		cout << "Geometry Shader Lava Error: Geometry Shader could not be created" << endl; 
+		return false; 
+	}
+
+	gsBlob->Release(); 
+
+	return true; 
+
+
+}
+
 
 bool GraphicComponents::CreateMenuShaders()
 {

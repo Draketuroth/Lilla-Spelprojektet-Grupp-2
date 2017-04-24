@@ -11,6 +11,7 @@ Timer::Timer()
 	this->currentTime = 0;
 
 	this->deltaTime;
+	this->frameCount = 0;
 }
 Timer::~Timer()
 {
@@ -36,9 +37,18 @@ float Timer::getDeltaTime()
 void Timer::updateCurrentTime()
 {
 	this->previousTime = this->currentTime;
+	if (this->frameCount ==	2000)
+	{
+		this->frameCount = 0;
+	}
+	this->frameCount += 1;
 }
 
 void Timer::resetTimer()
 {
 
+}
+int Timer::getFrameCount()
+{
+	return this->frameCount;
 }

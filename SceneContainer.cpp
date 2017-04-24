@@ -10,10 +10,11 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemy = Enemy(0, { 0.3f,20,5 });
+	enemies[0] = Enemy(0, { 0, 20, 10 });
 
 	bulletPhysicsHandler = BulletComponents();
 
+	this->nrOfEnemies = 0;
 }
 
 SceneContainer::~SceneContainer() {
@@ -27,13 +28,14 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	//character.releaseAll();
-	enemy.releaseAll();
+	enemies[0].releaseAll();
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
 	lightShaders.ReleaseAll();
 
 	bulletPhysicsHandler.ReleaseAll();
+	lava.ReleaseAll();
 	fbxImporter.ReleaseAll();
 }
 
@@ -107,10 +109,19 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
-	enemy.Spawn(gHandler.gDevice,bulletPhysicsHandler);
+	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
 
+	
 	return true;
 
+}
+
+void SceneContainer::update(HWND &windowHandle)
+{
+	nrOfEnemies = 1;
+	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies);
+
+	render();
 }
 
 void SceneContainer::drawPlatforms() {
@@ -159,14 +170,12 @@ void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
 
-void SceneContainer::render() {
-
-	//we clear in here since characters are rendered before the scene
-	//Characters need to be rendered first since they will be moving
+void SceneContainer::render() 
+{
 	clear();
 
 	//renderDeferred();
-
+	renderLava(); 
 	renderCharacters();
 	renderEnemies();
 	renderScene();
@@ -205,13 +214,11 @@ bool SceneContainer::renderDeferred() {
 
 	// Step 4: 2D rendering of light calculations
 
-	XMFLOAT3 lightDirection = { 1.0f, 1.0f, 0.0f };
 	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
 									deferredObject.d_shaderResourceViewArray[0],
 									deferredObject.d_shaderResourceViewArray[1],
 									deferredObject.d_shaderResourceViewArray[2],
-									deferredObject.d_depthResourceView,
-									lightDirection);
+									deferredObject.d_depthResourceView);
 
 	gHandler.gDeviceContext->PSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);
 									
@@ -226,7 +233,7 @@ bool SceneContainer::renderSceneToTexture() {
 	deferredObject.SetRenderTargets(gHandler.gDeviceContext);
 
 	// Clear the render buffers
-	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 1.0f, 1.0f);
+	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Set the object vertex buffer to prepare it for drawing
 	deferredObject.SetObjectBuffer(gHandler.gDeviceContext);
@@ -295,11 +302,30 @@ void SceneContainer::renderEnemies()
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
-	enemy.draw(gHandler.gDeviceContext);
+	enemies[0].draw(gHandler.gDeviceContext);
 
 	
 }
 
 
+void SceneContainer::renderLava()
+{
 
+	gHandler.gDeviceContext->VSSetShader(gHandler.gLavaVertexShader, nullptr, 0);	//vs
+	gHandler.gDeviceContext->GSSetShader(gHandler.gLavaGeometryShader, nullptr, 0); //gs
+	gHandler.gDeviceContext->PSSetShader(gHandler.gLavaPixelShader, nullptr, 0); //ps
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	 
+	UINT32 vertexSize = sizeof(LavaVertex);
+	UINT32 offset = 0;
 
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &lava.LavaVB, &vertexSize, &offset);
+	//Set index buffer
+	gHandler.gDeviceContext->IASetIndexBuffer(lava.LavaIB, DXGI_FORMAT_R32_UINT, offset);
+	//set triagel list
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaVertexLayout);
+
+	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);
+}

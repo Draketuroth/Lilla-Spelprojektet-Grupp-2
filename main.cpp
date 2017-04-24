@@ -8,6 +8,7 @@
 
 
 #include "SceneContainer.h"
+#include "Timer.h"
 #include "GameState.h"
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
@@ -33,6 +34,8 @@ Timer timer;
 int RunApplication();
 void updateCharacter(HWND windowhandle);
 void updateBuffers();
+void updateLava();
+void lavamovmentUpdate(); 
 
 int main() {
 
@@ -42,6 +45,7 @@ int main() {
 	
 	sceneContainer.initialize(windowHandle);
 
+	
 	return RunApplication();
 }
 
@@ -61,6 +65,9 @@ int RunApplication() {
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
+	sceneContainer.lava.time.initialize();
+	updateLava();
+
 
 	menuState.createBufferData(sceneContainer.gHandler.gDevice);
 	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
@@ -99,20 +106,18 @@ int RunApplication() {
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateBuffers();
-
+				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				if(GetAsyncKeyState('L')) {
-
-					SAFE_RELEASE(sceneContainer.bHandler.cubeObjects[14].gCubeVertexBuffer);
-					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sceneContainer.bulletPhysicsHandler.rigidBodies[14]);
-				}
+				
+				MyContactResultCallback callback(&sceneContainer.character);
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, callback);
 				
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
 
-				sceneContainer.render();
+				sceneContainer.update(windowHandle);
 
 				showFPS(windowHandle, deltaTime);
 
@@ -139,7 +144,7 @@ void updateCharacter(HWND windowhandle)
 {
 
 	sceneContainer.character.update(windowhandle);
-	sceneContainer.enemy.EnemyPhysics();
+	sceneContainer.enemies[0].EnemyPhysics();
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
@@ -151,6 +156,19 @@ void updateCharacter(HWND windowhandle)
 	}
 
 	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex);
+}
+
+void lavamovmentUpdate()
+{
+	SAFE_RELEASE(sceneContainer.lava.LavaVB);
+	sceneContainer.lava.swap(timer.getFrameCount(), sceneContainer.gHandler.gDevice);
+}
+
+void updateLava()
+{
+	sceneContainer.lava.LoadRawFile();
+	//sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
+	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 
 void updateBuffers() 
@@ -211,7 +229,7 @@ void updateBuffers()
 
 	PLAYER_TRANSFORM* EnemyTransformPointer = (PLAYER_TRANSFORM*)EnemyMappedResource.pData;
 
-	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemy.tPlayerTranslation);
+	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemies[0].tPlayerTranslation);
 
 	EnemyTransformPointer->matrixW = tEnemyTranslation;
 

@@ -3,8 +3,8 @@ SamplerState PointSampler : register(s0);
 
 cbuffer LightBuffer : register(b0) {
 
-	float3 lightDirection;
-	float padding;
+	float4 Position[3];
+	float4 Color[3];
 };
 
 cbuffer GS_CONSTANT_BUFFER : register(b1) {
@@ -16,9 +16,9 @@ cbuffer GS_CONSTANT_BUFFER : register(b1) {
 	float4 cameraPos;
 };
 
-Texture2D colorTexture : register(t0);
-Texture2D normalTexture : register(t1);
-Texture2D worldTexture : register(t2);
+Texture2D gAlbedoSpecTexture : register(t0);
+Texture2D gNormalTexture : register(t1);
+Texture2D gPositionTexture : register(t2);
 Texture2D depthTexture : register(t3);
 
 struct PS_IN {
@@ -30,78 +30,47 @@ struct PS_IN {
 float4 PS_main(PS_IN input) : SV_TARGET
 {
 
-	float4 color;
-	float4 worldPos;
-	float3 normal;
+	// Retrieve data from G-buffer
+	float3 FragPos = gPositionTexture.Sample(PointSampler, input.tex).xyz;
+	float3 Normal = gNormalTexture.Sample(PointSampler, input.tex).xyz;
+	float3 Albedo = gAlbedoSpecTexture.Sample(PointSampler, input.tex).xyz;
+	float Specular = gAlbedoSpecTexture.Sample(PointSampler, input.tex).w;
 
-	float4 position;
+	// Initialize the lightning
+	float3 lightning = Albedo * 0.1;
 
-	float4 normalData;
-	float depthValue;
+	// Get the direction to the viewer
+	float3 viewDir = normalize(cameraPos.xyz - FragPos).xyz;
 
-	float specularPower;
-	float specularIntensity;
-	float NdL;
-	float specularLight;
+	for (int i = 0; i < 3; i++) {
 
-	float3 lightVector;
-	float3 reflectionVector;
-	float3 diffuseLight;
+		// Calculate the distance between the light and the fragment position
+		float lightDistance = length(Position[i].xyz - FragPos);
 
-	float3 directionToCamera;
+		// If the distance is smaller than the light radius, this light should contribute to the final color
+		if (lightDistance < Position[i].w) {
 
-	float4 outputColor;
+			// Diffuse
+			float3 lightDir = normalize(Position[i].xyz - FragPos);
+			float3 diffuse = max(dot(Normal, lightDir), 0.0f) * Albedo * Color[i].xyz;
 
-	// Sample the colors from the color texture
-	color = colorTexture.Sample(PointSampler, input.tex);
+			// Specular
+			float3 halfwayDir = normalize(lightDir + viewDir);
+			float spec = pow(max(dot(Normal, halfwayDir), 0.0f), 16.0f);
+			float3 specular = Color[i].xyz * spec * Specular;
 
-	// Get normal data from the normal map
-	normalData = normalTexture.Sample(PointSampler, input.tex);
+			// Attenuation
+			float distance = length(Position[i].xyz - FragPos);
+			float attenuation = 0.1f;
+			diffuse *= attenuation;
+			specular *= attenuation;
 
-	// Transform normal back into [-1, 1] range
-	normal = 2.0f * normalData.xyz - 1.0f;
+			lightning += diffuse + specular;
 
-	// Get specular power and get it into [0, 255] range
-	specularPower = normalData.a * 255;
+		}
 
-	// Get specular intensity from the color map
-	specularIntensity = colorTexture.Sample(PointSampler, input.tex).a;
+	}
 
-	depthValue = depthTexture.Sample(PointSampler, input.tex).r;
+		return float4(lightning, 1.0f);
 
-	// Compute-screen space position
-
-	position.x = input.tex.x * 2.0f - 1.0f;
-	position.y = input.tex.y * 2.0f - 1.0f;
-	position.z = depthValue;
-	position.w = 1.0f;
-
-	// Transform to world space
-	position = mul(position, inverseViewProjection);
-	position /= position.w;
-
-	worldPos = worldTexture.Sample(PointSampler, input.tex);
-
-	// Surface-to-light vector
-
-	lightVector = -normalize(lightDirection);
-
-	// Compute diffuse light
-
-	NdL = max(0, dot(normal, lightVector));
-	diffuseLight = NdL * color.rgb;
-
-	// Reflection vector
-
-	reflectionVector = normalize(reflect(lightVector, normal));
-
-	// Camera-to-surface vector
-
-	directionToCamera = normalize(cameraPos - position).xyz;
-
-	// Compute specular light
-
-	specularLight = specularIntensity * pow(saturate(dot(reflectionVector, directionToCamera)), specularIntensity);
-
-	return float4(diffuseLight.rgb, specularLight);
-}
+	}
