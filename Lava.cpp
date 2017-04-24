@@ -46,7 +46,7 @@ void Lava::LoadRawFile()
 		map[j].heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
 		for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
 		{
-			map[j].heightMap[i] = ((map[j].in[i] / 255.0f)*LAVAMAXHEIGHT)* -4;
+			map[j].heightMap[i] = ((map[j].in[i] / 255.0f)*LAVAMAXHEIGHT)* -2;
 		}
 	}
 	
@@ -182,25 +182,27 @@ void Lava::IBuffer(ID3D11Device* device)
 
 int Lava::swap(int frameCounter, ID3D11Device* device)
 {
-	
+	//0-500
 	if (frameCounter <= 1000)
 	{
 		currentMap = 0;
 		
 		weightSwap = true;
 	}
+	//500 och över
 	else
 	{
 		lastMap = 1;
 		weightSwap = false;
 		
 	}
-
+	//1000-1500
 	if (frameCounter >= 2000 && frameCounter <= 3000)
 	{
 		currentMap = 2;
 		weightSwap = true;
 	}
+	//1500 och över
 	else if (frameCounter > 3000)
 	{
 		lastMap = 3;

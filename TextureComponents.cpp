@@ -5,6 +5,9 @@ TextureComponents::TextureComponents() {
 
 	ID3D11ShaderResourceView* standardResource = nullptr;
 	ID3D11SamplerState* texSampler = nullptr;
+
+	ID3D11ShaderResourceView* LavaResurce = nullptr; 
+
 }
 
 TextureComponents::~TextureComponents() {
@@ -16,6 +19,7 @@ void TextureComponents::ReleaseAll() {
 
 	SAFE_RELEASE(standardResource);
 	SAFE_RELEASE(texSampler);
+	SAFE_RELEASE(LavaResurce); 
 }
 
 bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
@@ -49,10 +53,12 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	CoInitialize(NULL);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &standardResource, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava.jpg", NULL, &LavaResurce, 1024);
 
 	if (SUCCEEDED(hr) && texture != 0) {
 
 		gDevice->CreateShaderResourceView(texture, nullptr, &standardResource);
+		gDevice->CreateShaderResourceView(texture, nullptr, &LavaResurce);
 
 		if (FAILED(hr)) {
 
