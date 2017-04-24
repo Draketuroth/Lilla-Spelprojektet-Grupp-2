@@ -236,11 +236,18 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 			{
 				test++;
 				cout << "HIT!" << test << endl;
-				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+				//enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
 
 				XMFLOAT3 playerForward;
 				XMStoreFloat3(&playerForward, forwardVector);
-				enemyArray[0].rigidBody->applyCentralForce(btVector3(playerForward.x, playerForward.y, playerForward.z));
+				
+				btVector3 relativeForce = btVector3(0, 20, 0);
+				btTransform playerTrans;
+				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
+				
+				btVector3 correctedForce = (playerTrans * relativeForce) - playerTrans.getOrigin();
+
+				enemyArray[0].rigidBody->applyCentralForce(correctedForce);
 
 				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
 				{
