@@ -1,7 +1,8 @@
 #pragma once
 #include "CharacterBase.h"
 #include "Enemies.h"
-
+#include <chrono>
+using namespace chrono;
 
 class MainCharacter: public CharacterBase
 {
@@ -24,10 +25,10 @@ public:
 
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[]);
-	void rangeAttack(HWND windowHandle);
+	void rangeAttack(HWND windowHandle, Enemy enemyArray[]);
 	
 	//void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
-
+	bool shot;
 
 	Camera camera;
 

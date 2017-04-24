@@ -5,6 +5,7 @@
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {2, 20, 5}, XMMatrixIdentity())
 {
+	this->shot = false;
 	cameraDistanceY = 6.0f;
 	cameraDistanceZ = 3.0f;
 	playerHeight = 2.0f;
@@ -237,15 +238,50 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 	}
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle)
+void MainCharacter::rangeAttack(HWND windowHandle, Enemy enemyArray[])
 {
+	BoundingBox bullet;
+	BoundingBox enemyBB = enemyArray[0].getBoundingBox();
+	XMVECTOR r0 = { 1, 0, 0, 0 };
+	XMVECTOR r1 = { 0, 1, 0, 0 };
+	XMVECTOR r2 = { 0, 0, 1, 0 };
+	XMVECTOR r3 = { 0, 0, 1, 1 };
+	XMMATRIX translateBullet = XMMATRIX(r0, r1, r2, r3);
+	XMMatrixTranspose(translateBullet);
+	XMVECTOR fwdVec = this->getForwardVector();
+	
+	float dt = this->timer.getDeltaTime();
+	this->timer.updateCurrentTime();
 	if (GetAsyncKeyState(MK_RBUTTON))
 	{
 		cout << "RANGED ATTACK" << endl;
+		
+		bullet.Center = this->getBoundingBox().Center;
+		bullet.Extents = { 0.03f, 0.03f, 0.03f };
+		this->shot = true;
 	}
-	
+
 	//check which way the charater is looking
 	float angle = characterLookAt(windowHandle);
+	if (this->shot = true)
+	{
+	
+		fwdVec *= dt * 50;
+		bullet.Transform(bullet, translateBullet);
+		if (enemyBB.Intersects(bullet))
+		{
+			cout << "Enemy hit!\n";
+			this->shot = false;
+			enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+		}
+		else if (dt == 5)
+		{
+			this->shot = false;
+		}
+
+
+
+	}
 	
 	//fireProjectile(angle);
 

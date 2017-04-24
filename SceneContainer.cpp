@@ -120,6 +120,7 @@ void SceneContainer::update(HWND &windowHandle)
 {
 	nrOfEnemies = 1;
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies);
+	character.rangeAttack(windowHandle, this->enemies);
 
 	render();
 }
