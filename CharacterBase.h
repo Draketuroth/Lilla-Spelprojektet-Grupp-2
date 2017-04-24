@@ -30,7 +30,7 @@ private:
 	XMFLOAT3 boundingBoxExtents;
 
 public:
-
+	
 	XMMATRIX tPlayerTranslation;
 	btRigidBody* rigidBody;
 	

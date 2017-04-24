@@ -14,6 +14,10 @@ MainCharacter::MainCharacter()
 	this->attackTimer = 0.0f;
 	this->attackCd = 0.5f;
 
+	this->shooting = false;
+	this->shootCD = 0.8f;
+	this->shootTimer = 0.0f;
+
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 	this->test = 0;
@@ -260,15 +264,55 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world)
 {
-	if (GetAsyncKeyState(MK_RBUTTON))
+	
+
+	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
+		
+		
 		cout << "RANGED ATTACK" << endl;
+		this->shooting = true;
+		this->shootTimer = this->shootCD;
+		XMVECTOR directionVec = this->getForwardVector() * 5;
+		XMFLOAT3 direction;
+		XMStoreFloat3(&direction, directionVec);
+		
+		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(this->getPos().x, this->getPos().y, this->getPos().z), btVector3(direction.x, direction.y, direction.z));
+		world->rayTest(btVector3(this->getPos().x, this->getPos().y, this->getPos().z), btVector3(direction.x, direction.y, direction.z), rayCallBack);
+		if (rayCallBack.hasHit())
+		{
+			
+			for (size_t i = 0; i < nrOfEnemies; i++)
+			{
+				if (enemies[i].rigidBody->getUserPointer() == rayCallBack.m_collisionObject->getUserPointer())
+				{
+					cout << "Enemy Shot!! -1 health\n";
+					enemies[i].setHealth(enemies[i].getHealth() - 1);
+				}
+				if (enemies[i].getHealth() == 0)
+				{
+					cout << "Enemy Deleted\n";
+				}
+			}
+		}
+	}
+
+	if (this->shooting)
+	{
+		if (this->shootTimer > 0)
+		{
+			this->shootTimer -= timer.getDeltaTime();
+		}
+		else
+		{
+			this->shooting = false;
+		}
 	}
 
 	//check which way the charater is looking
-	float angle = characterLookAt(windowHandle);
+
 
 	//fireProjectile(angle);
 

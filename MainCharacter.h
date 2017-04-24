@@ -11,7 +11,7 @@ private:
 public:
 	MainCharacter();
 	~MainCharacter();
-
+	
 	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter);
 	void update(HWND windowhandle);
 
@@ -24,7 +24,7 @@ public:
 
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* bulletDynamicsWorld);
-	void rangeAttack(HWND windowHandle);
+	void rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world);
 	
 	//void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
 	int test;
@@ -48,6 +48,9 @@ public:
 	float attackTimer;
 	float attackCd;
 
+	bool shooting;
+	float shootTimer;
+	float shootCD;
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();
 	//XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);
