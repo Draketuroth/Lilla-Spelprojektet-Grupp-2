@@ -286,6 +286,8 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderEnemies()
 {
+
+	if(enemies[0].getAlive() == true){
 	
 	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -304,6 +306,7 @@ void SceneContainer::renderEnemies()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 	enemies[0].draw(gHandler.gDeviceContext);
 
+	}
 	
 }
 
