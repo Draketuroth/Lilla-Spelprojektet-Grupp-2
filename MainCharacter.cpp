@@ -201,7 +201,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 
 
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[])
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
 {
 	if (GetAsyncKeyState(MK_LBUTTON))
 	{ 
@@ -226,10 +226,15 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 			{
 				cout << "HIT!" << endl;
 				enemyArray[0].setHealth(enemyArray[0].getHealth() -1);
-				if (enemyArray[0].getHealth() <= 0)
+				
+				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
 				{
-					//enemyArray[i].setAlive(false);
+					enemyArray[0].setAlive(false);
 					cout << "ENEMY DOWN" << endl;
+					
+					enemyArray[0].releaseAll();
+					bulletDynamicsWorld->removeCollisionObject(enemyArray[0].rigidBody);
+
 				}
 			}
 		/*}*/

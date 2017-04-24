@@ -144,7 +144,12 @@ void updateCharacter(HWND windowhandle)
 {
 
 	sceneContainer.character.update(windowhandle);
-	sceneContainer.enemies[0].EnemyPhysics();
+	
+	if(sceneContainer.enemies[0].getAlive() == true){
+	
+		sceneContainer.enemies[0].EnemyPhysics();
+
+	}
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
