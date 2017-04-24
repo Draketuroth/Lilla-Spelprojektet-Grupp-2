@@ -34,6 +34,11 @@ float Timer::getDeltaTime()
 	return this->deltaTime;
 }
 
+float Timer::getCurrentTime()
+{
+	return this->currentTime;
+}
+
 void Timer::updateCurrentTime()
 {
 	this->previousTime = this->currentTime;

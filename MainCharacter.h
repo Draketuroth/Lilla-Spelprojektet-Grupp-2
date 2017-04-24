@@ -27,7 +27,7 @@ public:
 	void rangeAttack(HWND windowHandle);
 	
 	//void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
-
+	int test;
 
 	Camera camera;
 
@@ -43,6 +43,10 @@ public:
 	vector<Vertex_Bone> fbxVector;
 	VS_SKINNED_DATA skinData; // constant buffer struct for inverse bindpose matrices.
 	int currentAnimIndex;
+
+	bool attacking;
+	float attackTimer;
+	float attackCd;
 
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();
