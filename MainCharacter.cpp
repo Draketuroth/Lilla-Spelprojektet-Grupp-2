@@ -238,6 +238,11 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 			{
 				cout << "HIT!" << endl;
 				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+
+				XMFLOAT3 playerForward;
+				XMStoreFloat3(&playerForward, forwardVector);
+				enemyArray[0].rigidBody->applyCentralForce(btVector3(playerForward.x, playerForward.y, playerForward.z));
+
 				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
 				{
 					enemyArray[0].setAlive(false);
