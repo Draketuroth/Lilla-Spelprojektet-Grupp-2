@@ -56,16 +56,16 @@ void FileImporter::readFormat() {
 				Mesh_Transform meshTransformation;
 				in.read(reinterpret_cast<char*>(&meshTransformation), sizeof(Mesh_Transform));
 				cout << "Position: " << meshTransformation.meshPosition.x << ", "
-									<< meshTransformation.meshPosition.y << ", "
-									<< meshTransformation.meshPosition.z << endl;
+									 << meshTransformation.meshPosition.y << ", "
+									 << meshTransformation.meshPosition.z << endl;
 
 				cout << "Rotation: " << meshTransformation.meshRotation.x << ", "
-									<< meshTransformation.meshRotation.y << ", "
-									<< meshTransformation.meshRotation.z << endl;
+									 << meshTransformation.meshRotation.y << ", "
+									 << meshTransformation.meshRotation.z << endl;
 
 				cout << "Scale: " << meshTransformation.meshScale.x << ", "
-								 << meshTransformation.meshScale.y << ", "
-								 << meshTransformation.meshScale.z << endl;
+								  << meshTransformation.meshScale.y << ", "
+								  << meshTransformation.meshScale.z << endl;
 
 				Material_Attributes materialAttributes;
 				in.read(reinterpret_cast<char*>(&materialAttributes), sizeof(Material_Attributes));
