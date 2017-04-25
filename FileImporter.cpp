@@ -17,7 +17,7 @@ void FileImporter::readFormat() {
 
 	if (in.is_open()){
 
-		// Start reading the header. 12 bytes in total
+		// Start reading the header. 12 bytes in total.
 		Header fileHeader;
 
 		in.read(reinterpret_cast<char*>(&fileHeader), sizeof(Header));
