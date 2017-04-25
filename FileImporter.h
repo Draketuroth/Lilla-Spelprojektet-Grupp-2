@@ -84,7 +84,7 @@ struct Mesh_Standard {
 	Mesh_Transform meshTransformation;
 	Material_Attributes materialAttributes;
 	string textureName;
-	vector<Vertex> vertices;
+	vector<Vertex>vertices;
 };
 
 struct Mesh_Skinned {

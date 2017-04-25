@@ -53,41 +53,42 @@ void FileImporter::readFormat() {
 
 			if (meshHeader[i].vertexLayout == 0) {
 
-				Mesh_Transform meshTransformation;
-				in.read(reinterpret_cast<char*>(&meshTransformation), sizeof(Mesh_Transform));
-				cout << "Position: " << meshTransformation.meshPosition.x << ", "
-									 << meshTransformation.meshPosition.y << ", "
-									 << meshTransformation.meshPosition.z << endl;
+				Mesh_Standard currentMesh;
 
-				cout << "Rotation: " << meshTransformation.meshRotation.x << ", "
-									 << meshTransformation.meshRotation.y << ", "
-									 << meshTransformation.meshRotation.z << endl;
 
-				cout << "Scale: " << meshTransformation.meshScale.x << ", "
-								  << meshTransformation.meshScale.y << ", "
-								  << meshTransformation.meshScale.z << endl;
+				in.read(reinterpret_cast<char*>(&currentMesh.meshTransformation), sizeof(Mesh_Transform));
+				cout << "Position: " << currentMesh.meshTransformation.meshPosition.x << ", "
+					<< currentMesh.meshTransformation.meshPosition.y << ", "
+					<< currentMesh.meshTransformation.meshPosition.z << endl;
+
+				cout << "Rotation: " << currentMesh.meshTransformation.meshRotation.x << ", "
+					<< currentMesh.meshTransformation.meshRotation.y << ", "
+					<< currentMesh.meshTransformation.meshRotation.z << endl;
+
+				cout << "Scale: " << currentMesh.meshTransformation.meshScale.x << ", "
+					<< currentMesh.meshTransformation.meshScale.y << ", "
+					<< currentMesh.meshTransformation.meshScale.z << endl;
 
 				//------------------------------------------------------//
 				// MATERIAL ATTRIBUTES
 				//------------------------------------------------------//
 
-				Material_Attributes materialAttributes;
-				in.read(reinterpret_cast<char*>(&materialAttributes), sizeof(Material_Attributes));
+				in.read(reinterpret_cast<char*>(&currentMesh.materialAttributes), sizeof(Material_Attributes));
 
-				cout << "Ambient: " << materialAttributes.ambient.x << ", "
-									<< materialAttributes.ambient.y << ", "
-									<< materialAttributes.ambient.z << ", "
-									<< materialAttributes.ambient.w << endl;
+				cout << "Ambient: " << currentMesh.materialAttributes.ambient.x << ", "
+					<< currentMesh.materialAttributes.ambient.y << ", "
+					<< currentMesh.materialAttributes.ambient.z << ", "
+					<< currentMesh.materialAttributes.ambient.w << endl;
 
-				cout << "Diffuse: " << materialAttributes.diffuse.x << ", "
-									<< materialAttributes.diffuse.y << ", "
-									<< materialAttributes.diffuse.z << ", "
-									<< materialAttributes.diffuse.w << endl;
+				cout << "Diffuse: " << currentMesh.materialAttributes.diffuse.x << ", "
+					<< currentMesh.materialAttributes.diffuse.y << ", "
+					<< currentMesh.materialAttributes.diffuse.z << ", "
+					<< currentMesh.materialAttributes.diffuse.w << endl;
 
-				cout << "Specular: " << materialAttributes.specular.x << ", "
-									 << materialAttributes.specular.y << ", "
-									 << materialAttributes.specular.z << ", "
-									 << materialAttributes.specular.w << endl;
+				cout << "Specular: " << currentMesh.materialAttributes.specular.x << ", "
+					<< currentMesh.materialAttributes.specular.y << ", "
+					<< currentMesh.materialAttributes.specular.z << ", "
+					<< currentMesh.materialAttributes.specular.w << endl;
 
 				//------------------------------------------------------//
 				// GET TEXTURE NAME IF ATTACHED TO MESH
@@ -95,21 +96,29 @@ void FileImporter::readFormat() {
 
 				if (meshHeader[i].hasTexture) {
 
+					in.read(reinterpret_cast<char*>(&currentMesh.textureName), sizeof(string));
+					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
+
 				}
 
 				else {
+
+					currentMesh.textureName = "No texture attached to this mesh";
+					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
 
 				}
 
 				//------------------------------------------------------//
 				// GATHER VERTICES
 				//------------------------------------------------------//
-			
+				int vertexCount = meshHeader[i].controlPoints;
+
 			
 				//------------------------------------------------------//
 				// PUSH BACK STANDARD MESH
 				//------------------------------------------------------//
 
+				standardMeshes.push_back(currentMesh);
 			
 			}
 
