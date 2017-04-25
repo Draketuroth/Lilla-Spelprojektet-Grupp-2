@@ -87,8 +87,15 @@ void FileImporter::readFormat() {
 
 				if (meshHeader[i].hasTexture) {
 
+					string textureName;
+					in.read(reinterpret_cast<char*>(&textureName), sizeof(string));
+				}
+
+				for (UINT i = 0; i << meshHeader[i].controlPoints; i++) {
+
 
 				}
+
 
 
 			}
