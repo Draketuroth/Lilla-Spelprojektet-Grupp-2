@@ -51,23 +51,24 @@ void FileImporter::readFormat() {
 
 			cout << "---------------------MESH " << i << "---------------------" << endl;
 
+			// Check the vertex layout for the mesh
+
 			if (meshHeader[i].vertexLayout == 0) {
 
 				Mesh_Standard currentMesh;
 
-
 				in.read(reinterpret_cast<char*>(&currentMesh.meshTransformation), sizeof(Mesh_Transform));
 				cout << "Position: " << currentMesh.meshTransformation.meshPosition.x << ", "
-					<< currentMesh.meshTransformation.meshPosition.y << ", "
-					<< currentMesh.meshTransformation.meshPosition.z << endl;
+									 << currentMesh.meshTransformation.meshPosition.y << ", "
+									 << currentMesh.meshTransformation.meshPosition.z << endl;
 
 				cout << "Rotation: " << currentMesh.meshTransformation.meshRotation.x << ", "
-					<< currentMesh.meshTransformation.meshRotation.y << ", "
-					<< currentMesh.meshTransformation.meshRotation.z << endl;
+									 << currentMesh.meshTransformation.meshRotation.y << ", "
+									 << currentMesh.meshTransformation.meshRotation.z << endl;
 
 				cout << "Scale: " << currentMesh.meshTransformation.meshScale.x << ", "
-					<< currentMesh.meshTransformation.meshScale.y << ", "
-					<< currentMesh.meshTransformation.meshScale.z << endl;
+								  << currentMesh.meshTransformation.meshScale.y << ", "
+								  << currentMesh.meshTransformation.meshScale.z << endl;
 
 				//------------------------------------------------------//
 				// MATERIAL ATTRIBUTES
@@ -76,19 +77,19 @@ void FileImporter::readFormat() {
 				in.read(reinterpret_cast<char*>(&currentMesh.materialAttributes), sizeof(Material_Attributes));
 
 				cout << "Ambient: " << currentMesh.materialAttributes.ambient.x << ", "
-					<< currentMesh.materialAttributes.ambient.y << ", "
-					<< currentMesh.materialAttributes.ambient.z << ", "
-					<< currentMesh.materialAttributes.ambient.w << endl;
+									<< currentMesh.materialAttributes.ambient.y << ", "
+									<< currentMesh.materialAttributes.ambient.z << ", "
+									<< currentMesh.materialAttributes.ambient.w << endl;
 
 				cout << "Diffuse: " << currentMesh.materialAttributes.diffuse.x << ", "
-					<< currentMesh.materialAttributes.diffuse.y << ", "
-					<< currentMesh.materialAttributes.diffuse.z << ", "
-					<< currentMesh.materialAttributes.diffuse.w << endl;
+									<< currentMesh.materialAttributes.diffuse.y << ", "
+									<< currentMesh.materialAttributes.diffuse.z << ", "
+									<< currentMesh.materialAttributes.diffuse.w << endl;
 
 				cout << "Specular: " << currentMesh.materialAttributes.specular.x << ", "
-					<< currentMesh.materialAttributes.specular.y << ", "
-					<< currentMesh.materialAttributes.specular.z << ", "
-					<< currentMesh.materialAttributes.specular.w << endl;
+									 << currentMesh.materialAttributes.specular.y << ", "
+									 << currentMesh.materialAttributes.specular.z << ", "
+									 << currentMesh.materialAttributes.specular.w << endl;
 
 				//------------------------------------------------------//
 				// GET TEXTURE NAME IF ATTACHED TO MESH
@@ -111,8 +112,10 @@ void FileImporter::readFormat() {
 				//------------------------------------------------------//
 				// GATHER VERTICES
 				//------------------------------------------------------//
-				int vertexCount = meshHeader[i].controlPoints;
-
+				uint32_t vertexCount = meshHeader[i].controlPoints;
+				
+				Vertex* vertices = new Vertex[vertexCount];
+				in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex) * vertexCount);
 			
 				//------------------------------------------------------//
 				// PUSH BACK STANDARD MESH
@@ -124,7 +127,73 @@ void FileImporter::readFormat() {
 
 			else if (meshHeader[i].vertexLayout == 1) {
 
+				Mesh_Skinned currentMesh;
 
+				in.read(reinterpret_cast<char*>(&currentMesh.meshTransformation), sizeof(Mesh_Transform));
+				cout << "Position: " << currentMesh.meshTransformation.meshPosition.x << ", "
+								     << currentMesh.meshTransformation.meshPosition.y << ", "
+									 << currentMesh.meshTransformation.meshPosition.z << endl;
+
+				cout << "Rotation: " << currentMesh.meshTransformation.meshRotation.x << ", "
+									 << currentMesh.meshTransformation.meshRotation.y << ", "
+									 << currentMesh.meshTransformation.meshRotation.z << endl;
+
+				cout << "Scale: " << currentMesh.meshTransformation.meshScale.x << ", "
+								  << currentMesh.meshTransformation.meshScale.y << ", "
+								  << currentMesh.meshTransformation.meshScale.z << endl;
+
+				//------------------------------------------------------//
+				// MATERIAL ATTRIBUTES
+				//------------------------------------------------------//
+
+				in.read(reinterpret_cast<char*>(&currentMesh.materialAttributes), sizeof(Material_Attributes));
+
+				cout << "Ambient: " << currentMesh.materialAttributes.ambient.x << ", "
+									<< currentMesh.materialAttributes.ambient.y << ", "
+									<< currentMesh.materialAttributes.ambient.z << ", "
+									<< currentMesh.materialAttributes.ambient.w << endl;
+
+				cout << "Diffuse: " << currentMesh.materialAttributes.diffuse.x << ", "
+									<< currentMesh.materialAttributes.diffuse.y << ", "
+									<< currentMesh.materialAttributes.diffuse.z << ", "
+									<< currentMesh.materialAttributes.diffuse.w << endl;
+
+				cout << "Specular: " << currentMesh.materialAttributes.specular.x << ", "
+									 << currentMesh.materialAttributes.specular.y << ", "
+									 << currentMesh.materialAttributes.specular.z << ", "
+									 << currentMesh.materialAttributes.specular.w << endl;
+
+				//------------------------------------------------------//
+				// GET TEXTURE NAME IF ATTACHED TO MESH
+				//------------------------------------------------------//
+
+				if (meshHeader[i].hasTexture) {
+
+					in.read(reinterpret_cast<char*>(&currentMesh.textureName), sizeof(string));
+					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
+
+				}
+
+				else {
+
+					currentMesh.textureName = "No texture attached to this mesh";
+					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
+
+				}
+
+				//------------------------------------------------------//
+				// GATHER VERTICES
+				//------------------------------------------------------//
+				uint32_t vertexCount = meshHeader[i].controlPoints;
+
+				Vertex_Deformer* vertices = new Vertex_Deformer[vertexCount];
+				in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex_Deformer) * vertexCount);
+
+				//------------------------------------------------------//
+				// PUSH BACK STANDARD MESH
+				//------------------------------------------------------//
+
+				skinnedMeshes.push_back(currentMesh);
 			}
 		
 		
