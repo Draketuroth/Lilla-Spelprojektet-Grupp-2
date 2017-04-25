@@ -169,8 +169,12 @@ void FileImporter::readFormat() {
 
 				if (meshHeader[i].hasTexture) {
 
-					in.read(reinterpret_cast<char*>(&currentMesh.textureName), sizeof(string));
-					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
+					size_t stringSize;
+					in.read(reinterpret_cast<char*>(&stringSize), sizeof(size_t));
+					char *buffer = new char[stringSize];
+
+					in.read(buffer, stringSize);
+					cout << "Texture Name: " << buffer << endl;
 
 				}
 
@@ -188,6 +192,14 @@ void FileImporter::readFormat() {
 
 				Vertex_Deformer* vertices = new Vertex_Deformer[vertexCount];
 				in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex_Deformer) * vertexCount);
+
+				//------------------------------------------------------//
+				// GATHER BINDPOSE MATRICES
+				//------------------------------------------------------//
+
+				//------------------------------------------------------//
+				// GATHER ANIMATIONS
+				//------------------------------------------------------//
 
 				//------------------------------------------------------//
 				// PUSH BACK STANDARD MESH
