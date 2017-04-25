@@ -23,6 +23,15 @@ struct Header {
 	uint32_t nrOfLights;
 };
 
+struct Mesh_Header {
+
+	uint32_t vertexLayout;
+	uint32_t controlPoints;
+	uint32_t hierarchySize;
+	uint32_t keyframes;
+	uint32_t hasTexture;
+};
+
 class FileImporter {
 
 public:
