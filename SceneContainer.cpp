@@ -111,7 +111,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
 
-	//importer.readFormat();
+	importer.readFormat();
 	
 	return true;
 
