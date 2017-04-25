@@ -16,6 +16,10 @@
 #include "VertexType.h"
 #include "MacroDefinitions.h"
 
+//--------------------------------------------------------//
+// HEADERS
+//--------------------------------------------------------//
+
 struct Header {
 
 	uint32_t nrOfMeshes;
@@ -32,6 +36,65 @@ struct Mesh_Header {
 	uint32_t hasTexture;
 };
 
+//--------------------------------------------------------//
+// STRUCTS
+//--------------------------------------------------------//
+
+struct Mesh_Transform {
+
+	XMFLOAT3 meshPosition;
+	XMFLOAT3 meshRotation;
+	XMFLOAT3 meshScale;
+};
+
+struct Material_Attributes {
+
+	XMFLOAT4 ambient;
+	XMFLOAT4 diffuse;
+	XMFLOAT4 specular;
+};
+
+struct Mesh_Standard {
+
+	Mesh_Transform transformations;
+	Material_Attributes material;
+};
+
+struct Cameras {
+
+
+};
+
+struct Light {
+
+
+};
+
+//--------------------------------------------------------//
+// IMPORTER VERTEX TYPES
+//--------------------------------------------------------//
+
+struct Vertex
+{
+	float pos[3];
+	float uv[2];
+	float normal[3];
+	float binormal[3];
+	float tangent[3];
+
+};
+
+struct VertexDeformer {
+
+	float pos[3];
+	float uv[2];
+	float normal[3];
+	float binormal[3];
+	float tangent[3];
+	float weights[4];
+	uint32_t boneIndices[4];
+};
+
 class FileImporter {
 
 public:
@@ -40,6 +103,12 @@ public:
 	~FileImporter();
 
 	void readFormat();
+
+	vector<Mesh_Header> meshHeader;
+	vector<Mesh_Standard> standardMeshes;
+
+	vector<Cameras> cameras;
+	vector<Light> lights;
 
 private:
 };
