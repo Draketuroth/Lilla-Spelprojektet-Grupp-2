@@ -1,5 +1,6 @@
 #ifndef CHARACTERBASE_H
 #define CHARACTERBASE_H
+
 #include<string>
 #include <d3d11.h>	// We require the d3d11 header for Direct3D functions
 #include <d3dcompiler.h>	// We also need the D3DCompiler header to compile shaders

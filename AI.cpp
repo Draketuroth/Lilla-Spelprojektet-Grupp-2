@@ -2,6 +2,9 @@
 
 AI::AI()
 {
+	this->attacking = false;
+	this->attackTimer = 0;
+	this->attackCd = 0.7;
 }
 AI::~AI()
 {
@@ -16,7 +19,7 @@ void AI::iceAI(MainCharacter player, Enemy self)
 
 	if (distance <= 2)
 	{
-		self.meleeAttack(distance, player);
+		attackMelee(distance, player);
 	}
 	else
 	{
@@ -54,7 +57,7 @@ void AI::fireAI(MainCharacter player, Enemy self)
 
 	if (distance <= 8)
 	{
-		self.rangedAttack(distance, player);
+		attackRanged(distance, player);
 	}
 	else if (distance <= 4)
 	{
@@ -75,6 +78,55 @@ void AI::fireAI(MainCharacter player, Enemy self)
 	when the player gets within a certain distance -> moce away from the player
 	avoid holes in the ground and the edges of the arena*/
 
+}
+
+
+void AI::attackMelee(float distance, MainCharacter player)
+{
+	if (!attacking && attackTimer <= 0)
+	{
+		attacking = true;
+		attackTimer = attackCd;
+		
+		if (distance <= 2)
+		{
+			player.setHealth(player.getHealth() - 1);
+		}
+	}
+		
+	if (attacking)
+	{
+		if (attackTimer > 0)
+			attackTimer -= timer.getDeltaTime();
+		else
+		{
+			attacking = false;
+		}
+	}
+		
+}
+void AI::attackRanged(float distance, MainCharacter player)
+{
+	if (!attacking && attackTimer <= 0)
+	{
+		attacking = true;
+		attackTimer = attackCd;
+	
+		if (distance <= 8)
+		{
+			//ranged attack
+		}
+	}
+	
+	if (attacking)
+	{
+		if (attackTimer > 0)
+			attackTimer -= timer.getDeltaTime();
+		else
+		{
+			attacking = false;
+		}
+	}
 }
 
 float AI::getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos)

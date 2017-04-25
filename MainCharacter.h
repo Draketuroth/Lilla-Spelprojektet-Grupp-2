@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MAINCHARACTER_H
+#define MAINCHARACTER_H
+
 #include "CharacterBase.h"
 #include "Enemies.h"
 
@@ -23,7 +25,7 @@ public:
 	void loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice);
 
 	XMMATRIX rotate(HWND windowhandle);
-	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* bulletDynamicsWorld);
+	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[]);
 	void rangeAttack(HWND windowHandle);
 	
 	//void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
@@ -56,3 +58,4 @@ public:
 
 };
 
+#endif
