@@ -37,7 +37,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
-	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.4, 0.8f, 0.4), bulletPhysicsHandle);
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -271,11 +271,23 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
 		
-		
+		float angle = this->characterLookAt(windowHandle);
 		cout << "RANGED ATTACK" << endl;
 		this->shooting = true;
 		this->shootTimer = this->shootCD;
-		XMVECTOR directionVec = this->getForwardVector() * 5;
+
+		XMFLOAT3 characterPos = this->getBoundingBox().Center;
+		XMVECTOR RayOrigin = XMLoadFloat3(&characterPos);
+		
+
+		//Used to rotate the direction vector, so that we always shoot in the direction of where the player is facing
+		XMVECTOR directionVec = this->getForwardVector();
+		float angle = this->characterLookAt(windowHandle);
+		XMVECTOR rotQuat = XMQuaternionRotationNormal(XMVECTOR{ 0, 1, 0 }, angle);
+
+
+		directionVec = XMVector3Rotate(directionVec, rotQuat);
+	
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
 		
@@ -286,7 +298,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 			
 			for (size_t i = 0; i < nrOfEnemies; i++)
 			{
-				if (enemies[i].rigidBody->getUserPointer() == rayCallBack.m_collisionObject->getUserPointer())
+				if (enemies[i].rigidBody->getWorldTransform() == rayCallBack.m_collisionObject->getWorldTransform())
 				{
 					cout << "Enemy Shot!! -1 health\n";
 					enemies[i].setHealth(enemies[i].getHealth() - 1);
