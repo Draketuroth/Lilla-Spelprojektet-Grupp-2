@@ -23,7 +23,7 @@ void AI::iceAI(MainCharacter player, Enemy self)
 	}
 	else
 	{
-		//move towards player
+		moveTowardsPlayer(player, self);
 	}
 
 
@@ -61,11 +61,11 @@ void AI::fireAI(MainCharacter player, Enemy self)
 	}
 	else if (distance <= 4)
 	{
-		//move away from player
+		moveAwayFromPlayer(player, self);
 	}
 	else
 	{
-		//move towards player
+		moveTowardsPlayer(player, self);
 	}
 
 	//vvv Notes vvv
@@ -79,7 +79,6 @@ void AI::fireAI(MainCharacter player, Enemy self)
 	avoid holes in the ground and the edges of the arena*/
 
 }
-
 
 void AI::attackMelee(float distance, MainCharacter player)
 {
@@ -102,6 +101,7 @@ void AI::attackMelee(float distance, MainCharacter player)
 		{
 			attacking = false;
 		}
+		//play enemy attack animation here
 	}
 		
 }
@@ -126,7 +126,21 @@ void AI::attackRanged(float distance, MainCharacter player)
 		{
 			attacking = false;
 		}
+		//play enemy attack animation here
 	}
+}
+
+void AI::moveTowardsPlayer(MainCharacter player, Enemy self)
+{
+	XMFLOAT3 position = player.getPos();
+
+	self.moveTowardsPosition(position);
+}
+void AI::moveAwayFromPlayer(MainCharacter player, Enemy self)
+{
+	XMFLOAT3 position = player.getPos();
+
+	self.avoidPosition(position);
 }
 
 float AI::getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos)

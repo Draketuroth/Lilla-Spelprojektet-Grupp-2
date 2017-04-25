@@ -18,8 +18,8 @@ public:
 	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void EnemyPhysics();
 
-	/*void meleeAttacks(float distance);
-	void rangedAttack(float distance);*/
+	void moveTowardsPosition(XMFLOAT3 position);
+	void avoidPosition(XMFLOAT3 position);
 	
 private:
 	ID3D11Buffer* gEnemieVertexBuffer;
@@ -27,7 +27,6 @@ private:
 	XMFLOAT3 SpawnPos;
 	vector<TriangleVertex>vertices;
 	vector<unsigned int>indices;
-
 
 
 

@@ -121,6 +121,8 @@ void SceneContainer::update(HWND &windowHandle)
 	nrOfEnemies = 1;
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies);
 
+	enemies[0].moveTowardsPosition(character.getPos());
+
 	render();
 }
 

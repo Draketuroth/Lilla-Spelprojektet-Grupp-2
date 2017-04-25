@@ -24,6 +24,9 @@ public:
 	void attackMelee(float distance, MainCharacter player);
 	void attackRanged(float distance, MainCharacter player);
 
+	void moveTowardsPlayer(MainCharacter player, Enemy self);
+	void moveAwayFromPlayer(MainCharacter player, Enemy self);
+
 	float getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos);
 
 	
