@@ -53,55 +53,160 @@ void FileImporter::readFormat() {
 
 			if (meshHeader[i].vertexLayout == 0) {
 
-				Mesh_Transform meshTransformation;
-				in.read(reinterpret_cast<char*>(&meshTransformation), sizeof(Mesh_Transform));
-				cout << "Position: " << meshTransformation.meshPosition.x << ", "
-									<< meshTransformation.meshPosition.y << ", "
-									<< meshTransformation.meshPosition.z << endl;
+				Mesh_Standard currentMesh;
 
-				cout << "Rotation: " << meshTransformation.meshRotation.x << ", "
-									<< meshTransformation.meshRotation.y << ", "
-									<< meshTransformation.meshRotation.z << endl;
+				//------------------------------------------------------//
+				// MESH TRANSFORMATIONS
+				//------------------------------------------------------//
 
-				cout << "Scale: " << meshTransformation.meshScale.x << ", "
-								 << meshTransformation.meshScale.y << ", "
-								 << meshTransformation.meshScale.z << endl;
+				in.read(reinterpret_cast<char*>(&currentMesh.meshTransformation), sizeof(Mesh_Transform));
+				cout << "Position: " << currentMesh.meshTransformation.meshPosition.x << ", "
+									 << currentMesh.meshTransformation.meshPosition.y << ", "
+									 << currentMesh.meshTransformation.meshPosition.z << endl;
 
-				Material_Attributes materialAttributes;
-				in.read(reinterpret_cast<char*>(&materialAttributes), sizeof(Material_Attributes));
+				cout << "Rotation: " << currentMesh.meshTransformation.meshRotation.x << ", "
+									 << currentMesh.meshTransformation.meshRotation.y << ", "
+									 << currentMesh.meshTransformation.meshRotation.z << endl;
 
-				cout << "Ambient: " << materialAttributes.ambient.x << ", "
-									<< materialAttributes.ambient.y << ", "
-									<< materialAttributes.ambient.z << ", "
-									<< materialAttributes.ambient.w << endl;
+				cout << "Scale: " << currentMesh.meshTransformation.meshScale.x << ", "
+								  << currentMesh.meshTransformation.meshScale.y << ", "
+								  << currentMesh.meshTransformation.meshScale.z << endl;
 
-				cout << "Diffuse: " << materialAttributes.diffuse.x << ", "
-									<< materialAttributes.diffuse.y << ", "
-									<< materialAttributes.diffuse.z << ", "
-									<< materialAttributes.diffuse.w << endl;
+				//------------------------------------------------------//
+				// MATERIAL ATTRIBUTES
+				//------------------------------------------------------//
 
-				cout << "Specular: " << materialAttributes.specular.x << ", "
-									 << materialAttributes.specular.y << ", "
-									 << materialAttributes.specular.z << ", "
-									 << materialAttributes.specular.w << endl;
+				in.read(reinterpret_cast<char*>(&currentMesh.materialAttributes), sizeof(Material_Attributes));
+
+				cout << "Ambient: " << currentMesh.materialAttributes.ambient.x << ", "
+									<< currentMesh.materialAttributes.ambient.y << ", "
+									<< currentMesh.materialAttributes.ambient.z << ", "
+									<< currentMesh.materialAttributes.ambient.w << endl;
+
+				cout << "Diffuse: " << currentMesh.materialAttributes.diffuse.x << ", "
+									<< currentMesh.materialAttributes.diffuse.y << ", "
+									<< currentMesh.materialAttributes.diffuse.z << ", "
+									<< currentMesh.materialAttributes.diffuse.w << endl;
+
+				cout << "Specular: " << currentMesh.materialAttributes.specular.x << ", "
+									 << currentMesh.materialAttributes.specular.y << ", "
+									 << currentMesh.materialAttributes.specular.z << ", "
+									 << currentMesh.materialAttributes.specular.w << endl;
+
+				//------------------------------------------------------//
+				// GET TEXTURE NAME IF ATTACHED TO MESH
+				//------------------------------------------------------//
 
 				if (meshHeader[i].hasTexture) {
 
-					string textureName;
-					in.read(reinterpret_cast<char*>(&textureName), sizeof(string));
+					in.read(reinterpret_cast<char*>(&currentMesh.textureName), sizeof(string));
 				}
 
-				for (UINT i = 0; i << meshHeader[i].controlPoints; i++) {
+				else {
 
-
+					currentMesh.textureName = "No texture attached to mesh";
 				}
 
+				//------------------------------------------------------//
+				// GATHER VERTICES
+				//------------------------------------------------------//
+				
+				in.read(reinterpret_cast<char*>(&currentMesh.vertices), sizeof(Vertex) * meshHeader[i].controlPoints);
+			
+				//------------------------------------------------------//
+				// PUSH BACK STANDARD MESH
+				//------------------------------------------------------//
 
-
+				standardMeshes.push_back(currentMesh);
+			
 			}
 
 			else if (meshHeader[i].vertexLayout == 1) {
 
+				Mesh_Skinned currentMesh;
+
+				//------------------------------------------------------//
+				// MESH TRANSFORMATIONS
+				//------------------------------------------------------//
+
+				in.read(reinterpret_cast<char*>(&currentMesh.meshTransformation), sizeof(Mesh_Transform));
+				cout << "Position: " << currentMesh.meshTransformation.meshPosition.x << ", "
+									 << currentMesh.meshTransformation.meshPosition.y << ", "
+									 << currentMesh.meshTransformation.meshPosition.z << endl;
+
+				cout << "Rotation: " << currentMesh.meshTransformation.meshRotation.x << ", "
+									 << currentMesh.meshTransformation.meshRotation.y << ", "
+									 << currentMesh.meshTransformation.meshRotation.z << endl;
+
+				cout << "Scale: " << currentMesh.meshTransformation.meshScale.x << ", "
+								  << currentMesh.meshTransformation.meshScale.y << ", "
+								  << currentMesh.meshTransformation.meshScale.z << endl;
+
+				//------------------------------------------------------//
+				// MATERIAL ATTRIBUTES
+				//------------------------------------------------------//
+
+				in.read(reinterpret_cast<char*>(&currentMesh.materialAttributes), sizeof(Material_Attributes));
+
+				cout << "Ambient: " << currentMesh.materialAttributes.ambient.x << ", "
+									<< currentMesh.materialAttributes.ambient.y << ", "
+									<< currentMesh.materialAttributes.ambient.z << ", "
+									<< currentMesh.materialAttributes.ambient.w << endl;
+
+				cout << "Diffuse: " << currentMesh.materialAttributes.diffuse.x << ", "
+									<< currentMesh.materialAttributes.diffuse.y << ", "
+									<< currentMesh.materialAttributes.diffuse.z << ", "
+									<< currentMesh.materialAttributes.diffuse.w << endl;
+
+				cout << "Specular: " << currentMesh.materialAttributes.specular.x << ", "
+									 << currentMesh.materialAttributes.specular.y << ", "
+									 << currentMesh.materialAttributes.specular.z << ", "
+									 << currentMesh.materialAttributes.specular.w << endl;
+
+				//------------------------------------------------------//
+				// GET TEXTURE NAME IF ATTACHED TO MESH
+				//------------------------------------------------------//
+
+				if (meshHeader[i].hasTexture) {
+
+					in.read(reinterpret_cast<char*>(&currentMesh.textureName), sizeof(string));
+				}
+
+				else {
+
+					currentMesh.textureName = "No texture attached to mesh";
+				}
+
+				//------------------------------------------------------//
+				// GATHER VERTICES
+				//------------------------------------------------------//
+
+				in.read(reinterpret_cast<char*>(&currentMesh.vertices), sizeof(Vertex_Deformer) * meshHeader[i].controlPoints);
+
+				//------------------------------------------------------//
+				// GATHER BIND POSE MATRICES
+				//------------------------------------------------------//
+
+				currentMesh.hierarchy.resize(meshHeader[i].hierarchySize);
+
+				for(UINT i = 0; i < meshHeader[i].hierarchySize; i++){
+
+				XMFLOAT4X4 inversedBindPose;
+				in.read(reinterpret_cast<char*>(&inversedBindPose), sizeof(XMFLOAT4X4));
+				
+				currentMesh.hierarchy[i].bindPoseMatrix = XMLoadFloat4x4(&inversedBindPose);
+
+				}
+
+				//------------------------------------------------------//
+				// GATHER ANIMATIONS
+				//------------------------------------------------------//
+
+				//------------------------------------------------------//
+				// PUSH BACK STANDARD MESH
+				//------------------------------------------------------//
+
+				skinnedMeshes.push_back(currentMesh);
 
 			}
 		

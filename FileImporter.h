@@ -17,6 +17,31 @@
 #include "MacroDefinitions.h"
 
 //--------------------------------------------------------//
+// IMPORTER VERTEX TYPES
+//--------------------------------------------------------//
+
+struct Vertex
+{
+	float pos[3];
+	float uv[2];
+	float normal[3];
+	float binormal[3];
+	float tangent[3];
+
+};
+
+struct Vertex_Deformer {
+
+	float pos[3];
+	float uv[2];
+	float normal[3];
+	float binormal[3];
+	float tangent[3];
+	float weights[4];
+	uint32_t boneIndices[4];
+};
+
+//--------------------------------------------------------//
 // HEADERS
 //--------------------------------------------------------//
 
@@ -56,8 +81,41 @@ struct Material_Attributes {
 
 struct Mesh_Standard {
 
-	Mesh_Transform transformations;
-	Material_Attributes material;
+	Mesh_Transform meshTransformation;
+	Material_Attributes materialAttributes;
+	string textureName;
+	vector<Vertex> vertices;
+};
+
+struct Mesh_Skinned {
+
+	Mesh_Transform meshTransformation;
+	Material_Attributes materialAttributes;
+	string textureName;
+	vector<Vertex_Deformer> vertices;
+	vector<Joint>hierarchy;
+
+};
+
+struct Keyframes {
+
+	XMMATRIX GlobalTransform;
+	XMFLOAT3 Translation;
+	XMFLOAT3 Scale;
+	XMFLOAT4 RotationQuat;
+};
+
+struct Animations {
+
+	vector<Keyframes>Sequence;
+	int length;
+};
+
+struct Joint {
+
+	XMMATRIX bindPoseMatrix;
+	Animations Animations[1];
+
 };
 
 struct Cameras {
@@ -68,31 +126,6 @@ struct Cameras {
 struct Light {
 
 
-};
-
-//--------------------------------------------------------//
-// IMPORTER VERTEX TYPES
-//--------------------------------------------------------//
-
-struct Vertex
-{
-	float pos[3];
-	float uv[2];
-	float normal[3];
-	float binormal[3];
-	float tangent[3];
-
-};
-
-struct VertexDeformer {
-
-	float pos[3];
-	float uv[2];
-	float normal[3];
-	float binormal[3];
-	float tangent[3];
-	float weights[4];
-	uint32_t boneIndices[4];
 };
 
 class FileImporter {
@@ -106,11 +139,13 @@ public:
 
 	vector<Mesh_Header> meshHeader;
 	vector<Mesh_Standard> standardMeshes;
+	vector<Mesh_Skinned> skinnedMeshes;
 
 	vector<Cameras> cameras;
 	vector<Light> lights;
 
 private:
 };
+
 
 #endif
