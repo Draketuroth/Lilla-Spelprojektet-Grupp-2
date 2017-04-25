@@ -53,7 +53,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	CoInitialize(NULL);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &standardResource, 1024);
-	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava.jpg", NULL, &LavaResurce, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava1.jpg", NULL, &LavaResurce, 1024);
 
 	if (SUCCEEDED(hr) && texture != 0) {
 
