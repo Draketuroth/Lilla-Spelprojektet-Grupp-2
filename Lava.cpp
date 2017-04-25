@@ -3,12 +3,15 @@
 
 Lava::Lava()
 {
-	map[0].filename = L"Textures\\HMap.raw";
-	map[1].filename = L"Textures\\HMap1.raw";
-	map[2].filename = L"Textures\\HMap2.raw";
-	map[3].filename = L"Textures\\HMap3.raw";
+	map[0].filename = L"Textures\\HeightLava1.raw";
+	map[1].filename = L"Textures\\HeightLava2.raw";
+	map[2].filename = L"Textures\\HeightLava3.raw";
+	map[3].filename = L"Textures\\HeightLava4.raw";
+
 	weightScalar = 1;
 	lastMap = 1;
+	currentMap = 0;
+
 	rows = LAVADEPTH; 
 	cols = LAVAWIDTH;
 	NrOfVert = LAVADEPTH*LAVAWIDTH; 
@@ -43,7 +46,7 @@ void Lava::LoadRawFile()
 		map[j].heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
 		for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
 		{
-			map[j].heightMap[i] = ((map[j].in[i] / 255.0f)*LAVAMAXHEIGHT)* -4;
+			map[j].heightMap[i] = ((map[j].in[i] / 255.0f)*LAVAMAXHEIGHT)* -2;
 		}
 	}
 	
@@ -118,7 +121,7 @@ void Lava::IBuffer(ID3D11Device* device)
 	int k = 0;
 
 
-	index.resize(NrOfVert* 4);
+	//index.resize(NrOfVert* 4);
 
 	//for (unsigned int i = 0; i < rows - 1; ++i)
 	//{
@@ -179,20 +182,33 @@ void Lava::IBuffer(ID3D11Device* device)
 
 int Lava::swap(int frameCounter, ID3D11Device* device)
 {
-	
-	currentMap = 0;
-	
-	
+	//0-500
 	if (frameCounter <= 1000)
 	{
+		currentMap = 0;
 		
 		weightSwap = true;
 	}
+	//500 och över
 	else
 	{
+		lastMap = 1;
 		weightSwap = false;
 		
 	}
+	//1000-1500
+	if (frameCounter >= 2000 && frameCounter <= 3000)
+	{
+		currentMap = 2;
+		weightSwap = true;
+	}
+	//1500 och över
+	else if (frameCounter > 3000)
+	{
+		lastMap = 3;
+		weightSwap = false;
+	}
+
 
 	if (weightSwap)
 	{

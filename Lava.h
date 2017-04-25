@@ -53,6 +53,7 @@ private:
 
 	int lastMap;
 	int currentMap;
+
 	float value;
 	bool weightSwap;
 	float weightScalar;
