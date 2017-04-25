@@ -318,8 +318,14 @@ void SceneContainer::renderLava()
 	gHandler.gDeviceContext->VSSetShader(gHandler.gLavaVertexShader, nullptr, 0);	//vs
 	gHandler.gDeviceContext->GSSetShader(gHandler.gLavaGeometryShader, nullptr, 0); //gs
 	gHandler.gDeviceContext->PSSetShader(gHandler.gLavaPixelShader, nullptr, 0); //ps
+
+	//texture
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResurce);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	 
+	
+
 	UINT32 vertexSize = sizeof(LavaVertex);
 	UINT32 offset = 0;
 

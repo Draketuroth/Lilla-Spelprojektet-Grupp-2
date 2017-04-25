@@ -94,6 +94,9 @@
     <Filter Include="Source Files\FBXLoader">
       <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\Lavashaders">
+      <UniqueIdentifier>{ca97b27a-043a-480a-95f0-52252c3a245a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -273,6 +276,15 @@
     </FxCompile>
     <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
+      <Filter>Source Files\HLSL\Lavashaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
+      <Filter>Source Files\HLSL\Lavashaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
+      <Filter>Source Files\HLSL\Lavashaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
