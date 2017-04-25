@@ -41,7 +41,7 @@ void SceneContainer::releaseAll() {
 
 bool SceneContainer::initialize(HWND &windowHandle) {
 
-	//importer.readFormat();
+	importer.readFormat();
 
 	if (!WindowInitialize(windowHandle)) {
 

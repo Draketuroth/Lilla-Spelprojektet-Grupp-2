@@ -93,28 +93,6 @@ struct Mesh_Skinned {
 	Material_Attributes materialAttributes;
 	string textureName;
 	vector<Vertex_Deformer> vertices;
-	vector<Joint>hierarchy;
-
-};
-
-struct Keyframes {
-
-	XMMATRIX GlobalTransform;
-	XMFLOAT3 Translation;
-	XMFLOAT3 Scale;
-	XMFLOAT4 RotationQuat;
-};
-
-struct Animations {
-
-	vector<Keyframes>Sequence;
-	int length;
-};
-
-struct Joint {
-
-	XMMATRIX bindPoseMatrix;
-	Animations Animations[1];
 
 };
 
