@@ -41,6 +41,8 @@ void SceneContainer::releaseAll() {
 
 bool SceneContainer::initialize(HWND &windowHandle) {
 
+	importer.readFormat();
+
 	if (!WindowInitialize(windowHandle)) {
 
 		// If the window cannot be created during startup, it's more known as a terminal error
@@ -110,8 +112,6 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
-
-	importer.readFormat();
 	
 	return true;
 
