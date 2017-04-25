@@ -24,3 +24,6 @@
 #define LAVAWIDTH 64
 #define LAVAMAXHEIGHT 4
 #define LAVAQUADSIZE 2.0
+
+#define platformRigid 1001
+#define characterRigid 1002

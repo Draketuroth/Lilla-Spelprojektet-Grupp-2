@@ -35,6 +35,7 @@ struct PLAYER_TRANSFORM {
 struct CubeObjects {
 
 	ID3D11Buffer* gCubeVertexBuffer;
+	btRigidBody* rigidBody;
 	bool renderCheck;
 };
 
@@ -80,6 +81,7 @@ public:
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
+	void CreateRigidBodyTags();
 
 private:
 

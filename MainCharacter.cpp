@@ -37,7 +37,8 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
-	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.4, 0.8f, 0.4), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.6, 0.8f, 0.6), bulletPhysicsHandle);
+	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -267,6 +268,11 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world)
 {
 	
+	this->rigidBody->setIslandTag(characterRigid);
+	for (size_t i = 0; i < nrOfEnemies; i++)
+	{
+		enemies[i].rigidBody->setIslandTag(characterRigid);
+	}
 
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
@@ -276,38 +282,60 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 		this->shooting = true;
 		this->shootTimer = this->shootCD;
 
+		cout << "Player Tag: " << this->rigidBody->getIslandTag() << endl << endl;
+
 		XMFLOAT3 characterPos = this->getBoundingBox().Center;
 		XMVECTOR RayOrigin = XMLoadFloat3(&characterPos);
-		
+
 
 		//Used to rotate the direction vector, so that we always shoot in the direction of where the player is facing
 		XMVECTOR directionVec = this->getForwardVector();
-		float angle = this->characterLookAt(windowHandle);
-		XMVECTOR rotQuat = XMQuaternionRotationNormal(XMVECTOR{ 0, 1, 0 }, angle);
 
-
+		XMVECTOR rotQuat = XMQuaternionRotationAxis(XMVECTOR{ 0, 1, 0 }, angle);
 		directionVec = XMVector3Rotate(directionVec, rotQuat);
+		directionVec = XMVector3Normalize(directionVec);
+		XMFLOAT3 newOrigin;
+	//	RayOrigin += directionVec * 2.0f;
+		XMStoreFloat3(&newOrigin, RayOrigin);
 	
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
+		btVector3 test;
+
+		cout << "Direction X: " << direction.x << "Direction Y: " << direction.y << "Direction Z: " << direction.z << endl;
 		
-		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(this->getPos().x, this->getPos().y, this->getPos().z), btVector3(direction.x, direction.y, direction.z));
-		world->rayTest(btVector3(this->getPos().x, this->getPos().y, this->getPos().z), btVector3(direction.x, direction.y, direction.z), rayCallBack);
+		btCollisionWorld::AllHitsRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.0f, newOrigin.z), btVector3(direction.x, 0.0f, direction.z));
+		world->rayTest(btVector3(newOrigin.x, 1.0f, newOrigin.z), btVector3(direction.x, 0.0f, direction.z), rayCallBack);
 		if (rayCallBack.hasHit())
 		{
 			
+			if (rayCallBack.m_collisionObjects.size() != 0)
+			{
+				for (size_t j = 0; j < rayCallBack.m_collisionObjects.size(); j++)
+				{
+					btVector3 pos = rayCallBack.m_collisionObjects[j]->getWorldTransform().getOrigin();
+					XMFLOAT3 floatPos;
+					cout << "RayHit Tag: " << rayCallBack.m_collisionObjects[j]->getIslandTag() << endl << endl;
+				}
+			}
+
 			for (size_t i = 0; i < nrOfEnemies; i++)
 			{
-				if (enemies[i].rigidBody->getWorldTransform() == rayCallBack.m_collisionObject->getWorldTransform())
+				cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
+				for (size_t k = 0; k < rayCallBack.m_collisionObjects.size(); k++)
 				{
-					cout << "Enemy Shot!! -1 health\n";
-					enemies[i].setHealth(enemies[i].getHealth() - 1);
+					if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObjects[k]->getIslandTag())
+					{
+						cout << "Enemy Shot!! -1 health\n";
+						enemies[i].setHealth(enemies[i].getHealth() - 1);
+					}
 				}
 				if (enemies[i].getHealth() == 0)
 				{
 					cout << "Enemy Deleted\n";
 				}
 			}
+			
 		}
 	}
 
