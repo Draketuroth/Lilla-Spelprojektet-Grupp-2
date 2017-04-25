@@ -87,12 +87,34 @@ struct Mesh_Standard {
 	vector<Vertex>vertices;
 };
 
+struct Joint_Keyframe {
+
+	XMMATRIX GlobalTransform;
+	float TimePos;
+	XMFLOAT4 Translation;
+	XMFLOAT4 Scale;
+	XMFLOAT4 RotationQuat;
+};
+
+struct Joint_Animation {
+
+	vector<Joint_Keyframe>Sequence;
+	int Length;
+};
+
+struct Joint_Container {
+
+	XMMATRIX inverseBindPoseMatrix;
+	Joint_Animation Animations[3];
+};
+
 struct Mesh_Skinned {
 
 	Mesh_Transform meshTransformation;
 	Material_Attributes materialAttributes;
 	string textureName;
 	vector<Vertex_Deformer> vertices;
+	vector<Joint_Container>hierarchy;
 
 };
 
@@ -113,7 +135,7 @@ public:
 	FileImporter();
 	~FileImporter();
 
-	void readFormat();
+	bool readFormat();
 
 	vector<Mesh_Header> meshHeader;
 	vector<Mesh_Standard> standardMeshes;

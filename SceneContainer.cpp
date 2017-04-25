@@ -41,7 +41,17 @@ void SceneContainer::releaseAll() {
 
 bool SceneContainer::initialize(HWND &windowHandle) {
 
-	importer.readFormat();
+	if (!importer.readFormat()) {
+
+		// If the window cannot be created during startup, it's more known as a terminal error
+		// The MessageBox function will display a message and inform us of the problem
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Format couldn't be read, please look for format folder in solution\nClosing application...",
+			L"ERROR",
+			MB_OK);
+			PostQuitMessage(0);
+	}
 
 	if (!WindowInitialize(windowHandle)) {
 
@@ -52,6 +62,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Window couldn't be initialized, investigate window initializr function\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!gHandler.InitalizeDirect3DContext(windowHandle)) {
@@ -61,6 +72,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: DirectX couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	bulletPhysicsHandler.InitializeBulletPhysics();
@@ -72,6 +84,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Primitives couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!tHandler.CreateTexture(gHandler.gDevice)) {
@@ -81,6 +94,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Textures couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!deferredObject.Initialize(gHandler.gDevice)) {
@@ -90,6 +104,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Deferred buffer couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!deferredShaders.InitializeShader(gHandler.gDevice)) {
@@ -99,6 +114,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Deferred shader couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!lightShaders.Initialize(gHandler.gDevice)) {
@@ -108,6 +124,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Light shaders couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);

@@ -11,7 +11,7 @@ FileImporter::~FileImporter() {
 
 }
 
-void FileImporter::readFormat() {
+bool FileImporter::readFormat() {
 
 	ifstream in("Format//vertexBinaryData.txt", ios::binary);
 
@@ -97,8 +97,14 @@ void FileImporter::readFormat() {
 
 				if (meshHeader[i].hasTexture) {
 
-					in.read(reinterpret_cast<char*>(&currentMesh.textureName), sizeof(string));
-					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
+					size_t stringSize;
+					in.read(reinterpret_cast<char*>(&stringSize), sizeof(size_t));
+					char *buffer = new char[stringSize];
+
+					in.read(buffer, stringSize);
+
+					buffer[stringSize] = '\0';
+					cout << "Texture Name: " << buffer << endl;
 
 				}
 
@@ -107,21 +113,23 @@ void FileImporter::readFormat() {
 					currentMesh.textureName = "No texture attached to this mesh";
 					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
 
+
+					//------------------------------------------------------//
+					// GATHER VERTICES
+					//------------------------------------------------------//
+
+					uint32_t vertexCount = meshHeader[i].controlPoints;
+
+					Vertex* vertices = new Vertex[vertexCount];
+					in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex) * vertexCount);
+
+					//------------------------------------------------------//
+					// PUSH BACK STANDARD MESH
+					//------------------------------------------------------//
+
+					standardMeshes.push_back(currentMesh);
+
 				}
-
-				//------------------------------------------------------//
-				// GATHER VERTICES
-				//------------------------------------------------------//
-				uint32_t vertexCount = meshHeader[i].controlPoints;
-				
-				Vertex* vertices = new Vertex[vertexCount];
-				in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex) * vertexCount);
-			
-				//------------------------------------------------------//
-				// PUSH BACK STANDARD MESH
-				//------------------------------------------------------//
-
-				standardMeshes.push_back(currentMesh);
 			
 			}
 
@@ -174,6 +182,8 @@ void FileImporter::readFormat() {
 					char *buffer = new char[stringSize];
 
 					in.read(buffer, stringSize);
+			
+					buffer[stringSize] = '\0';
 					cout << "Texture Name: " << buffer << endl;
 
 				}
@@ -188,21 +198,89 @@ void FileImporter::readFormat() {
 				//------------------------------------------------------//
 				// GATHER VERTICES
 				//------------------------------------------------------//
+
 				uint32_t vertexCount = meshHeader[i].controlPoints;
 
 				Vertex_Deformer* vertices = new Vertex_Deformer[vertexCount];
 				in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex_Deformer) * vertexCount);
 
-				//------------------------------------------------------//
-				// GATHER BINDPOSE MATRICES
-				//------------------------------------------------------//
+				for (UINT i = 0; i < vertexCount; i++) {
+
+					currentMesh.vertices.push_back(vertices[i]);
+				}
+
+				//delete vertices;
 
 				//------------------------------------------------------//
-				// GATHER ANIMATIONS
+				// GATHER JOINT BINDPOSE MATRICES
 				//------------------------------------------------------//
+				uint32_t jointCount = meshHeader[i].hierarchySize;
+
+				Joint_Container* joints = new Joint_Container[jointCount];
+
+				XMFLOAT4X4* bindPoseMatrices = new XMFLOAT4X4[jointCount];
+				in.read(reinterpret_cast<char*>(bindPoseMatrices), sizeof(XMFLOAT4X4) * jointCount);
+
+				for (UINT i = 0; i < jointCount; i++) {
+
+					XMMATRIX currentBindPose = XMLoadFloat4x4(&bindPoseMatrices[i]);
+					joints[i].inverseBindPoseMatrix = currentBindPose;
+				}
+
+				delete bindPoseMatrices;
 
 				//------------------------------------------------------//
-				// PUSH BACK STANDARD MESH
+				// GATHER JOINT ANIMATIONS
+				//------------------------------------------------------//
+				
+				uint32_t keyframesCount = meshHeader[i].keyframes;
+
+				for(UINT animationIndex = 0; animationIndex < 1; animationIndex++){
+
+				for(UINT i = 0; i < jointCount; i++){
+
+					XMFLOAT4X4* jointGlobalTransforms = new XMFLOAT4X4[keyframesCount];
+					in.read(reinterpret_cast<char*>(jointGlobalTransforms), sizeof(XMFLOAT4X4) * keyframesCount);
+
+						for (UINT j = 0; j < keyframesCount; j++) {
+
+							Joint_Keyframe currentKeyFrameTransform;
+
+							// Get keyframe matrix
+							XMMATRIX keyFrameMatrix = XMLoadFloat4x4(&jointGlobalTransforms[j]);
+							currentKeyFrameTransform.GlobalTransform = keyFrameMatrix;
+
+							// Set time pose
+							currentKeyFrameTransform.TimePos = j;
+
+							// Split up keyframe matrix to scale, quaternion and translation
+							XMVECTOR keyFrameScale, keyFrameRotationQuat, keyFrameTranslation;
+							XMMatrixDecompose(&keyFrameScale, &keyFrameRotationQuat, &keyFrameTranslation, keyFrameMatrix);
+
+							XMStoreFloat4(&currentKeyFrameTransform.Scale, keyFrameScale);
+							XMStoreFloat4(&currentKeyFrameTransform.RotationQuat, keyFrameRotationQuat);
+							XMStoreFloat4(&currentKeyFrameTransform.Translation, keyFrameTranslation);
+
+							joints[i].Animations[animationIndex].Sequence.push_back(currentKeyFrameTransform);
+						}
+
+						joints[i].Animations[animationIndex].Length = keyframesCount;
+
+					}
+
+				}
+
+				//------------------------------------------------------//
+				// PUSH BACK SKINNED MESH
+				//------------------------------------------------------//
+
+				for (UINT i = 0; i < jointCount; i++) {
+
+					currentMesh.hierarchy.push_back(joints[i]);
+				}
+
+				//------------------------------------------------------//
+				// PUSH BACK SKINNED MESH
 				//------------------------------------------------------//
 
 				skinnedMeshes.push_back(currentMesh);
@@ -217,9 +295,16 @@ void FileImporter::readFormat() {
 
 	else {
 
+		cout << "Format couldn't be found, closing file reading..." << endl;
 		in.close();
+		
+		return false;
 	}
 
-	//in.close();
+	// Close file when done reading
+	in.close();
+
+	return true;
+	
 
 }
