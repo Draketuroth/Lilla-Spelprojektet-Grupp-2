@@ -43,13 +43,13 @@ VS_OUT VS_main(VS_IN input)
 		normal += input.Weight[i] * mul(input.Norm, (float3x3)gBoneTransforms[input.BoneIndices[i]]); // we make it 3x3 matrix to skip homogenus and take away translation.
 	}
 
-	//output.Pos = position;
-	output.Pos = input.Pos;
+	output.Pos = position;
+	//output.Pos = input.Pos;
 
 	output.Tex = input.Tex;
 
-	//output.Norm = normal;
-	output.Norm = input.Norm;
+	output.Norm = normal;
+	//output.Norm = input.Norm;
 
 	return output;
 }
