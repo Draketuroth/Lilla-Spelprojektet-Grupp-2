@@ -267,7 +267,6 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world)
 {
-	
 	this->rigidBody->setIslandTag(characterRigid);
 	for (size_t i = 0; i < nrOfEnemies; i++)
 	{
@@ -284,7 +283,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 
 		cout << "Player Tag: " << this->rigidBody->getIslandTag() << endl << endl;
 
-		XMFLOAT3 characterPos = this->getBoundingBox().Center;
+		XMFLOAT3 characterPos = this->getPos();
 		XMVECTOR RayOrigin = XMLoadFloat3(&characterPos);
 
 
@@ -294,48 +293,43 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 		XMVECTOR rotQuat = XMQuaternionRotationAxis(XMVECTOR{ 0, 1, 0 }, angle);
 		directionVec = XMVector3Rotate(directionVec, rotQuat);
 		directionVec = XMVector3Normalize(directionVec);
+
+		//The offset starting point for the ray
 		XMFLOAT3 newOrigin;
-	//	RayOrigin += directionVec * 2.0f;
+		RayOrigin += directionVec * 1.4f;
 		XMStoreFloat3(&newOrigin, RayOrigin);
-	
+		
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
-		btVector3 test;
+	
 
-		cout << "Direction X: " << direction.x << "Direction Y: " << direction.y << "Direction Z: " << direction.z << endl;
+		//cout << "Direction X: " << direction.x << "Direction Y: " << direction.y << "Direction Z: " << direction.z << endl;
 		
-		btCollisionWorld::AllHitsRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.0f, newOrigin.z), btVector3(direction.x, 0.0f, direction.z));
-		world->rayTest(btVector3(newOrigin.x, 1.0f, newOrigin.z), btVector3(direction.x, 0.0f, direction.z), rayCallBack);
+		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
+		world->rayTest(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.5f, direction.z * 50), rayCallBack);
 		if (rayCallBack.hasHit())
 		{
 			
-			if (rayCallBack.m_collisionObjects.size() != 0)
-			{
-				for (size_t j = 0; j < rayCallBack.m_collisionObjects.size(); j++)
-				{
-					btVector3 pos = rayCallBack.m_collisionObjects[j]->getWorldTransform().getOrigin();
-					XMFLOAT3 floatPos;
-					cout << "RayHit Tag: " << rayCallBack.m_collisionObjects[j]->getIslandTag() << endl << endl;
-				}
-			}
-
+			btVector3 pos = rayCallBack.m_collisionObject->getWorldTransform().getOrigin();
+			XMFLOAT3 floatPos;
+			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
+			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
+				
+		
 			for (size_t i = 0; i < nrOfEnemies; i++)
 			{
 				cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
-				for (size_t k = 0; k < rayCallBack.m_collisionObjects.size(); k++)
+				if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
 				{
-					if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObjects[k]->getIslandTag())
-					{
-						cout << "Enemy Shot!! -1 health\n";
-						enemies[i].setHealth(enemies[i].getHealth() - 1);
-					}
+					cout << "Enemy Shot!! -1 health\n";
+					enemies[i].setHealth(enemies[i].getHealth() - 1);
 				}
 				if (enemies[i].getHealth() == 0)
 				{
+					enemies[i].setAlive(false);
 					cout << "Enemy Deleted\n";
 				}
 			}
-			
 		}
 	}
 
@@ -350,24 +344,8 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 			this->shooting = false;
 		}
 	}
-
-	//check which way the charater is looking
-
-
-	//fireProjectile(angle);
-
-	//fireProjectile have to create and follow up the projectile and see it it hits anything.
-	//it needs to check every frame until the projectile is a certain distance away from the character
-	//or until it hits an enemy
-
-	//The projectile should move straight forward into its direction at a constant speed (no real need for physics)
-	//The projectile needs to be able to sort through the list of enemies.
 }
 
-//void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
-//{
-//
-//}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()

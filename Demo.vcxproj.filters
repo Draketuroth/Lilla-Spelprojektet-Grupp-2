@@ -97,6 +97,9 @@
     <Filter Include="Source Files\HLSL\Lavashaders">
       <UniqueIdentifier>{ca97b27a-043a-480a-95f0-52252c3a245a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\RayShaders">
+      <UniqueIdentifier>{c20622da-1fec-45fb-a027-f6afdfe48c6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

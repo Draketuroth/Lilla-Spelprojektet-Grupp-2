@@ -1,7 +1,7 @@
 #pragma once
 #include "CharacterBase.h"
 #include "Enemies.h"
-
+#include "BulletCollision\CollisionDispatch\btGhostObject.h"
 
 class MainCharacter: public CharacterBase
 {
@@ -25,8 +25,8 @@ public:
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* bulletDynamicsWorld);
 	void rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world);
-	
-	//void initiateBB(float mass,BulletComponents &bulletPhysicsHandle);
+
+
 	int test;
 
 	Camera camera;
@@ -48,6 +48,7 @@ public:
 	float attackTimer;
 	float attackCd;
 
+	
 	bool shooting;
 	float shootTimer;
 	float shootCD;
