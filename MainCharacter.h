@@ -12,7 +12,7 @@ public:
 	MainCharacter();
 	~MainCharacter();
 
-	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter);
+	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter, FileImporter &importer);
 	void update(HWND windowhandle);
 
 	void CharacterMove(HWND windowhandle);
@@ -20,7 +20,7 @@ public:
 
 	float characterLookAt(HWND windowHandle);
 
-	void loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice);
+	void loadVertices(FileImporter &importer, FbxImport &fbxImporter, ID3D11Device* &graphicDevice);
 
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* bulletDynamicsWorld);

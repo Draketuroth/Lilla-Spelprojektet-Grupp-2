@@ -227,7 +227,7 @@ bool FileImporter::readFormat() {
 					joints[i].inverseBindPoseMatrix = currentBindPose;
 				}
 
-				delete bindPoseMatrices;
+				//delete bindPoseMatrices;
 
 				//------------------------------------------------------//
 				// GATHER JOINT ANIMATIONS

@@ -5,6 +5,7 @@ SceneContainer::SceneContainer() {
 
 	// Initialize handler and main character
 
+	importer = FileImporter();
 	gHandler = GraphicComponents();
 	bHandler = BufferComponents();
 	tHandler = TextureComponents();
@@ -127,7 +128,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			PostQuitMessage(0);
 	}
 
-	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter, importer);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
 	
 	return true;
