@@ -297,7 +297,7 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 
-	character.draw(gHandler.gDeviceContext, fbxImporter.vertices.size());
+	character.draw(gHandler.gDeviceContext, importer.skinnedMeshes[0].vertices.size());
 
 	character.resetWorldMatrix();
 	
