@@ -214,7 +214,7 @@ void MainCharacter::loadVertices(FileImporter &importer, FbxImport &fbxImporter,
 	for (unsigned int i = 0; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
 
 		XMMATRIX inversedBindPose = importer.skinnedMeshes[0].hierarchy[i].inverseBindPoseMatrix; // converts from float4x4 too xmmatrix
-
+		
 		skinData.gBoneTransform[i] = inversedBindPose;
 		fbxImporter.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
@@ -263,17 +263,16 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 				test++;
 				cout << "HIT!" << test << endl;
 				//enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
-
-				XMFLOAT3 playerForward;
-				XMStoreFloat3(&playerForward, forwardVector);
 				
-				btVector3 relativeForce = btVector3(0, 20, 0);
 				btTransform playerTrans;
+				btTransform enemyTrans;
 				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
+				enemyArray[0].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
 				
-				btVector3 correctedForce = (playerTrans * relativeForce) - playerTrans.getOrigin();
+				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
+				correctedForce.normalize();
 
-				enemyArray[0].rigidBody->applyCentralForce(correctedForce);
+				enemyArray[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
 
 				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
 				{

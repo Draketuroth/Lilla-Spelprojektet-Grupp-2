@@ -209,7 +209,7 @@ bool FileImporter::readFormat() {
 					currentMesh.vertices.push_back(vertices[i]);
 				}
 
-				//delete vertices;
+				delete vertices;
 
 				//------------------------------------------------------//
 				// GATHER JOINT BINDPOSE MATRICES
@@ -224,6 +224,7 @@ bool FileImporter::readFormat() {
 				for (UINT i = 0; i < jointCount; i++) {
 
 					XMMATRIX currentBindPose = XMLoadFloat4x4(&bindPoseMatrices[i]);
+					
 					joints[i].inverseBindPoseMatrix = currentBindPose;
 				}
 
