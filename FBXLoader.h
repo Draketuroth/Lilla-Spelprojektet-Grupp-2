@@ -183,7 +183,7 @@ public:
 
 	XMMATRIX Load4X4JointTransformations(Joint joint, int transformIndex);
 	void UpdateAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
-	void Interpolate(VS_SKINNED_DATA* boneBufferPointer, int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
+	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
 	float animTimePos;

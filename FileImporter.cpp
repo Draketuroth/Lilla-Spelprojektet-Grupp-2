@@ -104,7 +104,9 @@ bool FileImporter::readFormat() {
 					in.read(buffer, stringSize);
 
 					buffer[stringSize] = '\0';
-					cout << "Texture Name: " << buffer << endl;
+					currentMesh.textureName = buffer;
+
+					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
 
 				}
 
@@ -122,6 +124,13 @@ bool FileImporter::readFormat() {
 
 					Vertex* vertices = new Vertex[vertexCount];
 					in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex) * vertexCount);
+
+					for (UINT i = 0; i < vertexCount; i++) {
+
+						currentMesh.vertices.push_back(vertices[i]);
+					}
+
+					delete vertices;
 
 					//------------------------------------------------------//
 					// PUSH BACK STANDARD MESH
@@ -184,7 +193,9 @@ bool FileImporter::readFormat() {
 					in.read(buffer, stringSize);
 			
 					buffer[stringSize] = '\0';
-					cout << "Texture Name: " << buffer << endl;
+					currentMesh.textureName = buffer;
+
+					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
 
 				}
 
@@ -228,7 +239,7 @@ bool FileImporter::readFormat() {
 					joints[i].inverseBindPoseMatrix = currentBindPose;
 				}
 
-				//delete bindPoseMatrices;
+				delete bindPoseMatrices;
 
 				//------------------------------------------------------//
 				// GATHER JOINT ANIMATIONS
@@ -285,6 +296,7 @@ bool FileImporter::readFormat() {
 				//------------------------------------------------------//
 
 				skinnedMeshes.push_back(currentMesh);
+
 			}
 		
 		
