@@ -104,6 +104,8 @@ int RunApplication() {
 				break;
 			case GAME_OVER:
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				sceneContainer.character.setAlive(true);
+				break;
 			case START_GAME:
 				menuState.checkGameState();
 				updateCharacter(windowHandle);

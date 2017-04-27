@@ -18,7 +18,7 @@ int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMe
 	{
 		pauseMenu(windowHandle, scene, windowMessage);
 	}
-	else
+	else if (this->state == GAME_OVER)
 	{
 		gameOver(windowHandle, scene);
 	}
