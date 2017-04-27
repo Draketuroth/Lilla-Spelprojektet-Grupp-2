@@ -1,4 +1,6 @@
 #pragma once
+#ifndef GAMESTATE_H
+#define GAMESTATE_H
 
 #include "MacroDefinitions.h"
 //#include <d3d11.h>	// We require the d3d11 header for Direct3D functions
@@ -65,3 +67,4 @@ public:
 
 
 };
+#endif GAMESTATE_H

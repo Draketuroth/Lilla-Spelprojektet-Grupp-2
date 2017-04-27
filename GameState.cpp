@@ -18,6 +18,10 @@ int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMe
 	{
 		pauseMenu(windowHandle, scene, windowMessage);
 	}
+	else
+	{
+		gameOver(windowHandle, scene);
+	}
 	return state;
 }
 int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
@@ -55,7 +59,18 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMess
 }
 int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 {
-
+	if (this->state == GAME_OVER)
+	{
+		renderMainMenu(scene);
+		if (GetAsyncKeyState(VK_LBUTTON))
+		{
+			getMousePos(windowHandle, scene);
+			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.7f && this->floatMouse.y >= 0.4f)
+			{
+				this->state = START_GAME;
+			}
+		}
+	}
 	return state;
 }
 void GameState::createBufferData(ID3D11Device* gDevice)
