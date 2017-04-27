@@ -166,7 +166,7 @@ void SceneContainer::drawPlatforms() {
 
 		if (bHandler.cubeObjects[i].renderCheck == true) {
 
-			gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.cubeObjects[i].gCubeVertexBuffer, &vertexSize, &offset);
+			gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
 
 			gHandler.gDeviceContext->DrawIndexed(36, 0, 0);
 
@@ -328,7 +328,6 @@ void SceneContainer::renderEnemies()
 	}
 	
 }
-
 
 void SceneContainer::renderLava()
 {

@@ -190,6 +190,7 @@ void updateBuffers()
 	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
 	D3D11_MAPPED_SUBRESOURCE EnemyMappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
