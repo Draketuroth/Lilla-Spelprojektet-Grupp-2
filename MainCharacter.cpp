@@ -267,7 +267,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 			{
 				test++;
 				cout << "HIT!" << test << endl;
-				//enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
 				
 				btTransform playerTrans;
 				btTransform enemyTrans;
@@ -331,7 +331,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 
 		//The offset starting point for the ray
 		XMFLOAT3 newOrigin;
-		RayOrigin += directionVec * 1.4f;
+		RayOrigin += directionVec * 0.4f;
 		XMStoreFloat3(&newOrigin, RayOrigin);
 		
 		XMFLOAT3 direction;
