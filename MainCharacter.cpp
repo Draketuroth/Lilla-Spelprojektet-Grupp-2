@@ -344,15 +344,24 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 		world->rayTest(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.5f, direction.z * 50), rayCallBack);
 		if (rayCallBack.hasHit())
 		{
-			
-			btVector3 pos = rayCallBack.m_collisionObject->getWorldTransform().getOrigin();
-			XMFLOAT3 floatPos;
 			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
 			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
 				
+
 		
 			for (size_t i = 0; i < nrOfEnemies; i++)
 			{
+				//Used for knockback----------------------------------------------------------
+				btTransform playerTrans;
+				btTransform enemyTrans;
+				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
+				enemies[0].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+
+				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
+				correctedForce.normalize();
+				//----------------------------------------------------------------------------
+				enemies[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
+
 				cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
 				if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
 				{
