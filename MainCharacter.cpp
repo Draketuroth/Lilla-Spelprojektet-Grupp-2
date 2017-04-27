@@ -149,7 +149,7 @@ void MainCharacter::CheckInput() {
 
 	if (isIdle == true){
 
-		currentAnimIndex = 0;
+		currentAnimIndex = 1;
 
 	}
 

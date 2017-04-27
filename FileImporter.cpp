@@ -40,7 +40,7 @@ bool FileImporter::readFormat() {
 			cout << "Vertex layout: " << meshSubHeaderContent.vertexLayout << endl;
 			cout << "Vertices: " << meshSubHeaderContent.controlPoints << endl;
 			cout << "Joints: " << meshSubHeaderContent.hierarchySize << endl;
-			cout << "Keyframes: " << meshSubHeaderContent.keyframes << endl;
+			cout << "Animations: " << meshSubHeaderContent.animations << endl;
 			cout << "Texture: " << meshSubHeaderContent.hasTexture << "\n\n";
 
 			meshHeader.push_back(meshSubHeaderContent);
@@ -244,17 +244,20 @@ bool FileImporter::readFormat() {
 				//------------------------------------------------------//
 				// GATHER JOINT ANIMATIONS
 				//------------------------------------------------------//
-				
-				uint32_t keyframesCount = meshHeader[i].keyframes;
 
-				for(UINT animationIndex = 0; animationIndex < 1; animationIndex++){
+				uint32_t animationCount = meshHeader[i].animations;
+
+				for(UINT animationIndex = 0; animationIndex < animationCount; animationIndex++){
+
+					uint32_t keyFramesCount;
+					in.read(reinterpret_cast<char*>(&keyFramesCount), sizeof(keyFramesCount));
 
 				for(UINT i = 0; i < jointCount; i++){
 
-					XMFLOAT4X4* jointGlobalTransforms = new XMFLOAT4X4[keyframesCount];
-					in.read(reinterpret_cast<char*>(jointGlobalTransforms), sizeof(XMFLOAT4X4) * keyframesCount);
+					XMFLOAT4X4* jointGlobalTransforms = new XMFLOAT4X4[keyFramesCount];
+					in.read(reinterpret_cast<char*>(jointGlobalTransforms), sizeof(XMFLOAT4X4) * keyFramesCount);
 
-						for (UINT j = 0; j < keyframesCount; j++) {
+						for (UINT j = 0; j < keyFramesCount; j++) {
 
 							Joint_Keyframe currentKeyFrameTransform;
 
@@ -276,7 +279,7 @@ bool FileImporter::readFormat() {
 							joints[i].Animations[animationIndex].Sequence.push_back(currentKeyFrameTransform);
 						}
 
-						joints[i].Animations[animationIndex].Length = keyframesCount;
+						joints[i].Animations[animationIndex].Length = keyFramesCount;
 
 					}
 
