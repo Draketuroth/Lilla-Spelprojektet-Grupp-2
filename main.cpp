@@ -48,7 +48,8 @@ int main() {
 	return RunApplication();
 }
 
-int RunApplication() {
+int RunApplication() 
+{
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// INITIALIZE
@@ -188,10 +189,12 @@ void updateBuffers()
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
+	D3D11_MAPPED_SUBRESOURCE platformMappedResource;
 	D3D11_MAPPED_SUBRESOURCE EnemyMappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	ZeroMemory(&platformMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
@@ -248,6 +251,25 @@ void updateBuffers()
 	EnemyTransformPointer->matrixWVP = tCameraViewProj * tEnemyTranslation;
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// PLATFORMS TRANSFORM BUFFER UPDATE
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	for (unsigned int i = 0; i < CUBECAPACITY; i++)
+	{
+		sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gPlatformTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &platformMappedResource);
+
+		PLATFORM_TRANSFORM* platformTransformPointer = (PLATFORM_TRANSFORM*)platformMappedResource.pData;
+
+		XMMATRIX tplatformTranslation = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].tPlatformTranslation);
+
+		playerTransformPointer->matrixW = tplatformTranslation;
+
+		playerTransformPointer->matrixWVP = tCameraViewProj * tplatformTranslation;
+
+		sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gPlatformTransformBuffer, 0);
+	}
+	
 }
 
 
