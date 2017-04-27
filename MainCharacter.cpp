@@ -10,8 +10,13 @@ MainCharacter::MainCharacter()
 	playerHeight = 2.0f;
 	currentAnimIndex = 0;
 
+	this->attacking = false;
+	this->attackTimer = 0.0f;
+	this->attackCd = 0.5f;
+
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
+	this->test = 0;
 }
 
 MainCharacter::~MainCharacter()
@@ -19,12 +24,12 @@ MainCharacter::~MainCharacter()
 
 }
 
-void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter) {
+void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter, FileImporter &importer) {
 
 	currentAnimIndex = 0;
 
 	// Main character function
-	loadVertices(fbxImporter, graphicDevice);
+	loadVertices(importer, fbxImporter, graphicDevice);
 
 	// Base character functions
 	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
@@ -148,7 +153,7 @@ void MainCharacter::CheckInput() {
 
 	if (isIdle == true){
 
-		currentAnimIndex = 1;
+		currentAnimIndex = 0;
 
 	}
 
@@ -175,27 +180,48 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 	return angle;
 }
 
-void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice)
-{
+void MainCharacter::loadVertices(FileImporter &importer, FbxImport &fbxImporter, ID3D11Device* &graphicDevice) {
 
 	HRESULT hr;
-	int i;
 
-	float scaleFactor = 0.3f;
+	//load mesh vertices
 
-	
-		//Front face
+	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
 
-		fbxImporter.LoadFBX(&fbxVector); //load mesh vertices
+		Vertex_Bone boneVertex;
 
-	for (unsigned int i = 0; i < fbxImporter.meshSkeleton.hierarchy.size(); i++) {
+		boneVertex.pos.x = importer.skinnedMeshes[0].vertices[i].pos[0];
+		boneVertex.pos.y = importer.skinnedMeshes[0].vertices[i].pos[1];
+		boneVertex.pos.z = importer.skinnedMeshes[0].vertices[i].pos[2];
 
-		XMMATRIX inversedBindPose = fbxImporter.Load4X4JointTransformations(fbxImporter.meshSkeleton.hierarchy[i], i); // converts from float4x4 too xmmatrix
+		boneVertex.uv.x = importer.skinnedMeshes[0].vertices[i].uv[0];
+		boneVertex.uv.y = importer.skinnedMeshes[0].vertices[i].uv[1];
 
+		boneVertex.normal.x = importer.skinnedMeshes[0].vertices[i].normal[0];
+		boneVertex.normal.y = importer.skinnedMeshes[0].vertices[i].normal[1];
+		boneVertex.normal.z = importer.skinnedMeshes[0].vertices[i].normal[2];
+
+		boneVertex.boneIndices[0] = importer.skinnedMeshes[0].vertices[i].boneIndices[0];
+		boneVertex.boneIndices[1] = importer.skinnedMeshes[0].vertices[i].boneIndices[1];
+		boneVertex.boneIndices[2] = importer.skinnedMeshes[0].vertices[i].boneIndices[2];
+		boneVertex.boneIndices[3] = importer.skinnedMeshes[0].vertices[i].boneIndices[3];
+
+		boneVertex.weights[0] = importer.skinnedMeshes[0].vertices[i].weights[0];
+		boneVertex.weights[1] = importer.skinnedMeshes[0].vertices[i].weights[1];
+		boneVertex.weights[2] = importer.skinnedMeshes[0].vertices[i].weights[2];
+		boneVertex.weights[3] = importer.skinnedMeshes[0].vertices[i].weights[3];
+
+		fbxVector.push_back(boneVertex);
+
+	}
+
+	for (unsigned int i = 0; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
+
+		XMMATRIX inversedBindPose = importer.skinnedMeshes[0].hierarchy[i].inverseBindPoseMatrix; // converts from float4x4 too xmmatrix
+		
 		skinData.gBoneTransform[i] = inversedBindPose;
 		fbxImporter.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
-		
 	}
 }
 
@@ -210,13 +236,13 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 	return R;
 }
 
-
-
-
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[])
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
 {
-	if (GetAsyncKeyState(MK_LBUTTON))
-	{ 
+	if (GetAsyncKeyState(MK_LBUTTON) && ! attacking && attackTimer <= 0)
+	{
+		attacking = true;
+		attackTimer = attackCd;
+		//-----------------Calculate the hit area-----------------------
 		float angle = characterLookAt(windowHandle);
 
 		XMFLOAT3 characterPos = this->getBoundingBox().Center;
@@ -230,23 +256,47 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		meleeBox.Transform(meleeBox, playerTranslation);
+		//---------------------------------------------------------------
+		//---------Attack------------------------------------------------
 		
-		/*for (int i = 0; i < nrOfEnemies; i++)
-		{*/
+		for (int i = 0; i < nrOfEnemies; i++)
+		{
 			BoundingBox enemyBox = enemyArray[0].getBoundingBox();
 			if (enemyBox.Intersects(meleeBox))
 			{
-				cout << "HIT!" << endl;
-				enemyArray[0].setHealth(enemyArray[0].getHealth() -1);
-				if (enemyArray[0].getHealth() <= 0)
+				test++;
+				cout << "HIT!" << test << endl;
+				//enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+				
+				btTransform playerTrans;
+				btTransform enemyTrans;
+				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
+				enemyArray[0].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+				
+				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
+				correctedForce.normalize();
+
+				enemyArray[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
+
+				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
 				{
-					//enemyArray[i].setAlive(false);
-					cout << "ENEMY DOWN" << endl;
+					enemyArray[0].setAlive(false);
+					cout << "ENEMY DEAD" << endl;
 				}
 			}
-		/*}*/
-		
+		}
 	}
+
+	if (attacking)
+	{
+		if (attackTimer > 0)
+			attackTimer -= timer.getDeltaTime();
+		else
+		{
+			attacking = false;
+		}
+	}
+
 }
 
 void MainCharacter::rangeAttack(HWND windowHandle)

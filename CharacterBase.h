@@ -11,6 +11,7 @@
 #include "MacroDefinitions.h"
 #include "BufferComponents.h"
 #include "FBXLoader.h"
+#include "FileImporter.h"
 
 using namespace std;
 using namespace DirectX;
@@ -40,7 +41,7 @@ public:
 	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID, const XMFLOAT3 position, const XMMATRIX tPlayerTranslation);
 	~CharacterBase();
 
-	void releaseAll();
+	void releaseAll(btDynamicsWorld* bulletDynamicsWorld);
 
 	//GET-SET
 	int getHealth()const;

@@ -21,6 +21,7 @@ public:
 
 	void initialize();
 	float getDeltaTime();
+	float getCurrentTime();
 	void updateCurrentTime();
 	void resetTimer();
 	int getFrameCount();

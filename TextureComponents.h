@@ -20,6 +20,9 @@ public:
 	void ReleaseAll();
 
 	ID3D11ShaderResourceView* standardResource;
+	ID3D11ShaderResourceView* LavaResurce;
+
+
 	ID3D11SamplerState* texSampler;
 
 	bool CreateTexture(ID3D11Device* &gDevice);

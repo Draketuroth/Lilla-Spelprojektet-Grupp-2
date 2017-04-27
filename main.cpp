@@ -45,7 +45,6 @@ int main() {
 	
 	sceneContainer.initialize(windowHandle);
 
-	
 	return RunApplication();
 }
 
@@ -110,9 +109,17 @@ int RunApplication() {
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
 				
-				MyContactResultCallback callback(&sceneContainer.character);
-				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, callback);
-				
+				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
+				MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[0]);
+
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
+				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[0].rigidBody, enemyCallBack);
+
+				if (sceneContainer.enemies[0].getAlive() == false) {
+
+					sceneContainer.enemies[0].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+				}
+
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
@@ -144,18 +151,23 @@ void updateCharacter(HWND windowhandle)
 {
 
 	sceneContainer.character.update(windowhandle);
-	sceneContainer.enemies[0].EnemyPhysics();
+	
+	if(sceneContainer.enemies[0].getAlive() == true){
+	
+		sceneContainer.enemies[0].EnemyPhysics();
+
+	}
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
 	sceneContainer.fbxImporter.animTimePos += timer.getDeltaTime() * 50;
 
-	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.fbxImporter.meshSkeleton.hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
+	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.importer.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
 		sceneContainer.fbxImporter.animTimePos = 0.0f;
 	}
 
-	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex);
+	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.importer);
 }
 
 void lavamovmentUpdate()

@@ -15,7 +15,6 @@ public:
 
 	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void EnemyPhysics();
-
 	
 private:
 	ID3D11Buffer* gEnemieVertexBuffer;
