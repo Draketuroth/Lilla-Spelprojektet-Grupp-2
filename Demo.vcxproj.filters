@@ -94,8 +94,11 @@
     <Filter Include="Source Files\FBXLoader">
       <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\HLSL\Lavashaders">
-      <UniqueIdentifier>{ca97b27a-043a-480a-95f0-52252c3a245a}</UniqueIdentifier>
+    <Filter Include="Source Files\FileImporter">
+      <UniqueIdentifier>{d166d049-d3fa-4c44-a726-2b8b30f3c237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FileImporter">
+      <UniqueIdentifier>{c5aaa559-12c4-4328-a03b-ba79cc927a96}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\HLSL\RayShaders">
       <UniqueIdentifier>{c20622da-1fec-45fb-a027-f6afdfe48c6d}</UniqueIdentifier>
@@ -161,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="FBXLoader.cpp">
       <Filter>Source Files\FBXLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="FileImporter.cpp">
+      <Filter>Source Files\FileImporter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,6 +236,9 @@
     <ClInclude Include="FBXLoader.h">
       <Filter>Header Files\FBXLoader</Filter>
     </ClInclude>
+    <ClInclude Include="FileImporter.h">
+      <Filter>Header Files\FileImporter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\StandardShaders\Fragment.hlsl">
@@ -279,15 +288,6 @@
     </FxCompile>
     <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
-      <Filter>Source Files\HLSL\Lavashaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
-      <Filter>Source Files\HLSL\Lavashaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
-      <Filter>Source Files\HLSL\Lavashaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

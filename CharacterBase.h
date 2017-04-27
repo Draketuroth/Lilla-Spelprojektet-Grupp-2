@@ -11,6 +11,7 @@
 #include "MacroDefinitions.h"
 #include "BufferComponents.h"
 #include "FBXLoader.h"
+#include "FileImporter.h"
 
 using namespace std;
 using namespace DirectX;

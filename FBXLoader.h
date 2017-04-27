@@ -20,6 +20,7 @@
 #include <unordered_map>
 #include "VertexType.h"
 #include "MacroDefinitions.h"
+#include "FileImporter.h"
 
 // Necessary lib files kan be linked here, but also be added by going to:
 // Properties->Linker->Input->Additional Dependencies
@@ -180,63 +181,16 @@ public:
 	// PRIMARY FUNCTIONS AND VARIABLES
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	// Responsible for loading in and initializing all data of interest for us
-	// Returns the output data for the vertex class used in the vertex buffer
-	HRESULT LoadFBX(vector<Vertex_Bone>* pOutVertexVector);
-
 	XMMATRIX Load4X4JointTransformations(Joint joint, int transformIndex);
-	XMMATRIX Load4X4Transformations(FbxAMatrix fbxMatrix);
-	void UpdateAnimation(ID3D11DeviceContext* gDevice, int animIndex);
-	void Interpolate(VS_SKINNED_DATA* boneBufferPointer, int jointIndex, ID3D11DeviceContext* gDevice, int animIndex);
-	void InitializeAnimation();
+	void UpdateAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
+	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	
-	Skeleton meshSkeleton;
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
 	float animTimePos;
 
 	XMMATRIX invertedBindPose[16];	// Bind pose matrix
 
 	vector<Vertex_Bone>vertices;	// Extra copy of vertices
-
-private:
-
-	// Separate function to load only mesh data and store control points
-	void CreateVertexData(FbxNode* rootNode, vector<Vertex_Bone>* pOutVertexVector);
-
-	// Separate function to load only skeletal data
-	void LoadSkeletonHierarchy(FbxNode* rootNode);
-
-	// Function used in LoadSkeletonHierarchy function to perform a deep first search to store the joints in correct order
-	void RecursiveDepthFirstSearch(FbxNode* node, int depth, int index, int parentIndex);
-
-	// Function to process the animation data when the skeleton hierarchy has been loaded
-	void GatherAnimationData(FbxNode* node, FbxScene* scene, int animIndex);
-
-	void SetGlobalTransform();
-
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	// SECONDARY FUNCTIONS
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	// Geometric transform must be taken into account, even though it's often just an identity matrix (especially in Maya)
-	FbxAMatrix GetGeometryTransformation(FbxNode* node);
-
-	// Function used to find the index of joint by giving the function the name of the current joint being processed
-	unsigned int FindJointIndexByName(std::string& jointName, Skeleton skeleton);
-
-	// Receive only meshes from the Fbx root node
-	FbxMesh* GetMeshFromRoot(FbxNode* node);
-
-	void ProcessControlPoints();
-
-	void ConvertToLeftHanded(FbxAMatrix &matrix);
-
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	// OPEN FILE FUNCTIONS
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	HRESULT LoadBaseFile(const char* fileName, FbxManager* gFbxSdkManager, FbxImporter* pImporter, FbxScene* pScene);
-	HRESULT LoadAnimation(const char* fileName, FbxManager* gFbxSdkManager, FbxImporter* pImporter, FbxScene* pScene);
 
 private:
 

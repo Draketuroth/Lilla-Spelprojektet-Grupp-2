@@ -45,7 +45,6 @@ int main() {
 	
 	sceneContainer.initialize(windowHandle);
 
-	
 	return RunApplication();
 }
 
@@ -172,12 +171,12 @@ void updateCharacter(HWND windowhandle)
 
 	sceneContainer.fbxImporter.animTimePos += timer.getDeltaTime() * 50;
 
-	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.fbxImporter.meshSkeleton.hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
+	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.importer.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
 		sceneContainer.fbxImporter.animTimePos = 0.0f;
 	}
 
-	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex);
+	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.importer);
 }
 
 void lavamovmentUpdate()
