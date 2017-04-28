@@ -301,7 +301,9 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 		// Create the rigid body
 		btRigidBody* platformRigidBody = new btRigidBody(info);
+		cubeObjects[nrOfCubes].rigidBody = platformRigidBody;
 
+		platformRigidBody->setIslandTag(platformRigid);//Tag to skip rayTesting for character projectiles
 		// Add the new rigid body to the dynamic world
 		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody);
 		bulletPhysicsHandler.rigidBodies.push_back(platformRigidBody);
@@ -548,4 +550,11 @@ bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
 	}
 
 	return true;
+}
+void BufferComponents::CreateRigidBodyTags()
+{
+	for (size_t i = 0; i < this->nrOfCubes; i++)
+	{
+		this->cubeObjects[i].rigidBody->setIslandTag(platformRigid);
+	}
 }

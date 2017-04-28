@@ -100,6 +100,9 @@
     <Filter Include="Header Files\FileImporter">
       <UniqueIdentifier>{c5aaa559-12c4-4328-a03b-ba79cc927a96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\RayShaders">
+      <UniqueIdentifier>{c20622da-1fec-45fb-a027-f6afdfe48c6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

@@ -14,6 +14,10 @@ MainCharacter::MainCharacter()
 	this->attackTimer = 0.0f;
 	this->attackCd = 0.5f;
 
+	this->shooting = false;
+	this->shootCD = 0.8f;
+	this->shootTimer = 0.0f;
+
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 	this->test = 0;
@@ -33,7 +37,8 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
-	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.6, 0.8f, 0.6), bulletPhysicsHandle);
+	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -262,7 +267,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 			{
 				test++;
 				cout << "HIT!" << test << endl;
-				//enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
 				
 				btTransform playerTrans;
 				btTransform enemyTrans;
@@ -295,30 +300,87 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world)
 {
-	if (GetAsyncKeyState(MK_RBUTTON))
+	this->rigidBody->setIslandTag(characterRigid);
+	for (size_t i = 0; i < nrOfEnemies; i++)
 	{
-		cout << "RANGED ATTACK" << endl;
+		enemies[i].rigidBody->setIslandTag(characterRigid);
 	}
 
-	//check which way the charater is looking
-	float angle = characterLookAt(windowHandle);
+	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
+	{
+		
+		float angle = this->characterLookAt(windowHandle);
+		cout << "RANGED ATTACK" << endl;
+		this->shooting = true;
+		this->shootTimer = this->shootCD;
 
-	//fireProjectile(angle);
+		cout << "Player Tag: " << this->rigidBody->getIslandTag() << endl << endl;
 
-	//fireProjectile have to create and follow up the projectile and see it it hits anything.
-	//it needs to check every frame until the projectile is a certain distance away from the character
-	//or until it hits an enemy
+		XMFLOAT3 characterPos = this->getPos();
+		XMVECTOR RayOrigin = XMLoadFloat3(&characterPos);
 
-	//The projectile should move straight forward into its direction at a constant speed (no real need for physics)
-	//The projectile needs to be able to sort through the list of enemies.
+
+		//Used to rotate the direction vector, so that we always shoot in the direction of where the player is facing
+		XMVECTOR directionVec = this->getForwardVector();
+
+		XMVECTOR rotQuat = XMQuaternionRotationAxis(XMVECTOR{ 0, 1, 0 }, angle);
+		directionVec = XMVector3Rotate(directionVec, rotQuat);
+		directionVec = XMVector3Normalize(directionVec);
+
+		//The offset starting point for the ray
+		XMFLOAT3 newOrigin;
+		RayOrigin += directionVec * 0.4f;
+		XMStoreFloat3(&newOrigin, RayOrigin);
+		
+		XMFLOAT3 direction;
+		XMStoreFloat3(&direction, directionVec);
+	
+
+		//cout << "Direction X: " << direction.x << "Direction Y: " << direction.y << "Direction Z: " << direction.z << endl;
+		
+		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
+		world->rayTest(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.5f, direction.z * 50), rayCallBack);
+		if (rayCallBack.hasHit())
+		{
+			
+			btVector3 pos = rayCallBack.m_collisionObject->getWorldTransform().getOrigin();
+			XMFLOAT3 floatPos;
+			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
+			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
+				
+		
+			for (size_t i = 0; i < nrOfEnemies; i++)
+			{
+				cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
+				if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
+				{
+					cout << "Enemy Shot!! -1 health\n";
+					enemies[i].setHealth(enemies[i].getHealth() - 1);
+				}
+				if (enemies[i].getHealth() == 0)
+				{
+					enemies[i].setAlive(false);
+					cout << "Enemy Deleted\n";
+				}
+			}
+		}
+	}
+
+	if (this->shooting)
+	{
+		if (this->shootTimer > 0)
+		{
+			this->shootTimer -= timer.getDeltaTime();
+		}
+		else
+		{
+			this->shooting = false;
+		}
+	}
 }
 
-//void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
-//{
-//
-//}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()

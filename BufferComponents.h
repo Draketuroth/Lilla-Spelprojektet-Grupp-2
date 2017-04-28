@@ -88,6 +88,7 @@ public:
 	bool CreateInstanceBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
+	void CreateRigidBodyTags();
 
 private:
 

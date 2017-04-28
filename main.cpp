@@ -101,6 +101,10 @@ int RunApplication() {
 			case PAUSE_MENU:
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
+			case GAME_OVER:
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				sceneContainer.character.setAlive(true);
+				break;
 			case START_GAME:
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
@@ -110,6 +114,10 @@ int RunApplication() {
 
 				
 				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
+				if (!sceneContainer.character.getAlive())
+				{
+					menuState.state = GAME_OVER;
+				}
 				MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[0]);
 
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
@@ -131,6 +139,7 @@ int RunApplication() {
 				sceneContainer.gHandler.gSwapChain->Present(0, 0);
 
 				timer.updateCurrentTime();
+
 				break;
 			}
 			
