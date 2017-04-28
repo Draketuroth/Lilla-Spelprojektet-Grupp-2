@@ -21,7 +21,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 
 cbuffer PLATFORM_INSTANCE_BUFFER : register(b1) {
 
-	matrix worldMatrix[30];
+	matrix worldMatrix[400];
 };
 
 struct GS_IN

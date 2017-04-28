@@ -11,7 +11,7 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemies[0] = Enemy(0, { 0, 20, 10 });
+	enemies[0] = Enemy(0, { 0, 20, 0 });
 
 	bulletPhysicsHandler = BulletComponents();
 

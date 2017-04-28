@@ -28,7 +28,7 @@ struct GS_CONSTANT_BUFFER {
 
 struct PLATFORM_INSTANCE_BUFFER {
 
-	XMMATRIX worldMatrix[30];
+	XMMATRIX worldMatrix[400];
 };
 
 struct PLAYER_TRANSFORM {
@@ -42,6 +42,7 @@ struct CubeObjects {
 	btRigidBody* rigidBody;
 	XMMATRIX worldMatrix;
 	bool renderCheck;
+	int ID;
 };
 
 class BufferComponents {
@@ -89,6 +90,17 @@ public:
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
 	void CreateRigidBodyTags();
+
+	float spaceX;
+	float spaceZ;
+
+	float incrementSpace(float offset);
+	float centerPlatformsColls(float offset);
+	float centerPlatformsRows(float offset);
+
+	void platformDecension(CubeObjects cube);
+
+
 
 private:
 
