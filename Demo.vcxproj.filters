@@ -289,5 +289,14 @@
     <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl" />
+    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl" />
+    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl" />
+    <FxCompile Include="Shaders\RayShaders\RayVertex.hlsl">
+      <Filter>Source Files\HLSL\RayShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\RayShaders\RayFragment.hlsl">
+      <Filter>Source Files\HLSL\RayShaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

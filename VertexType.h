@@ -39,5 +39,9 @@ struct LavaVertex
 	XMFLOAT2 uv; 
 	XMFLOAT3 normal; 
 };
+struct RayVertex
+{
+	XMFLOAT3 pos;
+};
 
 #endif

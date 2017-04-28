@@ -15,7 +15,7 @@ MainCharacter::MainCharacter()
 	this->attackCd = 0.5f;
 
 	this->shooting = false;
-	this->shootCD = 0.8f;
+	this->shootCD = 0.3f;
 	this->shootTimer = 0.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
@@ -304,8 +304,9 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
 {
+	XMFLOAT3 start, end;
 	this->rigidBody->setIslandTag(characterRigid);
 	for (size_t i = 0; i < nrOfEnemies; i++)
 	{
@@ -316,7 +317,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 	{
 		
 		float angle = this->characterLookAt(windowHandle);
-		cout << "RANGED ATTACK" << endl;
+	
 		this->shooting = true;
 		this->shootTimer = this->shootCD;
 
@@ -341,22 +342,35 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
 	
-
-		//cout << "Direction X: " << direction.x << "Direction Y: " << direction.y << "Direction Z: " << direction.z << endl;
 		
 		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
 		world->rayTest(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.5f, direction.z * 50), rayCallBack);
+
+		start = XMFLOAT3{ newOrigin.x, 1.2f, newOrigin.z };
+		end = XMFLOAT3{ direction.x * 50, 1.2f, direction.z * 50 };
+		//Drawing the ray for debug purposes
+		
+
 		if (rayCallBack.hasHit())
 		{
-			
-			btVector3 pos = rayCallBack.m_collisionObject->getWorldTransform().getOrigin();
-			XMFLOAT3 floatPos;
 			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
 			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
 				
+
 		
 			for (size_t i = 0; i < nrOfEnemies; i++)
 			{
+				//Used for knockback----------------------------------------------------------
+				btTransform playerTrans;
+				btTransform enemyTrans;
+				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
+				enemies[0].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+
+				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
+				correctedForce.normalize();
+				enemies[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
+				//----------------------------------------------------------------------------
+
 				cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
 				if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
 				{
@@ -374,6 +388,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 
 	if (this->shooting)
 	{
+	
 		if (this->shootTimer > 0)
 		{
 			this->shootTimer -= timer.getDeltaTime();
@@ -383,8 +398,49 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 			this->shooting = false;
 		}
 	}
+	//renderRay(gHandler, bHandler, start, end);
 }
 
+//bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)
+//{
+//	HRESULT hr;
+//
+//	RayVertex rayData[2] =
+//	{
+//		start, end
+//	};
+//
+//	D3D11_BUFFER_DESC bufferDesc = {};
+//	memset(&bufferDesc, 0, sizeof(bufferDesc));
+//	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+//	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+//	bufferDesc.ByteWidth = sizeof(rayData);
+//
+//	D3D11_SUBRESOURCE_DATA data;
+//	data.pSysMem = rayData;
+//	hr = gHandler.gDevice->CreateBuffer(&bufferDesc, &data, &this->vtxBuffer);
+//	if (FAILED(hr))
+//	{
+//		return false;
+//	}
+//
+//	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+//	gHandler.gDeviceContext->VSSetShader(gHandler.gRayVertexShader, nullptr, 0);
+//	gHandler.gDeviceContext->PSSetShader(gHandler.gRayPixelShader, nullptr, 0);
+//	gHandler.gDeviceContext->PSSetShaderResources(0, 0, nullptr);
+//
+//	UINT32 vertexSize = sizeof(RayVertex);
+//	UINT32 offset = 0;
+//
+//	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+//	gHandler.gDeviceContext->IASetInputLayout(gHandler.gRayVertexLayout);
+//
+//	gHandler.gDeviceContext->Draw(2, 0);
+//
+//	SAFE_RELEASE(this->vtxBuffer);
+//
+//	return true;
+//}
 
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()
