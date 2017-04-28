@@ -201,10 +201,11 @@ void updateBuffers()
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
 	D3D11_MAPPED_SUBRESOURCE EnemyMappedResource;
+	D3D11_MAPPED_SUBRESOURCE platformMappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
+	ZeroMemory(&platformMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
 	XMMATRIX tCameraInverseViewProj = XMMatrixTranspose(XMMatrixInverse(nullptr, sceneContainer.character.camera.ViewProj()));
@@ -260,6 +261,24 @@ void updateBuffers()
 	EnemyTransformPointer->matrixWVP = tCameraViewProj * tEnemyTranslation;
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// PLATFORM INSTANCE BUFFER UPDATE
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	sceneContainer.bHandler.updatePlatformWorldMatrices();
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &platformMappedResource);
+
+	PLATFORM_INSTANCE_BUFFER* platformTransformPointer = (PLATFORM_INSTANCE_BUFFER*)platformMappedResource.pData;
+
+	for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
+
+		platformTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].worldMatrix);
+	}
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gInstanceBuffer, 0);
+
 }
 
 

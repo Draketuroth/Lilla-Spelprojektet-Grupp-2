@@ -10,12 +10,14 @@ struct VS_IN
 {
 	float3 Pos : POSITION;
 	float2 Tex : TEXCOORD;
+	uint InstanceId : SV_InstanceId;
 };
 
 struct VS_OUT
 {
 	float3 Pos : POSITION;
 	float2 Tex : TEXCOORD;
+	uint InstanceId : SV_InstanceId;
 };
 //-----------------------------------------------------------------------------------------
 // VertexShader: VSScene
@@ -27,6 +29,8 @@ VS_OUT VS_main(VS_IN input)
 	output.Pos = input.Pos;
 	
 	output.Tex = input.Tex;
+
+	output.InstanceId = input.InstanceId;
 
 	return output;
 }
