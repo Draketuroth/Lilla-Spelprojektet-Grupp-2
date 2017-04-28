@@ -56,14 +56,14 @@ struct GS_OUT
 
 		for (i = 0; i < 3; i++)
 		{
-			float3 worldPosition = mul(float4(input[i].Pos, 1.0f), worldMatrix[input[i].InstanceId]).xyz;
+			float3 worldPosition = mul(float4(input[i].Pos, 1.0f), matrixWorld).xyz;
 			output.WPos = worldPosition;
 
 			output.Pos = mul(float4(input[i].Pos.xyz, 1.0f), worldMatrix[input[i].InstanceId]);
 			output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixView);
 			output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixProjection);
 
-			output.Norm = mul(float4(normalAB, 1.0f), worldMatrix[input[i].InstanceId]);
+			output.Norm = mul(float4(normalAB, 1.0f), matrixWorld);
 			output.Tex = input[i].Tex;
 
 			output.ViewPos = cameraPos.xyz - worldPosition.xyz;
