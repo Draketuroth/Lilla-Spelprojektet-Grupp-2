@@ -11,21 +11,12 @@
 using namespace DirectX;
 using namespace std;
 
-struct RectangleData
-{
-	float x, y, z;
-	float u, v;
-};
-
 class GameState
 {
 	
 	
 private:
 	
-	ID3D11Buffer* gMenuConstant;
-	ID3D11Buffer* gMenuVertexBuffer;
-	ID3D11Buffer* gMenuIndex;
 	POINT mousePos;
 	XMFLOAT2 floatMouse;
 
@@ -40,18 +31,12 @@ public:
 	int pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMessage);
 	int gameOver(HWND windowHandle, SceneContainer scene);
 
-	bool createIndexBuffer(ID3D11Device* gDevice);
-	bool createVertexBuffer(ID3D11Device* gDevice);
-
 	void checkGameState();
 
-	void releaseAll();
 	void getMousePos(HWND windowHandle, SceneContainer scene);
 
 	void renderMenus(SceneContainer scene);
-	void renderMainMenu(SceneContainer scene);
-	//void renderPauseMenu();
-	//void renderGameOverMenu();
+
 
 
 

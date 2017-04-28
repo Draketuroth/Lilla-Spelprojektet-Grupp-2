@@ -68,10 +68,6 @@ int RunApplication() {
 	updateLava();
 
 
-
-	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
-	menuState.createVertexBuffer(sceneContainer.gHandler.gDevice);
-
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -153,7 +149,7 @@ int RunApplication() {
 	}
 
 	sceneContainer.releaseAll();
-	menuState.releaseAll();
+
 	DestroyWindow(windowHandle);
 
 	return 0;
