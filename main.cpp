@@ -68,7 +68,7 @@ int RunApplication() {
 	updateLava();
 
 
-	menuState.createBufferData(sceneContainer.gHandler.gDevice);
+
 	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
 	menuState.createVertexBuffer(sceneContainer.gHandler.gDevice);
 
@@ -104,6 +104,9 @@ int RunApplication() {
 			case GAME_OVER:
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				sceneContainer.character.setAlive(true);
+				break;
+			case QUIT_GAME:
+				windowMessage.message = WM_QUIT;
 				break;
 			case START_GAME:
 				menuState.checkGameState();

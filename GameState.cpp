@@ -28,13 +28,32 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 {
 	if (this->state == MAIN_MENU)
 	{
-		renderMainMenu(scene);
+		getMousePos(windowHandle, scene);
+		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[1]);
+		}
+		else if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[2]);
+		}
+		else
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[0]);
+		}
+
+		renderMenus(scene);
 		if (GetAsyncKeyState(VK_LBUTTON))
 		{			
-			getMousePos(windowHandle, scene);	
-			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.7f && this->floatMouse.y >= 0.4f)
+			getMousePos(windowHandle, scene);
+			cout << "Mouse X: " << this->floatMouse.x << "  Mouse Y: " << this->floatMouse.y << endl;
+			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
 				this->state = START_GAME;
+			}
+			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
+			{
+				this->state = QUIT_GAME;
 			}
 		}
 	}
@@ -44,13 +63,31 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMess
 {
 	if (this->state == PAUSE_MENU)
 	{
-		renderMainMenu(scene);
+		getMousePos(windowHandle, scene);
+		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[4]);
+
+		}
+		else if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[5]);
+		}
+		else
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[3]);
+		}
+		renderMenus(scene);
 		if (GetAsyncKeyState(VK_LBUTTON))
 		{
 			getMousePos(windowHandle, scene);
-			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.7f && this->floatMouse.y >= 0.4f)
+			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
 				this->state = START_GAME;
+			}
+			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
+			{
+				this->state = QUIT_GAME;
 			}
 		}
 	}
@@ -61,59 +98,44 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 {
 	if (this->state == GAME_OVER)
 	{
-		renderMainMenu(scene);
+		getMousePos(windowHandle, scene);
+		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[7]);
+
+		}
+		else if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[8]);
+		}
+		else
+		{
+			scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[6]);
+		}
+
+		renderMenus(scene);
 		if (GetAsyncKeyState(VK_LBUTTON))
 		{
 			getMousePos(windowHandle, scene);
-			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.7f && this->floatMouse.y >= 0.4f)
+			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
 				this->state = START_GAME;
 			}
+			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
+			{
+				this->state = QUIT_GAME;
+			}
+
 		}
 	}
 	return state;
 }
-void GameState::createBufferData(ID3D11Device* gDevice)
-{
-	HRESULT hr;
-	
-	XMFLOAT4 bgColor = { 0.6f, 0.4f, 0.2f, 1.0f };
-	XMFLOAT4 rectColor = { 0.31f, 0.64f, 0.15f, 1.0f };
 
-	VS_CONSTANT_BUFFER menuConstant;
-
-	menuConstant.backGroundColor = bgColor;
-	menuConstant.rectangleColor = rectColor;
-	menuConstant.menuWorld = XMMatrixIdentity();
-
-	// The buffer description is filled in below, mainly so the graphic card understand the structure of it
-
-	D3D11_BUFFER_DESC constBufferDesc;
-	ZeroMemory(&constBufferDesc, sizeof(constBufferDesc));
-	constBufferDesc.ByteWidth = sizeof(VS_CONSTANT_BUFFER);
-	constBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	constBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	constBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	constBufferDesc.MiscFlags = 0;
-	constBufferDesc.StructureByteStride = 0;
-
-	// We set the the subresource data
-
-	D3D11_SUBRESOURCE_DATA constData;
-	constData.pSysMem = &menuConstant;
-	constData.SysMemPitch = 0;
-	constData.SysMemSlicePitch = 0;
-
-	// Finally after creating description and subresource data, we create the constant buffer
-
-	hr = gDevice->CreateBuffer(&constBufferDesc, &constData, &gMenuConstant);
-
-}
 void GameState::releaseAll()
 {
 	SAFE_RELEASE(this->gMenuConstant);
 	SAFE_RELEASE(this->gMenuVertexBuffer);
-	SAFE_RELEASE(this->gMenuIndex);
+	SAFE_RELEASE(this->gMenuIndex);	
 }
 void GameState::renderMainMenu(SceneContainer scene)
 {
@@ -136,6 +158,27 @@ void GameState::renderMainMenu(SceneContainer scene)
 	scene.gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
 	//Don't forget the swapchain, måste ha för att byta mellan det som ritas och det som visas
 	scene.gHandler.gSwapChain->Present(0, 0);
+}
+void GameState::renderMenus(SceneContainer scene)
+{
+	scene.clear();
+
+	scene.gHandler.gDeviceContext->VSSetShader(scene.gHandler.gMenuVertex, nullptr, 0);
+	scene.gHandler.gDeviceContext->PSSetShader(scene.gHandler.gMenuPixel, nullptr, 0);
+	//scene.gHandler.gDeviceContext->PSSetShaderResources(0, 1, &scene.tHandler.menuResources[0]);
+	scene.gHandler.gDeviceContext->PSSetSamplers(0, 1, &scene.tHandler.texSampler);
+	scene.gHandler.gDeviceContext->VSSetConstantBuffers(0, 0, nullptr);
+	scene.gHandler.gDeviceContext->GSSetShader(nullptr, nullptr, 0);
+
+
+	scene.gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	scene.gHandler.gDeviceContext->IASetInputLayout(scene.gHandler.gMenuLayout);
+
+	scene.gHandler.gDeviceContext->Draw(4, 0);
+	//Don't forget the swapchain, måste ha för att byta mellan det som ritas och det som visas
+	scene.gHandler.gSwapChain->Present(0, 0);
+
+
 }
 bool GameState::createVertexBuffer(ID3D11Device* gDevice)
 {

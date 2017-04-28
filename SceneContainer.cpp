@@ -140,7 +140,7 @@ void SceneContainer::update(HWND &windowHandle)
 	nrOfEnemies = 1;
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
-	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
+	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
 
 	render();
 }

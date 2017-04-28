@@ -10,6 +10,7 @@
 #include "BasicMath.h"
 #include "MacroDefinitions.h"
 #include "BufferComponents.h"
+#include "GraphicComponents.h"
 #include "FBXLoader.h"
 #include "FileImporter.h"
 

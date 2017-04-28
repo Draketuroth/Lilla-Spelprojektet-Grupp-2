@@ -10,19 +10,7 @@
 #include "SceneContainer.h"
 using namespace DirectX;
 using namespace std;
-struct VS_CONSTANT_BUFFER
-{
-	XMFLOAT4 backGroundColor;
-	XMFLOAT4 rectangleColor;
-	bool backgroundCheck;
-	//15 bytes of padding
-	//-------------------
-	XMFLOAT3 pad1;
-	int16_t pad2;		//15 bytes
-	char pad3;
-	//-------------------
-	XMMATRIX menuWorld;
-};
+
 struct RectangleData
 {
 	float x, y, z;
@@ -54,12 +42,13 @@ public:
 
 	bool createIndexBuffer(ID3D11Device* gDevice);
 	bool createVertexBuffer(ID3D11Device* gDevice);
-	void createBufferData(ID3D11Device* gDevice);
+
 	void checkGameState();
 
 	void releaseAll();
 	void getMousePos(HWND windowHandle, SceneContainer scene);
 
+	void renderMenus(SceneContainer scene);
 	void renderMainMenu(SceneContainer scene);
 	//void renderPauseMenu();
 	//void renderGameOverMenu();
