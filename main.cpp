@@ -102,6 +102,10 @@ int RunApplication()
 			case PAUSE_MENU:
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
+			case GAME_OVER:
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				sceneContainer.character.setAlive(true);
+				break;
 			case START_GAME:
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
@@ -111,6 +115,10 @@ int RunApplication()
 
 				
 				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
+				if (!sceneContainer.character.getAlive())
+				{
+					menuState.state = GAME_OVER;
+				}
 				MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[0]);
 
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
@@ -132,6 +140,7 @@ int RunApplication()
 				sceneContainer.gHandler.gSwapChain->Present(0, 0);
 
 				timer.updateCurrentTime();
+
 				break;
 			}
 			
@@ -191,11 +200,11 @@ void updateBuffers()
 	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
 	D3D11_MAPPED_SUBRESOURCE platformMappedResource;
 	D3D11_MAPPED_SUBRESOURCE EnemyMappedResource;
+	D3D11_MAPPED_SUBRESOURCE platformMappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&platformMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
 	XMMATRIX tCameraInverseViewProj = XMMatrixTranspose(XMMatrixInverse(nullptr, sceneContainer.character.camera.ViewProj()));
@@ -253,23 +262,22 @@ void updateBuffers()
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	// PLATFORMS TRANSFORM BUFFER UPDATE
+	// PLATFORM INSTANCE BUFFER UPDATE
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	for (unsigned int i = 0; i < CUBECAPACITY; i++)
-	{
-		sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gPlatformTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &platformMappedResource);
 
-		PLATFORM_TRANSFORM* platformTransformPointer = (PLATFORM_TRANSFORM*)platformMappedResource.pData;
+	sceneContainer.bHandler.updatePlatformWorldMatrices();
 
-		XMMATRIX tplatformTranslation = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].tPlatformTranslation);
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &platformMappedResource);
 
-		playerTransformPointer->matrixW = tplatformTranslation;
+	PLATFORM_INSTANCE_BUFFER* platformTransformPointer = (PLATFORM_INSTANCE_BUFFER*)platformMappedResource.pData;
 
-		playerTransformPointer->matrixWVP = tCameraViewProj * tplatformTranslation;
+	for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
 
-		sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gPlatformTransformBuffer, 0);
+		platformTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].worldMatrix);
 	}
-	
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gInstanceBuffer, 0);
+
 }
 
 

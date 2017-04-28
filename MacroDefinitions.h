@@ -8,12 +8,12 @@
 #define NEARPLANE 0.1f
 #define FARPLANE 50.0f
 
-#define CUBECAPACITY 3000
+#define CUBECAPACITY 30
 
 #define LaunchInWindowedMode TRUE;
 #define SAFE_RELEASE( x ) if( x ) ( x )->Release(), ( x ) = nullptr;
 
-#define ANIMATIONCOUNT 3
+#define ANIMATIONCOUNT 2
 
 #define MAIN_MENU 11
 #define GAME_OVER 12
@@ -25,5 +25,5 @@
 #define LAVAMAXHEIGHT 4
 #define LAVAQUADSIZE 2.0
 
-#define PLATFORMROWS 20
-#define PLATFORMCOLUMNS 20
+#define platformRigid 1001
+#define characterRigid 1002

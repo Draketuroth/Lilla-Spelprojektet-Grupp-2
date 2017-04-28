@@ -11,8 +11,6 @@ BufferComponents::BufferComponents() {
 	lookAtF = { 0, 1, 0 };
 	upF = { 0, 1, 0 };
 
-	spaceingX = 0;
-	spaceingZ = 0;
 
 	eyePos = XMLoadFloat3(&eyePosF);
 	lookAt = XMLoadFloat3(&lookAtF);
@@ -28,20 +26,28 @@ BufferComponents::~BufferComponents() {
 void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gConstantBuffer);
+	SAFE_RELEASE(gInstanceBuffer);
+	
+	SAFE_RELEASE(gCubeVertexBuffer);
 	SAFE_RELEASE(gCubeIndexBuffer);
 
 	SAFE_RELEASE(gPlayerTransformBuffer);
 	SAFE_RELEASE(gEnemyTransformBuffer);
-
-	for (int i = 0; i < nrOfCubes; i++) {
-
-		SAFE_RELEASE(cubeObjects[i].gCubeVertexBuffer);
-	}
 }
 
 bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
 
-	if (!CreateCubeVertices(gDevice, bulletPhysicsHandler)) {
+	if (!CreatePlatformVertexBuffer(gDevice)) {
+
+		return false;
+	}
+
+	if (!CreatePlatforms(gDevice, bulletPhysicsHandler)) {
+
+		return false;
+	}
+
+	if (!CreateInstanceBuffer(gDevice)) {
 
 		return false;
 	}
@@ -71,26 +77,101 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 
 }
 
-bool BufferComponents::CreateCubeVertices(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
+bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice) {
+
+	HRESULT hr;
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// HARDCODED VERTICES
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	TriangleVertex cubeVertices[24] =
+	{
+
+		//Front face
+
+		-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		1.0, -1.0f, -1.0f, 1.0f, 1.0f,
+
+		// Back face
+
+		1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
+
+		// Left face
+
+		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+
+		// Right face
+
+		1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
+
+		// Top face
+
+		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+
+		// Bottom face
+
+		1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
+
+
+	};
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// CREATE VERTEX BUFFER
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	D3D11_BUFFER_DESC bufferDesc;
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(cubeVertices);
+
+	D3D11_SUBRESOURCE_DATA data;
+	data.pSysMem = cubeVertices;
+	hr = gDevice->CreateBuffer(&bufferDesc, &data, &gCubeVertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
+bool BufferComponents::CreatePlatforms(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// INITIALIZE OFFSET VARIABLES
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	float spaceing = 2.3;
-	spaceingZ = centerPlatform();
-	spaceingX = centerPlatform();
 
-	for (int i = 0; i < PLATFORMCOLUMNS; i++)
-	{
-		
-		DrawCubeRow(gDevice, spaceingX, spaceingZ, spaceing, PLATFORMROWS, bulletPhysicsHandler);
-		spaceingX = incrementSpaceX(spaceingX);
-		spaceingZ = centerPlatform();
-	}
-	
-	
+	float spacing = 2;
 
-	
+	DrawCubeRow(gDevice, -4.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
+
+	DrawCubeRow(gDevice, -2.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
+
+	DrawCubeRow(gDevice, -0.3f, 0.0f, spacing, 6, bulletPhysicsHandler);
+
+	DrawCubeRow(gDevice, 1.7f, 0.0f, spacing, 6, bulletPhysicsHandler);
+
+	DrawCubeRow(gDevice, 3.7f, 0.0f, spacing, 6, bulletPhysicsHandler);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RENDER CHECK TEST
@@ -178,108 +259,25 @@ void BufferComponents::CreateCollisionPlane(BulletComponents &bulletPhysicsHandl
 	bulletPhysicsHandler.rigidBodies.push_back(planeRigidBody);
 }
 
-bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float zOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler) {
+bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler) {
 
 	HRESULT hr;
 
-	
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// INITIALIZE OFFSET VALUES
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
 	float xOffsetValue = 0.0f;
 	float yOffsetValue = 0.0f;
 	float zOffsetValue = 0.0f;
-	 
+
 	float offset = 0;
 
-	for (int i = 0; i < cubes; i++) 
-	{
+	for (int i = 0; i < cubes; i++) {
 
 		xOffsetValue = xOffset;
 		yOffsetValue = 0;
-		zOffsetValue = zOffset;
-		cubeObjects[i].pos.x = xOffset;
-		cubeObjects[i].pos.y = 0;
-		cubeObjects[i].pos.z = zOffset;
-		//----------------------------------------------------------------------------------------------------------------------------------//
-		// HARDCODED VERTICES
-		//----------------------------------------------------------------------------------------------------------------------------------//
-
-		TriangleVertex cubeVertices[24] =
-		{
-
-			//Front face
-
-			-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-			1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-			-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-			1.0, -1.0f, -1.0f, 1.0f, 1.0f,
-
-			// Back face
-
-			1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-			-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
-
-			// Left face
-
-			-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-			-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-			-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-
-			// Right face
-
-			1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-			1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-			1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
-
-			// Top face
-
-			-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
-			1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
-
-			// Bottom face
-
-			1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-			-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-			1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-			-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
-
-
-		};
-
-		//----------------------------------------------------------------------------------------------------------------------------------//
-		// OFFSET VERTICES
-		//----------------------------------------------------------------------------------------------------------------------------------//
-
-		for (int j = 0; j < 24; j++) {
-
-			cubeVertices[j].x += xOffsetValue + spacing;
-			cubeVertices[j].y += yOffsetValue;
-			cubeVertices[j].z += zOffsetValue + spacing;
-
-		}
-
-		//----------------------------------------------------------------------------------------------------------------------------------//
-		// CREATE VERTEX BUFFER
-		//----------------------------------------------------------------------------------------------------------------------------------//
-
-		D3D11_BUFFER_DESC bufferDesc;
-		memset(&bufferDesc, 0, sizeof(bufferDesc));
-		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		bufferDesc.ByteWidth = sizeof(cubeVertices);
-
-		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = cubeVertices;
-		hr = gDevice->CreateBuffer(&bufferDesc, &data, &cubeObjects[nrOfCubes].gCubeVertexBuffer);
-
-		if (FAILED(hr)) {
-
-			return false;
-		}
+		zOffsetValue = offset;
 
 		//----------------------------------------------------------------------------------------------------------------------------------//
 		// CREATE RIGID BODY
@@ -287,14 +285,14 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 		// Platform Rigid Body only uses an identity matrix as its world matrix
 		btTransform transform;
-		XMFLOAT4X4 d;
+		XMFLOAT4X4 platFormWorldMatrix;
 		XMMATRIX platformTranslation = XMMatrixTranslation(xOffsetValue + spacing, yOffsetValue, zOffsetValue + spacing);
-		XMStoreFloat4x4(&d, platformTranslation);
+		XMStoreFloat4x4(&platFormWorldMatrix, platformTranslation);
 
-		transform.setFromOpenGLMatrix((float*)&d);
+		transform.setFromOpenGLMatrix((float*)&platFormWorldMatrix);
 
 		// Define the kind of shape we want and construct rigid body information
-		btBoxShape* boxShape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
+		btBoxShape* boxShape = new btBoxShape(btVector3(1, 1, 1));
 		btMotionState* motion = new btDefaultMotionState(transform);
 
 		// Definition of the rigid body
@@ -302,32 +300,96 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape);
 
 		// Create the rigid body
-		cubeObjects[i].platformRigidBody = new btRigidBody(info);
+		btRigidBody* platformRigidBody = new btRigidBody(info);
+		cubeObjects[nrOfCubes].rigidBody = platformRigidBody;
 
-		
-
+		platformRigidBody->setIslandTag(platformRigid);//Tag to skip rayTesting for character projectiles
 		// Add the new rigid body to the dynamic world
-		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(cubeObjects[i].platformRigidBody);
-		bulletPhysicsHandler.rigidBodies.push_back(cubeObjects[i].platformRigidBody);
+		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody);
+		bulletPhysicsHandler.rigidBodies.push_back(platformRigidBody);
+
+		cubeObjects[nrOfCubes].worldMatrix = platformTranslation;
+		cubeObjects[nrOfCubes].rigidBody = platformRigidBody;
+		cubeObjects[nrOfCubes].renderCheck = true;
 
 		//----------------------------------------------------------------------------------------------------------------------------------//
 		// ADD OFFSET FOR THE NEXT PLATFORM
 		//----------------------------------------------------------------------------------------------------------------------------------//
-		
-		cubeObjects[nrOfCubes].renderCheck = true;
 
 		offset += spacing;
 		
 		nrOfCubes++;
-		zOffset = incrementSpaceX(zOffset);
+
 	}
 
 	return true;
 }
 
-float BufferComponents::RandomNumber(float Minimum, float Maximum) {
+void BufferComponents::updatePlatformWorldMatrices() {
 
-	return ((float(rand()) / float(RAND_MAX)) * (Maximum - Minimum)) + Minimum;
+	// Prepare matrices for conversion
+	XMMATRIX transform;
+	XMFLOAT4X4 data;
+
+	for(int i = 0; i < nrOfCubes; i++){
+
+	// Gather the rigid body matrix
+	btTransform btRigidTransform;
+	cubeObjects[i].rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+
+	// Load it into an XMFLOAT4x4
+	btRigidTransform.getOpenGLMatrix((float*)&data);
+
+	// Load it into an XMMATRIX
+	transform = XMLoadFloat4x4(&data);
+
+	// Build the new world matrix
+	cubeObjects[i].worldMatrix = transform;
+
+	}
+}
+
+bool BufferComponents::CreateInstanceBuffer(ID3D11Device* &gDevice) {
+
+	HRESULT result;
+	PLATFORM_INSTANCE_BUFFER instances;
+
+	// Set the number of instances in the array
+	int instanceCount = nrOfCubes;
+
+	// Load the instance array with data
+	for (int i = 0; i < instanceCount; i++) {
+
+		instances.worldMatrix[i] = cubeObjects[i].worldMatrix;
+	}
+
+	// Setup the instance buffer description
+	D3D11_BUFFER_DESC instanceBufferDesc;
+	ZeroMemory(&instanceBufferDesc, sizeof(instanceBufferDesc));
+
+	instanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	instanceBufferDesc.ByteWidth = sizeof(PLATFORM_INSTANCE_BUFFER);
+	instanceBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	instanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	instanceBufferDesc.MiscFlags = 0;
+	instanceBufferDesc.StructureByteStride = 0;
+
+	// Give the subresource structure a pointer to the instance data.
+	D3D11_SUBRESOURCE_DATA instanceData;
+
+	instanceData.pSysMem = &instances;
+	instanceData.SysMemPitch = 0;
+	instanceData.SysMemSlicePitch = 0;
+
+	// Create the instance buffer.
+	result = gDevice->CreateBuffer(&instanceBufferDesc, &instanceData, &gInstanceBuffer);
+	
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Function to create the constant buffer
@@ -457,38 +519,6 @@ bool BufferComponents::CreatePlayerTransformBuffer(ID3D11Device* &gDevice) {
 	return true;
 }
 
-bool BufferComponents::CreatePlatformTransformBuffer(ID3D11Device* &gDevice) {
-
-	HRESULT hr;
-
-	PLATFORM_TRANSFORM platTransformData;
-
-	platTransformData.matrixW = XMMatrixIdentity();
-	platTransformData.matrixWVP = XMMatrixIdentity();
-
-	D3D11_BUFFER_DESC platformBufferDesc;
-	ZeroMemory(&platformBufferDesc, sizeof(platformBufferDesc));
-	platformBufferDesc.ByteWidth = sizeof(GS_CONSTANT_BUFFER);
-	platformBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	platformBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	platformBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	platformBufferDesc.MiscFlags = 0;
-	platformBufferDesc.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA constData;
-	constData.pSysMem = &platTransformData;
-	constData.SysMemPitch = 0;
-	constData.SysMemSlicePitch = 0;
-
-	hr = gDevice->CreateBuffer(&platformBufferDesc, &constData, &gPlatformTransformBuffer);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	return true;
-}
 bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
 
 	HRESULT hr;
@@ -521,70 +551,10 @@ bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
 
 	return true;
 }
-float BufferComponents::incrementSpaceX(float spaceingX)
+void BufferComponents::CreateRigidBodyTags()
 {
-	spaceingX += 2.3;
-	return spaceingX;
-}
-float BufferComponents::centerPlatform()
-{
-	float startCube = PLATFORMCOLUMNS;
-	
-	startCube *= 2.3;
-	startCube /= 2;
-	startCube *= -1;
-
-	return startCube;
-}
-void BufferComponents::updatePlatforms()
-{
-	for (int i = 0; i < CUBECAPACITY; i++)
+	for (size_t i = 0; i < this->nrOfCubes; i++)
 	{
-		float time = timer.getDeltaTime();
-
-		updateWorldMatrixPlatforms(cubeObjects[i]);
-
-		XMMATRIX transform;
-		XMFLOAT4X4 data;
-
-		btTransform btRigidTransform;
-
-		cubeObjects[i].platformRigidBody->getMotionState()->getWorldTransform(btRigidTransform);
-
-		btRigidTransform.getOpenGLMatrix((float*)&data);
-
-		transform = XMLoadFloat4x4(&data);
-		XMVECTOR t;
-		XMVECTOR s;
-		XMVECTOR r;
-		XMMatrixDecompose(&s, &r, &t, transform);
-		XMFLOAT3 rigidPos;
-		XMStoreFloat3(&rigidPos, t);
-
-		cubeObjects[i].pos = rigidPos;
-
-		timer.updateCurrentTime();
+		this->cubeObjects[i].rigidBody->setIslandTag(platformRigid);
 	}
-	
-}
-void BufferComponents::updateWorldMatrixPlatforms(CubeObjects cubeobjects)
-{
-	// Prepare matrices for conversion
-	XMMATRIX transform;
-	XMFLOAT4X4 data;
-
-	// Gather the rigid body matrix
-	btTransform btRigidTransform;
-	cubeobjects.platformRigidBody->getMotionState()->getWorldTransform(btRigidTransform);
-
-	// Load it into an XMFLOAT4x4
-	btRigidTransform.getOpenGLMatrix((float*)&data);
-
-	// Load it into an XMMATRIX
-	transform = XMLoadFloat4x4(&data);
-
-	// Build the new world matrix
-	cubeobjects.tPlatformTranslation = transform;
-
-
 }

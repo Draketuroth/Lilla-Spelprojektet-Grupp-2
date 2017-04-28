@@ -8,6 +8,7 @@ CharacterBase::CharacterBase()
 	this->unitID = 0;
 	this->alive = true;
 	this->timer.initialize();
+	this->forwardVector = { 0, 0, 1 };
 	this->position = { 0, 0, 0 };
 	this->tPlayerTranslation = XMMatrixIdentity();
 }
@@ -21,6 +22,7 @@ CharacterBase::CharacterBase(const bool alive, const int health, const float mov
 	this->position = position;
 	this->tPlayerTranslation = tPlayerTranslation;
 	this->timer.initialize();
+	this->forwardVector = { 0, 0, 1 };
 }
 
 CharacterBase::~CharacterBase()

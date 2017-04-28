@@ -45,6 +45,7 @@ struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResult
 		t.setIdentity();
 		t.setOrigin(btVector3(2, 2, 5));
 		character->rigidBody->setWorldTransform(t);
+		character->setAlive(false);
 		return 0;
 	}
 

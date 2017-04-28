@@ -8,7 +8,7 @@
 #include "MacroDefinitions.h"
 #include "VertexType.h"
 #include <vector>
-#include "Timer.h"
+
 #include "BulletComponents.h"
 
 using namespace DirectX;
@@ -26,26 +26,22 @@ struct GS_CONSTANT_BUFFER {
 
 };
 
+struct PLATFORM_INSTANCE_BUFFER {
+
+	XMMATRIX worldMatrix[30];
+};
+
 struct PLAYER_TRANSFORM {
 
 	XMMATRIX matrixW;
 	XMMATRIX matrixWVP;
 };
 
-struct PLATFORM_TRANSFORM
-{
-	XMMATRIX matrixW;
-	XMMATRIX matrixWVP;
-};
-
 struct CubeObjects {
 
-	ID3D11Buffer* gCubeVertexBuffer;
+	btRigidBody* rigidBody;
+	XMMATRIX worldMatrix;
 	bool renderCheck;
-	XMMATRIX tPlatformTranslation;
-	XMFLOAT3 pos;
-	btRigidBody* platformRigidBody;
-	
 };
 
 class BufferComponents {
@@ -68,52 +64,37 @@ public:
 	XMVECTOR up;
 
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
+	ID3D11Buffer* gInstanceBuffer;
 	ID3D11Buffer* gPlayerTransformBuffer;
-	ID3D11Buffer* gPlatformTransformBuffer;
 	ID3D11Buffer* gEnemyTransformBuffer;
 
-	ID3D11Buffer* plat_InstanceBuffer;
-	int plat_instanceCount;
-
-	ID3D11Buffer* gCylinderBuffer;
-	ID3D11Buffer* gCylinderIndexBuffer;
+	ID3D11Buffer* gCubeVertexBuffer;
 	ID3D11Buffer* gCubeIndexBuffer;
 
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
 	btRigidBody* lavaPitRigidBody;
 
-	Timer timer;
-	
-
 	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 
-	bool CreateCubeVertices(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
+	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice);
+	bool CreatePlatforms(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
 	void CreateCollisionPlane(BulletComponents &bulletPhysicsHandler, XMFLOAT3 translation);
 	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler);
-	float RandomNumber(float Minimum, float Maximum);
+	void updatePlatformWorldMatrices();
 
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
+	bool CreateInstanceBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
-	bool CreatePlatformTransformBuffer(ID3D11Device* &gDevice);
 	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
-
-
-	float incrementSpaceX(float spaceingX);
-	float centerPlatform();
-	void updatePlatforms();
-	void updateWorldMatrixPlatforms(CubeObjects cubeobjects);
-	
+	void CreateRigidBodyTags();
 
 private:
 
 	XMFLOAT3 eyePosF;
 	XMFLOAT3 lookAtF;
 	XMFLOAT3 upF;
-
-	float spaceingX;
-	float spaceingZ;
 };
 
 #endif BUFFERCOMPONENTS_H
