@@ -350,39 +350,32 @@ void BufferComponents::updatePlatformWorldMatrices() {
 bool BufferComponents::CreateInstanceBuffer(ID3D11Device* &gDevice) {
 
 	HRESULT result;
-	PLATFORM_INSTANCE_BUFFER* instances;
+	PLATFORM_INSTANCE_BUFFER instances;
 
 	// Set the number of instances in the array
 	int instanceCount = nrOfCubes;
 
-	// Create the instance array
-	instances = new PLATFORM_INSTANCE_BUFFER[instanceCount];
-	if (!instances) {
-
-		return false;
-	}
-
 	// Load the instance array with data
 	for (int i = 0; i < instanceCount; i++) {
 
-		instances[i].worldMatrix = cubeObjects[i].worldMatrix;
+		instances.worldMatrix[i] = cubeObjects[i].worldMatrix;
 	}
 
 	// Setup the instance buffer description
 	D3D11_BUFFER_DESC instanceBufferDesc;
 	ZeroMemory(&instanceBufferDesc, sizeof(instanceBufferDesc));
 
-	instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	instanceBufferDesc.ByteWidth = sizeof(PLATFORM_INSTANCE_BUFFER) * instanceCount;
-	instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	instanceBufferDesc.CPUAccessFlags = 0;
+	instanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	instanceBufferDesc.ByteWidth = sizeof(PLATFORM_INSTANCE_BUFFER);
+	instanceBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	instanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	instanceBufferDesc.MiscFlags = 0;
 	instanceBufferDesc.StructureByteStride = 0;
 
 	// Give the subresource structure a pointer to the instance data.
 	D3D11_SUBRESOURCE_DATA instanceData;
 
-	instanceData.pSysMem = instances;
+	instanceData.pSysMem = &instances;
 	instanceData.SysMemPitch = 0;
 	instanceData.SysMemSlicePitch = 0;
 
@@ -393,10 +386,6 @@ bool BufferComponents::CreateInstanceBuffer(ID3D11Device* &gDevice) {
 	{
 		return false;
 	}
-
-	// Release the instance array now that the instance buffer has been created and loaded.
-	delete[] instances;
-	instances = 0;
 
 	return true;
 }

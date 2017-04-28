@@ -28,7 +28,7 @@ struct GS_CONSTANT_BUFFER {
 
 struct PLATFORM_INSTANCE_BUFFER {
 
-	XMMATRIX worldMatrix;
+	XMMATRIX worldMatrix[30];
 };
 
 struct PLAYER_TRANSFORM {

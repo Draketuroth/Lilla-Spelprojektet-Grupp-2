@@ -147,6 +147,7 @@ void SceneContainer::drawPlatforms() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gInstanceBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gPlatformGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
@@ -159,21 +160,14 @@ void SceneContainer::drawPlatforms() {
 	UINT32 offset = 0;
 	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gPlatformLayout);
-
-	for (int i = 0; i < bHandler.nrOfCubes; i++) {
-
-		if (bHandler.cubeObjects[i].renderCheck == true) {
-
-			gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
-
-			gHandler.gDeviceContext->DrawIndexed(36, 0, 0);
-
-		}
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+	gHandler.gDeviceContext->DrawIndexedInstanced(36, bHandler.nrOfCubes, 0, 0, 0);
+	
 
 	}
-}
 
 void SceneContainer::clear()
 {
