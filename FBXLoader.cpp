@@ -68,7 +68,7 @@ XMFLOAT4X4 FbxImport::Interpolate(int jointIndex, ID3D11DeviceContext* gDeviceCo
 
 	// Animation has just started, so return the first keyframe
 
-	FbxLongLong animationLength = importer.skinnedMeshes[0].hierarchy[jointIndex].Animations[animIndex].Length - 1;
+	int animationLength = importer.skinnedMeshes[0].hierarchy[jointIndex].Animations[animIndex].Length - 1;
 
 	if (animTimePos <= importer.skinnedMeshes[0].hierarchy[jointIndex].Animations[animIndex].Sequence[0].TimePos) //first keyframe
 	{
@@ -150,44 +150,5 @@ XMFLOAT4X4 FbxImport::Interpolate(int jointIndex, ID3D11DeviceContext* gDeviceCo
 // SECONDARY FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------------------//
 
-XMMATRIX FbxImport::Load4X4JointTransformations(Joint joint, int transformIndex){	// Function to specifically convert joint transformations to XMFLOAT4X4
 
-	ofstream logFile;
-	logFile.open("log.txt", ios::out | ios::app);
-
-	logFile << "---------------------------\n" << "gBoneTransform " << transformIndex << "\n---------------------------" << endl;
-
-	XMFLOAT4X4 matrix;
-	
-	matrix.m[0][0] = joint.GlobalBindposeInverse.Get(0, 0);
-	matrix.m[0][1] = joint.GlobalBindposeInverse.Get(0, 1);
-	matrix.m[0][2] = joint.GlobalBindposeInverse.Get(0, 2);
-	matrix.m[0][3] = joint.GlobalBindposeInverse.Get(0, 3);
-	logFile << (int)matrix.m[0][0] << " " << (int)matrix.m[0][1] << " " << (int)matrix.m[0][2] << " " << (int)matrix.m[0][3] << "\n";
-
-	matrix.m[1][0] = joint.GlobalBindposeInverse.Get(1, 0);
-	matrix.m[1][1] = joint.GlobalBindposeInverse.Get(1, 1);
-	matrix.m[1][2] = joint.GlobalBindposeInverse.Get(1, 2);
-	matrix.m[1][3] = joint.GlobalBindposeInverse.Get(1, 3);
-	logFile << (int)matrix.m[1][0] << " " << (int)matrix.m[1][1] << " " << (int)matrix.m[1][2] << " " << (int)matrix.m[1][3] << "\n";
-
-	matrix.m[2][0] = joint.GlobalBindposeInverse.Get(2, 0);
-	matrix.m[2][1] = joint.GlobalBindposeInverse.Get(2, 1);
-	matrix.m[2][2] = joint.GlobalBindposeInverse.Get(2, 2);
-	matrix.m[2][3] = joint.GlobalBindposeInverse.Get(2, 3);
-	logFile << (int)matrix.m[2][0] << " " << (int)matrix.m[2][1] << " " << (int)matrix.m[2][2] << " " << (int)matrix.m[2][3] << "\n";
-
-	matrix.m[3][0] = joint.GlobalBindposeInverse.Get(3, 0);
-	matrix.m[3][1] = joint.GlobalBindposeInverse.Get(3, 1);
-	matrix.m[3][2] = joint.GlobalBindposeInverse.Get(3, 2);
-	matrix.m[3][3] = joint.GlobalBindposeInverse.Get(3, 3);
-	logFile << (int)matrix.m[3][0] << " " << (int)matrix.m[3][1] << " " << (int)matrix.m[3][2] << " " << (int)matrix.m[3][3] << "\n";
-	
-	XMMATRIX converted = XMLoadFloat4x4(&matrix);
-
-	logFile << "\n";
-	logFile.clear();
-
-	return converted;
-}
 

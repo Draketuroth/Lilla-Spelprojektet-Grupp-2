@@ -9,7 +9,6 @@
 #include <DirectXMath.h>
 #include <iostream>
 #include <fstream>
-#include <fbxsdk.h>
 #include <vector>
 #include <algorithm>
 #include <unordered_map>

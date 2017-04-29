@@ -8,6 +8,10 @@
 //#include <DirectXMath.h>
 //#include <DirectXCollision.h>
 #include "SceneContainer.h"
+#include <Windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
 using namespace DirectX;
 using namespace std;
 

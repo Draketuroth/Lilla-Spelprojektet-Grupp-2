@@ -14,7 +14,6 @@
 #include <DirectXMath.h>
 #include <iostream>
 #include <fstream>
-#include <fbxsdk.h>
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
@@ -59,7 +58,6 @@ struct VertexBlendInfo {
 
 struct Keyframe { // Stores the attributes of a keyframe in an animation
 
-	FbxAMatrix GlobalTransform;
 	float TimePos;
 	XMFLOAT3 Translation;
 	XMFLOAT3 Scale;
@@ -70,7 +68,7 @@ struct Keyframe { // Stores the attributes of a keyframe in an animation
 struct Animation {
 
 	vector<Keyframe> Sequence;
-	FbxLongLong Length;
+	int Length;
 };
 
 struct Joint { // Stores the attributes of a joint node
@@ -78,22 +76,7 @@ struct Joint { // Stores the attributes of a joint node
 	string Name;
 	int ParentIndex;
 
-	FbxAMatrix GlobalBindposeInverse;
-	FbxAMatrix TransformMatrix;
-	FbxAMatrix TransformLinkMatrix;
 	Animation Animations[3];
-
-	FbxNode* Node;
-
-	Joint() :
-
-		Node(nullptr)
-
-	{
-		GlobalBindposeInverse.SetIdentity();
-		ParentIndex = -1;
-
-	}
 
 };
 
@@ -196,7 +179,6 @@ private:
 
 	Blend vertexBlend;
 	unordered_map<unsigned int, ControlPoint*>controlPoints;
-	FbxMesh* currentMesh;
 	vector<int>indices;
 	string animationName;
 
