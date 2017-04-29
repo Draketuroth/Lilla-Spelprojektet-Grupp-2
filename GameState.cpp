@@ -49,6 +49,7 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 			cout << "Mouse X: " << this->floatMouse.x << "  Mouse Y: " << this->floatMouse.y << endl;
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
+				PlaySound(TEXT("Sounds//click.wav"), NULL, SND_SYNC);
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)

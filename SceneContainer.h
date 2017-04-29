@@ -29,6 +29,10 @@
 
 #include "Lava.h"
 
+#include <Windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
 	MyCharacterContactResultCallback(CharacterBase* ptr) : character(ptr) {}
