@@ -21,6 +21,9 @@ MainCharacter::MainCharacter()
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 	this->test = 0;
+
+	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
+	soundBuffer[1].loadFromFile("Sounds//sword.wav");
 }
 
 MainCharacter::~MainCharacter()
@@ -39,6 +42,9 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
 	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.6, 0.8f, 0.6), bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
+
+	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
+	soundBuffer[1].loadFromFile("Sounds//sword.wav");
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -245,6 +251,9 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && ! attacking && attackTimer <= 0)
 	{
+		attackSound.setBuffer(soundBuffer[1]);
+		attackSound.play();
+
 		attacking = true;
 		attackTimer = attackCd;
 		//-----------------Calculate the hit area-----------------------
@@ -306,6 +315,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
 {
+
 	XMFLOAT3 start, end;
 	this->rigidBody->setIslandTag(characterRigid);
 	for (size_t i = 0; i < nrOfEnemies; i++)
@@ -315,6 +325,8 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
+		attackSound.setBuffer(soundBuffer[0]);
+		attackSound.play();
 		
 		float angle = this->characterLookAt(windowHandle);
 	

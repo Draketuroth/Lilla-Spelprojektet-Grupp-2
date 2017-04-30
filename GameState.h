@@ -38,7 +38,10 @@ public:
 
 	void renderMenus(SceneContainer scene);
 
+	sf::SoundBuffer soundBuffer;
 
+	sf::Music arenaMusic;
+	sf::Sound clickSound;
 
 
 };

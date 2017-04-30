@@ -14,6 +14,8 @@
 #include "FBXLoader.h"
 #include "FileImporter.h"
 
+#include <SFML\Audio.hpp>
+
 using namespace std;
 using namespace DirectX;
 
@@ -77,6 +79,7 @@ public:
 
 	string toString();
 	
-
+	sf::Sound attackSound;
+	sf::SoundBuffer soundBuffer[2];
 };
 #endif

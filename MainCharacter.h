@@ -53,6 +53,7 @@ public:
 	bool shooting;
 	float shootTimer;
 	float shootCD;
+
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();
 	//XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);

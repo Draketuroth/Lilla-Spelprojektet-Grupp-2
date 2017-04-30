@@ -28,8 +28,7 @@
 #include "FileImporter.h"
 
 #include "Lava.h"
-
-#include "SoundManager.h"
+#include <SFML\Audio.hpp>
 
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
@@ -107,7 +106,6 @@ public:
 	int nrOfEnemies;
 
 	BulletComponents bulletPhysicsHandler;
-	SoundManager soundManager;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS

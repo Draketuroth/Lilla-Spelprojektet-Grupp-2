@@ -103,12 +103,6 @@
     <Filter Include="Source Files\HLSL\RayShaders">
       <UniqueIdentifier>{c20622da-1fec-45fb-a027-f6afdfe48c6d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\SoundManager">
-      <UniqueIdentifier>{5ceb1b4a-c1a1-4b61-8aa6-c5389e8d67b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\SoundManager">
-      <UniqueIdentifier>{d7f6796f-844b-452d-981e-15be9fc6a289}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -173,9 +167,6 @@
     </ClCompile>
     <ClCompile Include="FileImporter.cpp">
       <Filter>Source Files\FileImporter</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundManager.cpp">
-      <Filter>Header Files\SoundManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,9 +238,6 @@
     </ClInclude>
     <ClInclude Include="FileImporter.h">
       <Filter>Header Files\FileImporter</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundManager.h">
-      <Filter>Source Files\SoundManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

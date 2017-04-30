@@ -14,8 +14,6 @@ SceneContainer::SceneContainer() {
 	enemies[0] = Enemy(0, { 0, 20, 0 });
 
 	bulletPhysicsHandler = BulletComponents();
-	soundManager = SoundManager();
-
 	this->nrOfEnemies = 0;
 }
 
@@ -39,7 +37,6 @@ void SceneContainer::releaseAll() {
 	lava.ReleaseAll();
 	fbxImporter.ReleaseAll();
 	bulletPhysicsHandler.ReleaseAll();
-	soundManager.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -51,18 +48,6 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 		MessageBox(
 			NULL,
 			L"CRITICAL ERROR: Format couldn't be read, please look for format folder in solution\nClosing application...",
-			L"ERROR",
-			MB_OK);
-			PostQuitMessage(0);
-	}
-
-	if (!soundManager.Initialize()) {
-
-		// If the window cannot be created during startup, it's more known as a terminal error
-		// The MessageBox function will display a message and inform us of the problem
-		MessageBox(
-			NULL,
-			L"CRITICAL ERROR: Sound manager couldn't be initialized, investigate sound initializer function\nClosing application...",
 			L"ERROR",
 			MB_OK);
 			PostQuitMessage(0);
