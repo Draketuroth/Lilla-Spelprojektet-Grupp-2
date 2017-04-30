@@ -11,7 +11,6 @@ using namespace std;
 
 class SoundManager {
 
-private:
 
 public:
 
