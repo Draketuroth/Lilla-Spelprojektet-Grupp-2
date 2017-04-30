@@ -35,9 +35,9 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gEnemyTransformBuffer);
 }
 
-bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler) {
+bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &importer) {
 
-	if (!CreatePlatformVertexBuffer(gDevice)) {
+	if (!CreatePlatformVertexBuffer(gDevice, importer)) {
 
 		return false;
 	}
@@ -77,61 +77,72 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 
 }
 
-bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice) {
+bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer) {
 
 	HRESULT hr;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// HARDCODED VERTICES
 	//----------------------------------------------------------------------------------------------------------------------------------//
+	TriangleVertex cubeVertices[132];
+	cubeScaling = importer.standardMeshes[0].meshTransformation.meshScale;
+	for (UINT i = 0; i < importer.standardMeshes[0].vertices.size(); i++) {
 
-	TriangleVertex cubeVertices[24] =
-	{
+		cubeVertices[i].x = importer.standardMeshes[0].vertices[i].pos[0];
+		cubeVertices[i].y = importer.standardMeshes[0].vertices[i].pos[1];
+		cubeVertices[i].z = importer.standardMeshes[0].vertices[i].pos[2];
 
-		//Front face
+		cubeVertices[i].u = importer.standardMeshes[0].vertices[i].uv[0];
+		cubeVertices[i].v = importer.standardMeshes[0].vertices[i].uv[1];
+	}
 
-		-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		1.0, -1.0f, -1.0f, 1.0f, 1.0f,
+	//TriangleVertex cubeVertices[24] =
+	//{
 
-		// Back face
+	//	//Front face
 
-		1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
+	//	-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+	//	1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+	//	-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+	//	1.0, -1.0f, -1.0f, 1.0f, 1.0f,
 
-		// Left face
+	//	// Back face
 
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+	//	1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+	//	-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+	//	1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+	//	-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
 
-		// Right face
+	//	// Left face
 
-		1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
+	//	-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+	//	-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+	//	-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+	//	-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
 
-		// Top face
+	//	// Right face
 
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+	//	1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+	//	1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+	//	1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+	//	1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
 
-		// Bottom face
+	//	// Top face
 
-		1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
+	//	-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+	//	1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+	//	-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
+	//	1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+
+	//	// Bottom face
+
+	//	1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+	//	-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+	//	1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+	//	-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
 
 
-	};
+	//};
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// CREATE VERTEX BUFFER
@@ -336,7 +347,7 @@ void BufferComponents::updatePlatformWorldMatrices()
 	// Prepare matrices for conversion
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
-
+	XMMATRIX scale = XMMatrixScaling(cubeScaling.x, cubeScaling.y, cubeScaling.z);
 
 	for(int i = 0; i < nrOfCubes; i++)
 	{
@@ -357,7 +368,7 @@ void BufferComponents::updatePlatformWorldMatrices()
 		transform = XMLoadFloat4x4(&data);
 
 		// Build the new world matrix
-		cubeObjects[i].worldMatrix = transform;
+		cubeObjects[i].worldMatrix = XMMatrixMultiply(scale, transform);
 		
 
 	}

@@ -93,12 +93,15 @@ int RunApplication()
 			switch (menuState.state)
 			{
 			case MAIN_MENU:
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
 			case PAUSE_MENU:
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
 			case GAME_OVER:
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				sceneContainer.character.setAlive(true);
 				break;

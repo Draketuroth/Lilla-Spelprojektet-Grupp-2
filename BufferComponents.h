@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "BulletComponents.h"
+#include "FileImporter.h"
 
 using namespace DirectX;
 
@@ -74,11 +75,13 @@ public:
 
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
+	XMFLOAT3 cubeScaling;
+
 	btRigidBody* lavaPitRigidBody;
 
-	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &importer);
 
-	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice);
+	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer);
 	bool CreatePlatforms(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
 	void CreateCollisionPlane(BulletComponents &bulletPhysicsHandler, XMFLOAT3 translation);

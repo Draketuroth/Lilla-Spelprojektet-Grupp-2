@@ -77,7 +77,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	bulletPhysicsHandler.InitializeBulletPhysics();
 
-	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler)) {
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, importer)) {
 
 		MessageBox(
 			NULL,
@@ -159,13 +159,13 @@ void SceneContainer::drawPlatforms() {
 
 	UINT32 vertexSize = sizeof(TriangleVertex);
 	UINT32 offset = 0;
-	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	//gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gPlatformLayout);
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	gHandler.gDeviceContext->DrawIndexedInstanced(36, bHandler.nrOfCubes, 0, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(132, bHandler.nrOfCubes, 0, 0);
 	
 
 	}
