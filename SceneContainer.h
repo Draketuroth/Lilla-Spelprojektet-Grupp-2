@@ -29,9 +29,7 @@
 
 #include "Lava.h"
 
-#include <Windows.h>
-#include <mmsystem.h>
-#pragma comment(lib, "winmm.lib")
+#include "SoundManager.h"
 
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
@@ -106,10 +104,10 @@ public:
 
 	Enemy enemy;
 	Enemy enemies[3];
+	int nrOfEnemies;
 
 	BulletComponents bulletPhysicsHandler;
-
-	int nrOfEnemies;
+	SoundManager soundManager;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS

@@ -148,6 +148,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainCharacter.cpp" />
     <ClCompile Include="SceneContainer.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TextureComponents.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="MacroDefinitions.h" />
     <ClInclude Include="MainCharacter.h" />
     <ClInclude Include="SceneContainer.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TextureComponents.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="VertexType.h" />

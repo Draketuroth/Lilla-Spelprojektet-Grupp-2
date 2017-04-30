@@ -111,7 +111,6 @@ int RunApplication()
 				updateBuffers();
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
-
 				
 				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
 				if (!sceneContainer.character.getAlive())
