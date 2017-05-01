@@ -1,19 +1,10 @@
 //----------------------------------------------------------------------------------------------------------------------------------//
-// FBX Loader.cpp DirectX11
-// Based in FBX SDK 2015 for Visual Studio 2012
+// AnimationHandler.cpp
+// 
 // BTH - Fredrik Linde TA15 2016
 //----------------------------------------------------------------------------------------------------------------------------------//
 
 #include "AnimationHandler.h"
-
-// loading funktions
-//1. ProcessControlPoints (process vertices)
-//2. LoadSkeletonHierarchy (processes joints and clusters)
-//3. GatherAnimationData ( processes keyframes and weights)
-//4. CreateVertexData ( makes vertex buffer for vertices) 
-
-// updating 
-//1. buffercomponents->createSkeletalBuffer.
 
 //----------------------------------------------------------------------------------------------------------------------------------//
 // PRIMARY FUNCTIONS
@@ -22,7 +13,6 @@
 AnimationHandler::AnimationHandler() {
 
 	gBoneBuffer = nullptr;
-	gBoneVertexBuffer = nullptr;
 }
 
 AnimationHandler::~AnimationHandler() {
@@ -33,7 +23,6 @@ AnimationHandler::~AnimationHandler() {
 void AnimationHandler::ReleaseAll() {
 
 	SAFE_RELEASE(gBoneBuffer);
-	SAFE_RELEASE(gBoneVertexBuffer);
 }
 
 void AnimationHandler::UpdateAnimation(ID3D11DeviceContext* gDeviceContext, int animIndex, FileImporter &importer) {

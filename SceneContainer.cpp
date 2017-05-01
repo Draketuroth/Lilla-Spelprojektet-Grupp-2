@@ -27,7 +27,7 @@ void SceneContainer::releaseAll() {
 	bHandler.ReleaseAll();
 	tHandler.ReleaseAll();
 
-	//character.releaseAll();
+	character.releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 	enemies[0].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 
 	deferredObject.ReleaseAll();
@@ -287,7 +287,7 @@ void SceneContainer::renderCharacters()
 
 	ID3D11Buffer* nullBuffer = { nullptr };
 	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
-	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &animHandler.gBoneVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &character.vertexBuffer, &vertexSize, &offset);
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);

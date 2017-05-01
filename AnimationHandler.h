@@ -158,13 +158,11 @@ public:
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	ID3D11Buffer* gBoneBuffer;
-	ID3D11Buffer* gBoneVertexBuffer;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// PRIMARY FUNCTIONS AND VARIABLES
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	XMMATRIX Load4X4JointTransformations(Joint joint, int transformIndex);
 	void UpdateAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	

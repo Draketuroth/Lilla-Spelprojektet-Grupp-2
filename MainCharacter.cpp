@@ -31,15 +31,15 @@ MainCharacter::~MainCharacter()
 
 }
 
-void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &fbxImporter, FileImporter &importer) {
+void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer) {
 
 	currentAnimIndex = 0;
 
 	// Main character function
-	loadVertices(importer, fbxImporter, graphicDevice);
+	loadVertices(importer, animHandler, graphicDevice);
 
 	// Base character functions
-	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
+	createBuffers(graphicDevice, vertices, animHandler, skinData);
 	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.6, 0.8f, 0.6), bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 
@@ -191,7 +191,7 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 	return angle;
 }
 
-void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &fbxImporter, ID3D11Device* &graphicDevice) {
+void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &animHandler, ID3D11Device* &graphicDevice) {
 
 	HRESULT hr;
 
@@ -222,7 +222,7 @@ void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &fbxIm
 		boneVertex.weights[2] = importer.skinnedMeshes[0].vertices[i].weights[2];
 		boneVertex.weights[3] = importer.skinnedMeshes[0].vertices[i].weights[3];
 
-		fbxVector.push_back(boneVertex);
+		vertices.push_back(boneVertex);
 
 	}
 
@@ -231,7 +231,7 @@ void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &fbxIm
 		XMMATRIX inversedBindPose = importer.skinnedMeshes[0].hierarchy[i].inverseBindPoseMatrix; // converts from float4x4 too xmmatrix
 		
 		skinData.gBoneTransform[i] = inversedBindPose;
-		fbxImporter.invertedBindPose[i] = inversedBindPose; // copy on the cpu
+		animHandler.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
 	}
 }
