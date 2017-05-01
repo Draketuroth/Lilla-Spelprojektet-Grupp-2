@@ -97,16 +97,20 @@ bool FileImporter::readFormat() {
 
 				if (meshHeader[i].hasTexture) {
 
-					size_t stringSize;
-					in.read(reinterpret_cast<char*>(&stringSize), sizeof(size_t));
-					char *buffer = new char[stringSize];
+					uint32_t stringSize;
+					char* buffer;
 
+					in.read(reinterpret_cast<char *>(&stringSize), sizeof(uint32_t));
+
+					assert(stringSize < 30);
+
+					buffer = new char[stringSize];
 					in.read(buffer, stringSize);
-
-					buffer[stringSize] = '\0';
-					currentMesh.textureName = buffer;
+					currentMesh.textureName.assign(buffer);
 
 					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
+
+					delete buffer;
 
 				}
 
@@ -186,16 +190,20 @@ bool FileImporter::readFormat() {
 
 				if (meshHeader[i].hasTexture) {
 
-					size_t stringSize;
-					in.read(reinterpret_cast<char*>(&stringSize), sizeof(size_t));
-					char *buffer = new char[stringSize];
+					uint32_t stringSize;
+					char* buffer;
 
+					in.read(reinterpret_cast<char *>(&stringSize), sizeof(uint32_t));
+
+					assert(stringSize < 30);
+
+					buffer = new char[stringSize];
 					in.read(buffer, stringSize);
-			
-					buffer[stringSize] = '\0';
-					currentMesh.textureName = buffer;
+					currentMesh.textureName.assign(buffer);
 
 					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
+
+					delete buffer;
 
 				}
 
