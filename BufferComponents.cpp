@@ -10,7 +10,7 @@ BufferComponents::BufferComponents() {
 	eyePosF = { 0, 0, 4 };
 	lookAtF = { 0, 1, 0 };
 	upF = { 0, 1, 0 };
-
+	lerpScalar = 0;
 
 	eyePos = XMLoadFloat3(&eyePosF);
 	lookAt = XMLoadFloat3(&lookAtF);
@@ -277,11 +277,20 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 	for (int i = 0; i < cubes; i++) {
 
-		cubeObjects[i].ID = i + 1;
+		cubeObjects[nrOfCubes].ID = i;
 		xOffsetValue = xOffset;
 		yOffsetValue = 0;
 		zOffsetValue = spacing;
 
+
+		btScalar converterX;
+		btScalar converterZ;
+		converterX = xOffsetValue;
+		converterZ = zOffsetValue;
+	
+		cubeObjects[nrOfCubes].startPos.setX(converterX);
+		cubeObjects[nrOfCubes].startPos.setZ(converterZ);
+		
 		//----------------------------------------------------------------------------------------------------------------------------------//
 		// CREATE RIGID BODY
 		//----------------------------------------------------------------------------------------------------------------------------------//
@@ -364,7 +373,7 @@ void BufferComponents::updatePlatformWorldMatrices()
 
 	if (GetAsyncKeyState('L'))
 	{
-		platformDecension(cubeObjects[50]);
+		platformDecension(cubeObjects[0]);
 		XMMATRIX transform;
 		XMFLOAT4X4 data;
 		XMVECTOR t;
@@ -386,6 +395,11 @@ void BufferComponents::updatePlatformWorldMatrices()
 
 		// Build the new world matrix
 		cout << pos.x << " " << pos.y << " "<< pos.z << endl;
+		
+	}
+	if (GetAsyncKeyState('J'))
+	{
+		platformAcension(cubeObjects[0]);
 		
 	}
 	
@@ -645,20 +659,75 @@ void BufferComponents::platformDecension(CubeObjects cube)
 	btScalar rigidYvalue = pos.y;
 	btScalar rigidZvalue = pos.z;
 
-	btVector3 startPos(rigidXvalue,rigidYvalue,rigidZvalue);
-	btVector3 endPos = { rigidXvalue,-11,rigidZvalue };
+	btVector3 startPos(cube.startPos.x(),cube.startPos.y(),cube.startPos.z());
+	btVector3 endPos = { cube.startPos.x(),-11,cube.startPos.z() };
 
-	btVector3 lerpResult = lerp(startPos, endPos, 0.005f);
+	if (pos.y > -11)
+	{
+		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
+		lerpScalar += 0.001f;
+		btMatrix3x3 movementMatrix;
+		movementMatrix.setIdentity();
+		btTransform plat{ movementMatrix,lerpResult };
 
-	btMatrix3x3 movementMatrix;
-	movementMatrix.setIdentity();
-	btTransform plat{ movementMatrix,lerpResult };
+
+		cube.rigidBody->setCollisionFlags(cube.rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+		cube.rigidBody->setActivationState(DISABLE_DEACTIVATION);
+
+		//cube.rigidBody->translate(btVector3(0, 1, 0));
+		cube.rigidBody->getMotionState()->setWorldTransform(plat);
+	}
+	else
+	{
+		lerpScalar = 0;
+	}
+	
+
+}
+void BufferComponents::platformAcension(CubeObjects cube)
+{
+
+	btTransform rigidCube;
+	XMFLOAT4X4 data;
+	XMMATRIX transform;
+	XMFLOAT3 pos;
+
+	XMVECTOR t;
+	XMVECTOR s;
+	XMVECTOR r;
+
+	cube.rigidBody->getMotionState()->getWorldTransform(rigidCube);
+	rigidCube.getOpenGLMatrix((float*)&data);
+
+	transform = XMLoadFloat4x4(&data);
+	XMMatrixDecompose(&s, &r, &t, transform);
+
+	XMStoreFloat3(&pos, t);
+
+	btScalar rigidXvalue = pos.x;
+	btScalar rigidYvalue = pos.y;
+	btScalar rigidZvalue = pos.z;
+
+	btVector3 startPos(cube.startPos.x(), -11, cube.startPos.z());
+	btVector3 endPos = { cube.startPos.x(),cube.startPos.y(),cube.startPos.z() };
+
+	if (pos.y < cube.startPos.y())
+	{
+		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
+		lerpScalar += 0.001f;
+		btMatrix3x3 movementMatrix;
+		movementMatrix.setIdentity();
+		btTransform plat{ movementMatrix,lerpResult };
+
+
+		cube.rigidBody->setCollisionFlags(cube.rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+		cube.rigidBody->setActivationState(DISABLE_DEACTIVATION);
 
 	
-	cube.rigidBody->setCollisionFlags(cube.rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-	cube.rigidBody->setActivationState(DISABLE_DEACTIVATION);
-
-	//cube.rigidBody->translate(btVector3(0, 1, 0));
-	cube.rigidBody->getMotionState()->setWorldTransform(plat);
-
+		cube.rigidBody->getMotionState()->setWorldTransform(plat);
+	}
+	else
+	{
+		lerpScalar = 0;
+	}
 }

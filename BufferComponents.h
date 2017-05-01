@@ -43,6 +43,7 @@ struct CubeObjects {
 	XMMATRIX worldMatrix;
 	bool renderCheck;
 	int ID;
+	btVector3 startPos;
 };
 
 class BufferComponents {
@@ -93,12 +94,15 @@ public:
 
 	float spaceX;
 	float spaceZ;
+	float lerpScalar;
+
 
 	float incrementSpace(float offset);
 	float centerPlatformsColls(float offset);
 	float centerPlatformsRows(float offset);
 
 	void platformDecension(CubeObjects cube);
+	void platformAcension(CubeObjects cube);
 
 
 
