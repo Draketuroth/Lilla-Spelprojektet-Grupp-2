@@ -103,6 +103,8 @@ bool FileImporter::readFormat() {
 					in.read(reinterpret_cast<char *>(&stringSize), sizeof(uint32_t));
 
 					assert(stringSize < 30);
+					
+					buffer.resize(stringSize);
 
 					in.read(&buffer[0], stringSize);
 					currentMesh.textureName = &buffer[0];
@@ -192,6 +194,8 @@ bool FileImporter::readFormat() {
 					in.read(reinterpret_cast<char *>(&stringSize), sizeof(uint32_t));
 
 					assert(stringSize < 30);
+
+					buffer.resize(stringSize);
 
 					in.read(&buffer[0], stringSize);
 					currentMesh.textureName = &buffer[0];

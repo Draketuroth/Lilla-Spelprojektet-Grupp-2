@@ -104,7 +104,7 @@ struct Joint_Animation {
 struct Joint_Container {
 
 	XMMATRIX inverseBindPoseMatrix;
-	Joint_Animation Animations[3];
+	Joint_Animation Animations[5];
 };
 
 struct Mesh_Skinned {
