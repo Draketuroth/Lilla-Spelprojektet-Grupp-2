@@ -88,12 +88,6 @@
     <Filter Include="Source Files\HLSL\EnemyShaders">
       <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\FBXLoader">
-      <UniqueIdentifier>{57230deb-6b5f-4aeb-bfdd-20b77b9940aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FBXLoader">
-      <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\FileImporter">
       <UniqueIdentifier>{d166d049-d3fa-4c44-a726-2b8b30f3c237}</UniqueIdentifier>
     </Filter>
@@ -102,6 +96,12 @@
     </Filter>
     <Filter Include="Source Files\HLSL\RayShaders">
       <UniqueIdentifier>{c20622da-1fec-45fb-a027-f6afdfe48c6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AnimationHandler">
+      <UniqueIdentifier>{57230deb-6b5f-4aeb-bfdd-20b77b9940aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AnimationHandler">
+      <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -162,11 +162,11 @@
     <ClCompile Include="Lava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FBXLoader.cpp">
-      <Filter>Source Files\FBXLoader</Filter>
-    </ClCompile>
     <ClCompile Include="FileImporter.cpp">
       <Filter>Source Files\FileImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationHandler.cpp">
+      <Filter>Source Files\AnimationHandler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,11 +233,11 @@
     <ClInclude Include="Lava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FBXLoader.h">
-      <Filter>Header Files\FBXLoader</Filter>
-    </ClInclude>
     <ClInclude Include="FileImporter.h">
       <Filter>Header Files\FileImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationHandler.h">
+      <Filter>Header Files\AnimationHandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -35,7 +35,7 @@ void SceneContainer::releaseAll() {
 	lightShaders.ReleaseAll();
 
 	lava.ReleaseAll();
-	fbxImporter.ReleaseAll();
+	animHandler.ReleaseAll();
 	bulletPhysicsHandler.ReleaseAll();
 }
 
@@ -127,7 +127,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			PostQuitMessage(0);
 	}
 
-	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter, importer);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, importer);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
 	
 	return true;
@@ -275,7 +275,7 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &fbxImporter.gBoneBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gBoneBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
@@ -287,7 +287,7 @@ void SceneContainer::renderCharacters()
 
 	ID3D11Buffer* nullBuffer = { nullptr };
 	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
-	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &fbxImporter.gBoneVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &animHandler.gBoneVertexBuffer, &vertexSize, &offset);
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);

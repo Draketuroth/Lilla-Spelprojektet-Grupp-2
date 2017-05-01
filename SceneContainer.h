@@ -24,7 +24,7 @@
 #include "MainCharacter.h"
 #include "Enemies.h"
 
-#include "FBXLoader.h"
+#include "AnimationHandler.h"
 #include "FileImporter.h"
 
 #include "Lava.h"
@@ -98,7 +98,7 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
-	FbxImport fbxImporter;
+	AnimationHandler animHandler;
 	Lava lava; 
 
 	Enemy enemy;

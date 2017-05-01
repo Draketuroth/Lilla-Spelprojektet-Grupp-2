@@ -141,7 +141,7 @@
     <ClCompile Include="DeferredBuffersClass.cpp" />
     <ClCompile Include="DeferredShaderClass.cpp" />
     <ClCompile Include="Enemies.cpp" />
-    <ClCompile Include="FBXLoader.cpp" />
+    <ClCompile Include="AnimationHandler.cpp" />
     <ClCompile Include="FileImporter.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GraphicComponents.cpp" />
@@ -167,7 +167,7 @@
     <ClInclude Include="DeferredBuffersClass.h" />
     <ClInclude Include="DeferredShaderClass.h" />
     <ClInclude Include="Enemies.h" />
-    <ClInclude Include="FBXLoader.h" />
+    <ClInclude Include="AnimationHandler.h" />
     <ClInclude Include="FileImporter.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GraphicComponents.h" />

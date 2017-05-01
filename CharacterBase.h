@@ -11,7 +11,7 @@
 #include "MacroDefinitions.h"
 #include "BufferComponents.h"
 #include "GraphicComponents.h"
-#include "FBXLoader.h"
+#include "AnimationHandler.h"
 #include "FileImporter.h"
 
 #include <SFML\Audio.hpp>
@@ -65,7 +65,7 @@ public:
 	XMMATRIX getPlayerTanslationMatrix();
 
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
-	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData);
+	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, AnimationHandler &fbxImporter, VS_SKINNED_DATA &skinData);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 

@@ -88,7 +88,7 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 }
 
 //-------------Create Buffer and Draw -----------------------
-bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData)
+bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, AnimationHandler &fbxImporter, VS_SKINNED_DATA &skinData)
 {
 	HRESULT hr;
 

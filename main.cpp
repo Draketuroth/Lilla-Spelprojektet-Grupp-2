@@ -171,14 +171,14 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-	sceneContainer.fbxImporter.animTimePos += timer.getDeltaTime() * 50;
+	sceneContainer.animHandler.animTimePos += timer.getDeltaTime() * 50;
 
-	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.importer.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
+	if (sceneContainer.animHandler.animTimePos >= sceneContainer.importer.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
-		sceneContainer.fbxImporter.animTimePos = 0.0f;
+		sceneContainer.animHandler.animTimePos = 0.0f;
 	}
 
-	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.importer);
+	sceneContainer.animHandler.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.importer);
 }
 
 void lavamovmentUpdate()

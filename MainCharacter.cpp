@@ -31,7 +31,7 @@ MainCharacter::~MainCharacter()
 
 }
 
-void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter, FileImporter &importer) {
+void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &fbxImporter, FileImporter &importer) {
 
 	currentAnimIndex = 0;
 
@@ -191,7 +191,7 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 	return angle;
 }
 
-void MainCharacter::loadVertices(FileImporter &importer, FbxImport &fbxImporter, ID3D11Device* &graphicDevice) {
+void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &fbxImporter, ID3D11Device* &graphicDevice) {
 
 	HRESULT hr;
 
