@@ -402,6 +402,11 @@ void BufferComponents::updatePlatformWorldMatrices()
 		platformAcension(cubeObjects[0]);
 		
 	}
+	if (GetAsyncKeyState('K'))
+	{
+		platformBreaking(cubeObjects[0]);
+
+	}
 	
 }
 
@@ -730,4 +735,58 @@ void BufferComponents::platformAcension(CubeObjects cube)
 	{
 		lerpScalar = 0;
 	}
+}
+void BufferComponents::platformBreaking(CubeObjects cube)
+{
+	btTransform rigidCube;
+	XMFLOAT4X4 data;
+	XMMATRIX transform;
+	XMFLOAT3 pos;
+
+	XMVECTOR t;
+	XMVECTOR s;
+	XMVECTOR r;
+
+	cube.rigidBody->getMotionState()->getWorldTransform(rigidCube);
+	rigidCube.getOpenGLMatrix((float*)&data);
+
+	transform = XMLoadFloat4x4(&data);
+	XMMatrixDecompose(&s, &r, &t, transform);
+
+	XMStoreFloat3(&pos, t);
+
+	btScalar rigidXvalue = pos.x;
+	btScalar rigidYvalue = pos.y;
+	btScalar rigidZvalue = pos.z;
+
+	btVector3 startPos(pos.x, pos.y, pos.z);
+	btVector3 endPos;
+
+	if (pos.x > cube.startPos.x()+0.05f)
+	{
+		
+		endPos = { pos.x - 0.1f,pos.y,pos.z };
+	}
+	else
+	{
+		
+		 endPos = { pos.x + 0.1f,pos.y,pos.z };
+	}
+	
+
+	
+		btVector3 lerpResult = lerp(startPos, endPos, 1);
+		
+		btMatrix3x3 movementMatrix;
+		movementMatrix.setIdentity();
+		btTransform plat{ movementMatrix,lerpResult };
+
+
+		cube.rigidBody->setCollisionFlags(cube.rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+		cube.rigidBody->setActivationState(DISABLE_DEACTIVATION);
+
+		//cube.rigidBody->translate(btVector3(0, 1, 0));
+		cube.rigidBody->getMotionState()->setWorldTransform(plat);
+	
+	
 }

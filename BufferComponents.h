@@ -103,6 +103,7 @@ public:
 
 	void platformDecension(CubeObjects cube);
 	void platformAcension(CubeObjects cube);
+	void platformBreaking(CubeObjects cube);
 
 
 
