@@ -265,7 +265,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 		XMFLOAT3 characterPos = this->getBoundingBox().Center;
 		XMMATRIX playerTranslation = getPlayerTanslationMatrix();
-
+		
 		float centerX = characterPos.x + sin(angle);
 		float centerZ = characterPos.z + cos(angle);
 

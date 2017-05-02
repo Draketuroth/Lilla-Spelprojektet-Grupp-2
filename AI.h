@@ -21,8 +21,8 @@ public:
 	void iceAI(MainCharacter &player, Enemy &self);
 	void fireAI(MainCharacter &player, Enemy &self);
 
-	void attackMelee(float distance, MainCharacter player);
-	void attackRanged(float distance, MainCharacter player);
+	void attackMelee(MainCharacter &player, Enemy &self);
+	void attackRanged(MainCharacter &player, Enemy &self);
 
 	void moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy &self);
 	void moveAwayFromPlayer(XMFLOAT3 playerPosition, Enemy &self);

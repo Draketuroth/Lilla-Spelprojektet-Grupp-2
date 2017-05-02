@@ -19,7 +19,7 @@ void AI::iceAI(MainCharacter &player, Enemy &self)
 
 	if (distance <= 2)
 	{
-		//attackMelee(distance, player);
+		attackMelee(player, self);
 	}
 	else
 	{
@@ -77,16 +77,47 @@ void AI::fireAI(MainCharacter &player, Enemy &self)
 
 }
 
-void AI::attackMelee(float distance, MainCharacter player)
+void AI::attackMelee(MainCharacter &player, Enemy &self)
 {
 	if (!attacking && attackTimer <= 0)
 	{
 		attacking = true;
 		attackTimer = attackCd;
+
 		
-		if (distance <= 2)
+		XMFLOAT3 enemyPos = self.getBoundingBox().Center;
+		XMMATRIX enemyTranslation = self.getPlayerTanslationMatrix();
+
+		XMVECTOR forwardVector = self.getForwardVector();
+		XMFLOAT3 forward;
+		XMStoreFloat3(&forward, forwardVector);
+
+		XMFLOAT3 attackBoxCenter;
+
+		attackBoxCenter.x = enemyPos.x * forward.x;
+		attackBoxCenter.y = enemyPos.y;
+		attackBoxCenter.z = enemyPos.z * forward.z;
+
+		XMFLOAT3 attackBoxRange = { 2, 2, 2 };
+
+		BoundingBox attackBox = BoundingBox(attackBoxCenter, attackBoxRange);
+		attackBox.Transform(attackBox, enemyTranslation);
+		
+		BoundingBox playerBox = player.getBoundingBox();
+		if (playerBox.Intersects(attackBox))
 		{
+			cout << "PLAYER GOT HIT" << endl;
+
 			player.setHealth(player.getHealth() - 1);
+
+			//Implement knockback
+
+
+			if (player.getHealth() <= 0 && player.getAlive() == true)
+			{
+				player.setAlive(false);
+				cout << "PLAYER IS DEAD" << endl;
+			}
 		}
 	}
 		
@@ -102,29 +133,29 @@ void AI::attackMelee(float distance, MainCharacter player)
 	}
 		
 }
-void AI::attackRanged(float distance, MainCharacter player)
+void AI::attackRanged(MainCharacter &player, Enemy &self)
 {
-	if (!attacking && attackTimer <= 0)
-	{
-		attacking = true;
-		attackTimer = attackCd;
-	
-		if (distance <= 8)
-		{
-			//ranged attack
-		}
-	}
-	
-	if (attacking)
-	{
-		if (attackTimer > 0)
-			attackTimer -= timer.getDeltaTime();
-		else
-		{
-			attacking = false;
-		}
-		//play enemy attack animation here
-	}
+	//if (!attacking && attackTimer <= 0)
+	//{
+	//	attacking = true;
+	//	attackTimer = attackCd;
+	//
+	//	if (distance <= 8)
+	//	{
+	//		//ranged attack
+	//	}
+	//}
+	//
+	//if (attacking)
+	//{
+	//	if (attackTimer > 0)
+	//		attackTimer -= timer.getDeltaTime();
+	//	else
+	//	{
+	//		attacking = false;
+	//	}
+	//	//play enemy attack animation here
+	//}
 }
 
 void AI::moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy &self)
