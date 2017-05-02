@@ -9,7 +9,6 @@
 #include <DirectXMath.h>
 #include <iostream>
 #include <fstream>
-#include <fbxsdk.h>
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
@@ -105,7 +104,7 @@ struct Joint_Animation {
 struct Joint_Container {
 
 	XMMATRIX inverseBindPoseMatrix;
-	Joint_Animation Animations[3];
+	Joint_Animation Animations[5];
 };
 
 struct Mesh_Skinned {
@@ -135,7 +134,7 @@ public:
 	FileImporter();
 	~FileImporter();
 
-	bool readFormat();
+	bool readFormat(string file);
 
 	vector<Mesh_Header> meshHeader;
 	vector<Mesh_Standard> standardMeshes;

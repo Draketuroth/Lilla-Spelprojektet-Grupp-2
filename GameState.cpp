@@ -1,13 +1,20 @@
 #include "GameState.h"
+
 GameState::GameState()
 {
 	this->state = MAIN_MENU;
 
+	soundBuffer.loadFromFile("Sounds//click.wav");
+	arenaMusic.openFromFile("Sounds//music.wav");
+	clickSound.setBuffer(soundBuffer);
+
 }
+
 GameState::~GameState()
 {
 
 }
+
 int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMessage)
 {
 	if (this->state == MAIN_MENU)
@@ -24,6 +31,7 @@ int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMe
 	}
 	return state;
 }
+
 int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 {
 	if (this->state == MAIN_MENU)
@@ -49,6 +57,8 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 			cout << "Mouse X: " << this->floatMouse.x << "  Mouse Y: " << this->floatMouse.y << endl;
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
+				clickSound.play();
+				arenaMusic.play();
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -59,10 +69,12 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 	}
 	return state;
 }
+
 int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMessage)
 {
 	if (this->state == PAUSE_MENU)
 	{
+		arenaMusic.pause();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -83,6 +95,8 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMess
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
+				clickSound.play();
+				arenaMusic.play();
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -94,10 +108,12 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMess
 
 	return state;
 }
+
 int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 {
 	if (this->state == GAME_OVER)
 	{
+		arenaMusic.stop();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -119,6 +135,8 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
+				clickSound.play();
+				arenaMusic.play();
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -130,6 +148,7 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 	}
 	return state;
 }
+
 void GameState::renderMenus(SceneContainer scene)
 {
 	scene.clear();
@@ -151,6 +170,7 @@ void GameState::renderMenus(SceneContainer scene)
 
 
 }
+
 void GameState::getMousePos(HWND windowHandle, SceneContainer scene)
 {
 	GetCursorPos(&this->mousePos);
@@ -160,6 +180,7 @@ void GameState::getMousePos(HWND windowHandle, SceneContainer scene)
 	this->floatMouse.x = (2 * this->floatMouse.x) / WIDTH - 1;
 	this->floatMouse.y = -(2 * this->floatMouse.y) / HEIGHT + 1;
 }
+
 void GameState::checkGameState()
 {
 	if (this->state == START_GAME)

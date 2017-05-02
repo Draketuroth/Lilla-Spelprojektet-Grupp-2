@@ -5,7 +5,7 @@ SceneContainer::SceneContainer() {
 
 	// Initialize handler and main character
 
-	importer = FileImporter();
+	mainCharacterFile = FileImporter();
 	gHandler = GraphicComponents();
 	bHandler = BufferComponents();
 	tHandler = TextureComponents();
@@ -14,7 +14,6 @@ SceneContainer::SceneContainer() {
 	enemies[0] = Enemy(0, { 0, 20, 0 });
 
 	bulletPhysicsHandler = BulletComponents();
-
 	this->nrOfEnemies = 0;
 }
 
@@ -28,7 +27,7 @@ void SceneContainer::releaseAll() {
 	bHandler.ReleaseAll();
 	tHandler.ReleaseAll();
 
-	//character.releaseAll();
+	character.releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 	enemies[0].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 
 	deferredObject.ReleaseAll();
@@ -36,16 +35,15 @@ void SceneContainer::releaseAll() {
 	lightShaders.ReleaseAll();
 
 	lava.ReleaseAll();
-	fbxImporter.ReleaseAll();
+	animHandler.ReleaseAll();
 	bulletPhysicsHandler.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
 
-	if (!importer.readFormat()) {
+	if (!readFiles()) {
 
-		// If the window cannot be created during startup, it's more known as a terminal error
-		// The MessageBox function will display a message and inform us of the problem
+		// If the required files can't be read during startup, quit the application
 		MessageBox(
 			NULL,
 			L"CRITICAL ERROR: Format couldn't be read, please look for format folder in solution\nClosing application...",
@@ -60,7 +58,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 		// The MessageBox function will display a message and inform us of the problem
 		MessageBox(
 			NULL,
-			L"CRITICAL ERROR: Window couldn't be initialized, investigate window initializr function\nClosing application...",
+			L"CRITICAL ERROR: Window couldn't be initialized, investigate window initializer function\nClosing application...",
 			L"ERROR",
 			MB_OK);
 			PostQuitMessage(0);
@@ -78,7 +76,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	bulletPhysicsHandler.InitializeBulletPhysics();
 
-	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler)) {
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, mainCharacterFile)) {
 
 		MessageBox(
 			NULL,
@@ -128,11 +126,26 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			PostQuitMessage(0);
 	}
 
-	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter, importer);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
 	
 	return true;
 
+}
+
+bool SceneContainer::readFiles() {
+
+	if (!mainCharacterFile.readFormat("Format//mainCharacter_Binary.txt")) {
+
+		return false;
+	}
+
+	/*if (!iceEnemyFile.readFormat("Format//iceEnemy_Binary.txt")) {
+
+		return false;
+	}*/
+
+	return true;
 }
 
 void SceneContainer::update(HWND &windowHandle)
@@ -141,6 +154,8 @@ void SceneContainer::update(HWND &windowHandle)
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
+
+	enemies[0].moveTowardsPosition(character.getPos());
 
 	render();
 }
@@ -167,6 +182,7 @@ void SceneContainer::drawPlatforms() {
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 	gHandler.gDeviceContext->DrawIndexedInstanced(36, bHandler.nrOfCubes, 0, 0, 0);
+	//gHandler.gDeviceContext->DrawInstanced(132, bHandler.nrOfCubes, 0, 0);
 	
 
 	}
@@ -276,7 +292,7 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &fbxImporter.gBoneBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gBoneBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
@@ -288,12 +304,12 @@ void SceneContainer::renderCharacters()
 
 	ID3D11Buffer* nullBuffer = { nullptr };
 	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
-	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &fbxImporter.gBoneVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &character.vertexBuffer, &vertexSize, &offset);
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 
-	character.draw(gHandler.gDeviceContext, importer.skinnedMeshes[0].vertices.size());
+	character.draw(gHandler.gDeviceContext, mainCharacterFile.skinnedMeshes[0].vertices.size());
 
 	character.resetWorldMatrix();
 	

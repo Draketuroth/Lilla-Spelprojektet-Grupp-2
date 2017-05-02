@@ -8,6 +8,7 @@
 //#include <DirectXMath.h>
 //#include <DirectXCollision.h>
 #include "SceneContainer.h"
+
 using namespace DirectX;
 using namespace std;
 
@@ -37,7 +38,10 @@ public:
 
 	void renderMenus(SceneContainer scene);
 
+	sf::SoundBuffer soundBuffer;
 
+	sf::Music arenaMusic;
+	sf::Sound clickSound;
 
 
 };

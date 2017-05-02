@@ -21,6 +21,9 @@ MainCharacter::MainCharacter()
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 	this->test = 0;
+
+	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
+	soundBuffer[1].loadFromFile("Sounds//sword.wav");
 }
 
 MainCharacter::~MainCharacter()
@@ -28,17 +31,20 @@ MainCharacter::~MainCharacter()
 
 }
 
-void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter, FileImporter &importer) {
+void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer) {
 
 	currentAnimIndex = 0;
 
 	// Main character function
-	loadVertices(importer, fbxImporter, graphicDevice);
+	loadVertices(importer, animHandler, graphicDevice);
 
 	// Base character functions
-	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
+	createBuffers(graphicDevice, vertices, animHandler, skinData);
 	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.6, 0.8f, 0.6), bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
+
+	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
+	soundBuffer[1].loadFromFile("Sounds//sword.wav");
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -185,7 +191,7 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 	return angle;
 }
 
-void MainCharacter::loadVertices(FileImporter &importer, FbxImport &fbxImporter, ID3D11Device* &graphicDevice) {
+void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &animHandler, ID3D11Device* &graphicDevice) {
 
 	HRESULT hr;
 
@@ -216,7 +222,7 @@ void MainCharacter::loadVertices(FileImporter &importer, FbxImport &fbxImporter,
 		boneVertex.weights[2] = importer.skinnedMeshes[0].vertices[i].weights[2];
 		boneVertex.weights[3] = importer.skinnedMeshes[0].vertices[i].weights[3];
 
-		fbxVector.push_back(boneVertex);
+		vertices.push_back(boneVertex);
 
 	}
 
@@ -225,7 +231,7 @@ void MainCharacter::loadVertices(FileImporter &importer, FbxImport &fbxImporter,
 		XMMATRIX inversedBindPose = importer.skinnedMeshes[0].hierarchy[i].inverseBindPoseMatrix; // converts from float4x4 too xmmatrix
 		
 		skinData.gBoneTransform[i] = inversedBindPose;
-		fbxImporter.invertedBindPose[i] = inversedBindPose; // copy on the cpu
+		animHandler.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
 	}
 }
@@ -241,10 +247,17 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 	return R;
 }
 
+
+
+
 void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
 {
-	if (GetAsyncKeyState(MK_LBUTTON) && ! attacking && attackTimer <= 0)
+	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
+
+		attackSound.setBuffer(soundBuffer[1]);
+		attackSound.play();
+
 		attacking = true;
 		attackTimer = attackCd;
 		//-----------------Calculate the hit area-----------------------
@@ -262,6 +275,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 		meleeBox.Transform(meleeBox, playerTranslation);
 		//---------------------------------------------------------------
+
 		//---------Attack------------------------------------------------
 		
 		for (int i = 0; i < nrOfEnemies; i++)
@@ -306,6 +320,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
 {
+
 	XMFLOAT3 start, end;
 	this->rigidBody->setIslandTag(characterRigid);
 	for (size_t i = 0; i < nrOfEnemies; i++)
@@ -315,6 +330,9 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
+
+		attackSound.setBuffer(soundBuffer[0]);
+		attackSound.play();
 		
 		float angle = this->characterLookAt(windowHandle);
 	

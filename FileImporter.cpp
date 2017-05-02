@@ -11,9 +11,9 @@ FileImporter::~FileImporter() {
 
 }
 
-bool FileImporter::readFormat() {
+bool FileImporter::readFormat(string file) {
 
-	ifstream in("Format//vertexBinaryData.txt", ios::binary);
+	ifstream in(file, ios::binary);
 
 	if (in.is_open()){
 
@@ -97,16 +97,19 @@ bool FileImporter::readFormat() {
 
 				if (meshHeader[i].hasTexture) {
 
-					size_t stringSize;
-					in.read(reinterpret_cast<char*>(&stringSize), sizeof(size_t));
-					char *buffer = new char[stringSize];
+					uint32_t stringSize;
+					string buffer;
 
-					in.read(buffer, stringSize);
+					in.read(reinterpret_cast<char *>(&stringSize), sizeof(uint32_t));
 
-					buffer[stringSize] = '\0';
-					currentMesh.textureName = buffer;
+					assert(stringSize < 30);
+					
+					buffer.resize(stringSize);
 
+					in.read(&buffer[0], stringSize);
+					currentMesh.textureName = &buffer[0];
 					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
+
 
 				}
 
@@ -115,7 +118,7 @@ bool FileImporter::readFormat() {
 					currentMesh.textureName = "No texture attached to this mesh";
 					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
 
-
+				}
 					//------------------------------------------------------//
 					// GATHER VERTICES
 					//------------------------------------------------------//
@@ -140,7 +143,6 @@ bool FileImporter::readFormat() {
 
 				}
 			
-			}
 
 			else if (meshHeader[i].vertexLayout == 1) {
 
@@ -186,15 +188,18 @@ bool FileImporter::readFormat() {
 
 				if (meshHeader[i].hasTexture) {
 
-					size_t stringSize;
-					in.read(reinterpret_cast<char*>(&stringSize), sizeof(size_t));
-					char *buffer = new char[stringSize];
+					uint32_t stringSize;
+					string buffer;
 
-					in.read(buffer, stringSize);
-			
-					buffer[stringSize] = '\0';
-					currentMesh.textureName = buffer;
+					in.read(reinterpret_cast<char *>(&stringSize), sizeof(uint32_t));
 
+					assert(stringSize < 30);
+
+					buffer.resize(stringSize);
+
+					in.read(&buffer[0], stringSize);
+					currentMesh.textureName = &buffer[0];
+					
 					cout << "Texture Name: " << currentMesh.textureName.c_str() << endl;
 
 				}
@@ -282,6 +287,8 @@ bool FileImporter::readFormat() {
 						joints[i].Animations[animationIndex].Length = keyFramesCount;
 
 					}
+
+				cout << "Animation " << animationIndex << " loaded!" << endl;
 
 				}
 

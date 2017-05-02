@@ -1,5 +1,7 @@
-#pragma once
+#ifndef ENEMIES_H
+#define ENEMIES_H
 #include "CharacterBase.h"
+
 class Enemy: public CharacterBase
 {
 public:
@@ -15,6 +17,9 @@ public:
 
 	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void EnemyPhysics();
+
+	void moveTowardsPosition(XMFLOAT3 position);
+	void avoidPosition(XMFLOAT3 position);
 	
 private:
 	ID3D11Buffer* gEnemieVertexBuffer;
@@ -24,5 +29,7 @@ private:
 	vector<unsigned int>indices;
 
 
+
 };
 
+#endif

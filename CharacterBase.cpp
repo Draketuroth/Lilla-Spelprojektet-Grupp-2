@@ -88,7 +88,7 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 }
 
 //-------------Create Buffer and Draw -----------------------
-bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData)
+bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, AnimationHandler &animHandler, VS_SKINNED_DATA &skinData)
 {
 	HRESULT hr;
 
@@ -112,7 +112,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bo
 	boneData.SysMemPitch = 0;
 	boneData.SysMemSlicePitch = 0;
 
-	hr = graphicDevice->CreateBuffer(&boneBufferDesc, &boneData, &fbxImporter.gBoneBuffer);
+	hr = graphicDevice->CreateBuffer(&boneBufferDesc, &boneData, &animHandler.gBoneBuffer);
 
 	if (FAILED(hr)) {
 
@@ -135,7 +135,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bo
 
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = &fbxVector[0];
-	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &fbxImporter.gBoneVertexBuffer);
+	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &vertexBuffer);
 
 	if (FAILED(hr)) {
 
