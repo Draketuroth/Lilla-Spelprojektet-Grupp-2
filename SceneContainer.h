@@ -24,6 +24,8 @@
 #include "MainCharacter.h"
 #include "Enemies.h"
 
+#include "AI.h"
+
 #include "AnimationHandler.h"
 #include "FileImporter.h"
 
@@ -87,6 +89,8 @@ public:
 	bool initialize(HWND &windowHandle);
 	void update(HWND &windowHandle);
 	bool readFiles();
+
+	void useAI(MainCharacter player, Enemy enemy);
 
 	FileImporter mainCharacterFile;
 	FileImporter iceEnemyFile;

@@ -174,6 +174,7 @@ void Enemy::EnemyPhysics()
 	timer.updateCurrentTime();
 }
 
+
 void Enemy::moveTowardsPosition(XMFLOAT3 position)
 {
 	XMFLOAT3 myPos = this->getPos();
@@ -185,9 +186,10 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 	this->rigidBody->applyCentralForce(direction * 0.5);
 
 
-
-	float maxSpeed = 3;
-	float minSpeed = -3;
+	//This is the speed of the enemy
+	//May be tweaked
+	float maxSpeed = 2;
+	float minSpeed = -2;
 	btVector3 speed = this->rigidBody->getLinearVelocity();
 
 	//X-led
@@ -213,9 +215,43 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 
 }
 
-void Enemy::avoidPosition(XMFLOAT3 position)
+void Enemy::avoidPlayer(XMFLOAT3 position)
 {
-	//implement
+	XMFLOAT3 myPos = this->getPos();
+	btVector3 positionAt = { myPos.x, myPos.y, myPos.z };
+	btVector3 positionTarget = { position.x, position.y, position.z };
+	btVector3 direction = positionTarget - positionAt;
+	direction.normalize();
+
+	this->rigidBody->applyCentralForce(direction * -0.5);
+
+
+	//This is the speed of the enemy
+	//May be tweaked
+	float maxSpeed = 2;
+	float minSpeed = -2;
+	btVector3 speed = this->rigidBody->getLinearVelocity();
+
+	//X-led
+	if (speed.getX() > maxSpeed)
+	{
+		speed.setX(maxSpeed);
+	}
+	if (speed.getX() < minSpeed)
+	{
+		speed.setX(minSpeed);
+	}
+	//Z-led
+	if (speed.getZ() > maxSpeed)
+	{
+		speed.setZ(maxSpeed);
+	}
+	if (speed.getZ() < minSpeed)
+	{
+		speed.setZ(minSpeed);
+	}
+
+	this->rigidBody->setLinearVelocity(speed);
 }
 
 //void Enemy::meleeAttacks(float distance)

@@ -155,9 +155,23 @@ void SceneContainer::update(HWND &windowHandle)
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
 
-	enemies[0].moveTowardsPosition(character.getPos());
+	//enemies[0].moveTowardsPosition(character.getPos());
+	enemies[0].avoidPlayer(character.getPos());
 
 	render();
+}
+
+void SceneContainer::useAI(MainCharacter player, Enemy enemy)
+{
+	if (enemy.getType() == 0)
+	{
+		//this->ai.iceAI(player, *this);
+	}
+	else if (enemy.getType() == 1)
+	{
+		//this->ai.fireAI(player, *this);
+	}
+
 }
 
 void SceneContainer::drawPlatforms() {

@@ -140,7 +140,7 @@ void AI::moveAwayFromPlayer(MainCharacter player, Enemy self)
 {
 	XMFLOAT3 position = player.getPos();
 
-	self.avoidPosition(position);
+	self.avoidPlayer(position);
 }
 
 float AI::getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos)

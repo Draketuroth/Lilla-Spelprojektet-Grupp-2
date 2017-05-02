@@ -19,7 +19,7 @@ public:
 	void EnemyPhysics();
 
 	void moveTowardsPosition(XMFLOAT3 position);
-	void avoidPosition(XMFLOAT3 position);
+	void avoidPlayer(XMFLOAT3 position);
 	
 private:
 	ID3D11Buffer* gEnemieVertexBuffer;
