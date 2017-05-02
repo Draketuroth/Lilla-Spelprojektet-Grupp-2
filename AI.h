@@ -18,14 +18,14 @@ public:
 	AI();
 	~AI();
 
-	void iceAI(MainCharacter player, Enemy self);
-	void fireAI(MainCharacter player, Enemy self);
+	void iceAI(MainCharacter &player, Enemy &self);
+	void fireAI(MainCharacter &player, Enemy &self);
 
 	void attackMelee(float distance, MainCharacter player);
 	void attackRanged(float distance, MainCharacter player);
 
-	void moveTowardsPlayer(MainCharacter player, Enemy self);
-	void moveAwayFromPlayer(MainCharacter player, Enemy self);
+	void moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy &self);
+	void moveAwayFromPlayer(XMFLOAT3 playerPosition, Enemy &self);
 
 	float getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos);
 

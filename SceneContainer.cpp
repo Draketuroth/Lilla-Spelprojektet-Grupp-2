@@ -15,6 +15,8 @@ SceneContainer::SceneContainer() {
 
 	bulletPhysicsHandler = BulletComponents();
 	this->nrOfEnemies = 0;
+
+	this->ai = AI();
 }
 
 SceneContainer::~SceneContainer() {
@@ -156,20 +158,22 @@ void SceneContainer::update(HWND &windowHandle)
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
 
 	//enemies[0].moveTowardsPosition(character.getPos());
-	enemies[0].avoidPlayer(character.getPos());
+	//enemies[0].avoidPlayer(character.getPos());
+
+	this->useAI(character, enemies[0]);
 
 	render();
 }
 
-void SceneContainer::useAI(MainCharacter player, Enemy enemy)
+void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 {
 	if (enemy.getType() == 0)
 	{
-		//this->ai.iceAI(player, *this);
+		this->ai.iceAI(player, enemy);
 	}
 	else if (enemy.getType() == 1)
 	{
-		//this->ai.fireAI(player, *this);
+		this->ai.fireAI(player, enemy);
 	}
 
 }

@@ -12,21 +12,19 @@ AI::~AI()
 
 //NOTES
 //we need the enemy's position to get he distance
-void AI::iceAI(MainCharacter player, Enemy self)
+void AI::iceAI(MainCharacter &player, Enemy &self)
 {
 	// vv  this has to update all the time!! Update function? vv
 	float distance = getDistance(player.getPos(), self.getPos());
 
 	if (distance <= 2)
 	{
-		attackMelee(distance, player);
+		//attackMelee(distance, player);
 	}
 	else
 	{
-		moveTowardsPlayer(player, self);
+		moveTowardsPlayer(player.getPos(), self);
 	}
-
-
 	//vvv ALT vvv
 
 	//else if (self.getHealth() < 2)
@@ -34,7 +32,6 @@ void AI::iceAI(MainCharacter player, Enemy self)
 	//	//move away from player
 	//}
 	
-
 	//vvv Notes vvv
 
 	/*get the player position and move towards it
@@ -51,21 +48,21 @@ void AI::iceAI(MainCharacter player, Enemy self)
 	//instead of approach the enemy
 
 }
-void AI::fireAI(MainCharacter player, Enemy self)
+void AI::fireAI(MainCharacter &player, Enemy &self)
 {
 	float distance = getDistance(player.getPos(), self.getPos());
 
-	if (distance <= 8)
+	if (distance <= 8 && distance > 5)
 	{
-		attackRanged(distance, player);
+		//attackRanged(distance, player);
 	}
-	else if (distance <= 4)
+	else if (distance <= 5)
 	{
-		moveAwayFromPlayer(player, self);
+		moveAwayFromPlayer(player.getPos(), self);
 	}
 	else
 	{
-		moveTowardsPlayer(player, self);
+		moveTowardsPlayer(player.getPos(), self);
 	}
 
 	//vvv Notes vvv
@@ -130,17 +127,13 @@ void AI::attackRanged(float distance, MainCharacter player)
 	}
 }
 
-void AI::moveTowardsPlayer(MainCharacter player, Enemy self)
+void AI::moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy &self)
 {
-	XMFLOAT3 position = player.getPos();
-
-	self.moveTowardsPosition(position);
+	self.moveTowardsPosition(playerPosition);
 }
-void AI::moveAwayFromPlayer(MainCharacter player, Enemy self)
+void AI::moveAwayFromPlayer(XMFLOAT3 playerPosition, Enemy &self)
 {
-	XMFLOAT3 position = player.getPos();
-
-	self.avoidPlayer(position);
+	self.avoidPlayer(playerPosition);
 }
 
 float AI::getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos)

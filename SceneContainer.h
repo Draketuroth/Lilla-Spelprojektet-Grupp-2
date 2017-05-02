@@ -77,7 +77,7 @@ struct MyEnemyContactResultCallback : public btCollisionWorld::ContactResultCall
 class SceneContainer {
 
 private:
-
+	AI ai;
 
 public:
 
@@ -90,7 +90,7 @@ public:
 	void update(HWND &windowHandle);
 	bool readFiles();
 
-	void useAI(MainCharacter player, Enemy enemy);
+	void useAI(MainCharacter &player, Enemy &enemy);
 
 	FileImporter mainCharacterFile;
 	FileImporter iceEnemyFile;
@@ -110,6 +110,8 @@ public:
 	Enemy enemy;
 	Enemy enemies[3];
 	int nrOfEnemies;
+
+	
 
 	BulletComponents bulletPhysicsHandler;
 
@@ -139,5 +141,5 @@ public:
 
 
 
-#endif SCENECONTAINER_H
+#endif //SCENECONTAINER_H
 
