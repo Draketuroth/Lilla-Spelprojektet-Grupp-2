@@ -250,7 +250,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 
 
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[])
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{

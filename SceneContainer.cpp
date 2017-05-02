@@ -155,6 +155,8 @@ void SceneContainer::update(HWND &windowHandle)
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
 
+	enemies[0].moveTowardsPosition(character.getPos());
+
 	render();
 }
 
