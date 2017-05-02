@@ -24,9 +24,11 @@
 #include "MainCharacter.h"
 #include "Enemies.h"
 
-#include "FBXLoader.h"
+#include "AnimationHandler.h"
+#include "FileImporter.h"
 
 #include "Lava.h"
+#include <SFML\Audio.hpp>
 
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
@@ -44,6 +46,7 @@ struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResult
 		t.setIdentity();
 		t.setOrigin(btVector3(2, 2, 5));
 		character->rigidBody->setWorldTransform(t);
+		character->setAlive(false);
 		return 0;
 	}
 
@@ -83,6 +86,10 @@ public:
 
 	bool initialize(HWND &windowHandle);
 	void update(HWND &windowHandle);
+	bool readFiles();
+
+	FileImporter mainCharacterFile;
+	FileImporter iceEnemyFile;
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;
@@ -93,15 +100,14 @@ public:
 	LightShaderClass lightShaders;
 
 	MainCharacter character;
-	FbxImport fbxImporter;
+	AnimationHandler animHandler;
 	Lava lava; 
 
 	Enemy enemy;
 	Enemy enemies[3];
+	int nrOfEnemies;
 
 	BulletComponents bulletPhysicsHandler;
-
-	int nrOfEnemies;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS

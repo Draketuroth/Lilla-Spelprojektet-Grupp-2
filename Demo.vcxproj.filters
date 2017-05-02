@@ -88,11 +88,20 @@
     <Filter Include="Source Files\HLSL\EnemyShaders">
       <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\AI">
-      <UniqueIdentifier>{37f13fdb-80af-4f08-b037-13a9308b1227}</UniqueIdentifier>
+    <Filter Include="Source Files\FileImporter">
+      <UniqueIdentifier>{d166d049-d3fa-4c44-a726-2b8b30f3c237}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\AI">
-      <UniqueIdentifier>{1483cbe1-b1fd-432f-8889-aca93d64bee5}</UniqueIdentifier>
+    <Filter Include="Header Files\FileImporter">
+      <UniqueIdentifier>{c5aaa559-12c4-4328-a03b-ba79cc927a96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\RayShaders">
+      <UniqueIdentifier>{c20622da-1fec-45fb-a027-f6afdfe48c6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AnimationHandler">
+      <UniqueIdentifier>{57230deb-6b5f-4aeb-bfdd-20b77b9940aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AnimationHandler">
+      <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -150,14 +159,14 @@
     <ClCompile Include="Enemies.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
-    <ClCompile Include="FBXLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Lava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AI.cpp">
-      <Filter>Source Files\AI</Filter>
+    <ClCompile Include="FileImporter.cpp">
+      <Filter>Source Files\FileImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationHandler.cpp">
+      <Filter>Source Files\AnimationHandler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,14 +230,14 @@
     <ClInclude Include="BasicMath.h">
       <Filter>Header Files\Global</Filter>
     </ClInclude>
-    <ClInclude Include="FBXLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Lava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AI.h">
-      <Filter>Header Files\AI</Filter>
+    <ClInclude Include="FileImporter.h">
+      <Filter>Header Files\FileImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationHandler.h">
+      <Filter>Header Files\AnimationHandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -279,6 +288,15 @@
     </FxCompile>
     <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl" />
+    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl" />
+    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl" />
+    <FxCompile Include="Shaders\RayShaders\RayVertex.hlsl">
+      <Filter>Source Files\HLSL\RayShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\RayShaders\RayFragment.hlsl">
+      <Filter>Source Files\HLSL\RayShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -45,11 +45,11 @@ int main() {
 	
 	sceneContainer.initialize(windowHandle);
 
-	
 	return RunApplication();
 }
 
-int RunApplication() {
+int RunApplication() 
+{
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// INITIALIZE
@@ -68,10 +68,6 @@ int RunApplication() {
 	sceneContainer.lava.time.initialize();
 	updateLava();
 
-
-	menuState.createBufferData(sceneContainer.gHandler.gDevice);
-	menuState.createIndexBuffer(sceneContainer.gHandler.gDevice);
-	menuState.createVertexBuffer(sceneContainer.gHandler.gDevice);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
@@ -97,10 +93,20 @@ int RunApplication() {
 			switch (menuState.state)
 			{
 			case MAIN_MENU:
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
 			case PAUSE_MENU:
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				break;
+			case GAME_OVER:
+				sceneContainer.character.attackSound.stop();
+				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
+				sceneContainer.character.setAlive(true);
+				break;
+			case QUIT_GAME:
+				windowMessage.message = WM_QUIT;
 				break;
 			case START_GAME:
 				menuState.checkGameState();
@@ -108,9 +114,12 @@ int RunApplication() {
 				updateBuffers();
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
-
 				
 				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
+				if (!sceneContainer.character.getAlive())
+				{
+					menuState.state = GAME_OVER;
+				}
 				MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[0]);
 
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
@@ -132,6 +141,7 @@ int RunApplication() {
 				sceneContainer.gHandler.gSwapChain->Present(0, 0);
 
 				timer.updateCurrentTime();
+
 				break;
 			}
 			
@@ -142,7 +152,7 @@ int RunApplication() {
 	}
 
 	sceneContainer.releaseAll();
-	menuState.releaseAll();
+
 	DestroyWindow(windowHandle);
 
 	return 0;
@@ -161,14 +171,14 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-	sceneContainer.fbxImporter.animTimePos += timer.getDeltaTime() * 50;
+	sceneContainer.animHandler.animTimePos += timer.getDeltaTime() * 50;
 
-	if (sceneContainer.fbxImporter.animTimePos >= sceneContainer.fbxImporter.meshSkeleton.hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
+	if (sceneContainer.animHandler.animTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
-		sceneContainer.fbxImporter.animTimePos = 0.0f;
+		sceneContainer.animHandler.animTimePos = 0.0f;
 	}
 
-	sceneContainer.fbxImporter.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex);
+	sceneContainer.animHandler.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.mainCharacterFile);
 }
 
 void lavamovmentUpdate()
@@ -189,11 +199,13 @@ void updateBuffers()
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
+	
 	D3D11_MAPPED_SUBRESOURCE EnemyMappedResource;
+	D3D11_MAPPED_SUBRESOURCE platformMappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
+	ZeroMemory(&platformMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
 	XMMATRIX tCameraInverseViewProj = XMMatrixTranspose(XMMatrixInverse(nullptr, sceneContainer.character.camera.ViewProj()));
@@ -249,6 +261,24 @@ void updateBuffers()
 	EnemyTransformPointer->matrixWVP = tCameraViewProj * tEnemyTranslation;
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// PLATFORM INSTANCE BUFFER UPDATE
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	sceneContainer.bHandler.updatePlatformWorldMatrices();
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &platformMappedResource);
+
+	PLATFORM_INSTANCE_BUFFER* platformTransformPointer = (PLATFORM_INSTANCE_BUFFER*)platformMappedResource.pData;
+
+	for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
+
+		platformTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].worldMatrix);
+	}
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gInstanceBuffer, 0);
+
 }
 
 

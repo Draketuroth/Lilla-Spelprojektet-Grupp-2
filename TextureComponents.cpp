@@ -5,6 +5,9 @@ TextureComponents::TextureComponents() {
 
 	ID3D11ShaderResourceView* standardResource = nullptr;
 	ID3D11SamplerState* texSampler = nullptr;
+
+	ID3D11ShaderResourceView* LavaResurce = nullptr; 
+
 }
 
 TextureComponents::~TextureComponents() {
@@ -16,6 +19,11 @@ void TextureComponents::ReleaseAll() {
 
 	SAFE_RELEASE(standardResource);
 	SAFE_RELEASE(texSampler);
+	SAFE_RELEASE(LavaResurce); 
+	for (size_t i = 0; i < 9; i++)
+	{
+		SAFE_RELEASE(this->menuResources[i]);
+	}
 }
 
 bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
@@ -49,10 +57,30 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	CoInitialize(NULL);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &standardResource, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava1.jpg", NULL, &LavaResurce, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN.png", NULL, &menuResources[0], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN_PLAY_CLICK.png", NULL, &menuResources[1], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN_QUIT_CLICK.png", NULL, &menuResources[2], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\PAUSE.png", NULL, &menuResources[3], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\PAUSE_RESUME_CLICK.png", NULL, &menuResources[4], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\PAUSE_QUIT_CLICK.png", NULL, &menuResources[5], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER.png", NULL, &menuResources[6], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER_RESTART_CLICK.png", NULL, &menuResources[7], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER_QUIT_CLICK.png", NULL, &menuResources[8], 1920);
 
 	if (SUCCEEDED(hr) && texture != 0) {
 
 		gDevice->CreateShaderResourceView(texture, nullptr, &standardResource);
+		gDevice->CreateShaderResourceView(texture, nullptr, &LavaResurce);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[0]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[1]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[2]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[3]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[4]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[5]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[6]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[7]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[8]);
 
 		if (FAILED(hr)) {
 

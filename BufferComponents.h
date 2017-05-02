@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "BulletComponents.h"
+#include "FileImporter.h"
 
 using namespace DirectX;
 
@@ -26,6 +27,11 @@ struct GS_CONSTANT_BUFFER {
 
 };
 
+struct PLATFORM_INSTANCE_BUFFER {
+
+	XMMATRIX worldMatrix[400];
+};
+
 struct PLAYER_TRANSFORM {
 
 	XMMATRIX matrixW;
@@ -34,8 +40,10 @@ struct PLAYER_TRANSFORM {
 
 struct CubeObjects {
 
-	ID3D11Buffer* gCubeVertexBuffer;
+	btRigidBody* rigidBody;
+	XMMATRIX worldMatrix;
 	bool renderCheck;
+	int ID;
 };
 
 class BufferComponents {
@@ -58,28 +66,44 @@ public:
 	XMVECTOR up;
 
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
+	ID3D11Buffer* gInstanceBuffer;
 	ID3D11Buffer* gPlayerTransformBuffer;
 	ID3D11Buffer* gEnemyTransformBuffer;
 
-	ID3D11Buffer* gCylinderBuffer;
-	ID3D11Buffer* gCylinderIndexBuffer;
+	ID3D11Buffer* gCubeVertexBuffer;
 	ID3D11Buffer* gCubeIndexBuffer;
 
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
+	XMFLOAT3 cubeScaling;
+
 	btRigidBody* lavaPitRigidBody;
 
-	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &importer);
 
-	bool CreateCubeVertices(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
+	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer);
+	bool CreatePlatforms(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
 	void CreateCollisionPlane(BulletComponents &bulletPhysicsHandler, XMFLOAT3 translation);
 	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler);
-	float RandomNumber(float Minimum, float Maximum);
+	void updatePlatformWorldMatrices();
 
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
+	bool CreateInstanceBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
+	void CreateRigidBodyTags();
+
+	float spaceX;
+	float spaceZ;
+
+	float incrementSpace(float offset);
+	float centerPlatformsColls(float offset);
+	float centerPlatformsRows(float offset);
+
+	void platformDecension(CubeObjects cube);
+
+
 
 private:
 

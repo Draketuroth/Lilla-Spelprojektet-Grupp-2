@@ -11,7 +11,11 @@
 #include "BasicMath.h"
 #include "MacroDefinitions.h"
 #include "BufferComponents.h"
-#include "FBXLoader.h"
+#include "GraphicComponents.h"
+#include "AnimationHandler.h"
+#include "FileImporter.h"
+
+#include <SFML\Audio.hpp>
 
 using namespace std;
 using namespace DirectX;
@@ -25,12 +29,12 @@ private:
 	int unitID;
 	bool alive;
 
-	ID3D11Buffer* vertexBuffer;
-	ID3D11Buffer* indexBuffer;
-
 	XMFLOAT3 boundingBoxExtents;
 
 public:
+	
+	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* indexBuffer;
 
 	XMMATRIX tPlayerTranslation;
 	btRigidBody* rigidBody;
@@ -62,7 +66,7 @@ public:
 	XMMATRIX getPlayerTanslationMatrix();
 
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
-	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, FbxImport &fbxImporter, VS_SKINNED_DATA &skinData);
+	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, AnimationHandler &animHandler, VS_SKINNED_DATA &skinData);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
@@ -76,6 +80,7 @@ public:
 
 	string toString();
 	
-
+	sf::Sound attackSound;
+	sf::SoundBuffer soundBuffer[2];
 };
 #endif

@@ -5,15 +5,15 @@ SceneContainer::SceneContainer() {
 
 	// Initialize handler and main character
 
+	mainCharacterFile = FileImporter();
 	gHandler = GraphicComponents();
 	bHandler = BufferComponents();
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemies[0] = Enemy(0, { 0, 20, 10 });
+	enemies[0] = Enemy(0, { 0, 20, 0 });
 
 	bulletPhysicsHandler = BulletComponents();
-
 	this->nrOfEnemies = 0;
 }
 
@@ -27,7 +27,7 @@ void SceneContainer::releaseAll() {
 	bHandler.ReleaseAll();
 	tHandler.ReleaseAll();
 
-	//character.releaseAll();
+	character.releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 	enemies[0].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 
 	deferredObject.ReleaseAll();
@@ -35,11 +35,22 @@ void SceneContainer::releaseAll() {
 	lightShaders.ReleaseAll();
 
 	lava.ReleaseAll();
-	fbxImporter.ReleaseAll();
+	animHandler.ReleaseAll();
 	bulletPhysicsHandler.ReleaseAll();
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
+
+	if (!readFiles()) {
+
+		// If the required files can't be read during startup, quit the application
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Format couldn't be read, please look for format folder in solution\nClosing application...",
+			L"ERROR",
+			MB_OK);
+			PostQuitMessage(0);
+	}
 
 	if (!WindowInitialize(windowHandle)) {
 
@@ -47,9 +58,10 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 		// The MessageBox function will display a message and inform us of the problem
 		MessageBox(
 			NULL,
-			L"CRITICAL ERROR: Window couldn't be initialized, investigate window initializr function\nClosing application...",
+			L"CRITICAL ERROR: Window couldn't be initialized, investigate window initializer function\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!gHandler.InitalizeDirect3DContext(windowHandle)) {
@@ -59,17 +71,19 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: DirectX couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	bulletPhysicsHandler.InitializeBulletPhysics();
 
-	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler)) {
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, mainCharacterFile)) {
 
 		MessageBox(
 			NULL,
 			L"CRITICAL ERROR: Primitives couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!tHandler.CreateTexture(gHandler.gDevice)) {
@@ -79,6 +93,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Textures couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!deferredObject.Initialize(gHandler.gDevice)) {
@@ -88,6 +103,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Deferred buffer couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!deferredShaders.InitializeShader(gHandler.gDevice)) {
@@ -97,6 +113,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Deferred shader couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
 	if (!lightShaders.Initialize(gHandler.gDevice)) {
@@ -106,22 +123,37 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"CRITICAL ERROR: Light shaders couldn't be initialized\nClosing application...",
 			L"ERROR",
 			MB_OK);
+			PostQuitMessage(0);
 	}
 
-	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, fbxImporter);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
-
 	
 	return true;
 
 }
 
+bool SceneContainer::readFiles() {
+
+	if (!mainCharacterFile.readFormat("Format//mainCharacter_Binary.txt")) {
+
+		return false;
+	}
+
+	/*if (!iceEnemyFile.readFormat("Format//iceEnemy_Binary.txt")) {
+
+		return false;
+	}*/
+
+	return true;
+}
+
 void SceneContainer::update(HWND &windowHandle)
 {
 	nrOfEnemies = 1;
-	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies);
-
-	enemies[0].moveTowardsPosition(character.getPos());
+	bHandler.CreateRigidBodyTags();
+	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
+	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
 
 	render();
 }
@@ -130,6 +162,7 @@ void SceneContainer::drawPlatforms() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gInstanceBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gPlatformGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
@@ -142,21 +175,15 @@ void SceneContainer::drawPlatforms() {
 	UINT32 offset = 0;
 	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gPlatformLayout);
-
-	for (int i = 0; i < bHandler.nrOfCubes; i++) {
-
-		if (bHandler.cubeObjects[i].renderCheck == true) {
-
-			gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.cubeObjects[i].gCubeVertexBuffer, &vertexSize, &offset);
-
-			gHandler.gDeviceContext->DrawIndexed(36, 0, 0);
-
-		}
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+	gHandler.gDeviceContext->DrawIndexedInstanced(36, bHandler.nrOfCubes, 0, 0, 0);
+	//gHandler.gDeviceContext->DrawInstanced(132, bHandler.nrOfCubes, 0, 0);
+	
 
 	}
-}
 
 void SceneContainer::clear()
 {
@@ -263,7 +290,7 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &fbxImporter.gBoneBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gBoneBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
@@ -275,12 +302,12 @@ void SceneContainer::renderCharacters()
 
 	ID3D11Buffer* nullBuffer = { nullptr };
 	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
-	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &fbxImporter.gBoneVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &character.vertexBuffer, &vertexSize, &offset);
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 
-	character.draw(gHandler.gDeviceContext, fbxImporter.vertices.size());
+	character.draw(gHandler.gDeviceContext, mainCharacterFile.skinnedMeshes[0].vertices.size());
 
 	character.resetWorldMatrix();
 	
@@ -312,15 +339,20 @@ void SceneContainer::renderEnemies()
 	
 }
 
-
 void SceneContainer::renderLava()
 {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gLavaVertexShader, nullptr, 0);	//vs
 	gHandler.gDeviceContext->GSSetShader(gHandler.gLavaGeometryShader, nullptr, 0); //gs
 	gHandler.gDeviceContext->PSSetShader(gHandler.gLavaPixelShader, nullptr, 0); //ps
+
+	//texture
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResurce);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	 
+	
+
 	UINT32 vertexSize = sizeof(LavaVertex);
 	UINT32 offset = 0;
 

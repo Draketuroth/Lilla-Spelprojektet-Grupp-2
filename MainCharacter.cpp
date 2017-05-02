@@ -14,9 +14,16 @@ MainCharacter::MainCharacter()
 	this->attackTimer = 0.0f;
 	this->attackCd = 0.5f;
 
+	this->shooting = false;
+	this->shootCD = 0.3f;
+	this->shootTimer = 0.0f;
+
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 	this->test = 0;
+
+	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
+	soundBuffer[1].loadFromFile("Sounds//sword.wav");
 }
 
 MainCharacter::~MainCharacter()
@@ -24,16 +31,20 @@ MainCharacter::~MainCharacter()
 
 }
 
-void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, FbxImport &fbxImporter) {
+void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer) {
 
 	currentAnimIndex = 0;
 
 	// Main character function
-	loadVertices(fbxImporter, graphicDevice);
+	loadVertices(importer, animHandler, graphicDevice);
 
 	// Base character functions
-	createBuffers(graphicDevice, fbxVector, fbxImporter, skinData);
-	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
+	createBuffers(graphicDevice, vertices, animHandler, skinData);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.6, 0.8f, 0.6), bulletPhysicsHandle);
+	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
+
+	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
+	soundBuffer[1].loadFromFile("Sounds//sword.wav");
 }
 
 void MainCharacter::update(HWND windowhandle)
@@ -123,6 +134,10 @@ void MainCharacter::CheckInput() {
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(7, 0, 0));	
 	}
+	if (GetAsyncKeyState(0x20))
+	{
+		this->rigidBody->applyCentralForce(btVector3(0, 2, 0));
+	}
 
 	float maxSpeed = 4;
 	float minSpeed = -4;
@@ -176,18 +191,47 @@ float MainCharacter::characterLookAt(HWND windowHandle)
 	return angle;
 }
 
-void MainCharacter::loadVertices(FbxImport &fbxImporter, ID3D11Device* &graphicDevice) {
+void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &animHandler, ID3D11Device* &graphicDevice) {
 
 	HRESULT hr;
 
-	fbxImporter.LoadFBX(&fbxVector); //load mesh vertices
+	//load mesh vertices
 
-	for (unsigned int i = 0; i < fbxImporter.meshSkeleton.hierarchy.size(); i++) {
+	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
 
-		XMMATRIX inversedBindPose = fbxImporter.Load4X4JointTransformations(fbxImporter.meshSkeleton.hierarchy[i], i); // converts from float4x4 too xmmatrix
+		Vertex_Bone boneVertex;
 
+		boneVertex.pos.x = importer.skinnedMeshes[0].vertices[i].pos[0];
+		boneVertex.pos.y = importer.skinnedMeshes[0].vertices[i].pos[1];
+		boneVertex.pos.z = importer.skinnedMeshes[0].vertices[i].pos[2];
+
+		boneVertex.uv.x = importer.skinnedMeshes[0].vertices[i].uv[0];
+		boneVertex.uv.y = importer.skinnedMeshes[0].vertices[i].uv[1];
+
+		boneVertex.normal.x = importer.skinnedMeshes[0].vertices[i].normal[0];
+		boneVertex.normal.y = importer.skinnedMeshes[0].vertices[i].normal[1];
+		boneVertex.normal.z = importer.skinnedMeshes[0].vertices[i].normal[2];
+
+		boneVertex.boneIndices[0] = importer.skinnedMeshes[0].vertices[i].boneIndices[0];
+		boneVertex.boneIndices[1] = importer.skinnedMeshes[0].vertices[i].boneIndices[1];
+		boneVertex.boneIndices[2] = importer.skinnedMeshes[0].vertices[i].boneIndices[2];
+		boneVertex.boneIndices[3] = importer.skinnedMeshes[0].vertices[i].boneIndices[3];
+
+		boneVertex.weights[0] = importer.skinnedMeshes[0].vertices[i].weights[0];
+		boneVertex.weights[1] = importer.skinnedMeshes[0].vertices[i].weights[1];
+		boneVertex.weights[2] = importer.skinnedMeshes[0].vertices[i].weights[2];
+		boneVertex.weights[3] = importer.skinnedMeshes[0].vertices[i].weights[3];
+
+		vertices.push_back(boneVertex);
+
+	}
+
+	for (unsigned int i = 0; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
+
+		XMMATRIX inversedBindPose = importer.skinnedMeshes[0].hierarchy[i].inverseBindPoseMatrix; // converts from float4x4 too xmmatrix
+		
 		skinData.gBoneTransform[i] = inversedBindPose;
-		fbxImporter.invertedBindPose[i] = inversedBindPose; // copy on the cpu
+		animHandler.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
 	}
 }
@@ -210,6 +254,10 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
+
+		attackSound.setBuffer(soundBuffer[1]);
+		attackSound.play();
+
 		attacking = true;
 		attackTimer = attackCd;
 		//-----------------Calculate the hit area-----------------------
@@ -238,8 +286,18 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 				test++;
 				cout << "HIT!" << test << endl;
 				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+				
+				btTransform playerTrans;
+				btTransform enemyTrans;
+				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
+				enemyArray[0].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+				
+				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
+				correctedForce.normalize();
 
-				if (enemyArray[0].getHealth() <= 0)
+				enemyArray[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
+
+				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
 				{
 					enemyArray[0].setAlive(false);
 					cout << "ENEMY DEAD" << endl;
@@ -260,29 +318,146 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
 {
-	if (GetAsyncKeyState(MK_RBUTTON))
+
+	XMFLOAT3 start, end;
+	this->rigidBody->setIslandTag(characterRigid);
+	for (size_t i = 0; i < nrOfEnemies; i++)
 	{
-		cout << "RANGED ATTACK" << endl;
+		enemies[i].rigidBody->setIslandTag(characterRigid);
 	}
 
-	//check which way the charater is looking
-	float angle = characterLookAt(windowHandle);
+	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
+	{
 
-	//fireProjectile(angle);
+		attackSound.setBuffer(soundBuffer[0]);
+		attackSound.play();
+		
+		float angle = this->characterLookAt(windowHandle);
+	
+		this->shooting = true;
+		this->shootTimer = this->shootCD;
 
-	//fireProjectile have to create and follow up the projectile and see it it hits anything.
-	//it needs to check every frame until the projectile is a certain distance away from the character
-	//or until it hits an enemy
+		cout << "Player Tag: " << this->rigidBody->getIslandTag() << endl << endl;
 
-	//The projectile should move straight forward into its direction at a constant speed (no real need for physics)
-	//The projectile needs to be able to sort through the list of enemies.
+		XMFLOAT3 characterPos = this->getPos();
+		XMVECTOR RayOrigin = XMLoadFloat3(&characterPos);
+
+
+		//Used to rotate the direction vector, so that we always shoot in the direction of where the player is facing
+		XMVECTOR directionVec = this->getForwardVector();
+
+		XMVECTOR rotQuat = XMQuaternionRotationAxis(XMVECTOR{ 0, 1, 0 }, angle);
+		directionVec = XMVector3Rotate(directionVec, rotQuat);
+		directionVec = XMVector3Normalize(directionVec);
+
+		//The offset starting point for the ray
+		XMFLOAT3 newOrigin;
+		RayOrigin += directionVec * 0.4f;
+		XMStoreFloat3(&newOrigin, RayOrigin);
+		
+		XMFLOAT3 direction;
+		XMStoreFloat3(&direction, directionVec);
+	
+		
+		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
+		world->rayTest(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.5f, direction.z * 50), rayCallBack);
+
+		start = XMFLOAT3{ newOrigin.x, 1.2f, newOrigin.z };
+		end = XMFLOAT3{ direction.x * 50, 1.2f, direction.z * 50 };
+		//Drawing the ray for debug purposes
+		
+
+		if (rayCallBack.hasHit())
+		{
+			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
+			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
+				
+
+		
+			for (size_t i = 0; i < nrOfEnemies; i++)
+			{
+				//Used for knockback----------------------------------------------------------
+				btTransform playerTrans;
+				btTransform enemyTrans;
+				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
+				enemies[0].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+
+				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
+				correctedForce.normalize();
+				enemies[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
+				//----------------------------------------------------------------------------
+
+				cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
+				if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
+				{
+					cout << "Enemy Shot!! -1 health\n";
+					enemies[i].setHealth(enemies[i].getHealth() - 1);
+				}
+				if (enemies[i].getHealth() == 0)
+				{
+					enemies[i].setAlive(false);
+					cout << "Enemy Deleted\n";
+				}
+			}
+		}
+	}
+
+	if (this->shooting)
+	{
+	
+		if (this->shootTimer > 0)
+		{
+			this->shootTimer -= timer.getDeltaTime();
+		}
+		else
+		{
+			this->shooting = false;
+		}
+	}
+	//renderRay(gHandler, bHandler, start, end);
 }
 
-//void MainCharacter::initiateBB(float mass,BulletComponents& bulletPhysicsHandle)
+//bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)
 //{
+//	HRESULT hr;
 //
+//	RayVertex rayData[2] =
+//	{
+//		start, end
+//	};
+//
+//	D3D11_BUFFER_DESC bufferDesc = {};
+//	memset(&bufferDesc, 0, sizeof(bufferDesc));
+//	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+//	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+//	bufferDesc.ByteWidth = sizeof(rayData);
+//
+//	D3D11_SUBRESOURCE_DATA data;
+//	data.pSysMem = rayData;
+//	hr = gHandler.gDevice->CreateBuffer(&bufferDesc, &data, &this->vtxBuffer);
+//	if (FAILED(hr))
+//	{
+//		return false;
+//	}
+//
+//	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+//	gHandler.gDeviceContext->VSSetShader(gHandler.gRayVertexShader, nullptr, 0);
+//	gHandler.gDeviceContext->PSSetShader(gHandler.gRayPixelShader, nullptr, 0);
+//	gHandler.gDeviceContext->PSSetShaderResources(0, 0, nullptr);
+//
+//	UINT32 vertexSize = sizeof(RayVertex);
+//	UINT32 offset = 0;
+//
+//	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+//	gHandler.gDeviceContext->IASetInputLayout(gHandler.gRayVertexLayout);
+//
+//	gHandler.gDeviceContext->Draw(2, 0);
+//
+//	SAFE_RELEASE(this->vtxBuffer);
+//
+//	return true;
 //}
 
 //Don't need this

@@ -5,6 +5,9 @@
 
 #FBX SDK and Bullet Physics should not be included
 FBX SDK/*
+!SFML-2.4.2/bin/*
+!SFML-2.4.2/include/*
+!SFML-2.4.2/lib/*
 !Bullet/lib/*
 !Bullet/src/*
 Bullet/*
