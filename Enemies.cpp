@@ -186,28 +186,31 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 
 
 
-	//float maxSpeed = 2;
-	//float minSpeed = -2;
-	//btVector3 speed = this->rigidBody->getLinearVelocity();
+	float maxSpeed = 3;
+	float minSpeed = -3;
+	btVector3 speed = this->rigidBody->getLinearVelocity();
 
-	////X-led
-	//if (speed.getX() > maxSpeed)
-	//{
-	//	speed.setX(maxSpeed);
-	//}
-	//if (speed.getX() < minSpeed)
-	//{
-	//	speed.setX(minSpeed);
-	//}
-	////Z-led
-	//if (speed.getZ() > maxSpeed)
-	//{
-	//	speed.setZ(maxSpeed);
-	//}
-	//if (speed.getZ() < minSpeed)
-	//{
-	//	speed.setZ(minSpeed);
-	//}
+	//X-led
+	if (speed.getX() > maxSpeed)
+	{
+		speed.setX(maxSpeed);
+	}
+	if (speed.getX() < minSpeed)
+	{
+		speed.setX(minSpeed);
+	}
+	//Z-led
+	if (speed.getZ() > maxSpeed)
+	{
+		speed.setZ(maxSpeed);
+	}
+	if (speed.getZ() < minSpeed)
+	{
+		speed.setZ(minSpeed);
+	}
+
+	this->rigidBody->setLinearVelocity(speed);
+
 }
 
 void Enemy::avoidPosition(XMFLOAT3 position)
