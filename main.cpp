@@ -173,12 +173,12 @@ void updateCharacter(HWND windowhandle)
 
 	sceneContainer.animHandler.animTimePos += timer.getDeltaTime() * 50;
 
-	if (sceneContainer.animHandler.animTimePos >= sceneContainer.importer.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
+	if (sceneContainer.animHandler.animTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
 		sceneContainer.animHandler.animTimePos = 0.0f;
 	}
 
-	sceneContainer.animHandler.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.importer);
+	sceneContainer.animHandler.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.mainCharacterFile);
 }
 
 void lavamovmentUpdate()

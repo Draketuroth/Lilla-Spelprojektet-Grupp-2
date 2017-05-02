@@ -5,7 +5,7 @@ SceneContainer::SceneContainer() {
 
 	// Initialize handler and main character
 
-	importer = FileImporter();
+	mainCharacterFile = FileImporter();
 	gHandler = GraphicComponents();
 	bHandler = BufferComponents();
 	tHandler = TextureComponents();
@@ -41,10 +41,9 @@ void SceneContainer::releaseAll() {
 
 bool SceneContainer::initialize(HWND &windowHandle) {
 
-	if (!importer.readFormat()) {
+	if (!readFiles()) {
 
-		// If the window cannot be created during startup, it's more known as a terminal error
-		// The MessageBox function will display a message and inform us of the problem
+		// If the required files can't be read during startup, quit the application
 		MessageBox(
 			NULL,
 			L"CRITICAL ERROR: Format couldn't be read, please look for format folder in solution\nClosing application...",
@@ -77,7 +76,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	bulletPhysicsHandler.InitializeBulletPhysics();
 
-	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, importer)) {
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, mainCharacterFile)) {
 
 		MessageBox(
 			NULL,
@@ -127,11 +126,26 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			PostQuitMessage(0);
 	}
 
-	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, importer);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
 	
 	return true;
 
+}
+
+bool SceneContainer::readFiles() {
+
+	if (!mainCharacterFile.readFormat("Format//mainCharacter_Binary.txt")) {
+
+		return false;
+	}
+
+	/*if (!iceEnemyFile.readFormat("Format//iceEnemy_Binary.txt")) {
+
+		return false;
+	}*/
+
+	return true;
 }
 
 void SceneContainer::update(HWND &windowHandle)
@@ -159,13 +173,14 @@ void SceneContainer::drawPlatforms() {
 
 	UINT32 vertexSize = sizeof(TriangleVertex);
 	UINT32 offset = 0;
-	//gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gPlatformLayout);
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	gHandler.gDeviceContext->DrawInstanced(132, bHandler.nrOfCubes, 0, 0);
+	gHandler.gDeviceContext->DrawIndexedInstanced(36, bHandler.nrOfCubes, 0, 0, 0);
+	//gHandler.gDeviceContext->DrawInstanced(132, bHandler.nrOfCubes, 0, 0);
 	
 
 	}
@@ -292,7 +307,7 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
 
-	character.draw(gHandler.gDeviceContext, importer.skinnedMeshes[0].vertices.size());
+	character.draw(gHandler.gDeviceContext, mainCharacterFile.skinnedMeshes[0].vertices.size());
 
 	character.resetWorldMatrix();
 	

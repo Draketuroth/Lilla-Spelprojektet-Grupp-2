@@ -84,7 +84,7 @@ bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileIm
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// HARDCODED VERTICES
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	TriangleVertex cubeVertices[132];
+	/*TriangleVertex cubeVertices[132];
 	cubeScaling = importer.standardMeshes[0].meshTransformation.meshScale;
 	for (UINT i = 0; i < importer.standardMeshes[0].vertices.size(); i++) {
 
@@ -94,55 +94,55 @@ bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileIm
 
 		cubeVertices[i].u = importer.standardMeshes[0].vertices[i].uv[0];
 		cubeVertices[i].v = importer.standardMeshes[0].vertices[i].uv[1];
-	}
+	}*/
 
-	//TriangleVertex cubeVertices[24] =
-	//{
+	TriangleVertex cubeVertices[24] =
+	{
 
-	//	//Front face
+		//Front face
 
-	//	-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-	//	1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-	//	-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-	//	1.0, -1.0f, -1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		1.0, -1.0f, -1.0f, 1.0f, 1.0f,
 
-	//	// Back face
+		// Back face
 
-	//	1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-	//	-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-	//	1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-	//	-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
 
-	//	// Left face
+		// Left face
 
-	//	-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-	//	-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-	//	-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-	//	-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
 
-	//	// Right face
+		// Right face
 
-	//	1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-	//	1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-	//	1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-	//	1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
 
-	//	// Top face
+		// Top face
 
-	//	-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-	//	1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-	//	-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
-	//	1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
 
-	//	// Bottom face
+		// Bottom face
 
-	//	1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-	//	-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-	//	1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-	//	-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
+		1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
 
 
-	//};
+	};
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// CREATE VERTEX BUFFER
@@ -368,7 +368,8 @@ void BufferComponents::updatePlatformWorldMatrices()
 		transform = XMLoadFloat4x4(&data);
 
 		// Build the new world matrix
-		cubeObjects[i].worldMatrix = XMMatrixMultiply(scale, transform);
+		cubeObjects[i].worldMatrix = transform;
+		//XMMatrixMultiply(scale, transform)
 		
 
 	}

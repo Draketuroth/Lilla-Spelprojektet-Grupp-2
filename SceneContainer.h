@@ -86,8 +86,10 @@ public:
 
 	bool initialize(HWND &windowHandle);
 	void update(HWND &windowHandle);
+	bool readFiles();
 
-	FileImporter importer;
+	FileImporter mainCharacterFile;
+	FileImporter iceEnemyFile;
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;

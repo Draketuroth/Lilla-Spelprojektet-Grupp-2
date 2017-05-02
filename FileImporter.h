@@ -134,7 +134,7 @@ public:
 	FileImporter();
 	~FileImporter();
 
-	bool readFormat();
+	bool readFormat(string file);
 
 	vector<Mesh_Header> meshHeader;
 	vector<Mesh_Standard> standardMeshes;

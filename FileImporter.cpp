@@ -11,9 +11,9 @@ FileImporter::~FileImporter() {
 
 }
 
-bool FileImporter::readFormat() {
+bool FileImporter::readFormat(string file) {
 
-	ifstream in("Format//mainResources_Binary.txt", ios::binary);
+	ifstream in(file, ios::binary);
 
 	if (in.is_open()){
 
@@ -287,6 +287,8 @@ bool FileImporter::readFormat() {
 						joints[i].Animations[animationIndex].Length = keyFramesCount;
 
 					}
+
+				cout << "Animation " << animationIndex << " loaded!" << endl;
 
 				}
 

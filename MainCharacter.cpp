@@ -251,6 +251,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && ! attacking && attackTimer <= 0)
 	{
+
 		attackSound.setBuffer(soundBuffer[1]);
 		attackSound.play();
 
@@ -325,6 +326,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
+
 		attackSound.setBuffer(soundBuffer[0]);
 		attackSound.play();
 		
