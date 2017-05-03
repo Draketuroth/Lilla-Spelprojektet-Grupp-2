@@ -22,6 +22,19 @@ Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 	
 }
 
+float Enemy::getAngle(XMFLOAT3 playerPos)
+{
+	float angle;
+	
+	float playerX = (2 * playerPos.x) / WIDTH - 1;
+	float playerZ = (2 * playerPos.z) / HEIGHT - 1;
+
+	playerZ *= -1;
+
+	angle = atan2(playerX, playerZ);
+
+	return angle;
+}
 
 int Enemy::getType()const
 {
@@ -214,7 +227,6 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 	this->rigidBody->setLinearVelocity(speed);
 
 }
-
 void Enemy::avoidPlayer(XMFLOAT3 position)
 {
 	XMFLOAT3 myPos = this->getPos();
@@ -253,6 +265,7 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 	this->rigidBody->setLinearVelocity(speed);
 }
+
 
 //void Enemy::meleeAttacks(float distance)
 //{

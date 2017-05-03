@@ -11,7 +11,7 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemies[0] = Enemy(0, { 0, 20, 0 });
+	enemies[0] = Enemy(0, { -5, 20, -5 });
 	enemies[1] = Enemy(0, { 5, 20, 5 });
 	enemies[2] = Enemy(0, { -5, 20, -5 });
 

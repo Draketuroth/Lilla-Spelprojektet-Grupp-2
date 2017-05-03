@@ -21,14 +21,15 @@ void AI::iceAI(MainCharacter &player, Enemy &self)
 	{
 		attackMelee(player, self);
 	}
-	/*else if (self.getHealth() < 2)
+	else if (self.getHealth() <= 2 && distance <= 8)
 	{
 		moveAwayFromPlayer(player.getPos(), self);
-	}*/
-	else
+	}
+	else if (self.getHealth() > 2 && distance > 2)
 	{
 		moveTowardsPlayer(player.getPos(), self);
 	}
+
 }
 void AI::fireAI(MainCharacter &player, Enemy &self)
 {
@@ -52,37 +53,44 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 {
 	if (!attacking && attackTimer <= 0)
 	{
+
+		cout << "ENEMY ATTACK!" << endl;
+
 		attacking = true;
 		attackTimer = attackCd;
 
-		
+		//-----------------Calculate the hit area-------------------------------
+		float angle = self.getAngle(player.getPos()) ;
+
 		XMFLOAT3 enemyPos = self.getBoundingBox().Center;
-		XMMATRIX enemyTranslation = self.getPlayerTanslationMatrix();
+		XMVECTOR enemyDirVec = self.getForwardVector();
 
-		XMVECTOR forwardVector = self.getForwardVector();
-		XMFLOAT3 forward;
-		XMStoreFloat3(&forward, forwardVector);
+		XMVECTOR rotQuat = XMQuaternionRotationAxis(XMVECTOR{ 0, 1, 0 }, angle);
+		enemyDirVec = XMVector3Rotate(enemyDirVec, rotQuat);
+		enemyDirVec = XMVector3Normalize(enemyDirVec);
 
-		XMFLOAT3 attackBoxCenter;
+		XMVECTOR newC = XMLoadFloat3(&enemyPos);
+		newC += enemyDirVec * 0.4;
+		XMFLOAT3 newCenter;
+		XMStoreFloat3(&newCenter, newC);
 
-		attackBoxCenter.x = enemyPos.x + forward.x;
-		attackBoxCenter.y = enemyPos.y;
-		attackBoxCenter.z = enemyPos.z + forward.z;
+		XMFLOAT3 boxCenter = newCenter;
+		XMFLOAT3 boxRange = { 2, 2, 2 };
 
-		XMFLOAT3 attackBoxRange = { 2, 2, 2 };
+		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 
-		BoundingBox attackBox = BoundingBox(attackBoxCenter, attackBoxRange);
-		attackBox.Transform(attackBox, enemyTranslation);
-		
 		BoundingBox playerBox = player.getBoundingBox();
-		if (playerBox.Intersects(attackBox))
+		if (playerBox.Intersects(meleeBox))
 		{
 			cout << "PLAYER GOT HIT" << endl;
 
 			player.setHealth(player.getHealth() - 1);
 
 			//Implement knockback
+	
 
+
+			//_----------------------------------------
 
 			if (player.getHealth() <= 0 && player.getAlive() == true)
 			{
@@ -91,7 +99,7 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 			}
 		}
 	}
-		
+
 	if (attacking)
 	{
 		if (attackTimer > 0)
@@ -101,8 +109,7 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 			attacking = false;
 		}
 		//play enemy attack animation here
-	}
-		
+	}	
 }
 void AI::attackRanged(MainCharacter &player, Enemy &self)
 {

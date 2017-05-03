@@ -9,7 +9,7 @@ public:
 	Enemy(int Type, const XMFLOAT3 SpawnPos);
 	~Enemy();
 
-	
+	float getAngle(XMFLOAT3 playerPos);
 	int getType()const;
 	void setType(const int Type);
 	XMFLOAT3 getSpawnPos()const;
