@@ -149,6 +149,10 @@ bool SceneContainer::readFiles() {
 
 		return false;
 	}*/
+	//if (!lightsFile.readFormat("Format//"))
+	//{
+
+	//}
 
 	return true;
 }

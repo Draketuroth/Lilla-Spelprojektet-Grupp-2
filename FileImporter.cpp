@@ -311,7 +311,26 @@ bool FileImporter::readFormat(string file) {
 		
 		
 		}
+
+		for (UINT i = 0; i < fileHeader.nrOfCameras; i++)
+		{
+			Cameras camera;
+			in.read(reinterpret_cast<char*>(&camera), sizeof(Cameras));
+			cameras.push_back(camera);
+			cout << "Camera pos X: " << camera.position.x << " Camera pos Y: " << camera.position.y << " Camera pos Z: " << camera.position.z << endl;
+			cout << "Camera rot X: " << camera.rotation.x << " Camera rot Y: " << camera.rotation.y << " Camera rot Z: " << camera.rotation.z << endl;
+ 		}
 		
+		for (UINT i = 0; i < fileHeader.nrOfLights; i++)
+		{
+			Light light;
+			in.read(reinterpret_cast<char*>(&light), sizeof(Light));
+			lights.push_back(light);
+
+			cout << "Light pos X: " << light.position.x << " Light pos Y: " << light.position.y << " Light pos Z: " << light.position.z << endl;
+			cout << "Light color R: " << light.color.x << " Light color G: " << light.color.y << " Light color B: " << light.color.z << endl;
+
+		}
 
 
 	}
