@@ -29,8 +29,6 @@ public:
 	void rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler);
 	bool renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end);
 
-	int test;
-
 	Camera camera;
 
 	float cameraDistanceY;

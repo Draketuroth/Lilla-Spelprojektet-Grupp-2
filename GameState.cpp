@@ -57,8 +57,8 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 			cout << "Mouse X: " << this->floatMouse.x << "  Mouse Y: " << this->floatMouse.y << endl;
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
-				clickSound.play();
-				arenaMusic.play();
+				//clickSound.play();
+				//arenaMusic.play();
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -74,7 +74,7 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMess
 {
 	if (this->state == PAUSE_MENU)
 	{
-		arenaMusic.pause();
+		//arenaMusic.pause();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -95,8 +95,8 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMess
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
-				clickSound.play();
-				arenaMusic.play();
+				//clickSound.play();
+				//arenaMusic.play();
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -113,7 +113,7 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 {
 	if (this->state == GAME_OVER)
 	{
-		arenaMusic.stop();
+		//arenaMusic.stop();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -135,8 +135,8 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
-				clickSound.play();
-				arenaMusic.play();
+				//clickSound.play();
+				//arenaMusic.play();
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)

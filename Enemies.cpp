@@ -188,8 +188,8 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 
 	//This is the speed of the enemy
 	//May be tweaked
-	float maxSpeed = 2;
-	float minSpeed = -2;
+	float maxSpeed = 3;
+	float minSpeed = -3;
 	btVector3 speed = this->rigidBody->getLinearVelocity();
 
 	//X-led
@@ -228,8 +228,8 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 	//This is the speed of the enemy
 	//May be tweaked
-	float maxSpeed = 2;
-	float minSpeed = -2;
+	float maxSpeed = 3;
+	float minSpeed = -3;
 	btVector3 speed = this->rigidBody->getLinearVelocity();
 
 	//X-led

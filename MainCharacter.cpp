@@ -12,15 +12,13 @@ MainCharacter::MainCharacter()
 
 	this->attacking = false;
 	this->attackTimer = 0.0f;
-	this->attackCd = 0.5f;
+	this->attackCd = 0.3f;
 
 	this->shooting = false;
 	this->shootCD = 0.3f;
 	this->shootTimer = 0.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
-
-	this->test = 0;
 
 	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
 	soundBuffer[1].loadFromFile("Sounds//sword.wav");
@@ -254,39 +252,45 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
+		/*attackSound.setBuffer(soundBuffer[1]);
+		attackSound.play();*/
 
-		attackSound.setBuffer(soundBuffer[1]);
-		attackSound.play();
+		cout << "ATTACK" << endl;
 
 		attacking = true;
 		attackTimer = attackCd;
-		//-----------------Calculate the hit area-----------------------
+		//-----------------Calculate the hit area-------------------------------
 		float angle = characterLookAt(windowHandle);
 
 		XMFLOAT3 characterPos = this->getBoundingBox().Center;
-		XMMATRIX playerTranslation = getPlayerTanslationMatrix();
-		
-		float centerX = characterPos.x + sin(angle);
-		float centerZ = characterPos.z + cos(angle);
+		XMVECTOR directionVec = this->getForwardVector();
 
-		XMFLOAT3 boxCenter = { centerX, 0, centerZ };
+		XMVECTOR rotQuat = XMQuaternionRotationAxis(XMVECTOR{ 0, 1, 0 }, angle);
+		directionVec = XMVector3Rotate(directionVec, rotQuat);
+		directionVec = XMVector3Normalize(directionVec);
+
+		XMVECTOR newC = XMLoadFloat3(&characterPos);
+		newC += directionVec * 0.4;
+		XMFLOAT3 newCenter;
+		XMStoreFloat3(&newCenter, newC);
+
+		XMFLOAT3 boxCenter = newCenter;
 		XMFLOAT3 boxRange = { 2, 2, 2 };
 
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
-		meleeBox.Transform(meleeBox, playerTranslation);
-		//---------------------------------------------------------------
 
-		//---------Attack------------------------------------------------
+		//-----------------------------------------------------------------------
+		//---------Attack--------------------------------------------------------
 		
 		for (int i = 0; i < nrOfEnemies; i++)
 		{
 			BoundingBox enemyBox = enemyArray[0].getBoundingBox();
 			if (enemyBox.Intersects(meleeBox))
 			{
-				test++;
-				cout << "HIT!" << test << endl;
+				cout << "HIT!" << endl;
 				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
 				
+		// ------------- Knockback ----------------------------------------------
 				btTransform playerTrans;
 				btTransform enemyTrans;
 				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
@@ -296,6 +300,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 				correctedForce.normalize();
 
 				enemyArray[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
+		// -----------------------------------------------------------------------
 
 				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
 				{
@@ -331,8 +336,8 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
 
-		attackSound.setBuffer(soundBuffer[0]);
-		attackSound.play();
+		//attackSound.setBuffer(soundBuffer[0]);
+		//attackSound.play();
 		
 		float angle = this->characterLookAt(windowHandle);
 	

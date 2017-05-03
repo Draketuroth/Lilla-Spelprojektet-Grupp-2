@@ -12,6 +12,9 @@ SceneContainer::SceneContainer() {
 
 	character = MainCharacter();
 	enemies[0] = Enemy(0, { 0, 20, 0 });
+	enemies[1] = Enemy(0, { 5, 20, 5 });
+	enemies[2] = Enemy(0, { -5, 20, -5 });
+
 
 	bulletPhysicsHandler = BulletComponents();
 	this->nrOfEnemies = 0;
