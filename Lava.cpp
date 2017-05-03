@@ -44,9 +44,10 @@ void Lava::LoadRawFile()
 		}
 		
 		map[j].heightMap.resize(LAVADEPTH * LAVAWIDTH, 0);
+
 		for (int i = 0; i < (LAVADEPTH * LAVAWIDTH); i++)
 		{
-			map[j].heightMap[i] = ((map[j].in[i] / 255.0f)*LAVAMAXHEIGHT)* -2;
+			map[j].heightMap[i] = ((map[j].in[i] / 255.0f)*LAVAMAXHEIGHT - LAVA_Y_POS);
 		}
 	}
 	

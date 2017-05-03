@@ -57,7 +57,7 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 		return false;
 	}
 
-	CreateCollisionPlane(bulletPhysicsHandler, XMFLOAT3(0, -8, 0));
+	CreateCollisionPlane(bulletPhysicsHandler, XMFLOAT3(0, -4, 0));
 
 	if (!CreateConstantBuffer(gDevice)) {
 
