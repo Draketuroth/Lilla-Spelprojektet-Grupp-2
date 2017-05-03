@@ -4,7 +4,9 @@ AI::AI()
 {
 	this->attacking = false;
 	this->attackTimer = 0;
-	this->attackCd = 0.7;
+	this->attackCd = 3.0;
+	
+	this->timer.initialize();
 }
 AI::~AI()
 {
@@ -30,6 +32,8 @@ void AI::iceAI(MainCharacter &player, Enemy &self)
 		moveTowardsPlayer(player.getPos(), self);
 	}
 
+	timer.updateCurrentTime();
+
 }
 void AI::fireAI(MainCharacter &player, Enemy &self)
 {
@@ -51,6 +55,7 @@ void AI::fireAI(MainCharacter &player, Enemy &self)
 
 void AI::attackMelee(MainCharacter &player, Enemy &self)
 {
+	//cout << "TRIED TO ATTACK" << endl;
 	if (!attacking && attackTimer <= 0)
 	{
 
@@ -60,7 +65,7 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 		attackTimer = attackCd;
 
 		//-----------------Calculate the hit area-------------------------------
-		float angle = self.getAngle(player.getPos()) ;
+		float angle = self.getAngle(player.getPos());
 
 		XMFLOAT3 enemyPos = self.getBoundingBox().Center;
 		XMVECTOR enemyDirVec = self.getForwardVector();
