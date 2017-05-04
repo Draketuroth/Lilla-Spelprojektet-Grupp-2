@@ -175,7 +175,6 @@ void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 	{
 		this->ai.fireAI(player, enemy);
 	}
-
 }
 
 void SceneContainer::drawPlatforms() {

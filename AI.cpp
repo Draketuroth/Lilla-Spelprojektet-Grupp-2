@@ -2,9 +2,9 @@
 
 AI::AI()
 {
-	this->attacking = false;
-	this->attackTimer = 0;
-	this->attackCd = 3.0;
+	this->attacking = true;
+	this->attackTimer = 1.0;
+	this->attackCd = 1.5;
 	
 	this->timer.initialize();
 }
@@ -92,8 +92,15 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 			player.setHealth(player.getHealth() - 1);
 
 			//Implement knockback
-	
+			btTransform playerTrans;
+			btTransform enemyTrans;
+			self.rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+			player.rigidBody->getMotionState()->getWorldTransform(playerTrans);
 
+			btVector3 correctedForce = enemyTrans.getOrigin() - playerTrans.getOrigin();
+			correctedForce.normalize();
+
+			player.rigidBody->applyCentralImpulse(-correctedForce / 2);
 
 			//_----------------------------------------
 
