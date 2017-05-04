@@ -119,12 +119,13 @@ struct Mesh_Skinned {
 
 struct Cameras {
 
-
+	XMFLOAT3 position;
+	XMFLOAT3 rotation;
 };
 
 struct Light {
-
-
+	XMFLOAT3 position;
+	XMFLOAT3 color;
 };
 
 class FileImporter {
