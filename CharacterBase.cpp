@@ -219,7 +219,7 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 ex
 
 	// Define the kind of shape we want and construct rigid body information
 	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
-	
+	boxShape->setMargin(0.04);
 
 	btVector3 inertia(0, 0, 0);
 

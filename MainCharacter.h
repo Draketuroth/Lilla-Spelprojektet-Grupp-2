@@ -28,6 +28,7 @@ public:
 	void meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* bulletDynamicsWorld);
 	void rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler);
 	bool renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end);
+	bool isGrounded();
 
 	Camera camera;
 

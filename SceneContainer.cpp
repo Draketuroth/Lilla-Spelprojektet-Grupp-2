@@ -154,6 +154,11 @@ bool SceneContainer::readFiles() {
 
 	//}
 
+	if (!FortressFile.readFormat("Format//Fortress_binary.txt"))
+	{
+		return false;
+	}
+
 	return true;
 }
 

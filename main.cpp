@@ -160,7 +160,7 @@ int RunApplication()
 
 void updateCharacter(HWND windowhandle) 
 {
-
+	
 	sceneContainer.character.update(windowhandle);
 	
 	if(sceneContainer.enemies[0].getAlive() == true){
