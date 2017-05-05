@@ -94,6 +94,9 @@
     <Filter Include="Source Files\FBXLoader">
       <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\ShadowShaders">
+      <UniqueIdentifier>{162a0401-28c5-4733-bb0c-9a08d4211dfc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -150,14 +153,20 @@
     <ClCompile Include="Enemies.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
-    <ClCompile Include="FBXLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Lava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FBXLoader.cpp">
       <Filter>Source Files\FBXLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileImporter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,14 +230,20 @@
     <ClInclude Include="BasicMath.h">
       <Filter>Header Files\Global</Filter>
     </ClInclude>
-    <ClInclude Include="FBXLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Lava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FBXLoader.h">
       <Filter>Header Files\FBXLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileImporter.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -283,11 +298,10 @@
     <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl" />
     <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl" />
     <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl" />
-    <FxCompile Include="Shaders\RayShaders\RayVertex.hlsl">
-      <Filter>Source Files\HLSL\RayShaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\RayShaders\RayFragment.hlsl">
-      <Filter>Source Files\HLSL\RayShaders</Filter>
+    <FxCompile Include="Shaders\RayShaders\RayFragment.hlsl" />
+    <FxCompile Include="Shaders\RayShaders\RayVertex.hlsl" />
+    <FxCompile Include="Shaders\ShadowShaders\ShadowVertex.hlsl">
+      <Filter>Source Files\HLSL\ShadowShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

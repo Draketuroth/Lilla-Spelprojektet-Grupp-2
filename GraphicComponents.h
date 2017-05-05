@@ -56,6 +56,10 @@ public:
 	ID3D11VertexShader* gRayVertexShader;
 	ID3D11PixelShader* gRayPixelShader;
 
+	ID3D11VertexShader* gShadowVertexShader;
+	ID3D11InputLayout* gShadowVertexLayout;
+
+
 
 
 
@@ -64,6 +68,8 @@ public:
 	bool CreateRenderTargetView();	// We require a render target view for rendering and we create this by taking the back buffer from the swap chain
 	bool CreateSwapChainAndDevice(HWND &windowHandle);	// Function to create the graphic device responsible for interactions with the graphic card and the swap chain to switch between back & front buffer
 
+	bool initializeShadowMap();
+	bool CreateShadowShaders();
 	bool CreateRayShaders();
 	bool CreateMenuShaders();
 	bool CreateStandardShaders();

@@ -506,6 +506,26 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
+	// Light matrices for shadow mapping
+
+	XMVECTOR lightPos = { 0, 20, 0, 1 };
+	XMVECTOR lightVec = { -5, 0, 0, 0 };
+	XMVECTOR upVec = { 0, 1, 0, 0 };
+
+	XMMATRIX lightView = XMMatrixLookAtLH(lightPos, lightVec, upVec);
+
+	float lNearP = 0.1f;
+	float lFarP = 40.0f;
+
+	XMMATRIX lightProj = XMMatrixOrthographicLH(WIDTH, HEIGHT, lNearP, lFarP);
+
+	XMMATRIX LVP = XMMatrixMultiply(lightView, lightProj);
+
+	tLightViewProj = XMMatrixTranspose(LVP);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+
 
 	// Final calculation for the transform matrix and the transpose function rearranging it to "Column Major" before being sent to the GPU
 	// (Required for the HLSL to read it correctly, doesn't accept matrices written in "Row Major"
@@ -527,6 +547,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	GsConstData.matrixProjection = { XMMatrixTranspose(projectionMatrix) };
 	GsConstData.matrixProjection = XMMatrixIdentity();
 	GsConstData.worldViewProj = { tWorldViewProj };
+	GsConstData.lightViewProj = { tLightViewProj };
 	GsConstData.cameraPos = XMFLOAT3(0.0f, 0.0f, 2.0f);
 
 	// The buffer description is filled in below, mainly so the graphic card understand the structure of it

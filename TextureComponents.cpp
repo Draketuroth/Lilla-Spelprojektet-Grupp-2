@@ -90,3 +90,68 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	return true;
 }
+bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
+{
+	HRESULT hr;
+
+	DXGI_FORMAT resformat = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+	DXGI_FORMAT srvformat = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+
+	//Shadow map sampler
+	D3D11_SAMPLER_DESC shadowSamp;
+	ZeroMemory(&shadowSamp, sizeof(shadowSamp));
+	shadowSamp.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	shadowSamp.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	shadowSamp.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	shadowSamp.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	shadowSamp.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	shadowSamp.MinLOD = 0;
+	shadowSamp.MaxLOD = D3D11_FLOAT32_MAX;
+
+	hr = gDevice->CreateSamplerState(&shadowSamp, &this->shadowSampler);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+	//Shadow map texture desc
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width = WIDTH;
+	texDesc.Height = HEIGHT;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = resformat;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+
+	hr = gDevice->CreateTexture2D(&texDesc, NULL, &this->ShadowMap);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	//Depth stencil view description
+	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
+	descDSV.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+
+	hr = gDevice->CreateDepthStencilView(this->ShadowMap, &descDSV, &this->shadowDepthView);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	//Shader resource view description
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = srvformat;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = texDesc.MipLevels;
+
+	hr = gDevice->CreateShaderResourceView(this->ShadowMap, &srvDesc, &this->shadowSRV);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	return true;
+}

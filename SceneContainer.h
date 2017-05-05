@@ -134,6 +134,7 @@ public:
 	void renderScene();
 	void renderCharacters();
 	void renderEnemies();
+	void renderShadowMap();
 
 	void renderLava();
 

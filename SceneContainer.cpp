@@ -394,3 +394,15 @@ void SceneContainer::renderLava()
 
 	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);
 }
+
+void SceneContainer::renderShadowMap()
+{
+	gHandler.gDeviceContext->OMSetRenderTargets(0, nullptr, tHandler.shadowDepthView);
+	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShader(nullptr, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+
+	//gHandler.gDeviceContext->IASetVertexBuffers();
+
+}

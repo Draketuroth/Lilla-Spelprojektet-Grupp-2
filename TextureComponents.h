@@ -23,9 +23,17 @@ public:
 	ID3D11ShaderResourceView* LavaResurce;
 	ID3D11ShaderResourceView* menuResources[9];
 
+	ID3D11SamplerState* shadowSampler;
+	ID3D11Texture2D* ShadowMap;
+	//ID3D11DepthStencilState* shadowDepthState;
+	ID3D11DepthStencilView* shadowDepthView;
+	ID3D11ShaderResourceView* shadowSRV;
+
+
 	ID3D11SamplerState* texSampler;
 
 	bool CreateTexture(ID3D11Device* &gDevice);
+	bool CreateShadowMap(ID3D11Device* &gDevice);
 };
 
 #endif TEXTURECOMPONENTS_H

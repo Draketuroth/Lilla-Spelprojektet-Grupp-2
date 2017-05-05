@@ -23,6 +23,7 @@ struct GS_CONSTANT_BUFFER {
 	XMMATRIX matrixView;
 	XMMATRIX matrixProjection;
 	XMMATRIX inverseViewProjection;
+	XMMATRIX lightViewProj;
 	XMFLOAT3 cameraPos;
 
 };
@@ -61,6 +62,7 @@ public:
 	XMMATRIX tWorldMatrix;
 	XMMATRIX projectionMatrix;
 	XMMATRIX viewMatrix;
+	XMMATRIX tLightViewProj;
 
 	XMVECTOR eyePos;
 	XMVECTOR lookAt;
@@ -73,6 +75,8 @@ public:
 
 	ID3D11Buffer* gCubeVertexBuffer;
 	ID3D11Buffer* gCubeIndexBuffer;
+
+	ID3D11Buffer* shadowMapBuffers;
 
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;

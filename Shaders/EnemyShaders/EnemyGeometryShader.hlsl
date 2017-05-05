@@ -5,6 +5,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 	matrix matrixView;
 	matrix matrixProjection;
 	matrix inverseViewProjection;
+	matrix lightViewProj;
 	float4 cameraPos;
 
 };
