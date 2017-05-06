@@ -140,16 +140,19 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 bool SceneContainer::readFiles() {
 
+	// Load file for the main character
 	if (!mainCharacterFile.readFormat("Format//mainCharacter_Binary.txt")) {
 
 		return false;
 	}
 
+	// Load file for the ice enemy
 	if (!iceEnemyFile.readFormat("Format//iceEnemy_Binary.txt")) {
 
 		return false;
 	}
 
+	// Load file for fortress
 	if (!FortressFile.readFormat("Format//Fortress_binary.txt"))
 	{
 		return false;
@@ -203,8 +206,8 @@ void SceneContainer::drawPlatforms() {
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	gHandler.gDeviceContext->DrawIndexedInstanced(36, bHandler.nrOfCubes, 0, 0, 0);
-	//gHandler.gDeviceContext->DrawInstanced(132, bHandler.nrOfCubes, 0, 0);
+	//gHandler.gDeviceContext->DrawIndexedInstanced(36, bHandler.nrOfCubes, 0, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(132, bHandler.nrOfCubes, 0, 0);
 	
 
 	}
