@@ -269,7 +269,7 @@ bool FileImporter::readFormat(string file) {
 
 							// Get keyframe matrix
 							XMMATRIX keyFrameMatrix = XMLoadFloat4x4(&jointGlobalTransforms[j]);
-							currentKeyFrameTransform.GlobalTransform = keyFrameMatrix;
+							currentKeyFrameTransform.LocalTransform = keyFrameMatrix;
 
 							// Set time pose
 							currentKeyFrameTransform.TimePos = j;

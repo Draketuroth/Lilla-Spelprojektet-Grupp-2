@@ -88,7 +88,7 @@ struct Mesh_Standard {
 
 struct Joint_Keyframe {
 
-	XMMATRIX GlobalTransform;
+	XMMATRIX LocalTransform;
 	float TimePos;
 	XMFLOAT4 Translation;
 	XMFLOAT4 Scale;
@@ -103,6 +103,8 @@ struct Joint_Animation {
 
 struct Joint_Container {
 
+	XMMATRIX GlobalTx;
+	XMMATRIX LocalTx;
 	XMMATRIX inverseBindPoseMatrix;
 	int parentIndex;
 	Joint_Animation Animations[5];

@@ -232,7 +232,7 @@ void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &animH
 
 		XMMATRIX inversedBindPose = importer.skinnedMeshes[0].hierarchy[i].inverseBindPoseMatrix; // converts from float4x4 too xmmatrix
 		
-		skinData.gBoneTransform[i] = inversedBindPose;
+		XMStoreFloat4x4(&skinData.gBoneTransform[i], inversedBindPose);
 		animHandler.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
 	}

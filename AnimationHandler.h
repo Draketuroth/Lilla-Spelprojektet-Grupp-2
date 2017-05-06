@@ -33,9 +33,16 @@ using namespace std;
 // STRUCTS
 //----------------------------------------------------------------------------------------------------------------------------------//
 
-struct VS_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
+struct CHARACTER_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
 
-	XMMATRIX gBoneTransform[16];
+	XMFLOAT4X4 gBoneTransform[16];
+};
+
+
+
+struct ENEMY_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
+
+	XMFLOAT4X4 gBoneTransform[24];
 };
 
 struct VertexBlendInfo {
@@ -157,21 +164,25 @@ public:
 	// BUFFERS
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	ID3D11Buffer* gBoneBuffer;
+	ID3D11Buffer* gCharacterBoneBuffer;
+	ID3D11Buffer* gEnemyBoneBUffer;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// PRIMARY FUNCTIONS AND VARIABLES
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	void UpdateAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
+	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
-	float animTimePos;
 
 	XMMATRIX invertedBindPose[16];	// Bind pose matrix
 
 	vector<Vertex_Bone>vertices;	// Extra copy of vertices
+
+	float animTimePos;
+	float playerAnimTimePos;
+	float enemyAnimTimePos;
 
 private:
 

@@ -318,7 +318,7 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gBoneBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gCharacterBoneBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
