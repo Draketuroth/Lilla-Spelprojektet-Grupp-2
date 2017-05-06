@@ -81,7 +81,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	bulletPhysicsHandler.InitializeBulletPhysics();
 
-	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, PlatformFile)) {
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, PlatformFile, FortressFile)) {
 
 		MessageBox(
 			NULL,
@@ -203,7 +203,7 @@ void SceneContainer::drawPlatforms() {
 
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
-	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;
 	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
