@@ -37,6 +37,10 @@ public:
 	ID3D11PixelShader* gPlatformPixelShader;
 	ID3D11GeometryShader* gPlatformGeometryShader;
 
+	ID3D11InputLayout* gFortressLayout;
+	ID3D11VertexShader* gFortressVertexShader;
+	ID3D11PixelShader* gFortressPixelShader;
+
 	ID3D11InputLayout* gLavaVertexLayout;
 	ID3D11VertexShader* gLavaVertexShader;
 	ID3D11PixelShader* gLavaPixelShader;
@@ -68,6 +72,7 @@ public:
 	bool CreateMenuShaders();
 	bool CreateStandardShaders();
 	bool CreatePlatformShaders();
+	bool CreateFortressShader();
 	bool CreateEnemyShaders();
 	bool CreateLavaShaders(); 
 	void SetViewport();		// Functions to define the properties of our viewport

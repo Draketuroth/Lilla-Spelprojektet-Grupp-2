@@ -45,6 +45,10 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gPlatformPixelShader);
 	SAFE_RELEASE(gPlatformGeometryShader);
 
+	SAFE_RELEASE(gFortressLayout);
+	SAFE_RELEASE(gFortressVertexShader);
+	SAFE_RELEASE(gFortressPixelShader);
+
 	SAFE_RELEASE(depthStencil);
 	SAFE_RELEASE(depthView);
 	SAFE_RELEASE(depthState);
@@ -98,18 +102,27 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 
 		return false;
 	}
+
+	if (!CreateFortressShader()) {
+
+		return false;
+	}
+
 	if (!CreateMenuShaders())
 	{
 		return false;
 	}
+
 	if (!CreateEnemyShaders())
 	{
 		return false;
 	}
+
 	if (!CreateLavaShaders())
 	{
 		return false; 
 	}
+
 	if (!CreateRayShaders())
 	{
 		return false;
@@ -595,6 +608,107 @@ bool GraphicComponents::CreatePlatformShaders() {
 	}
 
 	gsBlob->Release();
+
+	return true;
+}
+
+bool GraphicComponents::CreateFortressShader() {
+
+	HRESULT hr;
+
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* vsErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\FortressShaders\\FortressVertex.hlsl",
+		nullptr,
+		nullptr,
+		"VS_main",
+		"vs_5_0",
+		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG,
+		0,
+		&vsBlob,
+		&vsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Vertex Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
+
+		if (vsErrorBlob) {
+
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer());
+			vsErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gFortressVertexShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Vertex Shader Error: Vertex Shader could not be created" << endl;
+		return false;
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
+
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+
+	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gFortressLayout);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Vertex Shader Error: Shader Input Layout could not be created" << endl;
+	}
+
+	vsBlob->Release();
+
+
+	ID3DBlob* psBlob = nullptr;
+	ID3DBlob* psErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\FortressShaders\\FortressFragment.hlsl",
+		nullptr,
+		nullptr,
+		"PS_main",
+		"ps_5_0",
+		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG,
+		0,
+		&psBlob,
+		&psErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Fragment Shader Error: Fragment Shader could not be compiled or loaded from file" << endl;
+
+		if (psErrorBlob) {
+
+			OutputDebugStringA((char*)psErrorBlob->GetBufferPointer());
+			psErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gFortressPixelShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Pixel Shader Error: Pixel Shader could not be created" << endl;
+		return false;
+	}
+
+	psBlob->Release();
 
 	return true;
 }

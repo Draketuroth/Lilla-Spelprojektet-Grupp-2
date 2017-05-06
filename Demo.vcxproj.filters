@@ -115,6 +115,9 @@
     <Filter Include="Header Files\AI">
       <UniqueIdentifier>{ed5b00b3-776c-499b-a4c5-fd350361a948}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\FortressShader">
+      <UniqueIdentifier>{54d78cc4-1876-454b-96e1-b4c1af935e6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -317,6 +320,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FortressShaders\FortressFragment.hlsl">
+      <Filter>Source Files\HLSL\FortressShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FortressShaders\FortressVertex.hlsl">
+      <Filter>Source Files\HLSL\FortressShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
