@@ -19,6 +19,7 @@ void TextureComponents::ReleaseAll() {
 
 	SAFE_RELEASE(platformResource);
 	SAFE_RELEASE(fortressResource);
+	SAFE_RELEASE(defaultResource);
 	SAFE_RELEASE(texSampler);
 	SAFE_RELEASE(LavaResource); 
 	for (size_t i = 0; i < 9; i++)
@@ -59,6 +60,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	CoInitialize(NULL);
 	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\platformTexture.png", NULL, &platformResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\FortressTexture.png", NULL, &fortressResource, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &defaultResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava1.jpg", NULL, &LavaResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN.png", NULL, &menuResources[0], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN_PLAY_CLICK.png", NULL, &menuResources[1], 1920);
@@ -74,6 +76,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &fortressResource);
+		gDevice->CreateShaderResourceView(texture, nullptr, &defaultResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &LavaResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[0]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[1]);
