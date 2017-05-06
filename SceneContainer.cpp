@@ -145,14 +145,10 @@ bool SceneContainer::readFiles() {
 		return false;
 	}
 
-	/*if (!iceEnemyFile.readFormat("Format//iceEnemy_Binary.txt")) {
+	if (!iceEnemyFile.readFormat("Format//iceEnemy_Binary.txt")) {
 
 		return false;
-	}*/
-	//if (!lightsFile.readFormat("Format//"))
-	//{
-
-	//}
+	}
 
 	if (!FortressFile.readFormat("Format//Fortress_binary.txt"))
 	{
