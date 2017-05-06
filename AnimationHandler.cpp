@@ -54,9 +54,9 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 	invBindPose = importer.skinnedMeshes[0].hierarchy[0].inverseBindPoseMatrix;
 	skinnedTx = globalTx * invBindPose;
 
-	XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[0], XMMatrixTranspose(skinnedTx));	// skel[0].GlobalTx * skel[0].invBindPose
+	XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[0], XMMatrixIdentity());	// skel[0].GlobalTx * skel[0].invBindPose
 
-																							// Every joint must be updated before unmapping the subresource
+	// Every joint must be updated before unmapping the subresource
 	for (UINT i = 1; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
 
 		// Create a reference to the currenct joint to be processed
@@ -69,7 +69,8 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 
 		skinnedTx = b.GlobalTx * b.inverseBindPoseMatrix;
 
-		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(skinnedTx)); // b.GlobalTx * b.invBindPose
+		// XMMatrixTranspose(skinnedTx)
+		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixIdentity()); // b.GlobalTx * b.invBindPose
 	}
 
 	gDeviceContext->Unmap(gCharacterBoneBuffer, 0);
