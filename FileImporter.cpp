@@ -234,17 +234,18 @@ bool FileImporter::readFormat(string file) {
 
 				Joint_Container* joints = new Joint_Container[jointCount];
 
-				XMFLOAT4X4* bindPoseMatrices = new XMFLOAT4X4[jointCount];
-				in.read(reinterpret_cast<char*>(bindPoseMatrices), sizeof(XMFLOAT4X4) * jointCount);
-
 				for (UINT i = 0; i < jointCount; i++) {
 
-					XMMATRIX currentBindPose = XMLoadFloat4x4(&bindPoseMatrices[i]);
-					
-					joints[i].inverseBindPoseMatrix = currentBindPose;
-				}
+					int jointParentIndex;
+					XMFLOAT4X4 bindPoseMatrix;
+					in.read(reinterpret_cast<char*>(&jointParentIndex), sizeof(uint32_t));
+					in.read(reinterpret_cast<char*>(&bindPoseMatrix), sizeof(XMFLOAT4X4));
 
-				delete bindPoseMatrices;
+					joints[i].inverseBindPoseMatrix = XMLoadFloat4x4(&bindPoseMatrix);
+					joints[i].parentIndex = jointParentIndex;
+
+					cout << jointParentIndex << endl;
+				}
 
 				//------------------------------------------------------//
 				// GATHER JOINT ANIMATIONS
