@@ -19,8 +19,8 @@ public:
 	~TextureComponents();
 	void ReleaseAll();
 
-	ID3D11ShaderResourceView* standardResource;
-	ID3D11ShaderResourceView* LavaResurce;
+	ID3D11ShaderResourceView* platformResource;
+	ID3D11ShaderResourceView* LavaResource;
 	ID3D11ShaderResourceView* menuResources[9];
 
 	ID3D11SamplerState* texSampler;

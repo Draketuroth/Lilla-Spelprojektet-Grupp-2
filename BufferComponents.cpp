@@ -84,7 +84,7 @@ bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileIm
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// HARDCODED VERTICES
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	TriangleVertex cubeVertices[132];
+	TriangleVertex cubeVertices[1248];
 	cubeScaling = importer.standardMeshes[0].meshTransformation.meshScale;
 	
 	for (UINT i = 0; i < importer.standardMeshes[0].vertices.size(); i++) {
@@ -236,8 +236,6 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 	float xOffsetValue = 0.0f;
 	float yOffsetValue = 0.0f;
 	float zOffsetValue = 0.0f;
-
-	
 
 	for (int i = 0; i < cubes; i++) {
 
@@ -576,6 +574,7 @@ bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
 
 	return true;
 }
+
 void BufferComponents::CreateRigidBodyTags()
 {
 	for (size_t i = 0; i < this->nrOfCubes; i++)
@@ -583,11 +582,13 @@ void BufferComponents::CreateRigidBodyTags()
 		this->cubeObjects[i].rigidBody->setIslandTag(platformRigid);
 	}
 }
+
 float BufferComponents::incrementSpace(float offset)
 {
 	offset += 2.3;
 	return offset;
 }
+
 float BufferComponents::centerPlatformsColls(float offset)
 {
 	offset = PLATCOLLS / 2;
@@ -596,6 +597,7 @@ float BufferComponents::centerPlatformsColls(float offset)
 
 	return offset;
 }
+
 float BufferComponents::centerPlatformsRows(float offset)
 {
 	offset = PLATROWS / 2;
@@ -604,6 +606,7 @@ float BufferComponents::centerPlatformsRows(float offset)
 
 	return offset;
 }
+
 void BufferComponents::platformDecension(CubeObjects cube)
 {
 
@@ -653,6 +656,7 @@ void BufferComponents::platformDecension(CubeObjects cube)
 	
 
 }
+
 void BufferComponents::platformAcension(CubeObjects cube)
 {
 
@@ -700,6 +704,7 @@ void BufferComponents::platformAcension(CubeObjects cube)
 		lerpScalar = 0;
 	}
 }
+
 void BufferComponents::platformBreaking(CubeObjects cube)
 {
 	btTransform rigidCube;

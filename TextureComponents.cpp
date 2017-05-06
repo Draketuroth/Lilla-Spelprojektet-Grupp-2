@@ -17,9 +17,9 @@ TextureComponents::~TextureComponents() {
 
 void TextureComponents::ReleaseAll() {
 
-	SAFE_RELEASE(standardResource);
+	SAFE_RELEASE(platformResource);
 	SAFE_RELEASE(texSampler);
-	SAFE_RELEASE(LavaResurce); 
+	SAFE_RELEASE(LavaResource); 
 	for (size_t i = 0; i < 9; i++)
 	{
 		SAFE_RELEASE(this->menuResources[i]);
@@ -56,8 +56,8 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	ID3D11Texture2D* texture = nullptr;
 
 	CoInitialize(NULL);
-	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &standardResource, 1024);
-	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava1.jpg", NULL, &LavaResurce, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\platformTexture.png", NULL, &platformResource, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava1.jpg", NULL, &LavaResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN.png", NULL, &menuResources[0], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN_PLAY_CLICK.png", NULL, &menuResources[1], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN_QUIT_CLICK.png", NULL, &menuResources[2], 1920);
@@ -70,8 +70,8 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	if (SUCCEEDED(hr) && texture != 0) {
 
-		gDevice->CreateShaderResourceView(texture, nullptr, &standardResource);
-		gDevice->CreateShaderResourceView(texture, nullptr, &LavaResurce);
+		gDevice->CreateShaderResourceView(texture, nullptr, &platformResource);
+		gDevice->CreateShaderResourceView(texture, nullptr, &LavaResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[0]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[1]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[2]);

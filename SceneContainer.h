@@ -95,6 +95,7 @@ public:
 	FileImporter mainCharacterFile;
 	FileImporter iceEnemyFile;
 	FileImporter FortressFile;
+	FileImporter PlatformFile;
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;
