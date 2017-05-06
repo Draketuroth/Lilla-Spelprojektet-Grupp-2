@@ -121,6 +121,7 @@ public:
 	// RENDER FUNCTIONS
 	//------------------------------------------------------------//
 
+	void drawFortress();
 	void drawPlatforms();
 	
 	void clear();

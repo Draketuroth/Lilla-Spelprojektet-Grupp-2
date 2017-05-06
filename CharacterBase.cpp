@@ -265,20 +265,12 @@ XMMATRIX CharacterBase::getPlayerTanslationMatrix()
 
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount) {
 
-	ID3D11ShaderResourceView* nullSRV = nullptr;
-
-	graphicDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
-
 	//graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 	graphicDeviceContext->Draw(vertexCount, 0);
 
 }
 
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
-
-	ID3D11ShaderResourceView* nullSRV = nullptr;
-
-	graphicDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
 
 	UINT32 vertexSize = sizeof(TriangleVertex);
 	UINT32 offset = 0;

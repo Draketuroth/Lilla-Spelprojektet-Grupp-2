@@ -133,6 +133,7 @@ bool BufferComponents::CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter
 
 	StandardVertex fortressVertices[3264];
 	fortressScaling = fortressImporter.standardMeshes[0].meshTransformation.meshScale;
+	fortressWorld = XMMatrixScaling(0.025, 0.025, 0.025);
 
 	for (UINT i = 0; i < fortressImporter.standardMeshes[0].vertices.size(); i++) {
 
@@ -526,6 +527,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	GsConstData.matrixWorld = { tWorldMatrix };
 	GsConstData.matrixView = { XMMatrixTranspose(viewMatrix) };
 	GsConstData.matrixProjection = { XMMatrixTranspose(projectionMatrix) };
+	GsConstData.fortressWorldMatrix = XMMatrixTranspose(fortressWorld);
 	GsConstData.matrixProjection = XMMatrixIdentity();
 	GsConstData.worldViewProj = { tWorldViewProj };
 	GsConstData.cameraPos = XMFLOAT3(0.0f, 0.0f, 2.0f);
