@@ -132,7 +132,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
-	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
+	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler, iceEnemyFile);
 	
 	return true;
 
@@ -225,7 +225,6 @@ void SceneContainer::drawPlatforms() {
 
 	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;
-	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gPlatformLayout);
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
@@ -235,6 +234,28 @@ void SceneContainer::drawPlatforms() {
 	
 
 	}
+
+void SceneContainer::drawDebugCubes() {
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gDebugVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &animHandler.gCharacterBoneBuffer);
+
+	ID3D11GeometryShader* nullBuffer = nullptr;
+	gHandler.gDeviceContext->GSSetShader(nullBuffer, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gDebugPixelShader, nullptr, 0);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gDebugVertexLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gDebugVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gDebugIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	gHandler.gDeviceContext->DrawIndexedInstanced(36, 16, 0, 0, 0);
+}
 
 void SceneContainer::clear()
 {
@@ -256,6 +277,7 @@ void SceneContainer::render()
 
 	//renderDeferred();
 	renderLava(); 
+	//drawDebugCubes();
 	renderCharacters();
 	renderEnemies();
 	renderScene();
@@ -370,14 +392,13 @@ void SceneContainer::renderEnemies()
 		gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
 		gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 		gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
-		gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gEnemyBoneBUffer);
 		gHandler.gDeviceContext->GSSetShader(gHandler.gEnemyGeometryShader, nullptr, 0);
 
 		gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
 		gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
 		gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
-		UINT32 vertexSize = sizeof(Vertex_Bone);
+		UINT32 vertexSize = sizeof(StandardVertex);
 		UINT32 offset = 0;
 
 		ID3D11Buffer* nullBuffer = { nullptr };
@@ -385,8 +406,9 @@ void SceneContainer::renderEnemies()
 
 		gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemies[0].vertexBuffer, &vertexSize, &offset);
 		gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
-		enemies[0].draw(gHandler.gDeviceContext);
+		gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
+
+		enemies[0].draw(gHandler.gDeviceContext, enemies[0].vertices.size());
 
 	}
 	

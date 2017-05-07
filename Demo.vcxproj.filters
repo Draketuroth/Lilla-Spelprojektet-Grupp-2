@@ -118,6 +118,9 @@
     <Filter Include="Source Files\HLSL\FortressShader">
       <UniqueIdentifier>{54d78cc4-1876-454b-96e1-b4c1af935e6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\DebugShader">
+      <UniqueIdentifier>{3737ec9c-9dda-4595-a5d4-02cc4c3f4212}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -310,8 +313,6 @@
     <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\RayShaders\RayFragment.hlsl" />
-    <FxCompile Include="Shaders\RayShaders\RayVertex.hlsl" />
     <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
@@ -326,6 +327,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\FortressShaders\FortressVertex.hlsl">
       <Filter>Source Files\HLSL\FortressShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DebugShaders\DebugFragment.hlsl">
+      <Filter>Source Files\HLSL\DebugShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DebugShaders\DebugVertex.hlsl">
+      <Filter>Source Files\HLSL\DebugShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

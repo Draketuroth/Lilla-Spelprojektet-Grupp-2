@@ -73,7 +73,9 @@ public:
 	ID3D11Buffer* gEnemyTransformBuffer;
 
 	ID3D11Buffer* gCubeVertexBuffer;
-	ID3D11Buffer* gCubeIndexBuffer;
+
+	ID3D11Buffer* gDebugVertexBuffer;
+	ID3D11Buffer* gDebugIndexBuffer;
 
 	ID3D11Buffer* gFortressBuffer;
 
@@ -86,6 +88,7 @@ public:
 
 	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter);
 
+	bool CreateDebugVertexBuffer(ID3D11Device* &gDevice);
 	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer);
 	bool CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter &fortressImporter);
 	bool CreatePlatforms(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);

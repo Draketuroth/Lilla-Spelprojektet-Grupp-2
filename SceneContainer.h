@@ -123,6 +123,7 @@ public:
 
 	void drawFortress();
 	void drawPlatforms();
+	void drawDebugCubes();
 	
 	void clear();
 	void resetRenderTarget(GraphicComponents &gHandler);

@@ -67,6 +67,7 @@ public:
 
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, AnimationHandler &animHandler, CHARACTER_SKINNED_DATA &skinData);
+	bool createBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
