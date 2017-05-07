@@ -23,10 +23,12 @@ public:
 	void avoidPlayer(XMFLOAT3 position);
 	
 	vector<StandardVertex>vertices;
+
 private:
 	ID3D11Buffer* gEnemieVertexBuffer;
 	int Type;
 	XMFLOAT3 SpawnPos;
+	
 	vector<unsigned int>indices;
 
 

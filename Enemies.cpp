@@ -66,7 +66,6 @@ void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHa
 void Enemy::loadVertices(FileImporter &importer, ID3D11Device* &graphicDevice) {
 
 	HRESULT hr;
-
 	//load mesh vertices
 	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
 
@@ -99,7 +98,8 @@ void Enemy::EnemyPhysics()
 	XMFLOAT3 oldpos = this->getPos();
 
 	XMMATRIX R = XMMatrixIdentity();
-	updateWorldMatrix(R);
+	XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
+	updateWorldMatrix(R, scaling);
 
 	
 
