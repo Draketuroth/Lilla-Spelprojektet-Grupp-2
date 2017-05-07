@@ -235,6 +235,28 @@ void SceneContainer::drawPlatforms() {
 
 	}
 
+void SceneContainer::drawDebugCubes() {
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gDebugVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &animHandler.gCharacterBoneBuffer);
+
+	ID3D11GeometryShader* nullBuffer = nullptr;
+	gHandler.gDeviceContext->GSSetShader(nullBuffer, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gDebugPixelShader, nullptr, 0);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gDebugVertexLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gDebugVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gDebugIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	gHandler.gDeviceContext->DrawIndexedInstanced(36, 16, 0, 0, 0);
+}
+
 void SceneContainer::clear()
 {
 	// clear the back buffer to a deep blue
@@ -255,6 +277,7 @@ void SceneContainer::render()
 
 	//renderDeferred();
 	renderLava(); 
+	drawDebugCubes();
 	renderCharacters();
 	renderEnemies();
 	renderScene();
