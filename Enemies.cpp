@@ -100,11 +100,6 @@ void Enemy::EnemyPhysics()
 	XMMATRIX R = XMMatrixIdentity();
 	XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
 	updateWorldMatrix(R, scaling);
-
-	
-
-	
-	
 	
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
@@ -133,7 +128,6 @@ void Enemy::EnemyPhysics()
 
 	timer.updateCurrentTime();
 }
-
 
 void Enemy::moveTowardsPosition(XMFLOAT3 position)
 {
@@ -174,6 +168,7 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 	this->rigidBody->setLinearVelocity(speed);
 
 }
+
 void Enemy::avoidPlayer(XMFLOAT3 position)
 {
 	XMFLOAT3 myPos = this->getPos();
@@ -212,7 +207,6 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 	this->rigidBody->setLinearVelocity(speed);
 }
-
 
 //void Enemy::meleeAttacks(float distance)
 //{

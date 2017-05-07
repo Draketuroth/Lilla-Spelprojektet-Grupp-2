@@ -225,7 +225,6 @@ void SceneContainer::drawPlatforms() {
 
 	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;
-	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gPlatformLayout);
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
