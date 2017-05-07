@@ -88,7 +88,7 @@ void CharacterBase::setPos(const XMFLOAT3 newPos)
 }
 
 //-------------Create Buffer and Draw -----------------------
-bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, AnimationHandler &animHandler, CHARACTER_SKINNED_DATA &skinData)
+bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>vertices, AnimationHandler &animHandler, CHARACTER_SKINNED_DATA &skinData)
 {
 	HRESULT hr;
 
@@ -131,10 +131,39 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bo
 
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = fbxVector.size() * sizeof(Vertex_Bone);
+	bufferDesc.ByteWidth = vertices.size() * sizeof(Vertex_Bone);
 
 	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = &fbxVector[0];
+	data.pSysMem = &vertices[0];
+	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &vertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
+bool  CharacterBase::createBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices) {
+
+	HRESULT hr;
+
+	//----------------------------------------------------------------------//
+	// VERTEX BUFFER
+	//----------------------------------------------------------------------//
+
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(StandardVertex) * vertices.size();
+
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = &vertices[0];
 	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &vertexBuffer);
 
 	if (FAILED(hr)) {
@@ -265,7 +294,6 @@ XMMATRIX CharacterBase::getPlayerTanslationMatrix()
 
 void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount) {
 
-	//graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 	graphicDeviceContext->Draw(vertexCount, 0);
 
 }
@@ -275,8 +303,6 @@ void CharacterBase::draw(ID3D11DeviceContext* &graphicDeviceContext) {
 	UINT32 vertexSize = sizeof(TriangleVertex);
 	UINT32 offset = 0;
 
-	graphicDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
-	graphicDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	graphicDeviceContext->DrawIndexed(36, 0, 0);
 }
 

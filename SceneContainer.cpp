@@ -132,7 +132,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
-	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
+	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler, iceEnemyFile);
 	
 	return true;
 
@@ -370,14 +370,13 @@ void SceneContainer::renderEnemies()
 		gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
 		gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 		gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
-		gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gEnemyBoneBUffer);
 		gHandler.gDeviceContext->GSSetShader(gHandler.gEnemyGeometryShader, nullptr, 0);
 
 		gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
 		gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
 		gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
-		UINT32 vertexSize = sizeof(Vertex_Bone);
+		UINT32 vertexSize = sizeof(StandardVertex);
 		UINT32 offset = 0;
 
 		ID3D11Buffer* nullBuffer = { nullptr };
@@ -385,8 +384,9 @@ void SceneContainer::renderEnemies()
 
 		gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemies[0].vertexBuffer, &vertexSize, &offset);
 		gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
-		enemies[0].draw(gHandler.gDeviceContext);
+		gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
+
+		enemies[0].draw(gHandler.gDeviceContext, enemies[0].vertices.size());
 
 	}
 	
