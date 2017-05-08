@@ -15,6 +15,14 @@ struct TriangleVertex{
 	float u, v;
 };
 
+struct StandardVertex {
+
+	float x, y, z;
+	float u, v;
+	float nx, ny, nz;
+};
+
+
 struct Vertex_Bone { // Stores the attributes of a vertex such as position, uv coordinates and normals
 
 	XMFLOAT3 pos;

@@ -81,7 +81,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	bulletPhysicsHandler.InitializeBulletPhysics();
 
-	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, mainCharacterFile)) {
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, PlatformFile, FortressFile)) {
 
 		MessageBox(
 			NULL,
@@ -132,7 +132,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
-	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
+	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler, iceEnemyFile);
 	
 	return true;
 
@@ -140,21 +140,25 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 bool SceneContainer::readFiles() {
 
+	// Load file for the main character
 	if (!mainCharacterFile.readFormat("Format//mainCharacter_Binary.txt")) {
 
 		return false;
 	}
 
-	/*if (!iceEnemyFile.readFormat("Format//iceEnemy_Binary.txt")) {
+	// Load file for the ice enemy
+	if (!iceEnemyFile.readFormat("Format//iceEnemy_Binary.txt")) {
 
 		return false;
-	}*/
-	//if (!lightsFile.readFormat("Format//"))
-	//{
+	}
 
-	//}
-
+	// Load file for fortress
 	if (!FortressFile.readFormat("Format//Fortress_binary.txt"))
+	{
+		return false;
+	}
+
+	if (!PlatformFile.readFormat("Format//Platform_binary.txt"))
 	{
 		return false;
 	}
@@ -186,6 +190,28 @@ void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 	}
 }
 
+void SceneContainer::drawFortress() {
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gFortressVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+
+	ID3D11GeometryShader* nullShader = nullptr;
+	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gFortressPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.fortressResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
+	UINT32 vertexSize = sizeof(StandardVertex);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gFortressLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gFortressBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	character.draw(gHandler.gDeviceContext, FortressFile.standardMeshes[0].vertices.size());
+}
+
 void SceneContainer::drawPlatforms() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
@@ -194,24 +220,42 @@ void SceneContainer::drawPlatforms() {
 	gHandler.gDeviceContext->GSSetShader(gHandler.gPlatformGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.platformResource);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
-
-	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;
-	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gCubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gPlatformLayout);
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	gHandler.gDeviceContext->DrawIndexedInstanced(36, bHandler.nrOfCubes, 0, 0, 0);
-	//gHandler.gDeviceContext->DrawInstanced(132, bHandler.nrOfCubes, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(PlatformFile.standardMeshes[0].vertices.size(), bHandler.nrOfCubes, 0, 0);
 	
 
 	}
+
+void SceneContainer::drawDebugCubes() {
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gDebugVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &animHandler.gCharacterBoneBuffer);
+
+	ID3D11GeometryShader* nullBuffer = nullptr;
+	gHandler.gDeviceContext->GSSetShader(nullBuffer, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gDebugPixelShader, nullptr, 0);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gDebugVertexLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gDebugVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetIndexBuffer(bHandler.gDebugIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	gHandler.gDeviceContext->DrawIndexedInstanced(36, 16, 0, 0, 0);
+}
 
 void SceneContainer::clear()
 {
@@ -233,6 +277,7 @@ void SceneContainer::render()
 
 	//renderDeferred();
 	renderLava(); 
+	//drawDebugCubes();
 	renderCharacters();
 	renderEnemies();
 	renderScene();
@@ -301,7 +346,7 @@ bool SceneContainer::renderSceneToTexture() {
 	// Don't forget to set the constant buffer to the geometry shader
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	
-	deferredShaders.Render(gHandler.gDeviceContext, tHandler.texSampler, tHandler.standardResource, indexCounter);
+	deferredShaders.Render(gHandler.gDeviceContext, tHandler.texSampler, tHandler.platformResource, indexCounter);
 
 	return true;
 	
@@ -310,6 +355,7 @@ bool SceneContainer::renderSceneToTexture() {
 void SceneContainer::renderScene() {
 
 	drawPlatforms();
+	drawFortress();
 }
 
 void SceneContainer::renderCharacters()
@@ -318,18 +364,16 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gBoneBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gCharacterBoneBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
 
-	ID3D11Buffer* nullBuffer = { nullptr };
-	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &character.vertexBuffer, &vertexSize, &offset);
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -343,25 +387,28 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderEnemies()
 {
+	if (enemies[0].getAlive() == true) {
 
-	if(enemies[0].getAlive() == true){
-	
-	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
-	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
-	gHandler.gDeviceContext->GSSetShader(gHandler.gEnemyGeometryShader, nullptr, 0);
+		gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
+		gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+		gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
+		gHandler.gDeviceContext->GSSetShader(gHandler.gEnemyGeometryShader, nullptr, 0);
 
-	gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.standardResource);
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+		gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
+		gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
+		gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
+		UINT32 vertexSize = sizeof(StandardVertex);
+		UINT32 offset = 0;
 
-	ID3D11Buffer* nullBuffer = { nullptr };
-	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
+		ID3D11Buffer* nullBuffer = { nullptr };
+		gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
-	enemies[0].draw(gHandler.gDeviceContext);
+		gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemies[0].vertexBuffer, &vertexSize, &offset);
+		gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
+
+		enemies[0].draw(gHandler.gDeviceContext, enemies[0].vertices.size());
 
 	}
 	
@@ -375,7 +422,7 @@ void SceneContainer::renderLava()
 	gHandler.gDeviceContext->PSSetShader(gHandler.gLavaPixelShader, nullptr, 0); //ps
 
 	//texture
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResurce);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResource);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);

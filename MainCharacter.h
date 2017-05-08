@@ -42,7 +42,7 @@ public:
 	XMFLOAT3 floatPos;
 	
 	vector<Vertex_Bone> vertices;
-	VS_SKINNED_DATA skinData; // constant buffer struct for inverse bindpose matrices.
+	CHARACTER_SKINNED_DATA skinData; // constant buffer struct for inverse bindpose matrices.
 	int currentAnimIndex;
 
 	bool attacking;
