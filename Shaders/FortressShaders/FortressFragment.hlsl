@@ -1,3 +1,4 @@
+
 SamplerState texSampler: register(s0);
 Texture2D tex0 : register(t0);
 
@@ -7,12 +8,13 @@ struct PS_IN
 	float2 Tex : TEXCOORD;
 	float4 Pos : SV_POSITION;
 	float3 WPos : WPOSITION;
-	float3 ViewPos : POSITION1;
-};
+	float3 ViewPos : CAMERAPOS;
 
+};
 
 float4 PS_main(PS_IN input) : SV_Target
 {
+
 	float3 texColor;
 	float4 color;
 
@@ -21,4 +23,4 @@ float4 PS_main(PS_IN input) : SV_Target
 	color = float4(texColor, 1.0f);
 
 	return color;
-}
+};
