@@ -370,7 +370,7 @@ bool Enemy::createProjectileBox(ID3D11Device* gDevice)
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(unsigned int) * indices.size();
+	bufferDesc.ByteWidth = sizeof(unsigned int) * 36;
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
@@ -378,7 +378,7 @@ bool Enemy::createProjectileBox(ID3D11Device* gDevice)
 	// Set the subresource data
 
 	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = &indices[0];
+	initData.pSysMem = &ProjectileIndicies[0];
 	initData.SysMemPitch = 0;
 	initData.SysMemSlicePitch = 0;
 

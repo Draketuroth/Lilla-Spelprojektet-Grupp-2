@@ -94,14 +94,11 @@
     <Filter Include="Source Files\FBXLoader">
       <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Lava Pipeline">
-      <UniqueIdentifier>{90f1ab0f-d57c-46f6-a373-03ff2dd38d0a}</UniqueIdentifier>
+    <Filter Include="Source Files\HLSL\LavaShaders">
+      <UniqueIdentifier>{889167de-cb34-4bb9-b214-05791ae3e389}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ray Pipeline">
-      <UniqueIdentifier>{43a4c954-5146-43eb-8fa5-35a9480be54f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Projectile Pipeline">
-      <UniqueIdentifier>{fe69b4a2-9808-4d03-891a-34db53836445}</UniqueIdentifier>
+    <Filter Include="Source Files\HLSL\ProjectileShaders">
+      <UniqueIdentifier>{8c55d5ef-1fe7-403b-963b-d9787f1de2ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -296,25 +293,19 @@
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
-      <Filter>Lava Pipeline</Filter>
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
-      <Filter>Lava Pipeline</Filter>
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
-      <Filter>Lava Pipeline</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\RayShaders\RayVertex.hlsl">
-      <Filter>Ray Pipeline</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\RayShaders\RayFragment.hlsl">
-      <Filter>Ray Pipeline</Filter>
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\ProjectileShaders\ProjectileFragment.hlsl">
-      <Filter>Projectile Pipeline</Filter>
+      <Filter>Source Files\HLSL\ProjectileShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\ProjectileShaders\ProjectileVertex.hlsl">
-      <Filter>Projectile Pipeline</Filter>
+      <Filter>Source Files\HLSL\ProjectileShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
