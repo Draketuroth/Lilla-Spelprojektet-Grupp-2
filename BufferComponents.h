@@ -23,6 +23,7 @@ struct GS_CONSTANT_BUFFER {
 	XMMATRIX matrixView;
 	XMMATRIX matrixProjection;
 	XMMATRIX fortressWorldMatrix;
+	XMMATRIX lightViewProj;
 	XMFLOAT3 cameraPos;
 
 };
@@ -62,6 +63,7 @@ public:
 	XMMATRIX projectionMatrix;
 	XMMATRIX viewMatrix;
 	XMMATRIX fortressWorld;
+	XMMATRIX tLightViewProj;
 
 	XMVECTOR eyePos;
 	XMVECTOR lookAt;

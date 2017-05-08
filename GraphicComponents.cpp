@@ -71,7 +71,8 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gDebugPixelShader);
 	SAFE_RELEASE(gDebugVertexShader);
 
-
+	SAFE_RELEASE(gShadowVertexLayout);
+	SAFE_RELEASE(gShadowVertexLayout);
 }
 
 bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
@@ -1186,7 +1187,7 @@ bool GraphicComponents::CreateShadowShaders()
 	ID3DBlob* vsErrorBlob = nullptr;
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\RayShaders\\RayVertex.hlsl",
+		L"Shaders\\ShadowShaders\\ShadowVertex.hlsl",
 		nullptr,
 		nullptr,
 		"VS_main",

@@ -15,6 +15,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 	matrix matrixView;
 	matrix matrixProjection;
 	matrix fortressWorldMatrix;
+	matrix lightViewProj;
 	float4 cameraPos;
 
 };
@@ -29,6 +30,7 @@ struct GS_IN
 	float3 Pos : POSITION;
 	float2 Tex: TEXCOORD;
 	float3 Norm: NORMAL;
+	float4 lPos : TEXCOORD1;
 	uint InstanceId : SV_InstanceId;
 
 };
@@ -40,6 +42,7 @@ struct GS_OUT
 	float4 Pos : SV_POSITION;
 	float3 WPos : WPOSITION;
 	float3 ViewPos : POSITION1;
+	float4 lPos : TEXCOORD1;
 	
 };
 
@@ -56,6 +59,9 @@ struct GS_OUT
 			output.WPos = worldPosition;
 
 			output.Pos = mul(float4(input[i].Pos.xyz, 1.0f), worldMatrix[input[i].InstanceId]);
+
+			output.lPos = mul(float4(output.Pos.xyz, 1.0f), lightViewProj);
+
 			output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixView);
 			output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixProjection);
 

@@ -22,6 +22,10 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(defaultResource);
 	SAFE_RELEASE(texSampler);
 	SAFE_RELEASE(LavaResource); 
+	SAFE_RELEASE(shadowSRV);
+	SAFE_RELEASE(shadowDepthView);
+	SAFE_RELEASE(shadowSampler);
+	SAFE_RELEASE(ShadowMap);
 	for (size_t i = 0; i < 9; i++)
 	{
 		SAFE_RELEASE(this->menuResources[i]);
@@ -42,6 +46,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	//sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -100,8 +105,8 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 {
 	HRESULT hr;
 
-	DXGI_FORMAT resformat = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
-	DXGI_FORMAT srvformat = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+	DXGI_FORMAT resformat = DXGI_FORMAT_R32G8X24_TYPELESS;
+	DXGI_FORMAT srvformat = DXGI_FORMAT_R32G8X24_TYPELESS;
 
 	//Shadow map sampler
 	D3D11_SAMPLER_DESC shadowSamp;
@@ -110,7 +115,7 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	shadowSamp.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	shadowSamp.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	shadowSamp.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	shadowSamp.MinLOD = 0;
 	shadowSamp.MaxLOD = D3D11_FLOAT32_MAX;
 
@@ -120,7 +125,7 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 		return false;
 	}
 	//Shadow map texture desc
-	D3D11_TEXTURE2D_DESC texDesc;
+	D3D11_TEXTURE2D_DESC texDesc = {};
 	texDesc.Width = WIDTH;
 	texDesc.Height = HEIGHT;
 	texDesc.MipLevels = 1;
@@ -135,7 +140,7 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	{
 		return false;
 	}
-
+	
 	//Depth stencil view description
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 	descDSV.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;

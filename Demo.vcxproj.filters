@@ -121,6 +121,9 @@
     <Filter Include="Source Files\HLSL\DebugShader">
       <UniqueIdentifier>{3737ec9c-9dda-4595-a5d4-02cc4c3f4212}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\ShadowShader">
+      <UniqueIdentifier>{4435caeb-22f1-4f86-9a65-dce945e6c0b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -333,6 +336,9 @@
     </FxCompile>
     <FxCompile Include="Shaders\DebugShaders\DebugVertex.hlsl">
       <Filter>Source Files\HLSL\DebugShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowShaders\ShadowVertex.hlsl">
+      <Filter>Source Files\HLSL\ShadowShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
