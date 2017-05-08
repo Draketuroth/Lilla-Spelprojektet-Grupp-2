@@ -40,6 +40,7 @@ void SceneContainer::releaseAll() {
 	lightShaders.ReleaseAll();
 
 	lava.ReleaseAll();
+	HUD.ReleaseAll();
 	animHandler.ReleaseAll();
 	bulletPhysicsHandler.ReleaseAll();
 }
@@ -281,6 +282,7 @@ void SceneContainer::render()
 	renderCharacters();
 	renderEnemies();
 	renderScene();
+	drawHUD();
 }
 
 bool SceneContainer::renderDeferred() {
@@ -440,4 +442,31 @@ void SceneContainer::renderLava()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaVertexLayout);
 
 	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);
+}
+
+void SceneContainer::drawHUD()
+{
+	gHandler.gDeviceContext->VSSetShader(gHandler.gHUDVertexShader, nullptr, 0);	//vs
+	
+	gHandler.gDeviceContext->PSSetShader(gHandler.gHUDPixelShader, nullptr, 0); //ps
+
+																				 //texture
+	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResource);
+	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
+	//gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+
+
+	UINT32 vertexSize = sizeof(HUDElements);
+	UINT32 offset = 0;
+
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gElementVertexBuffer, &vertexSize, &offset);
+	//Set index buffer
+	//gHandler.gDeviceContext->IASetIndexBuffer(lava.LavaIB, DXGI_FORMAT_R32_UINT, offset);
+	//set triagel list
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gHUDVertexLayout);
+
+	gHandler.gDeviceContext->Draw(6, 0);
 }

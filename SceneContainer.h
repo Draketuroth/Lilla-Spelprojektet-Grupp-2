@@ -32,6 +32,8 @@
 #include "Lava.h"
 #include <SFML\Audio.hpp>
 
+#include "HUD.h"
+
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
 	MyCharacterContactResultCallback(CharacterBase* ptr) : character(ptr) {}
@@ -108,6 +110,7 @@ public:
 	MainCharacter character;
 	AnimationHandler animHandler;
 	Lava lava; 
+	HUDClass HUD;
 
 	Enemy enemy;
 	Enemy enemies[3];
@@ -124,7 +127,8 @@ public:
 	void drawFortress();
 	void drawPlatforms();
 	void drawDebugCubes();
-	
+	void drawHUD();
+
 	void clear();
 	void resetRenderTarget(GraphicComponents &gHandler);
 

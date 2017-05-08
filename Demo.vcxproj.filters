@@ -121,6 +121,15 @@
     <Filter Include="Source Files\HLSL\DebugShader">
       <UniqueIdentifier>{3737ec9c-9dda-4595-a5d4-02cc4c3f4212}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HUD">
+      <UniqueIdentifier>{e6791b8b-df9c-4aad-b4f5-3d64d1d07a72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HUD">
+      <UniqueIdentifier>{be1aaca5-a754-472a-9e09-c165192ec64c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\HUDShaders">
+      <UniqueIdentifier>{d6d94a7a-5217-41cb-b523-4de94c0f0ee9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -188,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="AI.cpp">
       <Filter>Source Files\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>Source Files\HUD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +275,9 @@
     <ClInclude Include="Lava.h">
       <Filter>Header Files\Lava</Filter>
     </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Header Files\HUD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\StandardShaders\Fragment.hlsl">
@@ -333,6 +348,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\DebugShaders\DebugVertex.hlsl">
       <Filter>Source Files\HLSL\DebugShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HUDShaders\HUDPixelShader.hlsl">
+      <Filter>Source Files\HLSL\HUDShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HUDShaders\HUDVertexShader.hlsl">
+      <Filter>Source Files\HLSL\HUDShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
