@@ -53,92 +53,38 @@ void Enemy::setSpawnPos(XMFLOAT3 SpawnPos)
 	this->SpawnPos = SpawnPos;
 }
 
-void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle)
+void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, FileImporter &importer)
 {
 	
-	TriangleVertex HostileCube[24] =
-	{
-		//Vtx		UV
-		-1,1,-1,	0.0f,0.0f,
-		1,1,-1,		1.0f,0.0f,
-		-1,-1,-1,	0.0f,1.0f, //Front Face
-		1,-1,-1,	0.0f,0.0f,
-
-		1,1,1,		0.0f,0.0f,//BackFace
-		-1,1,1,		1.0f,0.0f,
-		1,-1,1,		0.0f,1.0f,
-		-1,-1,1,	1.0f,1.0f,
-
-		-1,1,1,		0.0f,0.0f,//LeftFace
-		-1,1,-1,	1.0f,0.0f,
-		-1,-1,1,	0.0f,1.0f,
-		-1,-1,-1,	1.0f,1.0f,
-
-		1,1,-1,		0.0f,0.0f,//RightFace
-		1,1,1,		1.0f,0.0f,
-		1,-1,-1,	0.0f,1.0f,
-		1,-1,1,		1.0f,1.0f,
-
-		-1,1,1,		0.0f,0.0f,//TopFace
-		1,1,1,		1.0f,0.0f,
-		-1,1,-1,	0.0f,1.0f,
-		1,1,-1,		1.0f,1.0f,
-
-		1,-1,1,		0.0f,0.0f,//BottomFace
-		-1,-1,1,	1.0f,0.0f,
-		1,-1,-1,	0.0f,1.0f,
-		-1,-1,-1,	1.0f,1.0f
-
-	};
-
-	for (unsigned int i = 0; i < 24; i++)
-	{
-
-		vertices.push_back(HostileCube[i]);
-	}
-
-	// Create Indices
-	unsigned int HostileCubeIndicies[36] = 
-	{
-
-		// Front face
-		0,1,2,
-		2,1,3,
-
-		// Back face
-
-		4,5,6,
-		6,5,7,
-
-		// Left face
-
-		8,9,10,
-		10,9,11,
-
-		// Right face
-
-		12,13,14,
-		14,13,15,
-
-		// Top face
-
-		16,17,18,
-		18,17,19,
-
-		// Bottom face
-
-		20,21,22,
-		22,21,23 };
-
-	for (unsigned int i = 0; i < 36; i++) {
-
-		indices.push_back(HostileCubeIndicies[i]);
-	}
-	
-	createBuffers(graphicDevice, vertices, indices);
+	loadVertices(importer, graphicDevice);
+	createBuffer(graphicDevice, vertices);
 	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 	
+}
+
+void Enemy::loadVertices(FileImporter &importer, ID3D11Device* &graphicDevice) {
+
+	HRESULT hr;
+	//load mesh vertices
+	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
+
+		StandardVertex vertex;
+
+		vertex.x = importer.skinnedMeshes[0].vertices[i].pos[0];
+		vertex.y = importer.skinnedMeshes[0].vertices[i].pos[1];
+		vertex.z = importer.skinnedMeshes[0].vertices[i].pos[2];
+
+		vertex.u = importer.skinnedMeshes[0].vertices[i].uv[0];
+		vertex.v = importer.skinnedMeshes[0].vertices[i].uv[1];
+
+		vertex.nx = importer.skinnedMeshes[0].vertices[i].normal[0];
+		vertex.ny = importer.skinnedMeshes[0].vertices[i].normal[1];
+		vertex.nz = importer.skinnedMeshes[0].vertices[i].normal[2];
+
+		vertices.push_back(vertex);
+
+	}
 }
 
 void Enemy::EnemyPhysics()
@@ -152,9 +98,8 @@ void Enemy::EnemyPhysics()
 	XMFLOAT3 oldpos = this->getPos();
 
 	XMMATRIX R = XMMatrixIdentity();
-	updateWorldMatrix(R);
-
-
+	XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
+	updateWorldMatrix(R, scaling);
 	
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
@@ -223,6 +168,7 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 	this->rigidBody->setLinearVelocity(speed);
 
 }
+
 void Enemy::avoidPlayer(XMFLOAT3 position)
 {
 	XMFLOAT3 myPos = this->getPos();

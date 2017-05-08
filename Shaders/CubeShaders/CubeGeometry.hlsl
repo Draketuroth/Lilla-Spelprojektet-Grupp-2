@@ -14,7 +14,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 	matrix matrixWorld;
 	matrix matrixView;
 	matrix matrixProjection;
-	matrix inverseViewProjection;
+	matrix fortressWorldMatrix;
 	float4 cameraPos;
 
 };
@@ -28,6 +28,7 @@ struct GS_IN
 {
 	float3 Pos : POSITION;
 	float2 Tex: TEXCOORD;
+	float3 Norm: NORMAL;
 	uint InstanceId : SV_InstanceId;
 
 };
@@ -49,21 +50,17 @@ struct GS_OUT
 
 	 uint i;
 
-	float3 sideA = input[1].Pos.xyz - input[0].Pos.xyz;
-	float3 sideB = input[2].Pos.xyz - input[0].Pos.xyz;
-
-	float3 normalAB = normalize(cross(sideA, sideB));
-
 		for (i = 0; i < 3; i++)
 		{
-			float3 worldPosition = mul(float4(input[i].Pos, 1.0f), matrixWorld).xyz;
+			float3 worldPosition = mul(float4(input[i].Pos, 1.0f), worldMatrix[input[i].InstanceId]).xyz;
 			output.WPos = worldPosition;
 
 			output.Pos = mul(float4(input[i].Pos.xyz, 1.0f), worldMatrix[input[i].InstanceId]);
 			output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixView);
 			output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixProjection);
 
-			output.Norm = mul(float4(normalAB, 1.0f), matrixWorld);
+			output.Norm = mul(float4(input[i].Norm, 1.0f), matrixWorld);
+
 			output.Tex = input[i].Tex;
 
 			output.ViewPos = cameraPos.xyz - worldPosition.xyz;

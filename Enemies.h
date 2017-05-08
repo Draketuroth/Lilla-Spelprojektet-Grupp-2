@@ -24,7 +24,8 @@ public:
 	XMFLOAT3 getSpawnPos()const;
 	void setSpawnPos(XMFLOAT3 spawnPos);
 
-	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
+	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, FileImporter &importer);
+	void loadVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
 	void EnemyPhysics();
 
 	void moveTowardsPosition(XMFLOAT3 position);
@@ -41,11 +42,13 @@ public:
 	ID3D11Buffer* gProjectileBuffer;
 	ID3D11Buffer* gProjectileIndexBuffer;
 	
+	vector<StandardVertex>vertices;
+
 private:
 	
 	int Type;
 	XMFLOAT3 SpawnPos;
-	vector<TriangleVertex>vertices;
+	
 	vector<unsigned int>indices;
 
 	

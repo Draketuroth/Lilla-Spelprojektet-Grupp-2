@@ -37,6 +37,10 @@ public:
 	ID3D11PixelShader* gPlatformPixelShader;
 	ID3D11GeometryShader* gPlatformGeometryShader;
 
+	ID3D11InputLayout* gFortressLayout;
+	ID3D11VertexShader* gFortressVertexShader;
+	ID3D11PixelShader* gFortressPixelShader;
+
 	ID3D11InputLayout* gLavaVertexLayout;
 	ID3D11VertexShader* gLavaVertexShader;
 	ID3D11PixelShader* gLavaPixelShader;
@@ -56,9 +60,9 @@ public:
 	ID3D11PixelShader* gEnemyPixelShader;
 	ID3D11GeometryShader* gEnemyGeometryShader;
 
-	ID3D11InputLayout* gRayVertexLayout;
-	ID3D11VertexShader* gRayVertexShader;
-	ID3D11PixelShader* gRayPixelShader;
+	ID3D11InputLayout* gDebugVertexLayout;
+	ID3D11VertexShader* gDebugVertexShader;
+	ID3D11PixelShader* gDebugPixelShader;
 
 
 
@@ -68,10 +72,11 @@ public:
 	bool CreateRenderTargetView();	// We require a render target view for rendering and we create this by taking the back buffer from the swap chain
 	bool CreateSwapChainAndDevice(HWND &windowHandle);	// Function to create the graphic device responsible for interactions with the graphic card and the swap chain to switch between back & front buffer
 
-	bool CreateRayShaders();
+	bool CreateDebugShaders();
 	bool CreateMenuShaders();
 	bool CreateStandardShaders();
 	bool CreatePlatformShaders();
+	bool CreateFortressShader();
 	bool CreateEnemyShaders();
 	bool CreateLavaShaders(); 
 	bool CreateProjectileShaders();

@@ -38,7 +38,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, vertices, animHandler, skinData);
-	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.6, 0.8f, 0.6), bulletPhysicsHandle);
+	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 
 	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
@@ -47,13 +47,14 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 void MainCharacter::update(HWND windowhandle)
 {
+	
 	CharacterMove(windowhandle);
 }
 
 //--------- Changing the character's position --------------
 void MainCharacter::CharacterMove(HWND windowhandle)
 {
-	
+
 	direction = { 0, 0, 0 };
 
 	float time = timer.getDeltaTime();
@@ -66,7 +67,10 @@ void MainCharacter::CharacterMove(HWND windowhandle)
 	XMMATRIX scale = XMMatrixScaling(0.2, 0.2, 0.2);
 	updateWorldMatrix(R, scale);
 	
-	CheckInput();
+	if (this->isGrounded())
+	{
+		CheckInput();
+	}
 
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
@@ -228,7 +232,7 @@ void MainCharacter::loadVertices(FileImporter &importer, AnimationHandler &animH
 
 		XMMATRIX inversedBindPose = importer.skinnedMeshes[0].hierarchy[i].inverseBindPoseMatrix; // converts from float4x4 too xmmatrix
 		
-		skinData.gBoneTransform[i] = inversedBindPose;
+		XMStoreFloat4x4(&skinData.gBoneTransform[i], inversedBindPose);
 		animHandler.invertedBindPose[i] = inversedBindPose; // copy on the cpu
 
 	}
@@ -243,6 +247,19 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 	R = XMMatrixRotationY(angle);
 
 	return R;
+}
+
+
+bool MainCharacter::isGrounded()
+{
+	if (this->getPos().y < 1.7f)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)

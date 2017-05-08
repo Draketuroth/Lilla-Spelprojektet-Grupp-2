@@ -54,7 +54,6 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 		if (GetAsyncKeyState(VK_LBUTTON))
 		{			
 			getMousePos(windowHandle, scene);
-		//	cout << "Mouse X: " << this->floatMouse.x << "  Mouse Y: " << this->floatMouse.y << endl;
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
 				//clickSound.play();

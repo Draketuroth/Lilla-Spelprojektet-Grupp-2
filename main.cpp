@@ -68,7 +68,6 @@ int RunApplication()
 	sceneContainer.lava.time.initialize();
 	updateLava();
 
-
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -160,7 +159,7 @@ int RunApplication()
 
 void updateCharacter(HWND windowhandle) 
 {
-
+	
 	sceneContainer.character.update(windowhandle);
 	
 	if(sceneContainer.enemies[0].getAlive() == true){
@@ -171,14 +170,14 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-	sceneContainer.animHandler.animTimePos += timer.getDeltaTime() * 50;
+	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 50;
 
 	if (sceneContainer.animHandler.animTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
-		sceneContainer.animHandler.animTimePos = 0.0f;
+		sceneContainer.animHandler.playerAnimTimePos = 0.0f;
 	}
 
-	sceneContainer.animHandler.UpdateAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.mainCharacterFile);
+	sceneContainer.animHandler.UpdatePlayerAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.mainCharacterFile);
 }
 
 void lavamovmentUpdate()
@@ -227,7 +226,7 @@ void updateBuffers()
 	cBufferPointer->matrixWorld = sceneContainer.bHandler.tWorldMatrix;
 	cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
 	cBufferPointer->matrixProjection = tCameraProjection;
-	cBufferPointer->inverseViewProjection = tCameraInverseViewProj;
+	cBufferPointer->fortressWorldMatrix = XMMatrixTranspose(sceneContainer.bHandler.fortressWorld);
 
 	cBufferPointer->cameraPos = sceneContainer.character.camera.GetPosition();
 

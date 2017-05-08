@@ -22,7 +22,7 @@ struct GS_CONSTANT_BUFFER {
 	XMMATRIX matrixWorld;
 	XMMATRIX matrixView;
 	XMMATRIX matrixProjection;
-	XMMATRIX inverseViewProjection;
+	XMMATRIX fortressWorldMatrix;
 	XMFLOAT3 cameraPos;
 
 };
@@ -67,6 +67,7 @@ public:
 	XMMATRIX tWorldMatrix;
 	XMMATRIX projectionMatrix;
 	XMMATRIX viewMatrix;
+	XMMATRIX fortressWorld;
 
 	XMVECTOR eyePos;
 	XMVECTOR lookAt;
@@ -80,17 +81,24 @@ public:
 	ID3D11Buffer* gProjectileTransformBuffer;
 
 	ID3D11Buffer* gCubeVertexBuffer;
-	ID3D11Buffer* gCubeIndexBuffer;
+
+	ID3D11Buffer* gDebugVertexBuffer;
+	ID3D11Buffer* gDebugIndexBuffer;
+
+	ID3D11Buffer* gFortressBuffer;
 
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
 	XMFLOAT3 cubeScaling;
+	XMFLOAT3 fortressScaling;
 
 	btRigidBody* lavaPitRigidBody;
 
-	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &importer);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter);
 
+	bool CreateDebugVertexBuffer(ID3D11Device* &gDevice);
 	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer);
+	bool CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter &fortressImporter);
 	bool CreatePlatforms(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
 	bool CreateCubeIndices(ID3D11Device* &gDevice);
 	void CreateCollisionPlane(BulletComponents &bulletPhysicsHandler, XMFLOAT3 translation);

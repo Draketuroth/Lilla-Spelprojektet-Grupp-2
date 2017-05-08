@@ -94,6 +94,8 @@ public:
 
 	FileImporter mainCharacterFile;
 	FileImporter iceEnemyFile;
+	FileImporter FortressFile;
+	FileImporter PlatformFile;
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;
@@ -117,7 +119,9 @@ public:
 	// RENDER FUNCTIONS
 	//------------------------------------------------------------//
 
+	void drawFortress();
 	void drawPlatforms();
+	void drawDebugCubes();
 	
 	void clear();
 	void resetRenderTarget(GraphicComponents &gHandler);

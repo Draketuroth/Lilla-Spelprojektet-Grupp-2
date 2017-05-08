@@ -49,6 +49,10 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gPlatformPixelShader);
 	SAFE_RELEASE(gPlatformGeometryShader);
 
+	SAFE_RELEASE(gFortressLayout);
+	SAFE_RELEASE(gFortressVertexShader);
+	SAFE_RELEASE(gFortressPixelShader);
+
 	SAFE_RELEASE(depthStencil);
 	SAFE_RELEASE(depthView);
 	SAFE_RELEASE(depthState);
@@ -67,9 +71,9 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gEnemyVertexLayout);
 	SAFE_RELEASE(gEnemyVertexShader);
 
-	SAFE_RELEASE(gRayVertexLayout);
-	SAFE_RELEASE(gRayPixelShader);
-	SAFE_RELEASE(gRayVertexShader);
+	SAFE_RELEASE(gDebugVertexLayout);
+	SAFE_RELEASE(gDebugPixelShader);
+	SAFE_RELEASE(gDebugVertexShader);
 
 
 }
@@ -99,19 +103,28 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 	{
 		return false;
 	}
+
+	if (!CreateFortressShader()) {
+
+		return false;
+	}
+
 	if (!CreateMenuShaders())
 	{
 		return false;
 	}
+
 	if (!CreateEnemyShaders())
 	{
 		return false;
 	}
+
 	if (!CreateLavaShaders())
 	{
 		return false; 
 	}
-	if (!CreateRayShaders())
+
+	if (!CreateDebugShaders())
 	{
 		return false;
 	}
@@ -511,6 +524,7 @@ bool GraphicComponents::CreatePlatformShaders() {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "SV_InstanceID", 0, DXGI_FORMAT_R32_UINT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 	};
 
@@ -599,6 +613,107 @@ bool GraphicComponents::CreatePlatformShaders() {
 	}
 
 	gsBlob->Release();
+
+	return true;
+}
+
+bool GraphicComponents::CreateFortressShader() {
+
+	HRESULT hr;
+
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* vsErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\FortressShaders\\FortressVertex.hlsl",
+		nullptr,
+		nullptr,
+		"VS_main",
+		"vs_5_0",
+		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG,
+		0,
+		&vsBlob,
+		&vsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Vertex Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
+
+		if (vsErrorBlob) {
+
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer());
+			vsErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gFortressVertexShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Vertex Shader Error: Vertex Shader could not be created" << endl;
+		return false;
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
+
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+
+	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gFortressLayout);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Vertex Shader Error: Shader Input Layout could not be created" << endl;
+	}
+
+	vsBlob->Release();
+
+
+	ID3DBlob* psBlob = nullptr;
+	ID3DBlob* psErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\FortressShaders\\FortressFragment.hlsl",
+		nullptr,
+		nullptr,
+		"PS_main",
+		"ps_5_0",
+		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG,
+		0,
+		&psBlob,
+		&psErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Fragment Shader Error: Fragment Shader could not be compiled or loaded from file" << endl;
+
+		if (psErrorBlob) {
+
+			OutputDebugStringA((char*)psErrorBlob->GetBufferPointer());
+			psErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gFortressPixelShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Fortress Pixel Shader Error: Pixel Shader could not be created" << endl;
+		return false;
+	}
+
+	psBlob->Release();
 
 	return true;
 }
@@ -962,7 +1077,8 @@ bool GraphicComponents::CreateEnemyShaders()
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
@@ -1054,7 +1170,7 @@ bool GraphicComponents::CreateEnemyShaders()
 	return true;
 }
 
-bool GraphicComponents::CreateRayShaders()
+bool GraphicComponents::CreateDebugShaders()
 {
 	HRESULT hr;
 
@@ -1062,7 +1178,7 @@ bool GraphicComponents::CreateRayShaders()
 	ID3DBlob* vsErrorBlob = nullptr;
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\RayShaders\\RayVertex.hlsl",
+		L"Shaders\\DebugShaders\\DebugVertex.hlsl",
 		nullptr,
 		nullptr,
 		"VS_main",
@@ -1075,7 +1191,7 @@ bool GraphicComponents::CreateRayShaders()
 
 	if (FAILED(hr)) {
 
-		cout << "Vertex Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
+		cout << "Debug Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
 
 		if (vsErrorBlob) {
 
@@ -1086,36 +1202,37 @@ bool GraphicComponents::CreateRayShaders()
 	}
 
 
-	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gRayVertexShader);
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gDebugVertexShader);
 
 	if (FAILED(hr)) {
 
-		cout << "Vertex Shader Error: Vertex Shader could not be created" << endl;
+		cout << "Debug Vertex Shader Error: Vertex Shader could not be created" << endl;
 		return false;
 	}
 
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "SV_InstanceID", 0, DXGI_FORMAT_R32_UINT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
+
 	};
 
 	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
-	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gRayVertexLayout);
+	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gDebugVertexLayout);
 
 	if (FAILED(hr)) {
 
-		cout << "Vertex Shader Error: Shader Input Layout could not be created" << endl;
+		cout << "Debug Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
 
 	vsBlob->Release();
-
-	//Pixel shader
 
 	ID3DBlob* psBlob = nullptr;
 	ID3DBlob* psErrorBlob = nullptr;
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\RayShaders\\RayFragment.hlsl",
+		L"Shaders\\DebugShaders\\DebugFragment.hlsl",
 		nullptr,
 		nullptr,
 		"PS_main",
@@ -1128,7 +1245,7 @@ bool GraphicComponents::CreateRayShaders()
 
 	if (FAILED(hr)) {
 
-		cout << "Pixel Shader Error: Pixel Shader could not be compiled or loaded from file" << endl;
+		cout << "Debug Pixel Shader Error: Pixel Shader could not be compiled or loaded from file" << endl;
 
 		if (psErrorBlob) {
 
@@ -1139,11 +1256,11 @@ bool GraphicComponents::CreateRayShaders()
 		return false;
 	}
 
-	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gRayPixelShader);
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gDebugPixelShader);
 
 	if (FAILED(hr)) {
 
-		cout << "Pixel Shader Error: Pixel Shader could not be created" << endl;
+		cout << "Debug Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
 
