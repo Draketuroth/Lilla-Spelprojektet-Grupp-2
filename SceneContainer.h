@@ -111,8 +111,6 @@ public:
 	Enemy enemies[3];
 	int nrOfEnemies;
 
-	
-
 	BulletComponents bulletPhysicsHandler;
 
 	//------------------------------------------------------------//
@@ -135,6 +133,8 @@ public:
 	void renderEnemies();
 
 	void renderLava();
+
+	void renderProjectile();
 
 };
 

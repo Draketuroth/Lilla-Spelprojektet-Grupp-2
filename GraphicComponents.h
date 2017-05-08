@@ -42,6 +42,10 @@ public:
 	ID3D11PixelShader* gLavaPixelShader;
 	ID3D11GeometryShader* gLavaGeometryShader;
 
+	ID3D11InputLayout* gProjectileVertexLayout;
+	ID3D11VertexShader* gProjectileVertexShader;
+	ID3D11PixelShader* gProjectilePixelShader;
+
 	ID3D11Texture2D* depthStencil;	// Depth-stencil texture
 	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
 	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture
@@ -70,6 +74,7 @@ public:
 	bool CreatePlatformShaders();
 	bool CreateEnemyShaders();
 	bool CreateLavaShaders(); 
+	bool CreateProjectileShaders();
 	void SetViewport();		// Functions to define the properties of our viewport
 
 };

@@ -30,6 +30,7 @@ private:
 	bool alive;
 
 	XMFLOAT3 boundingBoxExtents;
+	
 
 public:
 	
@@ -38,7 +39,8 @@ public:
 
 	XMMATRIX tPlayerTranslation;
 	btRigidBody* rigidBody;
-	
+
+
 	Timer timer;
 
 	CharacterBase();

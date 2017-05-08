@@ -94,6 +94,15 @@
     <Filter Include="Source Files\FBXLoader">
       <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lava Pipeline">
+      <UniqueIdentifier>{90f1ab0f-d57c-46f6-a373-03ff2dd38d0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ray Pipeline">
+      <UniqueIdentifier>{43a4c954-5146-43eb-8fa5-35a9480be54f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Projectile Pipeline">
+      <UniqueIdentifier>{fe69b4a2-9808-4d03-891a-34db53836445}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -150,14 +159,17 @@
     <ClCompile Include="Enemies.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
-    <ClCompile Include="FBXLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Lava.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FBXLoader.cpp">
-      <Filter>Source Files\FBXLoader</Filter>
+    <ClCompile Include="AI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileImporter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,14 +233,17 @@
     <ClInclude Include="BasicMath.h">
       <Filter>Header Files\Global</Filter>
     </ClInclude>
-    <ClInclude Include="FBXLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Lava.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FBXLoader.h">
-      <Filter>Header Files\FBXLoader</Filter>
+    <ClInclude Include="AI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileImporter.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -280,14 +295,26 @@
     <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl" />
-    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl" />
-    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl" />
+    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
+      <Filter>Lava Pipeline</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
+      <Filter>Lava Pipeline</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
+      <Filter>Lava Pipeline</Filter>
+    </FxCompile>
     <FxCompile Include="Shaders\RayShaders\RayVertex.hlsl">
-      <Filter>Source Files\HLSL\RayShaders</Filter>
+      <Filter>Ray Pipeline</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\RayShaders\RayFragment.hlsl">
-      <Filter>Source Files\HLSL\RayShaders</Filter>
+      <Filter>Ray Pipeline</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ProjectileShaders\ProjectileFragment.hlsl">
+      <Filter>Projectile Pipeline</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ProjectileShaders\ProjectileVertex.hlsl">
+      <Filter>Projectile Pipeline</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

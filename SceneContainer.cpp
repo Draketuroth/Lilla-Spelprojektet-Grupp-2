@@ -11,9 +11,9 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemies[0] = Enemy(0, { -5, 20, -5 });
-	enemies[1] = Enemy(0, { 5, 20, 5 });
-	enemies[2] = Enemy(0, { -5, 20, -5 });
+	enemies[0] = Enemy(0, { 5, 2, 5 });
+	enemies[1] = Enemy(0, { 8, 2, 8 });
+	enemies[2] = Enemy(0, { -5, 2, -5 });
 
 
 	bulletPhysicsHandler = BulletComponents();
@@ -133,6 +133,8 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler);
+	enemies[0].createProjectileBox(gHandler.gDevice);
+	enemies[0].createProjectile(bulletPhysicsHandler);
 	
 	return true;
 
@@ -166,18 +168,20 @@ void SceneContainer::update(HWND &windowHandle)
 
 	this->useAI(character, enemies[0]);
 
+	enemies[0].updateProjectile();
+
 	render();
 }
 
 void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 {
-	if (enemy.getType() == 0)
+	if (enemy.getType() == 10)
 	{
 		this->ai.iceAI(player, enemy);
 	}
-	else if (enemy.getType() == 1)
+	else if (enemy.getType() == 0)
 	{
-		this->ai.fireAI(player, enemy);
+		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
 	}
 }
 
@@ -231,6 +235,7 @@ void SceneContainer::render()
 	renderCharacters();
 	renderEnemies();
 	renderScene();
+	renderProjectile();
 }
 
 bool SceneContainer::renderDeferred() {
@@ -388,4 +393,26 @@ void SceneContainer::renderLava()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaVertexLayout);
 
 	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);
+}
+
+void SceneContainer::renderProjectile()
+{
+	gHandler.gDeviceContext->VSSetShader(gHandler.gProjectileVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gProjectileTransformBuffer);
+
+	ID3D11GeometryShader* nullShader = nullptr;
+	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gProjectilePixelShader, nullptr, 0);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemies[0].gProjectileBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetIndexBuffer(enemies[0].gProjectileIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+	gHandler.gDeviceContext->DrawIndexed(36, 0, 0);
+
 }

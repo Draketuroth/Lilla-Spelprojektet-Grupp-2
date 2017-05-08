@@ -72,6 +72,10 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 	{
 		return false;
 	}
+	if (!CreateProjectileTransformBuffer(gDevice))
+	{
+		return false;
+	}
 
 	return true;
 
@@ -624,6 +628,40 @@ bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
 
 	return true;
 }
+
+bool BufferComponents::CreateProjectileTransformBuffer(ID3D11Device *& gDevice)
+{
+	HRESULT hr;
+
+	PROJECTILE_TRANSFORM eTransformData;
+
+	eTransformData.worldMatrix = XMMatrixIdentity();
+	eTransformData.worldViewProjection = XMMatrixIdentity();
+
+	D3D11_BUFFER_DESC projectileBufferDesc;
+	ZeroMemory(&projectileBufferDesc, sizeof(projectileBufferDesc));
+	projectileBufferDesc.ByteWidth = sizeof(GS_CONSTANT_BUFFER);
+	projectileBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	projectileBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	projectileBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	projectileBufferDesc.MiscFlags = 0;
+	projectileBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA constData;
+	constData.pSysMem = &eTransformData;
+	constData.SysMemPitch = 0;
+	constData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&projectileBufferDesc, &constData, &gProjectileTransformBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
 void BufferComponents::CreateRigidBodyTags()
 {
 	for (size_t i = 0; i < this->nrOfCubes; i++)
@@ -631,11 +669,13 @@ void BufferComponents::CreateRigidBodyTags()
 		this->cubeObjects[i].rigidBody->setIslandTag(platformRigid);
 	}
 }
+
 float BufferComponents::incrementSpace(float offset)
 {
 	offset += 2.3;
 	return offset;
 }
+
 float BufferComponents::centerPlatformsColls(float offset)
 {
 	offset = PLATCOLLS / 2;
@@ -644,6 +684,7 @@ float BufferComponents::centerPlatformsColls(float offset)
 
 	return offset;
 }
+
 float BufferComponents::centerPlatformsRows(float offset)
 {
 	offset = PLATROWS / 2;
@@ -652,6 +693,7 @@ float BufferComponents::centerPlatformsRows(float offset)
 
 	return offset;
 }
+
 void BufferComponents::platformDecension(CubeObjects cube)
 {
 
@@ -701,6 +743,7 @@ void BufferComponents::platformDecension(CubeObjects cube)
 	
 
 }
+
 void BufferComponents::platformAcension(CubeObjects cube)
 {
 
@@ -748,6 +791,7 @@ void BufferComponents::platformAcension(CubeObjects cube)
 		lerpScalar = 0;
 	}
 }
+
 void BufferComponents::platformBreaking(CubeObjects cube)
 {
 	btTransform rigidCube;
