@@ -283,6 +283,7 @@ bool FileImporter::readFormat(string file) {
 							XMStoreFloat4(&currentKeyFrameTransform.Translation, keyFrameTranslation);
 
 							joints[i].Animations[animationIndex].Sequence.push_back(currentKeyFrameTransform);
+
 						}
 
 						joints[i].Animations[animationIndex].Length = keyFramesCount;

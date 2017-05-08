@@ -58,7 +58,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 		invBindPose = importer.skinnedMeshes[0].hierarchy[0].inverseBindPoseMatrix;
 		skinnedTx = globalTx * invBindPose;
 
-		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[0], XMMatrixTranspose(skinnedTx));	// skel[0].GlobalTx * skel[0].invBindPose
+		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[0], XMMatrixTranspose(invBindPose));	// skel[0].GlobalTx * skel[0].invBindPose
 
 	}
 
@@ -83,7 +83,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 			skinnedTx =  b.GlobalTx * b.inverseBindPoseMatrix;
 
 			//XMMatrixTranspose(skinnedTx);
-			XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(skinnedTx));   // b.GlobalTx * b.invBindPose
+			XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(b.inverseBindPoseMatrix));   // b.GlobalTx * b.invBindPose
 
 		}
 
@@ -91,7 +91,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 
 		XMMATRIX global = XMLoadFloat4x4(&localJointTransforms[i]);
 
-		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(invertedBindPose[i]));
+		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(invertedBindPose[i] * global));
 
 		}
 	}
