@@ -43,34 +43,57 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 	gDeviceContext->Map(gCharacterBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &boneMappedResource);
 	CHARACTER_SKINNED_DATA* boneBufferPointer = (CHARACTER_SKINNED_DATA*)boneMappedResource.pData;
 
-	// Set root node properties
 	XMMATRIX globalTx, invBindPose, skinnedTx;
+	int startIndex;
 
-	// Initialize the root joint
-	importer.skinnedMeshes[0].hierarchy[0].LocalTx = XMLoadFloat4x4(&localJointTransforms[0]);
-	importer.skinnedMeshes[0].hierarchy[0].GlobalTx = importer.skinnedMeshes[0].hierarchy[0].LocalTx;	// skel[0].GlobalTx = skel[0].LocalTx
+	if(ANIM_GLOBAL == false){
 
-	globalTx = importer.skinnedMeshes[0].hierarchy[0].GlobalTx;
-	invBindPose = importer.skinnedMeshes[0].hierarchy[0].inverseBindPoseMatrix;
-	skinnedTx = globalTx * invBindPose;
+		startIndex = 1;
 
-	XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[0], XMMatrixTranspose(skinnedTx));	// skel[0].GlobalTx * skel[0].invBindPose
+		// Initialize the root joint
+		importer.skinnedMeshes[0].hierarchy[0].LocalTx = XMLoadFloat4x4(&localJointTransforms[0]);
+		importer.skinnedMeshes[0].hierarchy[0].GlobalTx = importer.skinnedMeshes[0].hierarchy[0].LocalTx;	// skel[0].GlobalTx = skel[0].LocalTx
+
+		globalTx = importer.skinnedMeshes[0].hierarchy[0].GlobalTx;
+		invBindPose = importer.skinnedMeshes[0].hierarchy[0].inverseBindPoseMatrix;
+		skinnedTx = globalTx * invBindPose;
+
+		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[0], XMMatrixTranspose(skinnedTx));	// skel[0].GlobalTx * skel[0].invBindPose
+
+	}
+
+	else {
+
+		startIndex = 0;
+	}
 
 	// Every joint must be updated before unmapping the subresource
-	for (UINT i = 1; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
+	for (UINT i = startIndex; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
 
-		// Create a reference to the currenct joint to be processed
-		Joint_Container &b = importer.skinnedMeshes[0].hierarchy[i];
+		if (ANIM_GLOBAL == false) {
 
-		// Get the current joint LOCAL transformation at the current animation time pose
-		b.LocalTx = XMLoadFloat4x4(&localJointTransforms[i]);
+			// Create a reference to the currenct joint to be processed
+			Joint_Container &b = importer.skinnedMeshes[0].hierarchy[i];
 
-		b.GlobalTx = importer.skinnedMeshes[0].hierarchy[b.parentIndex].GlobalTx * b.LocalTx;	// skel[b.parent].GlobalTx * b.LocalTx
+			// Get the current joint LOCAL transformation at the current animation time pose
+			b.LocalTx = XMLoadFloat4x4(&localJointTransforms[i]);
 
-		skinnedTx = b.GlobalTx * b.inverseBindPoseMatrix;
+			b.GlobalTx = importer.skinnedMeshes[0].hierarchy[b.parentIndex].GlobalTx * b.LocalTx;	// skel[b.parent].GlobalTx * b.LocalTx
 
-		// XMMatrixTranspose(skinnedTx)
-		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(skinnedTx)); // b.GlobalTx * b.invBindPose
+			skinnedTx =  b.GlobalTx * b.inverseBindPoseMatrix;
+
+			//XMMatrixTranspose(skinnedTx);
+			XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(skinnedTx));   // b.GlobalTx * b.invBindPose
+
+		}
+
+		else{
+
+		XMMATRIX global = XMLoadFloat4x4(&localJointTransforms[i]);
+
+		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(invertedBindPose[i]));
+
+		}
 	}
 
 	gDeviceContext->Unmap(gCharacterBoneBuffer, 0);

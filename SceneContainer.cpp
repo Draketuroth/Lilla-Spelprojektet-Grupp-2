@@ -240,6 +240,7 @@ void SceneContainer::drawDebugCubes() {
 	gHandler.gDeviceContext->VSSetShader(gHandler.gDebugVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &animHandler.gCharacterBoneBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &bHandler.gPlayerTransformBuffer);
 
 	ID3D11GeometryShader* nullBuffer = nullptr;
 	gHandler.gDeviceContext->GSSetShader(nullBuffer, nullptr, 0);

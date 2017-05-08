@@ -14,6 +14,12 @@ cbuffer VS_SKINNED_DATA: register (b1) {
 	float4x4 gBoneTransforms[16];
 };
 
+cbuffer PLAYER_TRANSFORM : register(b2) {
+
+	matrix matrixW;
+	matrix matrixWVP;
+}
+
 struct VS_IN
 {
 	float3 Pos : POSITION;
@@ -32,7 +38,9 @@ VS_OUT VS_main(VS_IN input)
 	VS_OUT output = (VS_OUT)0;
 	float4 position = float4(input.Pos, 1.0f);
 
-	output.Pos = mul(position, gBoneTransforms[input.InstanceId]);
+	matrix world = mul(gBoneTransforms[input.InstanceId], matrixW);
+
+	output.Pos = mul(position, world);
 	output.Pos = mul(output.Pos,matrixView);
 	output.Pos = mul(output.Pos, matrixProjection);
 
