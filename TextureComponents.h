@@ -24,6 +24,8 @@ public:
 	ID3D11ShaderResourceView* defaultResource;
 	ID3D11ShaderResourceView* LavaResource;
 	ID3D11ShaderResourceView* menuResources[9];
+	ID3D11ShaderResourceView* HUDResource;
+	ID3D11BlendState* blendState;
 
 	ID3D11SamplerState* texSampler;
 

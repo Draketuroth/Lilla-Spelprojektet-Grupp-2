@@ -1,3 +1,9 @@
+
+SamplerState texSampler: register(s0);
+Texture2D tex0 : register(t0);
+
+
+
 struct PS_IN
 {
 
@@ -9,5 +15,12 @@ struct PS_IN
 
 float4 PS_main(PS_IN input) : SV_Target
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+	float4 texColor;
+	float4 color;
+
+	texColor = tex0.Sample(texSampler, input.Tex);
+
+	color = float4(texColor);
+
+	return color;
 }

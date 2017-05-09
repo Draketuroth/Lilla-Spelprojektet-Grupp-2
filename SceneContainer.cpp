@@ -134,7 +134,8 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler, iceEnemyFile);
-	
+	HUD.setElementPos(gHandler.gDevice);
+	HUD.CreateIndexBuffer(gHandler.gDevice);
 	return true;
 
 }
@@ -446,15 +447,17 @@ void SceneContainer::renderLava()
 
 void SceneContainer::drawHUD()
 {
+
+	gHandler.gDeviceContext->OMSetBlendState(tHandler.blendState, 0, 0xffffffff);
 	gHandler.gDeviceContext->VSSetShader(gHandler.gHUDVertexShader, nullptr, 0);	//vs
 	
 	gHandler.gDeviceContext->PSSetShader(gHandler.gHUDPixelShader, nullptr, 0); //ps
 
 																				 //texture
-	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResource);
-	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
-	//gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 0, nullptr);
 
 
 	UINT32 vertexSize = sizeof(HUDElements);
@@ -463,10 +466,11 @@ void SceneContainer::drawHUD()
 	//set vertex buffer
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gElementVertexBuffer, &vertexSize, &offset);
 	//Set index buffer
-	//gHandler.gDeviceContext->IASetIndexBuffer(lava.LavaIB, DXGI_FORMAT_R32_UINT, offset);
-	//set triagel list
+	gHandler.gDeviceContext->IASetIndexBuffer(HUD.gElementIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	//set triangel list
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gHUDVertexLayout);
 
-	gHandler.gDeviceContext->Draw(6, 0);
+	gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
+	gHandler.gDeviceContext->OMSetBlendState(nullptr, 0, 0xffffffff);
 }
