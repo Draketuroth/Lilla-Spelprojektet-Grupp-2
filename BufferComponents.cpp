@@ -90,50 +90,52 @@ bool BufferComponents::CreateDebugVertexBuffer(ID3D11Device* &gDevice) {
 
 	HRESULT hr;
 
+	float scale = 0.5f;
+
 	TriangleVertex triangleVertices[24] =
 	{
 
 		//Front face
 
-		-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		1.0, -1.0f, -1.0f, 1.0f, 1.0f,
+		-scale, scale, -scale, 0.0f, 0.0f,
+		scale, scale, -scale, 1.0f, 0.0f,
+		-scale, -scale, -scale, 0.0f, 1.0f,
+		scale, -scale, -scale, 1.0f, 1.0f,
 
 		// Back face
 
-		1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
+		scale, scale, scale, 0.0f, 0.0f,
+		-scale, scale, scale, 1.0f, 0.0f,
+		scale, -scale, scale, 0.0f, 1.0f,
+		-scale, -scale, scale, 1.0f, 1.0f,
 
 		// Left face
 
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+		-scale, scale, scale, 0.0f, 0.0f,
+		-scale, scale, -scale, 1.0f, 0.0f,
+		-scale, -scale, scale, 0.0f, 1.0f,
+		-scale, -scale, -scale, 1.0f, 1.0f,
 
 		// Right face
 
-		1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
+		scale, scale, -scale, 0.0f, 0.0f,
+		scale, scale, scale, 1.0f, 0.0f,
+		scale, -scale, -scale, 0.0f, 1.0f,
+		scale, -scale,  scale, 1.0f, 1.0f,
 
 		// Top face
 
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+		-scale, scale, scale, 0.0f, 0.0f,
+		scale, scale, scale, 1.0f, 0.0f,
+		-scale, scale, -scale, 0.0f, 1.0f,
+		scale, scale, -scale, 1.0f, 1.0f,
 
 		// Bottom face
 
-		1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
+		scale, -scale, scale, 0.0f, 0.0f,
+		-scale, -scale, scale, 1.0f, 0.0f,
+		scale, -scale, -scale, 0.0f, 1.0f,
+		-scale, -scale, -scale, 1.0f, 1.0f
 
 
 	};
