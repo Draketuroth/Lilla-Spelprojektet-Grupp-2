@@ -30,6 +30,11 @@ void TextureComponents::ReleaseAll() {
 	{
 		SAFE_RELEASE(this->menuResources[i]);
 	}
+	for (size_t i = 0; i < 2; i++)
+	{
+		SAFE_RELEASE(samplerArr[i]);
+		SAFE_RELEASE(texArr[i]);
+	}
 }
 
 bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
@@ -105,8 +110,11 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 {
 	HRESULT hr;
 
-	DXGI_FORMAT resformat = DXGI_FORMAT_R32G8X24_TYPELESS;
-	DXGI_FORMAT srvformat = DXGI_FORMAT_R32G8X24_TYPELESS;
+	//DXGI_FORMAT resformat = DXGI_FORMAT_R32_TYPELESS;//DXGI_FORMAT_R32G8X24_TYPELESS;
+	//DXGI_FORMAT srvformat = DXGI_FORMAT_R32_TYPELESS;//DXGI_FORMAT_R32G8X24_TYPELESS;
+
+	DXGI_FORMAT resformat = GetDepthResourceFormat(DXGI_FORMAT_D32_FLOAT_S8X24_UINT);
+	DXGI_FORMAT srvformat = GetDepthSRVFormat(DXGI_FORMAT_D32_FLOAT_S8X24_UINT);
 
 	//Shadow map sampler
 	D3D11_SAMPLER_DESC shadowSamp;
@@ -115,9 +123,10 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	shadowSamp.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	shadowSamp.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	shadowSamp.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 	shadowSamp.MinLOD = 0;
 	shadowSamp.MaxLOD = D3D11_FLOAT32_MAX;
+
 
 	hr = gDevice->CreateSamplerState(&shadowSamp, &this->shadowSampler);
 	if (FAILED(hr))
@@ -126,8 +135,8 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	}
 	//Shadow map texture desc
 	D3D11_TEXTURE2D_DESC texDesc = {};
-	texDesc.Width = WIDTH;
-	texDesc.Height = HEIGHT;
+	texDesc.Width = 1024;
+	texDesc.Height = 1024;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
 	texDesc.Format = resformat;
@@ -165,4 +174,45 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	}
 
 	return true;
+}
+DXGI_FORMAT TextureComponents::GetDepthResourceFormat(DXGI_FORMAT depthformat)
+{
+	DXGI_FORMAT resformat;
+	switch (depthformat)
+	{
+	case DXGI_FORMAT::DXGI_FORMAT_D16_UNORM:
+		resformat = DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS;
+		break;
+	case DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT:
+		resformat = DXGI_FORMAT::DXGI_FORMAT_R24G8_TYPELESS;
+		break;
+	case DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT:
+		resformat = DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS;
+		break;
+	case DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT_S8X24_UINT:
+		resformat = DXGI_FORMAT::DXGI_FORMAT_R32G8X24_TYPELESS;
+		break;
+	}
+
+	return resformat;
+}
+DXGI_FORMAT TextureComponents::GetDepthSRVFormat(DXGI_FORMAT depthformat)
+{
+	DXGI_FORMAT srvformat;
+	switch (depthformat)
+	{
+	case DXGI_FORMAT::DXGI_FORMAT_D16_UNORM:
+		srvformat = DXGI_FORMAT::DXGI_FORMAT_R16_FLOAT;
+		break;
+	case DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT:
+		srvformat = DXGI_FORMAT::DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		break;
+	case DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT:
+		srvformat = DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT;
+		break;
+	case DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT_S8X24_UINT:
+		srvformat = DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS;
+		break;
+	}
+	return srvformat;
 }

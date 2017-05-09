@@ -20,7 +20,7 @@ struct VS_OUT
 	float2 Tex : TEXCOORD;
 	float3 Norm : NORMAL;
 	float4 lPos : TEXCOORD1;
-	uint InstanceId : SV_InstanceId;
+	uint InstanceId : SV_InstanceID;
 };
 //-----------------------------------------------------------------------------------------
 // VertexShader: VSScene

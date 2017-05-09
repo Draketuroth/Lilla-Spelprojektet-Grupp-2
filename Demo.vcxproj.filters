@@ -340,5 +340,8 @@
     <FxCompile Include="Shaders\ShadowShaders\ShadowVertex.hlsl">
       <Filter>Source Files\HLSL\ShadowShader</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\ShadowShaders\ShadowPlatformVertex.hlsl">
+      <Filter>Source Files\HLSL\ShadowShader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

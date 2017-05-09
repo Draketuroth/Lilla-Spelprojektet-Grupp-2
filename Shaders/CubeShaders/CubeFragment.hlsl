@@ -29,7 +29,7 @@ float4 PS_main(PS_IN input) : SV_Target
 {
 
 	//Shadow map stuff
-	//input.lPos.xyz /= input.lPos.w;
+	input.lPos.xyz /= input.lPos.w;
 
 	//From [-1, 1] to [0, 1];
 	float2 smTexture = float2(0.5f * input.lPos.x + 0.5f, -0.5f * input.lPos.y + 0.5f);
@@ -74,5 +74,5 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	color = float4(texColor, 1.0f);
 
-	return (float4(ads, 1.0f) * color);// * shadowCheck;
+	return (float4(ads, 1.0f) * color) * shadowCheck;
 };

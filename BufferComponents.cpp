@@ -37,6 +37,11 @@ void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gPlayerTransformBuffer);
 	SAFE_RELEASE(gEnemyTransformBuffer);
+
+	for (size_t i = 0; i < 3; i++)
+	{
+		SAFE_RELEASE(gBufferArr[i]);
+	}
 }
 
 bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter) {
@@ -580,17 +585,23 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// Light matrices for shadow mapping
+	float lFov = PI * 0.45f;
 
-	XMVECTOR lightPos = { 0, 20, 0, 1 };
-	XMVECTOR lightVec = { -5, 0, 0, 0 };
+	float lAspect = float(WIDTH) / (float)HEIGHT;
+
+	XMVECTOR lightPos = { 10, 20, 4, 1 };
+	XMVECTOR lightVec = { 2, 0, 4, 0 };
 	XMVECTOR upVec = { 0, 1, 0, 0 };
 
 	XMMATRIX lightView = XMMatrixLookAtLH(lightPos, lightVec, upVec);
 
 	float lNearP = 0.1f;
-	float lFarP = 40.0f;
+	float lFarP = 25.0f;
 
-	XMMATRIX lightProj = XMMatrixOrthographicLH(WIDTH, HEIGHT, lNearP, lFarP);
+	XMMATRIX lightProj = XMMatrixOrthographicLH(30, 30, lNearP, lFarP);
+	
+	//XMMATRIX lightProj = XMMatrixOrthographicLH(WIDTH, HEIGHT, -100.0f, 100.0f);
+	XMMATRIX lightProjPerspective = XMMatrixPerspectiveFovLH(lFov, lAspect, lNearP, lFarP);
 
 	XMMATRIX LVP = XMMatrixMultiply(lightView, lightProj);
 

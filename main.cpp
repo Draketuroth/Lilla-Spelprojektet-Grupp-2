@@ -224,7 +224,7 @@ void updateBuffers()
 	cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
 	cBufferPointer->matrixProjection = tCameraProjection;
 	cBufferPointer->fortressWorldMatrix = XMMatrixTranspose(sceneContainer.bHandler.fortressWorld);
-
+	cBufferPointer->lightViewProj = sceneContainer.bHandler.tLightViewProj;
 	cBufferPointer->cameraPos = sceneContainer.character.camera.GetPosition();
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gConstantBuffer, 0);

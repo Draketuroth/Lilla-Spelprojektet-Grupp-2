@@ -81,6 +81,8 @@ public:
 
 	ID3D11Buffer* gFortressBuffer;
 
+	ID3D11Buffer* gBufferArr[3];
+
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
 	XMFLOAT3 cubeScaling;

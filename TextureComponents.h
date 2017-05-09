@@ -24,6 +24,8 @@ public:
 	ID3D11ShaderResourceView* defaultResource;
 	ID3D11ShaderResourceView* LavaResource;
 	ID3D11ShaderResourceView* menuResources[9];
+	ID3D11ShaderResourceView* texArr[2];
+	ID3D11SamplerState* samplerArr[2];
 
 	ID3D11SamplerState* shadowSampler;
 	ID3D11Texture2D* ShadowMap;
@@ -31,6 +33,8 @@ public:
 	ID3D11DepthStencilView* shadowDepthView;
 	ID3D11ShaderResourceView* shadowSRV;
 
+	DXGI_FORMAT GetDepthSRVFormat(DXGI_FORMAT depthformat);
+	DXGI_FORMAT GetDepthResourceFormat(DXGI_FORMAT depthformat);
 
 	ID3D11SamplerState* texSampler;
 

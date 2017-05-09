@@ -63,6 +63,9 @@ public:
 	ID3D11VertexShader* gShadowVertexShader;
 	ID3D11InputLayout* gShadowVertexLayout;
 
+	ID3D11VertexShader* gShadowPlatformVertex;
+	ID3D11InputLayout* gShadowPlatformLayout;
+
 
 
 	bool InitalizeDirect3DContext(HWND &windowHandle);	// Function called to initalize the necessary components, as listen below

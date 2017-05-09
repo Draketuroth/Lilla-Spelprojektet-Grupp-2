@@ -46,6 +46,6 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	color = float4(texColor, 1.0f);
 
-	return color;// *shadowCheck;
+	return color * shadowCheck;
 
 };

@@ -31,7 +31,7 @@ struct GS_IN
 	float2 Tex: TEXCOORD;
 	float3 Norm: NORMAL;
 	float4 lPos : TEXCOORD1;
-	uint InstanceId : SV_InstanceId;
+	uint InstanceId : SV_InstanceID;
 
 };
 
