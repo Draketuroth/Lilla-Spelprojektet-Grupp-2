@@ -6,6 +6,9 @@ Enemy::Enemy()
 	this->Type = 0;
 	this->SpawnPos = { 0,0,0 };
 
+	this->projectileTimer = 5.0;
+	this->projectileCd = 5.0;
+	this->shooting = false;
 }
 
 Enemy::~Enemy()
@@ -210,8 +213,8 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 {
-	XMFLOAT3 projectilePos = { this->getPos().x, this->getPos().y, this->getPos().z };
-	XMFLOAT3 extents = { 0.1f, 0.1f, 0.1f };
+	XMFLOAT3 projectilePos = { this->getPos().x, 4, this->getPos().z };
+	XMFLOAT3 extents = { 0.3f, 0.3f, 0.3f };
 
 	XMMATRIX translation = XMMatrixTranslation(projectilePos.x, projectilePos.y, projectilePos.z);
 	XMFLOAT4X4 t;
@@ -237,20 +240,35 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	
 
 }
-void Enemy::shootProjectile(float forceVx, float forceVy, float forward)
+void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 {
 	//apply the force to the projectile
 
 	// v0y is the force in Y
 	// v0x is the force FORWARD
+	shooting = true;
 
-	forceVx = forceVx * forward;
+	float forceVz = forceVx * direction.z ;
+	forceVx = forceVx * direction.x ;
+	
+	btVector3 force = { forceVx, forceVy, forceVz };
 
-	fireBall.projectileRigidBody->applyCentralForce(btVector3(forceVx / 2, forceVy, forceVx / 2));
+	XMFLOAT3 ePos = this->getPos();
+	btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
+	
+
+	float fireBallDistance =  enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
 
 
+	if (fireBallDistance <= 1.5)
+	{
+		fireBall.projectileRigidBody->applyCentralForce(force);
+		fireBall.projectileRigidBody->setFriction(3);
+	}
+	
+	//WHEN COLLISION EXPLODE AND GO TO SAFE LOCATION
 
-	//how to get the right direction?
+	
 }
 
 bool Enemy::createProjectileBox(ID3D11Device* gDevice)
@@ -266,45 +284,45 @@ bool Enemy::createProjectileBox(ID3D11Device* gDevice)
 
 		//Front face
 
-		-0.1f, 0.1f, -0.1f, 0.0f, 0.0f,
-		0.1f, 0.1f, -0.1f, 0.1f, 0.0f,
-		-0.1f, -0.1f, -0.1f, 0.0f, 0.1f,
-		0.1f, -0.1f, -0.1f, 0.1f, 0.1f,
+		-0.3f, 0.3f, -0.3f, 0.0f, 0.0f,
+		0.3f, 0.3f, -0.3f, 0.3f, 0.0f,
+		-0.3f, -0.3f, -0.3f, 0.0f, 0.3f,
+		0.3f, -0.3f, -0.3f, 0.3f, 0.3f,
 
 		// Back face
 
-		0.1f, 0.1f, 0.1f, 0.0f, 0.0f,
-		-0.1f, 0.1f, 0.1f, 0.1f, 0.0f,
-		0.1f, -0.1f, 0.1f, 0.0f, 0.1f,
-		-0.1f, -0.1f, 0.1f, 0.1f, 0.1f,
+		0.3f, 0.3f, 0.3f, 0.0f, 0.0f,
+		-0.3f, 0.3f, 0.3f, 0.3f, 0.0f,
+		0.3f, -0.3f, 0.3f, 0.0f, 0.3f,
+		-0.3f, -0.3f,0.3f, 0.3f, 0.3f,
 
 		// Left face
 
-		-0.1f, 0.1f,   0.1f, 0.0f, 0.0f,
-		-0.1f, 0.1f, - 0.1f, 0.1f, 0.0f,
-		-0.1f, -0.1f,  0.1f, 0.0f, 0.1f,
-		-0.1f, -0.1f, -0.1f, 0.1f, 0.1f,
+		-0.3f, 0.3f,   0.3f, 0.0f, 0.0f,
+		-0.3f, 0.3f, - 0.3f, 0.3f, 0.0f,
+		-0.3f, -0.3f,  0.3f, 0.0f, 0.3f,
+		-0.3f, -0.3f, -0.3f, 0.3f, 0.3f,
 
 		// Right face
 
-		0.1f, 0.1f, -0.1f, 0.0f, 0.0f,
-		0.1f, 0.1f, 0.1f, 0.1f, 0.0f,
-		0.1f, -0.1f, -0.1f, 0.0f, 0.1f,
-		0.1f, -0.1f,  0.1f, 0.1f, 0.1f,
+		0.3f, 0.3f, -0.3f, 0.0f, 0.0f,
+		0.3f, 0.3f, 0.3f, 0.3f, 0.0f,
+		0.3f, -0.3f, -0.3f, 0.0f, 0.3f,
+		0.3f, -0.3f,  0.3f, 0.3f, 0.3f,
 
 		// Top face
 
-		-0.1f, 0.1f, 0.1f, 0.0f, 0.0f,
-		0.1f, 0.1f, 0.1f, 0.1f, 0.0f,
-		-0.1f, 0.1f, -0.1f, 0.0f, 0.1f,
-		0.1f, 0.1f, -0.1f, 0.1f, 0.1f,
+		-0.3f,0.3f,  0.3f, 0.0f, 0.0f,
+		 0.3f,0.3f,  0.3f, 0.3f, 0.0f,
+		-0.3f,0.3f, -0.3f, 0.0f, 0.3f,
+		 0.3f,0.3f, -0.3f, 0.3f, 0.3f,
 
 		// Bottom face
 
-		0.1f, -0.1f, 0.1f, 0.0f, 0.0f,
-		-0.1f, -0.1f, 0.1f, 0.1f, 0.0f,
-		0.1f, -0.1f, -0.1f, 0.0f, 0.1f,
-		-0.1f, -0.1f, -0.1f, 0.1f, 0.1f
+		 0.3f, -0.3f,  0.3f, 0.0f, 0.0f,
+		-0.3f, -0.3f,  0.3f, 0.3f, 0.0f,
+		 0.3f, -0.3f, -0.3f, 0.0f, 0.3f,
+		-0.3f, -0.3f, -0.3f, 0.3f, 0.3f
 
 
 	};
@@ -412,7 +430,6 @@ void Enemy::updateProjectile()
 
 	// Build the new world matrix
 	fireBall.worldMatrix = transform;
-	
 
 }
 

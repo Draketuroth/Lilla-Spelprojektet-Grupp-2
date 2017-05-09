@@ -7,6 +7,7 @@ struct projectile
 	XMMATRIX worldMatrix;
 	XMFLOAT3 projectileRigidBodyExtents;
 	btRigidBody* projectileRigidBody;
+
 };
 
 class Enemy: public CharacterBase
@@ -32,7 +33,7 @@ public:
 	void avoidPlayer(XMFLOAT3 position);
 
 	void createProjectile(BulletComponents &bulletPhysicsHandler);
-	void shootProjectile(float forceVx, float forceVy, float forward);
+	void shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction);
 
 	bool createProjectileBox(ID3D11Device* gDevice);
 
@@ -43,6 +44,10 @@ public:
 	ID3D11Buffer* gProjectileIndexBuffer;
 	
 	vector<StandardVertex>vertices;
+
+	float projectileTimer;
+	float projectileCd;
+	bool shooting;
 
 private:
 	

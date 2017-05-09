@@ -25,5 +25,6 @@ public:
 	void updateCurrentTime();
 	void resetTimer();
 	int getFrameCount();
+	float getCountsPerSecond();
 };
 

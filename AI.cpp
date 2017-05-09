@@ -8,7 +8,7 @@ AI::AI()
 
 	this->rangedAttack = true;
 	this->rangedTimer = 10.0;
-	this->rangedCd = 15.0;
+	this->rangedCd = 10.0;
 	
 	this->timer.initialize();
 }
@@ -47,7 +47,7 @@ void AI::fireAI(MainCharacter &player, Enemy &self, BulletComponents &bulletPhys
 {
 	float distance = getDistance(player.getPos(), self.getPos());
 
-	if (distance <= 8 && distance > 5)
+	if (distance <= 8 )
 	{
 		attackRanged(player, self, bulletPhysicsHandler);
 	}
@@ -63,7 +63,6 @@ void AI::fireAI(MainCharacter &player, Enemy &self, BulletComponents &bulletPhys
 
 void AI::attackMelee(MainCharacter &player, Enemy &self)
 {
-	//cout << "TRIED TO ATTACK" << endl;
 	if (!attacking && attackTimer <= 0)
 	{
 
@@ -82,6 +81,7 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 		enemyDirVec = XMVector3Rotate(enemyDirVec, rotQuat);
 		enemyDirVec = XMVector3Normalize(enemyDirVec);
 
+		//newC = center for the attack's hitbox
 		XMVECTOR newC = XMLoadFloat3(&enemyPos);
 		newC += enemyDirVec * 0.4;
 		XMFLOAT3 newCenter;
@@ -133,15 +133,32 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 }
 void AI::attackRanged(MainCharacter &player, Enemy &self, BulletComponents &bulletPhysicsHandler)
 {
+
+		/*float angle = self.getAngle(player.getPos());
+		XMFLOAT3 enemyPos = self.getBoundingBox().Center;
+		XMVECTOR enemyDirVec = self.getForwardVector();
+
+		XMVECTOR rotQuat = XMQuaternionRotationAxis(XMVECTOR{ 0, 1, 0 }, angle);
+		enemyDirVec = XMVector3Rotate(enemyDirVec, rotQuat);
+		enemyDirVec = XMVector3Normalize(enemyDirVec);
+
+		XMFLOAT3 enemyDir;
+		XMStoreFloat3(&enemyDir, enemyDirVec);*/
+
 	if (!rangedAttack && rangedTimer <= 0)
 	{
 		rangedAttack = true;
 		rangedTimer = rangedCd;
 
 		//----------Räkna ut kastet--------------------------------------------------------------
-		float forward = self.getAngle(player.getPos()); //x
-		float distance = getDistance(player.getPos(), self.getPos()); //så här långt kastar man
 		
+		XMVECTOR dirVec = { player.getPos().x - self.getPos().x, player.getPos().y - self.getPos().y, player.getPos().z - self.getPos().z };
+		XMVector3Normalize(dirVec);
+
+		XMFLOAT3 dir;
+		XMStoreFloat3(&dir, dirVec);
+		
+		float distance = getDistance(player.getPos(), self.getPos()); //så här långt ska man kasta
 
 		float v0 = distance * 10;  //kraften man kastar med
 		v0 = sqrtf(v0);
@@ -151,17 +168,7 @@ void AI::attackRanged(MainCharacter &player, Enemy &self, BulletComponents &bull
 
 		//---------------------------------------------------------------------------------------
 
-
-		//Spawn a projectile in the enemy's position
-		//apply a force (v0) to the projectile towards the player's position
-
-		//the projectile needs its own rigidbody. 
-		//Possibly reuse. When crasching, snap back to enemyPos.
-
-
-		//possible functions---- 
-		self.shootProjectile(v0x, v0y, forward);
-
+		self.shootProjectile(v0x, v0y, dir);
 
 	}
 
@@ -172,6 +179,7 @@ void AI::attackRanged(MainCharacter &player, Enemy &self, BulletComponents &bull
 		else
 		{
 			rangedAttack = false;
+			self.fireBall.projectileRigidBody->clearForces();
 		}
 		//play enemy attack animation here
 	}

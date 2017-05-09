@@ -20,6 +20,8 @@ SceneContainer::SceneContainer() {
 	this->nrOfEnemies = 0;
 
 	this->ai = AI();
+
+	counter = 0;
 }
 
 SceneContainer::~SceneContainer() {
@@ -178,8 +180,9 @@ void SceneContainer::update(HWND &windowHandle)
 
 	this->useAI(character, enemies[0]);
 
+	
 	enemies[0].updateProjectile();
-
+	
 	render();
 }
 
