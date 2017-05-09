@@ -35,7 +35,7 @@ using namespace std;
 
 struct CHARACTER_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
 
-	XMFLOAT4X4 gBoneTransform[16];
+	XMFLOAT4X4 gBoneTransform[30];
 };
 
 struct ENEMY_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
@@ -174,7 +174,7 @@ public:
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
 
-	XMMATRIX invertedBindPose[16];	// Bind pose matrix
+	XMMATRIX invertedBindPose[30];	// Bind pose matrix
 
 	vector<Vertex_Bone>vertices;	// Extra copy of vertices
 

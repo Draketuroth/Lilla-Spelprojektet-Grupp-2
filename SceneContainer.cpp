@@ -369,7 +369,7 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.playerResource);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
