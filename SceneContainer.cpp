@@ -136,6 +136,11 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler, iceEnemyFile);
 	HUD.setElementPos(gHandler.gDevice);
 	HUD.CreateIndexBuffer(gHandler.gDevice);
+	HUD.loadBitMap();
+	HUD.setText(0);
+	HUD.setFont(gHandler.gDevice);
+	HUD.CreateFontIndexBuffer(gHandler.gDevice);
+	
 	return true;
 
 }
@@ -472,5 +477,21 @@ void SceneContainer::drawHUD()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gHUDVertexLayout);
 
 	gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
+
+
+
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gFontVertexBuffer, &vertexSize, &offset);
+	//Set index buffer
+	gHandler.gDeviceContext->IASetIndexBuffer(HUD.gFontIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+
+
+	gHandler.gDeviceContext->DrawIndexed(HUD.Vtxs, 0, 0);
+
+
 	gHandler.gDeviceContext->OMSetBlendState(nullptr, 0, 0xffffffff);
+
+
+
+
 }

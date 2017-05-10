@@ -1,16 +1,9 @@
 #include "HUD.h"
-#include <iostream>
+
 using namespace std;
 HUDClass::HUDClass()
 {
-	if (!font.loadFromFile("Fonts\\RingB.ttf"))
-	{
-		cout << "Could not load Font." << endl;
-	}
-	text.setFont(font);
-	text.setString("Hello world!");
-	text.setCharacterSize(24);
-	text.setColor(sf::Color::Red);
+	
 
 }
 
@@ -69,6 +62,8 @@ void HUDClass::ReleaseAll()
 {
 	SAFE_RELEASE(gElementVertexBuffer);
 	SAFE_RELEASE(gElementIndexBuffer);
+	SAFE_RELEASE(gFontVertexBuffer);
+	SAFE_RELEASE(gFontIndexBuffer);
 }
 
 bool HUDClass::CreateIndexBuffer(ID3D11Device* &gDevice)
@@ -99,4 +94,215 @@ bool HUDClass::CreateIndexBuffer(ID3D11Device* &gDevice)
 		return false;
 	}
 	return true;
+}
+
+bool HUDClass::setFont(ID3D11Device* &gDevice)
+{
+	HRESULT hr;
+
+	float width = 0, height = 0;
+	width = 25.0f / 256;
+	height = 32.0f / 256;
+	Vtxs = 4 * nrOfChars;
+	float posXleft = 0.0f, posYtop = 0.95f, posXright = 0.1f, posYbot = 0.85f;
+	float uStart = 0, vStart = 0, uEnd = 0, vEnd = 0;
+	
+	HUDElements* Elements = new HUDElements[Vtxs];
+
+	for (unsigned int i = 0; i < nrOfChars; i++)
+	{
+		for (int k = 0; k < 69; k++)
+		{
+			if (ascii[i] == indexArr[k][0])
+			{
+				uStart = indexArr[k][1];
+				vStart = indexArr[k][2];
+				uEnd = uStart + indexArr[k][3];
+				vEnd = vStart + indexArr[k][4];
+				uStart /= 256;
+				vStart /= 256;
+				uEnd /= 256;
+				vEnd /= 256;
+			}
+		}
+			
+			Elements[i] =
+			{
+				// POS				// UV
+				posXleft, posYbot, 0.0f,	uStart, vEnd, //Bot left
+
+			};
+			Elements[i] =
+			{
+				// POS				// UV
+				posXleft, posYtop, 0.0f,	uStart, vStart, //top left
+
+			};
+			Elements[i] =
+			{
+				// POS				// UV
+				posXright, posYtop, 0.0f,	uEnd, vStart, //top right
+
+			};
+			Elements[i] =
+			{
+				// POS				// UV
+				posXright, posYbot, 0.0f,	uEnd, vEnd, //Bot right
+
+			};
+			posXleft += 0.1f;
+			posXright += 0.1f;
+			
+
+	}
+
+
+	//HUDElements Elements[4] =
+	//{
+	//	// POS				// UV
+	//	0.0f, 0.85f, 0.0f,	0.0f, height, //Bot left
+	//	0.0f, 0.95f, 0.0f,	0.0f, 0.0f, //Top left
+	//	0.1f, 0.95f, 0.0f,	width, 0.0f, //Top right
+
+	//	0.1f, 0.85f, 0.0f,	width, height	//Bot right	
+
+
+	//};
+	
+
+	D3D11_BUFFER_DESC ElementBufferDesc;
+	ZeroMemory(&ElementBufferDesc, sizeof(ElementBufferDesc));
+
+	ElementBufferDesc.ByteWidth = sizeof(HUDElements)* Vtxs;
+	ElementBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	ElementBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	ElementBufferDesc.MiscFlags = 0;
+	ElementBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexData;
+	vertexData.pSysMem = Elements;
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&ElementBufferDesc, &vertexData, &gFontVertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+	return true;
+}
+
+bool HUDClass::CreateFontIndexBuffer(ID3D11Device* &gDevice)
+{
+
+
+	HRESULT hr;
+	int foo = nrOfChars * 6;
+	int* indexBuffer = new int[foo];
+	int index = 0;
+	int vtxIndex = 0;
+	for (int i = 0; i < nrOfChars; i++)
+	{
+	
+		indexBuffer[index] = vtxIndex; // 0
+		vtxIndex++;
+		index++;
+
+		indexBuffer[index] = vtxIndex; // 1
+		vtxIndex++;
+		index++;
+
+		indexBuffer[index] = vtxIndex; // 2
+		vtxIndex-=2;
+		index++;
+
+		indexBuffer[index] = vtxIndex; // 0
+		vtxIndex+=2;
+		index++;
+
+		indexBuffer[index] = vtxIndex; // 2
+		vtxIndex++;
+		index++;
+
+		indexBuffer[index] = vtxIndex; // 3
+		vtxIndex++;
+		index++;
+	}
+	
+
+
+	D3D11_BUFFER_DESC ElementBufferDesc;
+	ZeroMemory(&ElementBufferDesc, sizeof(ElementBufferDesc));
+
+	ElementBufferDesc.ByteWidth = sizeof(int) * 6;
+	ElementBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	ElementBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ElementBufferDesc.MiscFlags = 0;
+	ElementBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexData;
+	vertexData.pSysMem = indexBuffer;
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&ElementBufferDesc, &vertexData, &gFontIndexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+	return true;
+}
+
+void HUDClass::setText(int wave)
+{
+	
+	waveText = "Wave: 8";
+	
+	nrOfChars = waveText.length();
+	for (int i = 0; i < nrOfChars; i++)
+	{
+		text.push_back(waveText[i]);
+		ascii.push_back((int)text[i]);
+		cout << ascii[i] << endl;
+	}
+
+
+
+}
+
+void HUDClass::loadBitMap()
+{
+	fstream file("Fonts//HUDFont.txt", ios::in | ios::ate);
+	string line;
+	string subline;
+	
+	string::size_type sizeT;
+	int indexloop = 0;
+
+	// ID,X,Y,Width,Height
+
+	if (!file.is_open())
+	{
+		cout << "Could not find bitmap file" << endl;
+		return;
+	}
+	file.seekg(0, file.beg);
+
+	while (!file.eof())
+	{
+		line.clear();
+
+		getline(file, line);
+
+		istringstream lineparse(line);
+		for (unsigned int i = 0; i < 5; i++)
+		{
+			lineparse >> subline;
+			indexArr[indexloop][i] = stoi(subline, &sizeT);
+		}
+		
+		indexloop++;
+	}
 }
