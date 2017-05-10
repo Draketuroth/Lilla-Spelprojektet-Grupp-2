@@ -45,10 +45,6 @@ public:
 	
 	vector<StandardVertex>vertices;
 
-	float projectileTimer;
-	float projectileCd;
-	bool shooting;
-
 private:
 	
 	int Type;

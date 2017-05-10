@@ -21,7 +21,6 @@ SceneContainer::SceneContainer() {
 
 	this->ai = AI();
 
-	counter = 0;
 }
 
 SceneContainer::~SceneContainer() {
@@ -138,6 +137,8 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	
 	enemies[0].createProjectileBox(gHandler.gDevice);
 	enemies[0].createProjectile(bulletPhysicsHandler);
+
+	createSideBoundingBoxes();
 	
 	return true;
 
@@ -180,6 +181,8 @@ void SceneContainer::update(HWND &windowHandle)
 
 	this->useAI(character, enemies[0]);
 
+	cout << "Side Center: " << sides[2].Center.x << ", " << sides[2].Center.y << ", " << sides[2].Center.z << endl;
+	cout << "Enemy Center: " << enemies[0].getBoundingBox().Center.x << ", " << enemies[0].getBoundingBox().Center.y << ", " << enemies[0].getBoundingBox().Center.z << endl;
 	
 	enemies[0].updateProjectile();
 	
@@ -188,11 +191,15 @@ void SceneContainer::update(HWND &windowHandle)
 
 void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 {
-	if (enemy.getType() == 10)
+	btVector3 edge = ai.collisionEdge(sides, enemy);
+
+	enemy.rigidBody->applyCentralForce(edge);
+
+	if (enemy.getType() == 0)
 	{
 		this->ai.iceAI(player, enemy);
 	}
-	else if (enemy.getType() == 0)
+	else if (enemy.getType() == 1)
 	{
 		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
 	}
@@ -471,4 +478,24 @@ void SceneContainer::renderProjectile()
 	
 	gHandler.gDeviceContext->DrawIndexed(36, 0, 0);
 
+}
+
+void SceneContainer::createSideBoundingBoxes()
+{
+	//We need the extents of the BBox. should we make thinn boxes? Or big squares that cover the right areas?
+	//We also need the Center
+	XMFLOAT3 extentsUpDown = { 20, 1, 1 };
+	XMFLOAT3 extentsLeftRight = { 1, 1, 20 };
+
+	XMFLOAT3 centerUp = {-7, 0, 17};
+	XMFLOAT3 centerDown = {-7, 0, -18};
+	XMFLOAT3 centerLeft = {-17, 0, -7};
+	XMFLOAT3 centerRight = {17, 0, -7};
+
+	sides[0] = BoundingBox(centerUp, extentsUpDown);		//Up
+	sides[1] = BoundingBox(centerDown, extentsUpDown);		//Down
+	sides[2] = BoundingBox(centerLeft, extentsLeftRight);	//Left
+	sides[3] = BoundingBox(centerRight, extentsLeftRight);	//Right
+
+	
 }
