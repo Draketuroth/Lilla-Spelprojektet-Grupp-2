@@ -170,7 +170,7 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 20;
+	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 50;
 
 	if (sceneContainer.animHandler.animTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 

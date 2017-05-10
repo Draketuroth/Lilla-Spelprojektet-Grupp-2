@@ -52,7 +52,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 
 	globalTx = importer.skinnedMeshes[0].hierarchy[0].GlobalTx;
 	invBindPose = importer.skinnedMeshes[0].hierarchy[0].inverseBindPoseMatrix;
-	skinnedTx = globalTx * invBindPose;
+	skinnedTx = invBindPose * globalTx;
 
 	XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[0], XMMatrixTranspose(skinnedTx));	// skel[0].GlobalTx * skel[0].invBindPose
 
