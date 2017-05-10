@@ -28,7 +28,7 @@ void AnimationHandler::ReleaseAll() {
 
 void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext, int animIndex, FileImporter &importer) {
 
-	animTimePos = playerAnimTimePos;
+	animTimePos = 3;
 	// Open up a new XMFLOAT4x4 array to temporarily store the updated joint transformations
 	XMFLOAT4X4* localJointTransforms = new XMFLOAT4X4[importer.skinnedMeshes[0].hierarchy.size()];
 
@@ -67,7 +67,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 
 		b.GlobalTx = importer.skinnedMeshes[0].hierarchy[b.parentIndex].GlobalTx * b.LocalTx;	// skel[b.parent].GlobalTx * b.LocalTx
 
-		skinnedTx =  b.GlobalTx * b.inverseBindPoseMatrix;
+		skinnedTx = b.GlobalTx * b.inverseBindPoseMatrix;
 
 		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(skinnedTx));   // b.GlobalTx * b.invBindPose
 	}
@@ -108,12 +108,12 @@ XMFLOAT4X4 AnimationHandler::Interpolate(int jointIndex, ID3D11DeviceContext* gD
 		XMFLOAT4X4 M;
 
 		XMVECTOR S = XMLoadFloat4(&importer.skinnedMeshes[0].hierarchy[jointIndex].Animations[animIndex].Sequence[animationLength].Scale);
-		XMVECTOR P = XMLoadFloat4(&importer.skinnedMeshes[0].hierarchy[jointIndex].Animations[animIndex].Sequence[animationLength].Translation);
+		XMVECTOR T = XMLoadFloat4(&importer.skinnedMeshes[0].hierarchy[jointIndex].Animations[animIndex].Sequence[animationLength].Translation);
 		XMVECTOR Q = XMLoadFloat4(&importer.skinnedMeshes[0].hierarchy[jointIndex].Animations[animIndex].Sequence[animationLength].RotationQuat);
 
 		XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 
-		XMStoreFloat4x4(&M, XMMatrixAffineTransformation(S, zero, Q, P));
+		XMStoreFloat4x4(&M, XMMatrixAffineTransformation(S, zero, Q, T));
 
 		return M;
 	}

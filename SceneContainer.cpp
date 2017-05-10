@@ -279,7 +279,7 @@ void SceneContainer::render()
 	//renderDeferred();
 	renderLava(); 
 	drawDebugCubes();
-	renderCharacters();
+	//renderCharacters();
 	renderEnemies();
 	renderScene();
 }
