@@ -40,7 +40,7 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	float depth = input.lPos.z;
 
-	float shadowCheck = (shadowMap.Sample(shadowSampler, smTexture).r + 0.0001f < depth) ? 0.25f : 1.0f;
+	float shadowCheck = (shadowMap.Sample(shadowSampler, smTexture).r + 0.005f < depth) ? 0.25f : 1.0f;
 
 	texColor = tex0.Sample(texSampler, input.Tex).xyz;
 

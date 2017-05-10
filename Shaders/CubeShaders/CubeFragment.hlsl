@@ -36,7 +36,7 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	float depth = input.lPos.z;
 
-	float shadowCheck = (shadowMap.Sample(shadowSampler, smTexture).r + 0.0001f < depth) ? 0.25f : 1.0f;
+	float shadowCheck = (shadowMap.Sample(shadowSampler, smTexture).r + 0.005f < depth) ? 0.25f : 1.0f;
 
 
 	float3 lightSource = float3(0.0f, 100.0f, 0.0f);	// Light source in the form of a point light

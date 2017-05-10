@@ -30,7 +30,7 @@ struct GS_IN
 	float3 Pos : POSITION;
 	float2 Tex: TEXCOORD;
 	float3 Norm : NORMAL;
-	//float4 lPos : POSITION1;
+	float4 lPos : TEXCOORD1;
 
 };
 
@@ -64,7 +64,7 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 		output.WPos = worldPosition;
 
 		//Light coordinate
-		output.lPos = mul(worldPosition, lightViewProj);
+		output.lPos = mul(input[i].lPos, mul(worldPosition, lightViewProj));
 
 		// To store and calculate the WorldViewProj, the input position must be multiplied with the WorldViewProj matrix
 

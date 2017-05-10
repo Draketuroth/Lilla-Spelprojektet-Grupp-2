@@ -41,8 +41,6 @@ struct VS_IN
 struct VS_OUT
 {
 	float4 Pos : SV_POSITION;
-	float2 Tex : TEXCOORD;
-
 };
 
 VS_OUT VS_main(VS_IN input)
@@ -51,12 +49,12 @@ VS_OUT VS_main(VS_IN input)
 	float3 position = float3(0.0f, 0.0f, 0.0f);
 	float3 normal = float3(0.0f, 0.0f, 0.0f);
 
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	position += input.Weight[i] * mul(float4(input.Pos, 1.0f), gBoneTransforms[input.BoneIndices[i]]).xyz;
-	//}
-	//output.Pos = mul(float4(position, 1.0f), mul(matrixW, lightViewProj));
-	output.Pos = mul(float4(input.Pos, 1.0f), mul(matrixW, lightViewProj));
+	for (int i = 0; i < 4; i++)
+	{
+		position += input.Weight[i] * mul(float4(input.Pos, 1.0f), gBoneTransforms[input.BoneIndices[i]]).xyz;
+	}
+	output.Pos = mul(float4(position, 1.0f), mul(matrixW, lightViewProj));
+	//output.Pos = mul(float4(input.Pos, 1.0f), mul(matrixW, lightViewProj));
 
 	return output;
 }

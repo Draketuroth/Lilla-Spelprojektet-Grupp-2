@@ -589,19 +589,21 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 
 	float lAspect = float(WIDTH) / (float)HEIGHT;
 
-	XMVECTOR lightPos = { 10, 20, 4, 1 };
-	XMVECTOR lightVec = { 2, 0, 4, 0 };
-	XMVECTOR upVec = { 0, 1, 0, 0 };
+
+	XMVECTOR lightPos = { 5, 10, 4 };
+	XMVECTOR lightVec = { 0, 0, 4 };
+	XMVECTOR upVec = { 0, 1, 0};
 
 	XMMATRIX lightView = XMMatrixLookAtLH(lightPos, lightVec, upVec);
 
 	float lNearP = 0.1f;
-	float lFarP = 25.0f;
+	float lFarP = 40.0f;
 
-	XMMATRIX lightProj = XMMatrixOrthographicLH(30, 30, lNearP, lFarP);
+	XMMATRIX lightProj = XMMatrixOrthographicLH(45, 45, lNearP, lFarP);
 	
 	//XMMATRIX lightProj = XMMatrixOrthographicLH(WIDTH, HEIGHT, -100.0f, 100.0f);
 	XMMATRIX lightProjPerspective = XMMatrixPerspectiveFovLH(lFov, lAspect, lNearP, lFarP);
+	
 
 	XMMATRIX LVP = XMMatrixMultiply(lightView, lightProj);
 

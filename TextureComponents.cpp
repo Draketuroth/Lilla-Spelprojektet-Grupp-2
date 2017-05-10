@@ -135,8 +135,8 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	}
 	//Shadow map texture desc
 	D3D11_TEXTURE2D_DESC texDesc = {};
-	texDesc.Width = 1024;
-	texDesc.Height = 1024;
+	texDesc.Width = WIDTH;
+	texDesc.Height = HEIGHT;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
 	texDesc.Format = resformat;
