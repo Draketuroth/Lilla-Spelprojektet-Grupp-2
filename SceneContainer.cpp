@@ -293,7 +293,7 @@ void SceneContainer::render()
 
 	//renderDeferred();
 	renderLava(); 
-	drawDebugCubes();
+	//drawDebugCubes();
 	renderCharacters();
 	renderEnemies();
 	renderScene();

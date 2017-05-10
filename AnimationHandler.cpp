@@ -69,7 +69,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 
 		skinnedTx = b.GlobalTx * b.inverseBindPoseMatrix;
 
-		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(skinnedTx));   // b.GlobalTx * b.invBindPose
+		XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[i], XMMatrixTranspose(b.inverseBindPoseMatrix * b.LocalTx));   // b.GlobalTx * b.invBindPose
 	}
 
 	gDeviceContext->Unmap(gCharacterBoneBuffer, 0);
