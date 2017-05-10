@@ -44,7 +44,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 	CHARACTER_SKINNED_DATA* boneBufferPointer = (CHARACTER_SKINNED_DATA*)boneMappedResource.pData;
 
 	XMMATRIX globalTx, invBindPose, skinnedTx;
-	int startIndex = 1;
+	int startIndex = 0;
 
 	// Initialize the root joint
 	importer.skinnedMeshes[0].hierarchy[0].GlobalTx = XMLoadFloat4x4(&globalJointTransforms[0]);	// skel[0].GlobalTx = skel[0].LocalTx
