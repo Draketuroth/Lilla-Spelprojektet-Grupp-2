@@ -39,6 +39,12 @@ struct PLAYER_TRANSFORM {
 	XMMATRIX matrixWVP;
 };
 
+struct PROJECTILE_TRANSFORM
+{
+	XMMATRIX worldMatrix;
+	XMMATRIX worldViewProjection;
+};
+
 struct CubeObjects {
 
 	btRigidBody* rigidBody;
@@ -74,6 +80,8 @@ public:
 	ID3D11Buffer* gPlayerTransformBuffer;
 	ID3D11Buffer* gEnemyTransformBuffer;
 
+	ID3D11Buffer* gProjectileTransformBuffer;
+
 	ID3D11Buffer* gCubeVertexBuffer;
 
 	ID3D11Buffer* gDebugVertexBuffer;
@@ -105,6 +113,7 @@ public:
 	bool CreateInstanceBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
 	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
+	bool CreateProjectileTransformBuffer(ID3D11Device* &gDevice);
 	void CreateRigidBodyTags();
 
 	float spaceX;

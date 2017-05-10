@@ -5,6 +5,10 @@ AI::AI()
 	this->attacking = true;
 	this->attackTimer = 1.0;
 	this->attackCd = 1.5;
+
+	this->rangedAttack = true;
+	this->rangedTimer = 10.0;
+	this->rangedCd = 10.0;
 	
 	this->timer.initialize();
 }
@@ -16,9 +20,9 @@ AI::~AI()
 //we need the enemy's position to get he distance
 void AI::iceAI(MainCharacter &player, Enemy &self)
 {
-	// vv  this has to update all the time!! Update function? vv
+	
+	//AI
 	float distance = getDistance(player.getPos(), self.getPos());
-
 	if (distance <= 2)
 	{
 		attackMelee(player, self);
@@ -32,16 +36,19 @@ void AI::iceAI(MainCharacter &player, Enemy &self)
 		moveTowardsPlayer(player.getPos(), self);
 	}
 
+
+	
+
 	timer.updateCurrentTime();
 
 }
-void AI::fireAI(MainCharacter &player, Enemy &self)
+void AI::fireAI(MainCharacter &player, Enemy &self, BulletComponents &bulletPhysicsHandler)
 {
 	float distance = getDistance(player.getPos(), self.getPos());
 
-	if (distance <= 8 && distance > 5)
+	if (distance <= 8 )
 	{
-		//attackRanged(distance, player);
+		attackRanged(player, self, bulletPhysicsHandler);
 	}
 	else if (distance <= 5)
 	{
@@ -55,7 +62,6 @@ void AI::fireAI(MainCharacter &player, Enemy &self)
 
 void AI::attackMelee(MainCharacter &player, Enemy &self)
 {
-	//cout << "TRIED TO ATTACK" << endl;
 	if (!attacking && attackTimer <= 0)
 	{
 
@@ -74,6 +80,7 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 		enemyDirVec = XMVector3Rotate(enemyDirVec, rotQuat);
 		enemyDirVec = XMVector3Normalize(enemyDirVec);
 
+		//newC = center for the attack's hitbox
 		XMVECTOR newC = XMLoadFloat3(&enemyPos);
 		newC += enemyDirVec * 0.4;
 		XMFLOAT3 newCenter;
@@ -123,29 +130,46 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 		//play enemy attack animation here
 	}	
 }
-void AI::attackRanged(MainCharacter &player, Enemy &self)
+void AI::attackRanged(MainCharacter &player, Enemy &self, BulletComponents &bulletPhysicsHandler)
 {
-	//if (!attacking && attackTimer <= 0)
-	//{
-	//	attacking = true;
-	//	attackTimer = attackCd;
-	//
-	//	if (distance <= 8)
-	//	{
-	//		//ranged attack
-	//	}
-	//}
-	//
-	//if (attacking)
-	//{
-	//	if (attackTimer > 0)
-	//		attackTimer -= timer.getDeltaTime();
-	//	else
-	//	{
-	//		attacking = false;
-	//	}
-	//	//play enemy attack animation here
-	//}
+
+	if (!rangedAttack && rangedTimer <= 0)
+	{
+		rangedAttack = true;
+		rangedTimer = rangedCd;
+
+		//----------Räkna ut kastet--------------------------------------------------------------
+		
+		XMVECTOR dirVec = { player.getPos().x - self.getPos().x, player.getPos().y - self.getPos().y, player.getPos().z - self.getPos().z };
+		XMVector3Normalize(dirVec);
+
+		XMFLOAT3 dir;
+		XMStoreFloat3(&dir, dirVec);
+		
+		float distance = getDistance(player.getPos(), self.getPos()); //så här långt ska man kasta
+
+		float v0 = distance * 10;  //kraften man kastar med
+		v0 = sqrtf(v0);
+
+		float v0x = v0 * cos(45);	//kraften i x-led	z-led?
+		float v0y = v0 * sin(45);	//kraften i y-led	
+
+		//---------------------------------------------------------------------------------------
+
+		self.shootProjectile(v0x, v0y, dir);
+
+	}
+
+	if (rangedAttack)
+	{
+		if (rangedTimer > 0)
+			rangedTimer -= timer.getDeltaTime();
+		else
+		{
+			rangedAttack = false;
+		}
+		//play enemy attack animation here
+	}
 }
 
 void AI::moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy &self)
@@ -169,4 +193,37 @@ float AI::getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos)
 	return distance;
 }
 
+XMMATRIX AI::rotate(XMFLOAT3 playerPos, Enemy &self)
+{
+	XMMATRIX R;
+	float angle = self.getAngle(playerPos);
+	R = XMMatrixRotationY(angle);
 
+	return R;
+}
+
+
+btVector3 AI::collisionEdge(BoundingBox sides[], Enemy self)
+{
+	BoundingBox enemy = self.getBoundingBox();
+	btVector3 dir = {0, 0, 0};
+
+	if (enemy.Intersects(sides[0]))
+	{
+		dir = { 0, 0, -1 };
+	}
+	if (enemy.Intersects(sides[1]))
+	{
+		dir = { 0, 0, 1 };
+	}
+	if (enemy.Intersects(sides[2]))
+	{
+		dir = { 1, 0, 0 };
+	}
+	if (enemy.Intersects(sides[3]))
+	{
+		dir = { -1, 0, 0 };
+	}
+
+	return dir;
+}

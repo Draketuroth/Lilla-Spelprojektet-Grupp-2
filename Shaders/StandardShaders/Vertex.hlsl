@@ -6,7 +6,7 @@
 
 cbuffer VS_SKINNED_DATA: register (b0) {
 
-	float4x4 gBoneTransforms[16];
+	float4x4 gBoneTransforms[30];
 };
 
 struct VS_IN

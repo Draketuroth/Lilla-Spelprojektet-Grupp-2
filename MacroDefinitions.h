@@ -16,6 +16,7 @@
 #define SAFE_RELEASE( x ) if( x ) ( x )->Release(), ( x ) = nullptr;
 
 #define ANIMATIONCOUNT 2
+#define ANIM_GLOBAL false
 
 #define MAIN_MENU 11
 #define GAME_OVER 12

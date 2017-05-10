@@ -113,7 +113,7 @@ public:
 	Enemy enemies[3];
 	int nrOfEnemies;
 
-	
+	BoundingBox sides[4];
 
 	BulletComponents bulletPhysicsHandler;
 
@@ -140,6 +140,10 @@ public:
 	void renderShadowMap();
 
 	void renderLava();
+
+	void renderProjectile();
+
+	void createSideBoundingBoxes();
 
 };
 

@@ -86,6 +86,10 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 	{
 		return false;
 	}
+	if (!CreateProjectileTransformBuffer(gDevice))
+	{
+		return false;
+	}
 
 	return true;
 
@@ -95,50 +99,52 @@ bool BufferComponents::CreateDebugVertexBuffer(ID3D11Device* &gDevice) {
 
 	HRESULT hr;
 
+	float scale = 0.5f;
+
 	TriangleVertex triangleVertices[24] =
 	{
 
 		//Front face
 
-		-1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		1.0, -1.0f, -1.0f, 1.0f, 1.0f,
+		-scale, scale, -scale, 0.0f, 0.0f,
+		scale, scale, -scale, 1.0f, 0.0f,
+		-scale, -scale, -scale, 0.0f, 1.0f,
+		scale, -scale, -scale, 1.0f, 1.0f,
 
 		// Back face
 
-		1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0, -1.0f, 1.0f, 1.0f, 1.0f,
+		scale, scale, scale, 0.0f, 0.0f,
+		-scale, scale, scale, 1.0f, 0.0f,
+		scale, -scale, scale, 0.0f, 1.0f,
+		-scale, -scale, scale, 1.0f, 1.0f,
 
 		// Left face
 
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+		-scale, scale, scale, 0.0f, 0.0f,
+		-scale, scale, -scale, 1.0f, 0.0f,
+		-scale, -scale, scale, 0.0f, 1.0f,
+		-scale, -scale, -scale, 1.0f, 1.0f,
 
 		// Right face
 
-		1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
+		scale, scale, -scale, 0.0f, 0.0f,
+		scale, scale, scale, 1.0f, 0.0f,
+		scale, -scale, -scale, 0.0f, 1.0f,
+		scale, -scale,  scale, 1.0f, 1.0f,
 
 		// Top face
 
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, -1.0f, 1.0f, 1.0f,
+		-scale, scale, scale, 0.0f, 0.0f,
+		scale, scale, scale, 1.0f, 0.0f,
+		-scale, scale, -scale, 0.0f, 1.0f,
+		scale, scale, -scale, 1.0f, 1.0f,
 
 		// Bottom face
 
-		1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f, 1.0f
+		scale, -scale, scale, 0.0f, 0.0f,
+		-scale, -scale, scale, 1.0f, 0.0f,
+		scale, -scale, -scale, 0.0f, 1.0f,
+		-scale, -scale, -scale, 1.0f, 1.0f
 
 
 	};
@@ -724,6 +730,39 @@ bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
 	constData.SysMemSlicePitch = 0;
 
 	hr = gDevice->CreateBuffer(&enemyBufferDesc, &constData, &gEnemyTransformBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
+bool BufferComponents::CreateProjectileTransformBuffer(ID3D11Device *& gDevice)
+{
+	HRESULT hr;
+
+	PROJECTILE_TRANSFORM eTransformData;
+
+	eTransformData.worldMatrix = XMMatrixIdentity();
+	eTransformData.worldViewProjection = XMMatrixIdentity();
+
+	D3D11_BUFFER_DESC projectileBufferDesc;
+	ZeroMemory(&projectileBufferDesc, sizeof(projectileBufferDesc));
+	projectileBufferDesc.ByteWidth = sizeof(GS_CONSTANT_BUFFER);
+	projectileBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	projectileBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	projectileBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	projectileBufferDesc.MiscFlags = 0;
+	projectileBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA constData;
+	constData.pSysMem = &eTransformData;
+	constData.SysMemPitch = 0;
+	constData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&projectileBufferDesc, &constData, &gProjectileTransformBuffer);
 
 	if (FAILED(hr)) {
 
