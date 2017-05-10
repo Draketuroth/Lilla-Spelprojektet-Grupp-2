@@ -6,9 +6,6 @@ Enemy::Enemy()
 	this->Type = 0;
 	this->SpawnPos = { 0,0,0 };
 
-	this->projectileTimer = 5.0;
-	this->projectileCd = 5.0;
-	this->shooting = false;
 }
 
 Enemy::~Enemy()
@@ -140,7 +137,7 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 	btVector3 direction = positionTarget - positionAt;
 	direction.normalize();
 
-	this->rigidBody->applyCentralForce(direction * 0.5);
+	this->rigidBody->applyCentralForce(direction );
 
 
 	//This is the speed of the enemy
@@ -242,14 +239,11 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 }
 void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 {
-	//apply the force to the projectile
+	
 
-	// v0y is the force in Y
-	// v0x is the force FORWARD
-	shooting = true;
-
-	float forceVz = forceVx * direction.z ;
-	forceVx = forceVx * direction.x ;
+	float forceVz = forceVx * direction.z * 0.4;
+	forceVx = forceVx * direction.x * 0.4;
+	forceVy *= 0.7;
 	
 	btVector3 force = { forceVx, forceVy, forceVz };
 
@@ -263,12 +257,11 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 	if (fireBallDistance <= 1.5)
 	{
 		fireBall.projectileRigidBody->applyCentralForce(force);
-		fireBall.projectileRigidBody->setFriction(3);
+		fireBall.projectileRigidBody->setFriction(3);	
 	}
 	
-	//WHEN COLLISION EXPLODE AND GO TO SAFE LOCATION
-
-	
+	//On collision explode and teleport away.
+	//Teleport to enemy when it's time to throw again
 }
 
 bool Enemy::createProjectileBox(ID3D11Device* gDevice)

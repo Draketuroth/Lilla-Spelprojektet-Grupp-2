@@ -21,7 +21,6 @@ AI::~AI()
 void AI::iceAI(MainCharacter &player, Enemy &self)
 {
 	
-
 	//AI
 	float distance = getDistance(player.getPos(), self.getPos());
 	if (distance <= 2)
@@ -53,11 +52,11 @@ void AI::fireAI(MainCharacter &player, Enemy &self, BulletComponents &bulletPhys
 	}
 	else if (distance <= 5)
 	{
-		//moveAwayFromPlayer(player.getPos(), self);
+		moveAwayFromPlayer(player.getPos(), self);
 	}
 	else
 	{
-		//moveTowardsPlayer(player.getPos(), self);
+		moveTowardsPlayer(player.getPos(), self);
 	}
 }
 
@@ -134,17 +133,6 @@ void AI::attackMelee(MainCharacter &player, Enemy &self)
 void AI::attackRanged(MainCharacter &player, Enemy &self, BulletComponents &bulletPhysicsHandler)
 {
 
-		/*float angle = self.getAngle(player.getPos());
-		XMFLOAT3 enemyPos = self.getBoundingBox().Center;
-		XMVECTOR enemyDirVec = self.getForwardVector();
-
-		XMVECTOR rotQuat = XMQuaternionRotationAxis(XMVECTOR{ 0, 1, 0 }, angle);
-		enemyDirVec = XMVector3Rotate(enemyDirVec, rotQuat);
-		enemyDirVec = XMVector3Normalize(enemyDirVec);
-
-		XMFLOAT3 enemyDir;
-		XMStoreFloat3(&enemyDir, enemyDirVec);*/
-
 	if (!rangedAttack && rangedTimer <= 0)
 	{
 		rangedAttack = true;
@@ -179,7 +167,6 @@ void AI::attackRanged(MainCharacter &player, Enemy &self, BulletComponents &bull
 		else
 		{
 			rangedAttack = false;
-			self.fireBall.projectileRigidBody->clearForces();
 		}
 		//play enemy attack animation here
 	}
@@ -213,4 +200,30 @@ XMMATRIX AI::rotate(XMFLOAT3 playerPos, Enemy &self)
 	R = XMMatrixRotationY(angle);
 
 	return R;
+}
+
+
+btVector3 AI::collisionEdge(BoundingBox sides[], Enemy self)
+{
+	BoundingBox enemy = self.getBoundingBox();
+	btVector3 dir = {0, 0, 0};
+
+	if (enemy.Intersects(sides[0]))
+	{
+		dir = { 0, 0, -1 };
+	}
+	if (enemy.Intersects(sides[1]))
+	{
+		dir = { 0, 0, 1 };
+	}
+	if (enemy.Intersects(sides[2]))
+	{
+		dir = { 1, 0, 0 };
+	}
+	if (enemy.Intersects(sides[3]))
+	{
+		dir = { -1, 0, 0 };
+	}
+
+	return dir;
 }

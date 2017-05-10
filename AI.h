@@ -35,7 +35,7 @@ public:
 
 	XMMATRIX rotate(XMFLOAT3 playerPos, Enemy &self);
 
-	
+	btVector3 collisionEdge(BoundingBox sides[], Enemy self);
 
 };
 
