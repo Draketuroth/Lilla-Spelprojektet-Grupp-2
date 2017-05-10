@@ -15,6 +15,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 	matrix matrixView;
 	matrix matrixProjection;
 	matrix fortressWorldMatrix;
+	matrix lightViewProj;
 	float4 cameraPos;
 };
 
@@ -29,6 +30,7 @@ struct GS_IN
 	float3 Pos : POSITION;
 	float2 Tex: TEXCOORD;
 	float3 Norm : NORMAL;
+	float4 lPos : TEXCOORD1;
 
 };
 
@@ -39,6 +41,7 @@ struct GS_OUT
 	float4 Pos : SV_POSITION;
 	float3 WPos : WPOSITION;
 	float3 ViewPos : CAMERAPOS;
+	float4 lPos : TEXCOORD1;
 
 };
 
@@ -59,6 +62,9 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 		// To store and calculate the World position for output to the pixel shader, the input position must be multiplied with the World matrix
 		float3 worldPosition = mul(float4(input[i].Pos, 1.0f), matrixW).xyz;
 		output.WPos = worldPosition;
+
+		//Light coordinate
+		output.lPos = mul(input[i].lPos, mul(worldPosition, lightViewProj));
 
 		// To store and calculate the WorldViewProj, the input position must be multiplied with the WorldViewProj matrix
 

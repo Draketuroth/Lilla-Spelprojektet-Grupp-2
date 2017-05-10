@@ -100,6 +100,9 @@
     <Filter Include="Source Files\HLSL\ProjectileShaders">
       <UniqueIdentifier>{8c55d5ef-1fe7-403b-963b-d9787f1de2ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\ShadowShader">
+      <UniqueIdentifier>{4435caeb-22f1-4f86-9a65-dce945e6c0b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -306,6 +309,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\ProjectileShaders\ProjectileVertex.hlsl">
       <Filter>Source Files\HLSL\ProjectileShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowShaders\ShadowVertex.hlsl">
+      <Filter>Source Files\HLSL\ShadowShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowShaders\ShadowPlatformVertex.hlsl">
+      <Filter>Source Files\HLSL\ShadowShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

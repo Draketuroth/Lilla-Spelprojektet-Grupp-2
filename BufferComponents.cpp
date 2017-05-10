@@ -37,6 +37,11 @@ void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gPlayerTransformBuffer);
 	SAFE_RELEASE(gEnemyTransformBuffer);
+
+	//for (size_t i = 0; i < 3; i++)
+	//{
+	//	SAFE_RELEASE(gBufferArr[i]);
+	//}
 }
 
 bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter) {
@@ -585,6 +590,34 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearPlane, farPlane);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
+	// Light matrices for shadow mapping
+	float lFov = PI * 0.45f;
+
+	float lAspect = float(WIDTH) / (float)HEIGHT;
+
+
+	XMVECTOR lightPos = { 5, 10, 4 };
+	XMVECTOR lightVec = { 0, 0, 4 };
+	XMVECTOR upVec = { 0, 1, 0};
+
+	XMMATRIX lightView = XMMatrixLookAtLH(lightPos, lightVec, upVec);
+
+	float lNearP = 0.1f;
+	float lFarP = 40.0f;
+
+	XMMATRIX lightProj = XMMatrixOrthographicLH(45, 45, lNearP, lFarP);
+	
+	//XMMATRIX lightProj = XMMatrixOrthographicLH(WIDTH, HEIGHT, -100.0f, 100.0f);
+	XMMATRIX lightProjPerspective = XMMatrixPerspectiveFovLH(lFov, lAspect, lNearP, lFarP);
+	
+
+	XMMATRIX LVP = XMMatrixMultiply(lightView, lightProj);
+
+	tLightViewProj = XMMatrixTranspose(LVP);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+
 
 	// Final calculation for the transform matrix and the transpose function rearranging it to "Column Major" before being sent to the GPU
 	// (Required for the HLSL to read it correctly, doesn't accept matrices written in "Row Major"
@@ -607,6 +640,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	GsConstData.fortressWorldMatrix = XMMatrixTranspose(fortressWorld);
 	GsConstData.matrixProjection = XMMatrixIdentity();
 	GsConstData.worldViewProj = { tWorldViewProj };
+	GsConstData.lightViewProj = { tLightViewProj };
 	GsConstData.cameraPos = XMFLOAT3(0.0f, 0.0f, 2.0f);
 
 	// The buffer description is filled in below, mainly so the graphic card understand the structure of it
@@ -922,3 +956,5 @@ void BufferComponents::platformBreaking(CubeObjects cube)
 	
 	
 }
+
+

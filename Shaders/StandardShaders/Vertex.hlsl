@@ -23,6 +23,7 @@ struct VS_OUT
 	float3 Pos : POSITION;
 	float2 Tex : TEXCOORD;
 	float3 Norm : NORMAL;
+	float4 lPos : TEXCOORD1;
 };
 
 
@@ -45,6 +46,8 @@ VS_OUT VS_main(VS_IN input)
 
 	output.Pos = position;
 	//output.Pos = input.Pos;
+	//for light coordinate
+	output.lPos = float4(position, 1.0f);
 
 	output.Tex = input.Tex;
 

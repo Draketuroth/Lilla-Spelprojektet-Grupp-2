@@ -43,6 +43,8 @@ void SceneContainer::releaseAll() {
 	lava.ReleaseAll();
 	animHandler.ReleaseAll();
 	bulletPhysicsHandler.ReleaseAll();
+
+
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -100,6 +102,15 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"ERROR",
 			MB_OK);
 			PostQuitMessage(0);
+	}
+	if (!tHandler.CreateShadowMap(gHandler.gDevice))
+	{
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Shadow Map couldn't be initialized\nClosing application...",
+			L"ERROR",
+			MB_OK);
+		PostQuitMessage(0);
 	}
 
 	if (!deferredObject.Initialize(gHandler.gDevice)) {
@@ -229,14 +240,23 @@ void SceneContainer::drawFortress() {
 
 void SceneContainer::drawPlatforms() {
 
+	tHandler.texArr[0] = tHandler.platformResource;
+	tHandler.texArr[1] = tHandler.shadowSRV;
+	tHandler.samplerArr[0] = tHandler.texSampler;
+	tHandler.samplerArr[1] = tHandler.shadowSampler;
+
+	ID3D11ShaderResourceView* nullResouce[2] = { nullptr };
+
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gInstanceBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gPlatformGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.platformResource);
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.platformResource);
+	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;
@@ -246,9 +266,11 @@ void SceneContainer::drawPlatforms() {
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 	gHandler.gDeviceContext->DrawInstanced(PlatformFile.standardMeshes[0].vertices.size(), bHandler.nrOfCubes, 0, 0);
-	
 
-	}
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, nullResouce);
+
+
+}
 
 void SceneContainer::drawDebugCubes() {
 
@@ -291,6 +313,7 @@ void SceneContainer::render()
 {
 	clear();
 
+	renderShadowMap();
 	//renderDeferred();
 	renderLava(); 
 	//drawDebugCubes();
@@ -377,6 +400,14 @@ void SceneContainer::renderScene() {
 
 void SceneContainer::renderCharacters()
 {
+	
+	tHandler.texArr[0] = tHandler.playerResource;
+	tHandler.texArr[1] = tHandler.shadowSRV;
+
+	tHandler.samplerArr[0] = tHandler.texSampler;
+	tHandler.samplerArr[1] = tHandler.shadowSampler;
+
+	ID3D11ShaderResourceView* nullResouce[2] = { nullptr };
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -385,8 +416,10 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.playerResource);
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
+	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
@@ -399,7 +432,10 @@ void SceneContainer::renderCharacters()
 	character.draw(gHandler.gDeviceContext, mainCharacterFile.skinnedMeshes[0].vertices.size());
 
 	character.resetWorldMatrix();
-	
+
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, nullResouce);
+
+
 }
 
 void SceneContainer::renderEnemies()
@@ -499,4 +535,52 @@ void SceneContainer::createSideBoundingBoxes()
 	sides[3] = BoundingBox(centerRight, extentsLeftRight);	//Right
 
 	
+}
+
+void SceneContainer::renderShadowMap()
+{
+	gHandler.gDeviceContext->ClearDepthStencilView(tHandler.shadowDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	gHandler.gDeviceContext->OMSetRenderTargets(0, nullptr, tHandler.shadowDepthView);
+
+	
+	bHandler.gBufferArr[0] = bHandler.gConstantBuffer;
+	bHandler.gBufferArr[1] = bHandler.gPlayerTransformBuffer;
+	bHandler.gBufferArr[2] = animHandler.gCharacterBoneBuffer;
+
+	// Character pass-------------------------------------------------------------------------------------//
+	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShader(nullptr, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
+
+	UINT32 vertexSize = sizeof(Vertex_Bone);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &character.vertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	character.draw(gHandler.gDeviceContext, mainCharacterFile.skinnedMeshes[0].vertices.size());
+	//-----------------------------------------------------------------------------------------------------//
+
+	//Platform pass--------------------------------------------------------------------------------------------------//
+	bHandler.gBufferArr[1] = bHandler.gInstanceBuffer;
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowPlatformVertex, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 2, bHandler.gBufferArr);
+
+	vertexSize = sizeof(StandardVertex);
+	offset = 0;
+
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowPlatformLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	gHandler.gDeviceContext->DrawInstanced(PlatformFile.standardMeshes[0].vertices.size(), bHandler.nrOfCubes, 0, 0);
+	//----------------------------------------------------------------------------------------------------------------//
+
+	//Set the rendertarget to the normal render target view and depthstencilview
+	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, gHandler.depthView);
+
+
 }
