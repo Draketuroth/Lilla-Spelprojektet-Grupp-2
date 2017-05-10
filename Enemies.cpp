@@ -22,6 +22,12 @@ Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 	
 }
 
+void Enemy::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
+
+	SAFE_RELEASE(vertexBuffer);
+	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
+}
+
 float Enemy::getAngle(XMFLOAT3 playerPos)
 {
 	float angle;
@@ -40,51 +46,28 @@ int Enemy::getType()const
 {
 	return this->Type;
 }
+
 void Enemy::setType(const int Type)
 {
 	this->Type = Type;
 }
+
 XMFLOAT3 Enemy::getSpawnPos()const
 {
 	return this->SpawnPos;
 }
+
 void Enemy::setSpawnPos(XMFLOAT3 SpawnPos)
 {
 	this->SpawnPos = SpawnPos;
 }
 
-void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, FileImporter &importer)
+void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle)
 {
 	
-	loadVertices(importer, graphicDevice);
-	createBuffer(graphicDevice, vertices);
 	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 	
-}
-
-void Enemy::loadVertices(FileImporter &importer, ID3D11Device* &graphicDevice) {
-
-	HRESULT hr;
-	//load mesh vertices
-	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
-
-		StandardVertex vertex;
-
-		vertex.x = importer.skinnedMeshes[0].vertices[i].pos[0];
-		vertex.y = importer.skinnedMeshes[0].vertices[i].pos[1];
-		vertex.z = importer.skinnedMeshes[0].vertices[i].pos[2];
-
-		vertex.u = importer.skinnedMeshes[0].vertices[i].uv[0];
-		vertex.v = importer.skinnedMeshes[0].vertices[i].uv[1];
-
-		vertex.nx = importer.skinnedMeshes[0].vertices[i].normal[0];
-		vertex.ny = importer.skinnedMeshes[0].vertices[i].normal[1];
-		vertex.nz = importer.skinnedMeshes[0].vertices[i].normal[2];
-
-		vertices.push_back(vertex);
-
-	}
 }
 
 void Enemy::EnemyPhysics()
@@ -234,9 +217,8 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(fireBall.projectileRigidBody);
 	bulletPhysicsHandler.rigidBodies.push_back(fireBall.projectileRigidBody);
 
-	
-
 }
+
 void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 {
 	
@@ -262,148 +244,6 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 	
 	//On collision explode and teleport away.
 	//Teleport to enemy when it's time to throw again
-}
-
-bool Enemy::createProjectileBox(ID3D11Device* gDevice)
-{
-	HRESULT hr;
-
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	// HARDCODED VERTICES
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	TriangleVertex Projectile[24] =
-	{
-
-		//Front face
-
-		-0.3f, 0.3f, -0.3f, 0.0f, 0.0f,
-		0.3f, 0.3f, -0.3f, 0.3f, 0.0f,
-		-0.3f, -0.3f, -0.3f, 0.0f, 0.3f,
-		0.3f, -0.3f, -0.3f, 0.3f, 0.3f,
-
-		// Back face
-
-		0.3f, 0.3f, 0.3f, 0.0f, 0.0f,
-		-0.3f, 0.3f, 0.3f, 0.3f, 0.0f,
-		0.3f, -0.3f, 0.3f, 0.0f, 0.3f,
-		-0.3f, -0.3f,0.3f, 0.3f, 0.3f,
-
-		// Left face
-
-		-0.3f, 0.3f,   0.3f, 0.0f, 0.0f,
-		-0.3f, 0.3f, - 0.3f, 0.3f, 0.0f,
-		-0.3f, -0.3f,  0.3f, 0.0f, 0.3f,
-		-0.3f, -0.3f, -0.3f, 0.3f, 0.3f,
-
-		// Right face
-
-		0.3f, 0.3f, -0.3f, 0.0f, 0.0f,
-		0.3f, 0.3f, 0.3f, 0.3f, 0.0f,
-		0.3f, -0.3f, -0.3f, 0.0f, 0.3f,
-		0.3f, -0.3f,  0.3f, 0.3f, 0.3f,
-
-		// Top face
-
-		-0.3f,0.3f,  0.3f, 0.0f, 0.0f,
-		 0.3f,0.3f,  0.3f, 0.3f, 0.0f,
-		-0.3f,0.3f, -0.3f, 0.0f, 0.3f,
-		 0.3f,0.3f, -0.3f, 0.3f, 0.3f,
-
-		// Bottom face
-
-		 0.3f, -0.3f,  0.3f, 0.0f, 0.0f,
-		-0.3f, -0.3f,  0.3f, 0.3f, 0.0f,
-		 0.3f, -0.3f, -0.3f, 0.0f, 0.3f,
-		-0.3f, -0.3f, -0.3f, 0.3f, 0.3f
-
-
-	};
-
-	// Create Indices
-	unsigned int ProjectileIndicies[36] =
-	{
-
-		// Front face
-		0,1,2,
-		2,1,3,
-
-		// Back face
-
-		4,5,6,
-		6,5,7,
-
-		// Left face
-
-		8,9,10,
-		10,9,11,
-
-		// Right face
-
-		12,13,14,
-		14,13,15,
-
-		// Top face
-
-		16,17,18,
-		18,17,19,
-
-		// Bottom face
-
-		20,21,22,
-		22,21,23 };
-
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	// CREATE VERTEX BUFFER
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	D3D11_BUFFER_DESC bufferDesc;
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(Projectile);
-
-	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = Projectile;
-	hr = gDevice->CreateBuffer(&bufferDesc, &data, &gProjectileBuffer);
-
-	if (FAILED(hr)) 
-	{
-
-		return false;
-	}
-
-	//----------------------------------------------------------------------------------------------------------------------------------//
-	// CREATE INDEX BUFFER
-	//----------------------------------------------------------------------------------------------------------------------------------//
-
-	// Create the buffer description
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(unsigned int) * 36;
-	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = 0;
-
-	// Set the subresource data
-
-	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = &ProjectileIndicies[0];
-	initData.SysMemPitch = 0;
-	initData.SysMemSlicePitch = 0;
-
-	// Create the buffer
-
-	hr = gDevice->CreateBuffer(&bufferDesc, &initData, &gProjectileIndexBuffer);
-
-	if (FAILED(hr))
-	{
-
-		return false;
-	}
-
-	return true;
 }
 
 void Enemy::updateProjectile()

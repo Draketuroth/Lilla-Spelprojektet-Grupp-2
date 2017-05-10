@@ -21,21 +21,18 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(fortressResource);
 	SAFE_RELEASE(defaultResource);
 	SAFE_RELEASE(playerResource);
+	SAFE_RELEASE(LavaResource);
+	
 	SAFE_RELEASE(texSampler);
-	SAFE_RELEASE(LavaResource); 
+	SAFE_RELEASE(shadowSampler);
+
 	SAFE_RELEASE(shadowSRV);
 	SAFE_RELEASE(shadowDepthView);
-	SAFE_RELEASE(shadowSampler);
 	SAFE_RELEASE(ShadowMap);
 	for (size_t i = 0; i < 9; i++)
 	{
 		SAFE_RELEASE(this->menuResources[i]);
 	}
-	//for (size_t i = 0; i < 2; i++)
-	//{
-	//	SAFE_RELEASE(samplerArr[i]);
-	//	SAFE_RELEASE(texArr[i]);
-	//}
 }
 
 bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {

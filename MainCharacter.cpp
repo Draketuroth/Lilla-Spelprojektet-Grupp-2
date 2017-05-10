@@ -29,6 +29,12 @@ MainCharacter::~MainCharacter()
 
 }
 
+void MainCharacter::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
+
+	SAFE_RELEASE(vertexBuffer);
+	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
+}
+
 void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer) {
 
 	currentAnimIndex = 0;
@@ -299,27 +305,27 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 		
 		for (int i = 0; i < nrOfEnemies; i++)
 		{
-			BoundingBox enemyBox = enemyArray[0].getBoundingBox();
+			BoundingBox enemyBox = enemyArray[i].getBoundingBox();
 			if (enemyBox.Intersects(meleeBox))
 			{
 				cout << "HIT!" << endl;
-				enemyArray[0].setHealth(enemyArray[0].getHealth() - 1);
+				enemyArray[i].setHealth(enemyArray[i].getHealth() - 1);
 				
 		// ------------- Knockback ----------------------------------------------
 				btTransform playerTrans;
 				btTransform enemyTrans;
 				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
-				enemyArray[0].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+				enemyArray[i].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
 				
 				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
 				correctedForce.normalize();
 
-				enemyArray[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
+				enemyArray[i].rigidBody->applyCentralImpulse(-correctedForce / 2);
 		// -----------------------------------------------------------------------
 
-				if (enemyArray[0].getHealth() <= 0 && enemyArray[0].getAlive() == true)
+				if (enemyArray[i].getHealth() <= 0 && enemyArray[i].getAlive() == true)
 				{
-					enemyArray[0].setAlive(false);
+					enemyArray[i].setAlive(false);
 					cout << "ENEMY DEAD" << endl;
 				}
 			}
@@ -343,6 +349,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 
 	XMFLOAT3 start, end;
 	this->rigidBody->setIslandTag(characterRigid);
+	
 	for (size_t i = 0; i < nrOfEnemies; i++)
 	{
 		enemies[i].rigidBody->setIslandTag(characterRigid);
@@ -402,11 +409,11 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 				btTransform playerTrans;
 				btTransform enemyTrans;
 				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
-				enemies[0].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+				enemies[i].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
 
 				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
 				correctedForce.normalize();
-				enemies[0].rigidBody->applyCentralImpulse(-correctedForce / 2);
+				enemies[i].rigidBody->applyCentralImpulse(-correctedForce / 2);
 				//----------------------------------------------------------------------------
 
 				cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;

@@ -35,19 +35,16 @@ private:
 public:
 	
 	ID3D11Buffer* vertexBuffer;
-	ID3D11Buffer* indexBuffer;
+	//ID3D11Buffer* indexBuffer;
 
 	XMMATRIX tPlayerTranslation;
 	btRigidBody* rigidBody;
-
 
 	Timer timer;
 
 	CharacterBase();
 	CharacterBase(const bool alive, const int health, const float movementspeed, const int unitID, const XMFLOAT3 position, const XMMATRIX tPlayerTranslation);
 	~CharacterBase();
-
-	void releaseAll(btDynamicsWorld* bulletDynamicsWorld);
 
 	//GET-SET
 	int getHealth()const;
@@ -67,9 +64,7 @@ public:
 	BoundingBox getBoundingBox();
 	XMMATRIX getPlayerTanslationMatrix();
 
-	bool createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices);
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, AnimationHandler &animHandler, CHARACTER_SKINNED_DATA &skinData);
-	bool createBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext);
 
@@ -83,7 +78,5 @@ public:
 
 	string toString();
 	
-	sf::Sound attackSound;
-	sf::SoundBuffer soundBuffer[2];
 };
 #endif

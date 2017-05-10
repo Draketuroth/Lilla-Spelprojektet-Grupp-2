@@ -29,19 +29,15 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gInstanceBuffer);
 	
 	SAFE_RELEASE(gCubeVertexBuffer);
-	SAFE_RELEASE(gDebugIndexBuffer);
 
 	SAFE_RELEASE(gDebugVertexBuffer);
+	SAFE_RELEASE(gDebugIndexBuffer);
 
 	SAFE_RELEASE(gFortressBuffer);
 
 	SAFE_RELEASE(gPlayerTransformBuffer);
 	SAFE_RELEASE(gEnemyTransformBuffer);
 
-	//for (size_t i = 0; i < 3; i++)
-	//{
-	//	SAFE_RELEASE(gBufferArr[i]);
-	//}
 }
 
 bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter) {

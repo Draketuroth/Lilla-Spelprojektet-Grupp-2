@@ -113,20 +113,34 @@ int RunApplication()
 				updateBuffers();
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
+
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// PLAYER LAVA HIT DETECTION
+				//----------------------------------------------------------------------------------------------------------------------------------//
 				
 				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
+
 				if (!sceneContainer.character.getAlive())
 				{
 					menuState.state = GAME_OVER;
 				}
-				MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[0]);
-
+				
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
-				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[0].rigidBody, enemyCallBack);
 
-				if (sceneContainer.enemies[0].getAlive() == false) {
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// ENEMY LAVA HIT DETECTION
+				//----------------------------------------------------------------------------------------------------------------------------------//
 
-					sceneContainer.enemies[0].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+				for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+
+					MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[i]);
+					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[0].rigidBody, enemyCallBack);
+
+					if (sceneContainer.enemies[i].getAlive() == false) {
+
+						sceneContainer.enemies[i].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+					}
+
 				}
 
 				//----------------------------------------------------------------------------------------------------------------------------------//

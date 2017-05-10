@@ -17,6 +17,8 @@ public:
 	Enemy(int Type, const XMFLOAT3 SpawnPos);
 	~Enemy();
 
+	void releaseAll(btDynamicsWorld* bulletDynamicsWorld);
+
 	projectile fireBall;
 
 	float getAngle(XMFLOAT3 playerPos);
@@ -25,8 +27,7 @@ public:
 	XMFLOAT3 getSpawnPos()const;
 	void setSpawnPos(XMFLOAT3 spawnPos);
 
-	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, FileImporter &importer);
-	void loadVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
+	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void EnemyPhysics();
 
 	void moveTowardsPosition(XMFLOAT3 position);
@@ -35,25 +36,12 @@ public:
 	void createProjectile(BulletComponents &bulletPhysicsHandler);
 	void shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction);
 
-	bool createProjectileBox(ID3D11Device* gDevice);
-
 	void updateProjectile();
-
-	ID3D11Buffer* gEnemieVertexBuffer;
-	ID3D11Buffer* gProjectileBuffer;
-	ID3D11Buffer* gProjectileIndexBuffer;
-	
-	vector<StandardVertex>vertices;
 
 private:
 	
 	int Type;
 	XMFLOAT3 SpawnPos;
-	
-	vector<unsigned int>indices;
-
-	
-
 
 };
 
