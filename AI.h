@@ -12,6 +12,10 @@ private:
 	float attackTimer;
 	float attackCd;
 
+	bool rangedAttack;
+	float rangedTimer;
+	float rangedCd;
+
 	Timer timer;
 
 public:
@@ -19,15 +23,17 @@ public:
 	~AI();
 
 	void iceAI(MainCharacter &player, Enemy &self);
-	void fireAI(MainCharacter &player, Enemy &self);
+	void fireAI(MainCharacter &player, Enemy &self, BulletComponents &bulletPhysicsHandler);
 
 	void attackMelee(MainCharacter &player, Enemy &self);
-	void attackRanged(MainCharacter &player, Enemy &self);
+	void attackRanged(MainCharacter &player, Enemy &self, BulletComponents &bulletPhysicsHandler);
 
 	void moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy &self);
 	void moveAwayFromPlayer(XMFLOAT3 playerPosition, Enemy &self);
 
 	float getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos);
+
+	XMMATRIX rotate(XMFLOAT3 playerPos, Enemy &self);
 
 	
 

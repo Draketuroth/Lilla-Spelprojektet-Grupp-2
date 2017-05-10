@@ -22,6 +22,10 @@ GraphicComponents::GraphicComponents() {
 	gLavaVertexShader = nullptr; 
 	gLavaPixelShader = nullptr; 
 	gLavaGeometryShader = nullptr; 
+
+	gProjectileVertexLayout = nullptr;
+	gProjectileVertexShader = nullptr;
+	gProjectilePixelShader = nullptr;
 }
 
 GraphicComponents::~GraphicComponents() {
@@ -76,30 +80,27 @@ void GraphicComponents::ReleaseAll() {
 
 bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 
-	if (!CreateSwapChainAndDevice(windowHandle)) {
-
+	if (!CreateSwapChainAndDevice(windowHandle)) 
+	{
 		return false;
 	}
-
-	if (!CreateDepthStencil()){
-
+	if (!CreateDepthStencil())
+	{
 		return false;
 	}
-
-	if (!CreateRenderTargetView()) {
-
+	if (!CreateRenderTargetView()) 
+	{
 		return false;
 	}
 
 	SetViewport();
 
-	if (!CreateStandardShaders()) {
-
+	if (!CreateStandardShaders()) 
+	{
 		return false;
 	}
-
-	if (!CreatePlatformShaders()) {
-
+	if (!CreatePlatformShaders()) 
+	{
 		return false;
 	}
 
@@ -124,6 +125,10 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 	}
 
 	if (!CreateDebugShaders())
+	{
+		return false;
+	}
+	if (!CreateProjectileShaders())
 	{
 		return false;
 	}
@@ -838,6 +843,97 @@ bool GraphicComponents::CreateLavaShaders()
 
 
 }
+
+bool GraphicComponents::CreateProjectileShaders()
+{
+	HRESULT hr;
+
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* vsErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\ProjectileShaders\\ProjectileVertex.hlsl",
+		nullptr,
+		nullptr,
+		"VS_Main",
+		"vs_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&vsBlob,
+		&vsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+		cout << "Vertex shader Projectile Error: Vertex shader could not be compiled or loaded from file" << endl;
+
+		if (vsErrorBlob) {
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer());
+			vsErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gProjectileVertexShader);
+
+	if (FAILED(hr)) {
+		cout << "Vertex Shader Projectile Error: Vertex Shader could not be created" << endl;
+		return false;
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vetrexInputDesc[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	int inputLayoutSize = sizeof(vetrexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	hr = gDevice->CreateInputLayout(vetrexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gProjectileVertexLayout);
+
+	if (FAILED(hr)) {
+		cout << "Vertex Shader Projectile Error: Shader Input Layout could not be created" << endl;
+	}
+
+	vsBlob->Release();
+
+	ID3DBlob* psBlob = nullptr;
+	ID3DBlob* psErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\ProjectileShaders\\ProjectileFragment.hlsl",
+		nullptr,
+		nullptr,
+		"PS_Main",
+		"ps_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&psBlob,
+		&psErrorBlob
+	);
+
+	if (FAILED(hr)) {
+		cout << "Fragment shader Projectile Error: Fragment Shader could not be compiled or loaded from file" << endl;
+
+		if (psErrorBlob)
+		{
+			OutputDebugStringA((char*)psErrorBlob->GetBufferPointer());
+			psErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gProjectilePixelShader);
+
+	if (FAILED(hr)) {
+		cout << "Pixel Shader Projectile Error: Pixel Shader could not be created" << endl;
+		return false;
+	}
+
+	psBlob->Release();
+
+	return true;
+}
+
 
 bool GraphicComponents::CreateMenuShaders()
 {

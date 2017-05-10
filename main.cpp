@@ -206,6 +206,9 @@ void updateBuffers()
 	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&platformMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
+	D3D11_MAPPED_SUBRESOURCE ProjectileMappedResource;
+	ZeroMemory(&ProjectileMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
 	XMMATRIX tCameraInverseViewProj = XMMatrixTranspose(XMMatrixInverse(nullptr, sceneContainer.character.camera.ViewProj()));
 	XMMATRIX tCameraProjection = XMMatrixTranspose(sceneContainer.character.camera.Proj());
@@ -271,12 +274,26 @@ void updateBuffers()
 
 	PLATFORM_INSTANCE_BUFFER* platformTransformPointer = (PLATFORM_INSTANCE_BUFFER*)platformMappedResource.pData;
 
-	for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
-
+	for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) 
+	{
 		platformTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].worldMatrix);
 	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gInstanceBuffer, 0);
+
+	// Projectile -----------
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gProjectileTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &ProjectileMappedResource);
+
+	PROJECTILE_TRANSFORM* ProjectileTransformPointer = (PROJECTILE_TRANSFORM*)ProjectileMappedResource.pData;
+
+	XMMATRIX tProjectileTranslation = XMMatrixTranspose(sceneContainer.enemies[0].fireBall.worldMatrix);
+
+	ProjectileTransformPointer->worldMatrix = tProjectileTranslation;
+
+	ProjectileTransformPointer->worldViewProjection = tCameraViewProj * tProjectileTranslation;
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 
 }
 

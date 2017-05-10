@@ -57,3 +57,8 @@ int Timer::getFrameCount()
 {
 	return this->frameCount;
 }
+
+float Timer::getCountsPerSecond()
+{
+	return this->countsPerSecond;
+}
