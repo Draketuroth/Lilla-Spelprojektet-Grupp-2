@@ -13305,12 +13305,12 @@ W: 0
 Animation: 0
 -----------------------------------
 Animation Byte Start: 105904
-Byte offset: 512
+Byte offset: 1024
 
 
 -----------------------------------
 Animation: 1
 -----------------------------------
-Animation Byte Start: 106416
-Byte offset: 1024
+Animation Byte Start: 106928
+Byte offset: 512
 

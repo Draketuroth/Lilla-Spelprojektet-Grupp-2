@@ -28,7 +28,7 @@ void AnimationHandler::ReleaseAll() {
 
 void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext, int animIndex, FileImporter &importer) {
 
-	animTimePos = 3;
+	animTimePos = playerAnimTimePos;
 	// Open up a new XMFLOAT4x4 array to temporarily store the updated joint transformations
 	XMFLOAT4X4* localJointTransforms = new XMFLOAT4X4[importer.skinnedMeshes[0].hierarchy.size()];
 
