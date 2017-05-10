@@ -38,10 +38,10 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gPlayerTransformBuffer);
 	SAFE_RELEASE(gEnemyTransformBuffer);
 
-	for (size_t i = 0; i < 3; i++)
-	{
-		SAFE_RELEASE(gBufferArr[i]);
-	}
+	//for (size_t i = 0; i < 3; i++)
+	//{
+	//	SAFE_RELEASE(gBufferArr[i]);
+	//}
 }
 
 bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter) {

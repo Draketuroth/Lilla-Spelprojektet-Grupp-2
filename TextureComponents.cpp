@@ -31,11 +31,11 @@ void TextureComponents::ReleaseAll() {
 	{
 		SAFE_RELEASE(this->menuResources[i]);
 	}
-	for (size_t i = 0; i < 2; i++)
-	{
-		SAFE_RELEASE(samplerArr[i]);
-		SAFE_RELEASE(texArr[i]);
-	}
+	//for (size_t i = 0; i < 2; i++)
+	//{
+	//	SAFE_RELEASE(samplerArr[i]);
+	//	SAFE_RELEASE(texArr[i]);
+	//}
 }
 
 bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {

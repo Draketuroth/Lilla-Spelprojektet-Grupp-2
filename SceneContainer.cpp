@@ -401,7 +401,7 @@ void SceneContainer::renderScene() {
 void SceneContainer::renderCharacters()
 {
 	
-	tHandler.texArr[0] = tHandler.defaultResource;
+	tHandler.texArr[0] = tHandler.playerResource;
 	tHandler.texArr[1] = tHandler.shadowSRV;
 
 	tHandler.samplerArr[0] = tHandler.texSampler;
