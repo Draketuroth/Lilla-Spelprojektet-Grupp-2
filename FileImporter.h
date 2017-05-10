@@ -104,7 +104,6 @@ struct Joint_Animation {
 struct Joint_Container {
 
 	XMMATRIX GlobalTx;
-	XMMATRIX LocalTx;
 	XMMATRIX inverseBindPoseMatrix;
 	int parentIndex;
 	Joint_Animation Animations[5];
