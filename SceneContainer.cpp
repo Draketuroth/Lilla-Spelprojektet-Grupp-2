@@ -484,8 +484,8 @@ void SceneContainer::createSideBoundingBoxes()
 {
 	//We need the extents of the BBox. should we make thinn boxes? Or big squares that cover the right areas?
 	//We also need the Center
-	XMFLOAT3 extentsUpDown = { 20, 1, 1 };
-	XMFLOAT3 extentsLeftRight = { 1, 1, 20 };
+	XMFLOAT3 extentsUpDown = { 25, 1, 1 };
+	XMFLOAT3 extentsLeftRight = { 1, 1, 25 };
 
 	XMFLOAT3 centerUp = {-7, 0, 17};
 	XMFLOAT3 centerDown = {-7, 0, -18};
