@@ -11,15 +11,16 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemies[0] = Enemy(0, { -5, 20, -5 });
-	enemies[1] = Enemy(0, { 5, 20, 5 });
-	enemies[2] = Enemy(0, { -5, 20, -5 });
-
+	enemies[0] = Enemy(0, { 5, 2, 5 });
+	enemies[1] = Enemy(0, { 8, 2, 8 });
+	enemies[2] = Enemy(0, { -7, 2, -5 });
+	enemies[3] = Enemy(0, { -5, 2, -5 });
 
 	bulletPhysicsHandler = BulletComponents();
-	this->nrOfEnemies = 0;
+	this->nrOfEnemies = 4;
 
 	this->ai = AI();
+
 }
 
 SceneContainer::~SceneContainer() {
@@ -35,6 +36,11 @@ void SceneContainer::releaseAll() {
 	character.releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 	enemies[0].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 
+	SAFE_RELEASE(enemyIceVertexBuffer);
+
+	SAFE_RELEASE(gProjectileBuffer);
+	SAFE_RELEASE(gProjectileIndexBuffer);
+
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
 	lightShaders.ReleaseAll();
@@ -43,6 +49,7 @@ void SceneContainer::releaseAll() {
 	HUD.ReleaseAll();
 	animHandler.ReleaseAll();
 	bulletPhysicsHandler.ReleaseAll();
+
 }
 
 bool SceneContainer::initialize(HWND &windowHandle) {
@@ -82,7 +89,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	bulletPhysicsHandler.InitializeBulletPhysics();
 
-	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, PlatformFile, FortressFile)) {
+	if (!bHandler.SetupScene(gHandler.gDevice, bulletPhysicsHandler, PlatformFile, FortressFile, this->nrOfEnemies)) {
 
 		MessageBox(
 			NULL,
@@ -100,6 +107,15 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"ERROR",
 			MB_OK);
 			PostQuitMessage(0);
+	}
+	if (!tHandler.CreateShadowMap(gHandler.gDevice))
+	{
+		MessageBox(
+			NULL,
+			L"CRITICAL ERROR: Shadow Map couldn't be initialized\nClosing application...",
+			L"ERROR",
+			MB_OK);
+		PostQuitMessage(0);
 	}
 
 	if (!deferredObject.Initialize(gHandler.gDevice)) {
@@ -141,8 +157,220 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	HUD.setFont(gHandler.gDevice);
 	HUD.CreateFontIndexBuffer(gHandler.gDevice);
 	
+	InitializeEnemies(gHandler.gDevice, bulletPhysicsHandler);
+
+	createSideBoundingBoxes();
+	
 	return true;
 
+}
+
+void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle) {
+
+	// Create the projectile vertex and index buffer all enemies will share
+	createProjectileBox(gHandler.gDevice);
+
+	// Create the vertex buffer all the ice enemies will share
+	loadEnemyIceVertices(iceEnemyFile, graphicDevice);
+	createIceEnemyBuffer(graphicDevice, iceEnemyVertices);
+
+	// Create the vertex buffer all the lava enemies will share
+
+	// Spawn the enemies with their unique content, such as rigidbodies
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+	enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler);
+	enemies[i].createProjectile(bulletPhysicsHandler);
+
+	}
+	
+}
+
+bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
+{
+	HRESULT hr;
+
+	float scale = 0.3f;
+
+	TriangleVertex triangleVertices[24] =
+	{
+
+		//Front face
+
+		-scale, scale, -scale, 0.0f, 0.0f,
+		scale, scale, -scale, 1.0f, 0.0f,
+		-scale, -scale, -scale, 0.0f, 1.0f,
+		scale, -scale, -scale, 1.0f, 1.0f,
+
+		// Back face
+
+		scale, scale, scale, 0.0f, 0.0f,
+		-scale, scale, scale, 1.0f, 0.0f,
+		scale, -scale, scale, 0.0f, 1.0f,
+		-scale, -scale, scale, 1.0f, 1.0f,
+
+		// Left face
+
+		-scale, scale, scale, 0.0f, 0.0f,
+		-scale, scale, -scale, 1.0f, 0.0f,
+		-scale, -scale, scale, 0.0f, 1.0f,
+		-scale, -scale, -scale, 1.0f, 1.0f,
+
+		// Right face
+
+		scale, scale, -scale, 0.0f, 0.0f,
+		scale, scale, scale, 1.0f, 0.0f,
+		scale, -scale, -scale, 0.0f, 1.0f,
+		scale, -scale,  scale, 1.0f, 1.0f,
+
+		// Top face
+
+		-scale, scale, scale, 0.0f, 0.0f,
+		scale, scale, scale, 1.0f, 0.0f,
+		-scale, scale, -scale, 0.0f, 1.0f,
+		scale, scale, -scale, 1.0f, 1.0f,
+
+		// Bottom face
+
+		scale, -scale, scale, 0.0f, 0.0f,
+		-scale, -scale, scale, 1.0f, 0.0f,
+		scale, -scale, -scale, 0.0f, 1.0f,
+		-scale, -scale, -scale, 1.0f, 1.0f
+
+
+	};
+
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+
+	vertexBufferDesc.ByteWidth = sizeof(TriangleVertex) * 24;
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexData;
+	vertexData.pSysMem = triangleVertices;
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &gProjectileBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	// Create Indices
+	unsigned int indices[] = {
+
+		// Front face
+		0,1,2,
+		2,1,3,
+
+		// Back face
+
+		4,5,6,
+		6,5,7,
+
+		// Left face
+
+		8,9,10,
+		10,9,11,
+
+		// Right face
+
+		12,13,14,
+		14,13,15,
+
+		// Top face
+
+		16,17,18,
+		18,17,19,
+
+		// Bottom face
+
+		20,21,22,
+		22,21,23 };
+
+	// Create the buffer description
+	D3D11_BUFFER_DESC bufferDesc;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(unsigned int) * 36;
+	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+
+	// Set the subresource data
+
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = indices;
+	initData.SysMemPitch = 0;
+	initData.SysMemSlicePitch = 0;
+	// Create the buffer
+
+	hr = gDevice->CreateBuffer(&bufferDesc, &initData, &gProjectileIndexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
+void SceneContainer::loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice) {
+
+	HRESULT hr;
+	//load mesh vertices
+	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
+
+		StandardVertex vertex;
+
+		vertex.x = importer.skinnedMeshes[0].vertices[i].pos[0];
+		vertex.y = importer.skinnedMeshes[0].vertices[i].pos[1];
+		vertex.z = importer.skinnedMeshes[0].vertices[i].pos[2];
+
+		vertex.u = importer.skinnedMeshes[0].vertices[i].uv[0];
+		vertex.v = importer.skinnedMeshes[0].vertices[i].uv[1];
+
+		vertex.nx = importer.skinnedMeshes[0].vertices[i].normal[0];
+		vertex.ny = importer.skinnedMeshes[0].vertices[i].normal[1];
+		vertex.nz = importer.skinnedMeshes[0].vertices[i].normal[2];
+
+		iceEnemyVertices.push_back(vertex);
+
+	}
+}
+
+bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices) {
+
+	HRESULT hr;
+
+	//----------------------------------------------------------------------//
+	// VERTEX BUFFER
+	//----------------------------------------------------------------------//
+
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(StandardVertex) * vertices.size();
+
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = &vertices[0];
+	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &enemyIceVertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
 }
 
 bool SceneContainer::readFiles() {
@@ -175,25 +403,37 @@ bool SceneContainer::readFiles() {
 
 void SceneContainer::update(HWND &windowHandle)
 {
-	nrOfEnemies = 1;
+	
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
 
-	this->useAI(character, enemies[0]);
+	for (UINT i = 0; i < this->nrOfEnemies; i++){
+	
+		this->useAI(character, enemies[i]);
+		enemies[i].updateProjectile();
 
+	}
+
+	//cout << "Side Center: " << sides[2].Center.x << ", " << sides[2].Center.y << ", " << sides[2].Center.z << endl;
+	//cout << "Enemy Center: " << enemies[0].getBoundingBox().Center.x << ", " << enemies[0].getBoundingBox().Center.y << ", " << enemies[0].getBoundingBox().Center.z << endl;
+	
 	render();
 }
 
 void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 {
+	btVector3 edge = ai.collisionEdge(sides, enemy);
+
+	enemy.rigidBody->applyCentralForce(edge);
+
 	if (enemy.getType() == 0)
 	{
 		this->ai.iceAI(player, enemy);
 	}
 	else if (enemy.getType() == 1)
 	{
-		this->ai.fireAI(player, enemy);
+		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
 	}
 }
 
@@ -221,14 +461,23 @@ void SceneContainer::drawFortress() {
 
 void SceneContainer::drawPlatforms() {
 
+	tHandler.texArr[0] = tHandler.platformResource;
+	tHandler.texArr[1] = tHandler.shadowSRV;
+	tHandler.samplerArr[0] = tHandler.texSampler;
+	tHandler.samplerArr[1] = tHandler.shadowSampler;
+
+	ID3D11ShaderResourceView* nullResouce[2] = { nullptr };
+
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gInstanceBuffer);
 	gHandler.gDeviceContext->GSSetShader(gHandler.gPlatformGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.platformResource);
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.platformResource);
+	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;
@@ -238,15 +487,18 @@ void SceneContainer::drawPlatforms() {
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 	gHandler.gDeviceContext->DrawInstanced(PlatformFile.standardMeshes[0].vertices.size(), bHandler.nrOfCubes, 0, 0);
-	
 
-	}
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, nullResouce);
+
+
+}
 
 void SceneContainer::drawDebugCubes() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gDebugVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &animHandler.gCharacterBoneBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &bHandler.gPlayerTransformBuffer);
 
 	ID3D11GeometryShader* nullBuffer = nullptr;
 	gHandler.gDeviceContext->GSSetShader(nullBuffer, nullptr, 0);
@@ -282,6 +534,7 @@ void SceneContainer::render()
 {
 	clear();
 
+	renderShadowMap();
 	//renderDeferred();
 	renderLava(); 
 	//drawDebugCubes();
@@ -289,6 +542,7 @@ void SceneContainer::render()
 	renderEnemies();
 	renderScene();
 	drawHUD();
+	renderProjectile();
 }
 
 bool SceneContainer::renderDeferred() {
@@ -368,6 +622,14 @@ void SceneContainer::renderScene() {
 
 void SceneContainer::renderCharacters()
 {
+	
+	tHandler.texArr[0] = tHandler.playerResource;
+	tHandler.texArr[1] = tHandler.shadowSRV;
+
+	tHandler.samplerArr[0] = tHandler.texSampler;
+	tHandler.samplerArr[1] = tHandler.shadowSampler;
+
+	ID3D11ShaderResourceView* nullResouce[2] = { nullptr };
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -376,8 +638,10 @@ void SceneContainer::renderCharacters()
 	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
+	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
@@ -390,13 +654,14 @@ void SceneContainer::renderCharacters()
 	character.draw(gHandler.gDeviceContext, mainCharacterFile.skinnedMeshes[0].vertices.size());
 
 	character.resetWorldMatrix();
-	
+
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, nullResouce);
+
+
 }
 
 void SceneContainer::renderEnemies()
 {
-	if (enemies[0].getAlive() == true) {
-
 		gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
 		gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 		gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
@@ -412,13 +677,11 @@ void SceneContainer::renderEnemies()
 		ID3D11Buffer* nullBuffer = { nullptr };
 		gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemies[0].vertexBuffer, &vertexSize, &offset);
+		gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyIceVertexBuffer, &vertexSize, &offset);
 		gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
 
-		enemies[0].draw(gHandler.gDeviceContext, enemies[0].vertices.size());
-
-	}
+		gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfEnemies, 0, 0);
 	
 }
 
@@ -448,6 +711,97 @@ void SceneContainer::renderLava()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaVertexLayout);
 
 	gHandler.gDeviceContext->DrawIndexed(lava.indexCounter, 0, 0);
+}
+
+void SceneContainer::renderProjectile()
+{
+	gHandler.gDeviceContext->VSSetShader(gHandler.gProjectileVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gProjectileTransformBuffer);
+
+	ID3D11GeometryShader* nullShader = nullptr;
+	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gProjectilePixelShader, nullptr, 0);
+
+	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &gProjectileBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetIndexBuffer(gProjectileIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+	gHandler.gDeviceContext->DrawIndexedInstanced(36, this->nrOfEnemies, 0, 0, 0);
+
+}
+
+void SceneContainer::createSideBoundingBoxes()
+{
+	//We need the extents of the BBox. should we make thinn boxes? Or big squares that cover the right areas?
+	//We also need the Center
+	XMFLOAT3 extentsUpDown = { 25, 1, 1 };
+	XMFLOAT3 extentsLeftRight = { 1, 1, 25 };
+
+	XMFLOAT3 centerUp = {-7, 0, 17};
+	XMFLOAT3 centerDown = {-7, 0, -18};
+	XMFLOAT3 centerLeft = {-17, 0, -7};
+	XMFLOAT3 centerRight = {17, 0, -7};
+
+	sides[0] = BoundingBox(centerUp, extentsUpDown);		//Up
+	sides[1] = BoundingBox(centerDown, extentsUpDown);		//Down
+	sides[2] = BoundingBox(centerLeft, extentsLeftRight);	//Left
+	sides[3] = BoundingBox(centerRight, extentsLeftRight);	//Right
+
+	
+}
+
+void SceneContainer::renderShadowMap()
+{
+	gHandler.gDeviceContext->ClearDepthStencilView(tHandler.shadowDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	gHandler.gDeviceContext->OMSetRenderTargets(0, nullptr, tHandler.shadowDepthView);
+
+	
+	bHandler.gBufferArr[0] = bHandler.gConstantBuffer;
+	bHandler.gBufferArr[1] = bHandler.gPlayerTransformBuffer;
+	bHandler.gBufferArr[2] = animHandler.gCharacterBoneBuffer;
+
+	// Character pass-------------------------------------------------------------------------------------//
+	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShader(nullptr, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
+
+	UINT32 vertexSize = sizeof(Vertex_Bone);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gVertexLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &character.vertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	character.draw(gHandler.gDeviceContext, mainCharacterFile.skinnedMeshes[0].vertices.size());
+	//-----------------------------------------------------------------------------------------------------//
+
+	//Platform pass--------------------------------------------------------------------------------------------------//
+	bHandler.gBufferArr[1] = bHandler.gInstanceBuffer;
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowPlatformVertex, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 2, bHandler.gBufferArr);
+
+	vertexSize = sizeof(StandardVertex);
+	offset = 0;
+
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowPlatformLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &bHandler.gCubeVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	gHandler.gDeviceContext->DrawInstanced(PlatformFile.standardMeshes[0].vertices.size(), bHandler.nrOfCubes, 0, 0);
+	//----------------------------------------------------------------------------------------------------------------//
+
+	//Set the rendertarget to the normal render target view and depthstencilview
+	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, gHandler.depthView);
+
+
 }
 
 void SceneContainer::drawHUD()

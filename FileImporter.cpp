@@ -125,15 +125,14 @@ bool FileImporter::readFormat(string file) {
 
 					uint32_t vertexCount = meshHeader[i].controlPoints;
 
-					Vertex* vertices = new Vertex[vertexCount];
-					in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex) * vertexCount);
+					vector<Vertex> vertices;
+					vertices.resize(vertexCount);
+					in.read(reinterpret_cast<char*>(&vertices[0]), sizeof(Vertex) * vertexCount);
 
 					for (UINT i = 0; i < vertexCount; i++) {
 
 						currentMesh.vertices.push_back(vertices[i]);
 					}
-
-					delete vertices;
 
 					//------------------------------------------------------//
 					// PUSH BACK STANDARD MESH
@@ -217,22 +216,22 @@ bool FileImporter::readFormat(string file) {
 
 				uint32_t vertexCount = meshHeader[i].controlPoints;
 
-				Vertex_Deformer* vertices = new Vertex_Deformer[vertexCount];
-				in.read(reinterpret_cast<char*>(vertices), sizeof(Vertex_Deformer) * vertexCount);
+				vector<Vertex_Deformer> vertices;
+				vertices.resize(vertexCount);
+				in.read(reinterpret_cast<char*>(&vertices[0]), sizeof(Vertex_Deformer) * vertexCount);
 
 				for (UINT i = 0; i < vertexCount; i++) {
 
 					currentMesh.vertices.push_back(vertices[i]);
 				}
 
-				delete vertices;
-
 				//------------------------------------------------------//
 				// GATHER JOINT BINDPOSE MATRICES
 				//------------------------------------------------------//
 				uint32_t jointCount = meshHeader[i].hierarchySize;
 
-				Joint_Container* joints = new Joint_Container[jointCount];
+				vector<Joint_Container> joints;
+				joints.resize(jointCount);
 
 				for (UINT i = 0; i < jointCount; i++) {
 
@@ -260,8 +259,9 @@ bool FileImporter::readFormat(string file) {
 
 				for(UINT i = 0; i < jointCount; i++){
 
-					XMFLOAT4X4* jointGlobalTransforms = new XMFLOAT4X4[keyFramesCount];
-					in.read(reinterpret_cast<char*>(jointGlobalTransforms), sizeof(XMFLOAT4X4) * keyFramesCount);
+					vector<XMFLOAT4X4> jointGlobalTransforms;
+					jointGlobalTransforms.resize(keyFramesCount);
+					in.read(reinterpret_cast<char*>(&jointGlobalTransforms[0]), sizeof(XMFLOAT4X4) * keyFramesCount);
 
 						for (UINT j = 0; j < keyFramesCount; j++) {
 
@@ -283,6 +283,7 @@ bool FileImporter::readFormat(string file) {
 							XMStoreFloat4(&currentKeyFrameTransform.Translation, keyFrameTranslation);
 
 							joints[i].Animations[animationIndex].Sequence.push_back(currentKeyFrameTransform);
+
 						}
 
 						joints[i].Animations[animationIndex].Length = keyFramesCount;

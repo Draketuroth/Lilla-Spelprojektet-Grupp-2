@@ -2,6 +2,14 @@
 #define ENEMIES_H
 #include "CharacterBase.h"
 
+struct projectile
+{
+	XMMATRIX worldMatrix;
+	XMFLOAT3 projectileRigidBodyExtents;
+	btRigidBody* projectileRigidBody;
+
+};
+
 class Enemy: public CharacterBase
 {
 public:
@@ -9,29 +17,31 @@ public:
 	Enemy(int Type, const XMFLOAT3 SpawnPos);
 	~Enemy();
 
+	void releaseAll(btDynamicsWorld* bulletDynamicsWorld);
+
+	projectile fireBall;
+
 	float getAngle(XMFLOAT3 playerPos);
 	int getType()const;
 	void setType(const int Type);
 	XMFLOAT3 getSpawnPos()const;
 	void setSpawnPos(XMFLOAT3 spawnPos);
 
-	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, FileImporter &importer);
-	void loadVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
+	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void EnemyPhysics();
 
 	void moveTowardsPosition(XMFLOAT3 position);
 	void avoidPlayer(XMFLOAT3 position);
-	
-	vector<StandardVertex>vertices;
+
+	void createProjectile(BulletComponents &bulletPhysicsHandler);
+	void shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction);
+
+	void updateProjectile();
 
 private:
-	ID3D11Buffer* gEnemieVertexBuffer;
+	
 	int Type;
 	XMFLOAT3 SpawnPos;
-	
-	vector<unsigned int>indices;
-
-
 
 };
 

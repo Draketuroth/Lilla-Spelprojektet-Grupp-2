@@ -46,6 +46,10 @@ public:
 	ID3D11PixelShader* gLavaPixelShader;
 	ID3D11GeometryShader* gLavaGeometryShader;
 
+	ID3D11InputLayout* gProjectileVertexLayout;
+	ID3D11VertexShader* gProjectileVertexShader;
+	ID3D11PixelShader* gProjectilePixelShader;
+
 	ID3D11Texture2D* depthStencil;	// Depth-stencil texture
 	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
 	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture
@@ -63,7 +67,11 @@ public:
 	ID3D11InputLayout* gHUDVertexLayout;
 	ID3D11VertexShader* gHUDVertexShader;
 	ID3D11PixelShader* gHUDPixelShader;
+	ID3D11VertexShader* gShadowVertexShader;
+	ID3D11InputLayout* gShadowVertexLayout;
 
+	ID3D11VertexShader* gShadowPlatformVertex;
+	ID3D11InputLayout* gShadowPlatformLayout;
 
 
 
@@ -71,6 +79,11 @@ public:
 	bool CreateDepthStencil();
 	bool CreateRenderTargetView();	// We require a render target view for rendering and we create this by taking the back buffer from the swap chain
 	bool CreateSwapChainAndDevice(HWND &windowHandle);	// Function to create the graphic device responsible for interactions with the graphic card and the swap chain to switch between back & front buffer
+
+
+	bool initializeShadowMap();
+	bool CreateShadowShaders();
+	bool CreateRayShaders();
 
 	bool CreateDebugShaders();
 	bool CreateMenuShaders();
@@ -81,6 +94,7 @@ public:
 	bool CreateLavaShaders(); 
 	bool CreateHUDShaders();
 
+	bool CreateProjectileShaders();
 	void SetViewport();		// Functions to define the properties of our viewport
 
 };

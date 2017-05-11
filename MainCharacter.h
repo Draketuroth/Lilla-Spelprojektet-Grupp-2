@@ -14,6 +14,8 @@ public:
 	MainCharacter();
 	~MainCharacter();
 
+	void releaseAll(btDynamicsWorld* bulletDynamicsWorld);
+
 	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer);
 	void update(HWND windowhandle);
 
@@ -49,10 +51,12 @@ public:
 	float attackTimer;
 	float attackCd;
 
-	
 	bool shooting;
 	float shootTimer;
 	float shootCD;
+
+	sf::Sound attackSound;
+	sf::SoundBuffer soundBuffer[2];
 
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();

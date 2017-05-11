@@ -88,47 +88,38 @@
     <Filter Include="Source Files\HLSL\EnemyShaders">
       <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\AnimationHandler">
-      <UniqueIdentifier>{e27a8a3c-5f9a-4470-9b1d-1f21758a4cca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\FileImporter">
-      <UniqueIdentifier>{083641da-a5a7-429d-a275-ea7fb762251b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\AnimationHandler">
-      <UniqueIdentifier>{60b21fe5-ffa7-4477-a4e8-8cf7d65b3d11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FileImporter">
-      <UniqueIdentifier>{8d8bfc85-ff19-4de0-9bbb-d2e4652514bd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\HLSL\LavaShaders">
-      <UniqueIdentifier>{201ccbfa-686d-48ef-b131-07e99a2485d1}</UniqueIdentifier>
+      <UniqueIdentifier>{889167de-cb34-4bb9-b214-05791ae3e389}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Lava">
-      <UniqueIdentifier>{23d7e22c-5c8d-4dfd-b62b-8d81e27e43a7}</UniqueIdentifier>
+    <Filter Include="Source Files\HLSL\ProjectileShaders">
+      <UniqueIdentifier>{8c55d5ef-1fe7-403b-963b-d9787f1de2ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\ShadowShader">
+      <UniqueIdentifier>{4435caeb-22f1-4f86-9a65-dce945e6c0b2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\AI">
-      <UniqueIdentifier>{ad100edf-2a9a-43d0-bd7c-79335ed1c511}</UniqueIdentifier>
+      <UniqueIdentifier>{6de6a933-c2ea-4c0a-b788-0beffe50105f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lava">
+      <UniqueIdentifier>{809b2125-0003-435e-b5e7-2f4654f89fbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FileImporter">
+      <UniqueIdentifier>{8a2e5741-6470-4913-ba1e-9ff9c0a7369d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AnimationHandler">
+      <UniqueIdentifier>{9bd7c2d9-c678-4e86-82d2-cae889f814b3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Lava">
-      <UniqueIdentifier>{07fca77a-0ae9-4cc8-8d57-cc6634d40910}</UniqueIdentifier>
+      <UniqueIdentifier>{ab9533d4-7b9c-4700-8edb-97a5addbc7df}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\AI">
-      <UniqueIdentifier>{ed5b00b3-776c-499b-a4c5-fd350361a948}</UniqueIdentifier>
+      <UniqueIdentifier>{67477af9-d5dc-43e5-b6fe-773090e71a12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\HLSL\FortressShader">
-      <UniqueIdentifier>{54d78cc4-1876-454b-96e1-b4c1af935e6f}</UniqueIdentifier>
+    <Filter Include="Header Files\FileImporter">
+      <UniqueIdentifier>{95d50595-2132-4cc0-980e-389ab0362826}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\HLSL\DebugShader">
-      <UniqueIdentifier>{3737ec9c-9dda-4595-a5d4-02cc4c3f4212}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\HUD">
-      <UniqueIdentifier>{e6791b8b-df9c-4aad-b4f5-3d64d1d07a72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\HUD">
-      <UniqueIdentifier>{be1aaca5-a754-472a-9e09-c165192ec64c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\HLSL\HUDShaders">
-      <UniqueIdentifier>{d6d94a7a-5217-41cb-b523-4de94c0f0ee9}</UniqueIdentifier>
+    <Filter Include="Header Files\AnimationHandler">
+      <UniqueIdentifier>{47dccfb6-b965-4518-b6ac-dd883bb7e82c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -186,9 +177,6 @@
     <ClCompile Include="Enemies.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationHandler.cpp">
-      <Filter>Source Files\AnimationHandler</Filter>
-    </ClCompile>
     <ClCompile Include="FileImporter.cpp">
       <Filter>Source Files\FileImporter</Filter>
     </ClCompile>
@@ -198,8 +186,8 @@
     <ClCompile Include="AI.cpp">
       <Filter>Source Files\AI</Filter>
     </ClCompile>
-    <ClCompile Include="HUD.cpp">
-      <Filter>Source Files\HUD</Filter>
+    <ClCompile Include="AnimationHandler.cpp">
+      <Filter>Source Files\AnimationHandler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,20 +251,17 @@
     <ClInclude Include="BasicMath.h">
       <Filter>Header Files\Global</Filter>
     </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Header Files\AI</Filter>
+    </ClInclude>
     <ClInclude Include="AnimationHandler.h">
       <Filter>Header Files\AnimationHandler</Filter>
     </ClInclude>
     <ClInclude Include="FileImporter.h">
       <Filter>Header Files\FileImporter</Filter>
     </ClInclude>
-    <ClInclude Include="AI.h">
-      <Filter>Header Files\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Lava.h">
       <Filter>Header Files\Lava</Filter>
-    </ClInclude>
-    <ClInclude Include="HUD.h">
-      <Filter>Header Files\HUD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -328,32 +313,20 @@
     <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
+      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\GeometryShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\FragmentShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
-      <Filter>Source Files\HLSL\LavaShaders</Filter>
+    <FxCompile Include="Shaders\ProjectileShaders\ProjectileFragment.hlsl">
+      <Filter>Source Files\HLSL\ProjectileShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\FortressShaders\FortressFragment.hlsl">
-      <Filter>Source Files\HLSL\FortressShader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\FortressShaders\FortressVertex.hlsl">
-      <Filter>Source Files\HLSL\FortressShader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\DebugShaders\DebugFragment.hlsl">
-      <Filter>Source Files\HLSL\DebugShader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\DebugShaders\DebugVertex.hlsl">
-      <Filter>Source Files\HLSL\DebugShader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\HUDShaders\HUDPixelShader.hlsl">
-      <Filter>Source Files\HLSL\HUDShaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\HUDShaders\HUDVertexShader.hlsl">
-      <Filter>Source Files\HLSL\HUDShaders</Filter>
+    <FxCompile Include="Shaders\ProjectileShaders\ProjectileVertex.hlsl">
+      <Filter>Source Files\HLSL\ProjectileShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

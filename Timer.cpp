@@ -42,6 +42,7 @@ float Timer::getCurrentTime()
 void Timer::updateCurrentTime()
 {
 	this->previousTime = this->currentTime;
+	
 	if (this->frameCount ==	4000)
 	{
 		this->frameCount = 0;
@@ -56,4 +57,9 @@ void Timer::resetTimer()
 int Timer::getFrameCount()
 {
 	return this->frameCount;
+}
+
+float Timer::getCountsPerSecond()
+{
+	return this->countsPerSecond;
 }

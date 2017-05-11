@@ -6,7 +6,6 @@
 // Philip Velandria, Jonathan Sundberg, Linnea Vajda, Fredrik Linde
 //----------------------------------------------------------------------------------------------------------------------------------//
 
-
 #include "SceneContainer.h"
 #include "Timer.h"
 #include "GameState.h"
@@ -37,9 +36,23 @@ void updateBuffers();
 void updateLava();
 void lavamovmentUpdate(); 
 
+//----------------------------------------------------------------------------------------------------------------------------------//
+// MEMORY LEAK DETECTION
+//----------------------------------------------------------------------------------------------------------------------------------//
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 int main() {
 
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
+	// Memory leak detection
+
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(65);
+#endif
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
 	
@@ -65,7 +78,6 @@ int RunApplication()
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
-	sceneContainer.lava.time.initialize();
 	updateLava();
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -113,20 +125,34 @@ int RunApplication()
 				updateBuffers();
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
+
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// PLAYER LAVA HIT DETECTION
+				//----------------------------------------------------------------------------------------------------------------------------------//
 				
 				MyCharacterContactResultCallback characterCallBack(&sceneContainer.character);
+
 				if (!sceneContainer.character.getAlive())
 				{
 					menuState.state = GAME_OVER;
 				}
-				MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[0]);
-
+				
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
-				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[0].rigidBody, enemyCallBack);
 
-				if (sceneContainer.enemies[0].getAlive() == false) {
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// ENEMY LAVA HIT DETECTION
+				//----------------------------------------------------------------------------------------------------------------------------------//
 
-					sceneContainer.enemies[0].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+				for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+
+					MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[i]);
+					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[i].rigidBody, enemyCallBack);
+
+					if (sceneContainer.enemies[i].getAlive() == false) {
+
+						sceneContainer.enemies[i].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+					}
+
 				}
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
@@ -162,15 +188,19 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.update(windowhandle);
 	
-	if(sceneContainer.enemies[0].getAlive() == true){
+	for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+
+		if(sceneContainer.enemies[i].getAlive() == true){
 	
-		sceneContainer.enemies[0].EnemyPhysics();
+			sceneContainer.enemies[i].EnemyPhysics();
+
+		}
 
 	}
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 50;
+	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 30;
 
 	if (sceneContainer.animHandler.animTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
@@ -198,13 +228,15 @@ void updateBuffers()
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
-	
 	D3D11_MAPPED_SUBRESOURCE EnemyMappedResource;
 	D3D11_MAPPED_SUBRESOURCE platformMappedResource;
+	D3D11_MAPPED_SUBRESOURCE ProjectileMappedResource;
+
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&platformMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	ZeroMemory(&ProjectileMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
 	XMMATRIX tCameraInverseViewProj = XMMatrixTranspose(XMMatrixInverse(nullptr, sceneContainer.character.camera.ViewProj()));
@@ -224,7 +256,7 @@ void updateBuffers()
 	cBufferPointer->matrixView = sceneContainer.bHandler.tWorldMatrix * tCameraView;
 	cBufferPointer->matrixProjection = tCameraProjection;
 	cBufferPointer->fortressWorldMatrix = XMMatrixTranspose(sceneContainer.bHandler.fortressWorld);
-
+	cBufferPointer->lightViewProj = sceneContainer.bHandler.tLightViewProj;
 	cBufferPointer->cameraPos = sceneContainer.character.camera.GetPosition();
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gConstantBuffer, 0);
@@ -251,13 +283,13 @@ void updateBuffers()
 
 	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
 
-	PLAYER_TRANSFORM* EnemyTransformPointer = (PLAYER_TRANSFORM*)EnemyMappedResource.pData;
+	ENEMY_TRANSFORM* EnemyTransformPointer = (ENEMY_TRANSFORM*)EnemyMappedResource.pData;
 
-	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemies[0].tPlayerTranslation);
+	for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
 
-	EnemyTransformPointer->matrixW = tEnemyTranslation;
+		EnemyTransformPointer->matrixW[i] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
 
-	EnemyTransformPointer->matrixWVP = tCameraViewProj * tEnemyTranslation;
+	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
 
@@ -271,12 +303,26 @@ void updateBuffers()
 
 	PLATFORM_INSTANCE_BUFFER* platformTransformPointer = (PLATFORM_INSTANCE_BUFFER*)platformMappedResource.pData;
 
-	for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
-
+	for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) 
+	{
 		platformTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].worldMatrix);
 	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gInstanceBuffer, 0);
+
+	// Projectile -----------
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gProjectileTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &ProjectileMappedResource);
+
+	PROJECTILE_TRANSFORM* ProjectileTransformPointer = (PROJECTILE_TRANSFORM*)ProjectileMappedResource.pData;
+
+	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+
+		ProjectileTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.enemies[i].fireBall.worldMatrix);
+
+		}
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 
 }
 

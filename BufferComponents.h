@@ -23,6 +23,7 @@ struct GS_CONSTANT_BUFFER {
 	XMMATRIX matrixView;
 	XMMATRIX matrixProjection;
 	XMMATRIX fortressWorldMatrix;
+	XMMATRIX lightViewProj;
 	XMFLOAT3 cameraPos;
 
 };
@@ -36,6 +37,17 @@ struct PLAYER_TRANSFORM {
 
 	XMMATRIX matrixW;
 	XMMATRIX matrixWVP;
+};
+
+struct ENEMY_TRANSFORM {
+
+	XMMATRIX matrixW[15];
+};
+
+
+struct PROJECTILE_TRANSFORM
+{
+	XMMATRIX worldMatrix[15];
 };
 
 struct CubeObjects {
@@ -62,6 +74,7 @@ public:
 	XMMATRIX projectionMatrix;
 	XMMATRIX viewMatrix;
 	XMMATRIX fortressWorld;
+	XMMATRIX tLightViewProj;
 
 	XMVECTOR eyePos;
 	XMVECTOR lookAt;
@@ -72,12 +85,16 @@ public:
 	ID3D11Buffer* gPlayerTransformBuffer;
 	ID3D11Buffer* gEnemyTransformBuffer;
 
+	ID3D11Buffer* gProjectileTransformBuffer;
+
 	ID3D11Buffer* gCubeVertexBuffer;
 
 	ID3D11Buffer* gDebugVertexBuffer;
 	ID3D11Buffer* gDebugIndexBuffer;
 
 	ID3D11Buffer* gFortressBuffer;
+
+	ID3D11Buffer* gBufferArr[3];
 
 	CubeObjects cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
@@ -86,13 +103,12 @@ public:
 
 	btRigidBody* lavaPitRigidBody;
 
-	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfEnemies);
 
 	bool CreateDebugVertexBuffer(ID3D11Device* &gDevice);
 	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer);
 	bool CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter &fortressImporter);
 	bool CreatePlatforms(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
-	bool CreateCubeIndices(ID3D11Device* &gDevice);
 	void CreateCollisionPlane(BulletComponents &bulletPhysicsHandler, XMFLOAT3 translation);
 	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler);
 	void updatePlatformWorldMatrices();
@@ -100,7 +116,8 @@ public:
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreateInstanceBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
-	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
+	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
+	bool CreateProjectileTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
 	void CreateRigidBodyTags();
 
 	float spaceX;

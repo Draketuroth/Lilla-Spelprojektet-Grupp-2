@@ -83,6 +83,10 @@ private:
 
 public:
 
+	//------------------------------------------------------------//
+	// FUNCTIONS
+	//------------------------------------------------------------//
+
 	SceneContainer();
 	~SceneContainer();
 
@@ -94,10 +98,24 @@ public:
 
 	void useAI(MainCharacter &player, Enemy &enemy);
 
+	void InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
+	bool createProjectileBox(ID3D11Device* gDevice);
+
+	void loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
+	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices);
+
+	//------------------------------------------------------------//
+	// FILES
+	//------------------------------------------------------------//
+
 	FileImporter mainCharacterFile;
 	FileImporter iceEnemyFile;
 	FileImporter FortressFile;
 	FileImporter PlatformFile;
+
+	//------------------------------------------------------------//
+	// COMPONENTS
+	//------------------------------------------------------------//
 
 	GraphicComponents gHandler;
 	BufferComponents bHandler;
@@ -112,13 +130,21 @@ public:
 	Lava lava; 
 	HUDClass HUD;
 
-	Enemy enemy;
-	Enemy enemies[3];
-	int nrOfEnemies;
-
-	
+	BoundingBox sides[4];
 
 	BulletComponents bulletPhysicsHandler;
+
+	//------------------------------------------------------------//
+	// INSTANCE DATA
+	//------------------------------------------------------------//
+
+	ID3D11Buffer* gProjectileBuffer;
+	ID3D11Buffer* gProjectileIndexBuffer;
+
+	int nrOfEnemies;
+	Enemy enemies[4];
+	ID3D11Buffer* enemyIceVertexBuffer;
+	vector<StandardVertex>iceEnemyVertices;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
@@ -141,8 +167,13 @@ public:
 	void renderScene();
 	void renderCharacters();
 	void renderEnemies();
+	void renderShadowMap();
 
 	void renderLava();
+
+	void renderProjectile();
+
+	void createSideBoundingBoxes();
 
 };
 

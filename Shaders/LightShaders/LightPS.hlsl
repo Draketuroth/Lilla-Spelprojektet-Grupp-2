@@ -13,6 +13,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b1) {
 	matrix matrixWorld;
 	matrix matrixView;
 	matrix fortressWorldMatrix;
+	matrix lightViewProj;
 	float4 cameraPos;
 };
 

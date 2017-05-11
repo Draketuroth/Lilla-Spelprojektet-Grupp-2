@@ -10,7 +10,9 @@
 // - Texture uses "t"
 
 SamplerState texSampler: register(s0);
+SamplerState shadowSampler : register(s1);
 Texture2D tex0 : register(t0);
+Texture2D shadowMap : register(t1);
 
 struct PS_IN
 {
@@ -19,11 +21,23 @@ struct PS_IN
 	float4 Pos : SV_POSITION;
 	float3 WPos : WPOSITION;
 	float3 ViewPos : POSITION1;
+	float4 lPos : TEXCOORD1;
 };
 
 
 float4 PS_main(PS_IN input) : SV_Target
 {
+
+	//Shadow map stuff
+	input.lPos.xyz /= input.lPos.w;
+
+	//From [-1, 1] to [0, 1];
+	float2 smTexture = float2(0.5f * input.lPos.x + 0.5f, -0.5f * input.lPos.y + 0.5f);
+
+	float depth = input.lPos.z;
+
+	float shadowCheck = (shadowMap.Sample(shadowSampler, smTexture).r + 0.005f < depth) ? 0.25f : 1.0f;
+
 
 	float3 lightSource = float3(0.0f, 100.0f, 0.0f);	// Light source in the form of a point light
 	float3 lightVector;
@@ -60,5 +74,5 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	color = float4(texColor, 1.0f);
 
-	return float4(ads, 1.0f) * color;
+	return (float4(ads, 1.0f) * color) * shadowCheck;
 };

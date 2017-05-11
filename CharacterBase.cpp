@@ -30,13 +30,6 @@ CharacterBase::~CharacterBase()
 	//Safe release
 }
 
-void CharacterBase::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
-
-	SAFE_RELEASE(vertexBuffer);
-	SAFE_RELEASE(indexBuffer);
-	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
-}
-
 int CharacterBase::getHealth()const
 {
 	return this->health;
@@ -136,93 +129,6 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bo
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = &vertices[0];
 	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &vertexBuffer);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	return true;
-}
-
-bool  CharacterBase::createBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices) {
-
-	HRESULT hr;
-
-	//----------------------------------------------------------------------//
-	// VERTEX BUFFER
-	//----------------------------------------------------------------------//
-
-	D3D11_BUFFER_DESC bufferDesc;
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(StandardVertex) * vertices.size();
-
-	D3D11_SUBRESOURCE_DATA data;
-	ZeroMemory(&data, sizeof(data));
-	data.pSysMem = &vertices[0];
-	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &vertexBuffer);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	return true;
-}
-
-bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<TriangleVertex>vertices, vector<unsigned int>indices)
-{
-	HRESULT hr;
-
-	//----------------------------------------------------------------------//
-	// VERTEX BUFFER
-	//----------------------------------------------------------------------//
-
-	D3D11_BUFFER_DESC bufferDesc;
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(TriangleVertex) * vertices.size();
-
-	D3D11_SUBRESOURCE_DATA data;
-	ZeroMemory(&data, sizeof(data));
-	data.pSysMem = &vertices[0];
-	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &vertexBuffer);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	//----------------------------------------------------------------------//
-	// INDEX BUFFER
-	//----------------------------------------------------------------------//
-
-	// Create the buffer description
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(unsigned int) * indices.size();
-	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = 0;
-
-	// Set the subresource data
-
-	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = &indices[0];
-	initData.SysMemPitch = 0;
-	initData.SysMemSlicePitch = 0;
-
-	// Create the buffer
-
-	hr = graphicDevice->CreateBuffer(&bufferDesc, &initData, &indexBuffer);
 
 	if (FAILED(hr)) {
 

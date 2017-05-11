@@ -44,7 +44,6 @@ public:
 	vector<int> index;
 
 	unsigned int indexCounter = 0;
-	Timer time;
 	
 
 private:

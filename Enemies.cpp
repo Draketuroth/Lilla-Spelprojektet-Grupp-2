@@ -22,6 +22,12 @@ Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 	
 }
 
+void Enemy::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
+
+	SAFE_RELEASE(vertexBuffer);
+	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
+}
+
 float Enemy::getAngle(XMFLOAT3 playerPos)
 {
 	float angle;
@@ -40,51 +46,28 @@ int Enemy::getType()const
 {
 	return this->Type;
 }
+
 void Enemy::setType(const int Type)
 {
 	this->Type = Type;
 }
+
 XMFLOAT3 Enemy::getSpawnPos()const
 {
 	return this->SpawnPos;
 }
+
 void Enemy::setSpawnPos(XMFLOAT3 SpawnPos)
 {
 	this->SpawnPos = SpawnPos;
 }
 
-void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, FileImporter &importer)
+void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle)
 {
 	
-	loadVertices(importer, graphicDevice);
-	createBuffer(graphicDevice, vertices);
 	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 	
-}
-
-void Enemy::loadVertices(FileImporter &importer, ID3D11Device* &graphicDevice) {
-
-	HRESULT hr;
-	//load mesh vertices
-	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
-
-		StandardVertex vertex;
-
-		vertex.x = importer.skinnedMeshes[0].vertices[i].pos[0];
-		vertex.y = importer.skinnedMeshes[0].vertices[i].pos[1];
-		vertex.z = importer.skinnedMeshes[0].vertices[i].pos[2];
-
-		vertex.u = importer.skinnedMeshes[0].vertices[i].uv[0];
-		vertex.v = importer.skinnedMeshes[0].vertices[i].uv[1];
-
-		vertex.nx = importer.skinnedMeshes[0].vertices[i].normal[0];
-		vertex.ny = importer.skinnedMeshes[0].vertices[i].normal[1];
-		vertex.nz = importer.skinnedMeshes[0].vertices[i].normal[2];
-
-		vertices.push_back(vertex);
-
-	}
 }
 
 void Enemy::EnemyPhysics()
@@ -137,7 +120,7 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 	btVector3 direction = positionTarget - positionAt;
 	direction.normalize();
 
-	this->rigidBody->applyCentralForce(direction * 0.5);
+	this->rigidBody->applyCentralForce(direction );
 
 
 	//This is the speed of the enemy
@@ -207,6 +190,83 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 	this->rigidBody->setLinearVelocity(speed);
 }
+
+void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
+{
+	XMFLOAT3 projectilePos = { this->getPos().x, 4, this->getPos().z };
+	XMFLOAT3 extents = { 0.3f, 0.3f, 0.3f };
+
+	XMMATRIX translation = XMMatrixTranslation(projectilePos.x, projectilePos.y, projectilePos.z);
+	XMFLOAT4X4 t;
+	XMStoreFloat4x4(&t, translation);
+
+	btTransform transform;
+	transform.setFromOpenGLMatrix((float*)&t);
+
+	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
+	btVector3 inertia(0, 0, 0);
+
+	btMotionState* motion = new btDefaultMotionState(transform);
+	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, boxShape, inertia);
+
+	fireBall.projectileRigidBodyExtents = extents;
+
+	fireBall.projectileRigidBody = new btRigidBody(info);
+	fireBall.projectileRigidBody->setActivationState(DISABLE_DEACTIVATION);
+
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(fireBall.projectileRigidBody);
+	bulletPhysicsHandler.rigidBodies.push_back(fireBall.projectileRigidBody);
+
+}
+
+void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
+{
+	
+
+	float forceVz = forceVx * direction.z * 0.4;
+	forceVx = forceVx * direction.x * 0.4;
+	forceVy *= 0.7;
+	
+	btVector3 force = { forceVx, forceVy, forceVz };
+
+	XMFLOAT3 ePos = this->getPos();
+	btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
+	
+
+	float fireBallDistance =  enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
+
+
+	if (fireBallDistance <= 1.5)
+	{
+		fireBall.projectileRigidBody->applyCentralForce(force);
+		fireBall.projectileRigidBody->setFriction(3);	
+	}
+	
+	//On collision explode and teleport away.
+	//Teleport to enemy when it's time to throw again
+}
+
+void Enemy::updateProjectile()
+{
+	XMMATRIX transform;
+	XMFLOAT4X4 data;
+
+	// Gather the rigid body matrix
+	btTransform btRigidTransform;
+	fireBall.projectileRigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+
+	// Load it into an XMFLOAT4x4
+	btRigidTransform.getOpenGLMatrix((float*)&data);
+
+	// Load it into an XMMATRIX
+	transform = XMLoadFloat4x4(&data);
+
+	// Build the new world matrix
+	fireBall.worldMatrix = transform;
+
+}
+
+
 
 //void Enemy::meleeAttacks(float distance)
 //{
