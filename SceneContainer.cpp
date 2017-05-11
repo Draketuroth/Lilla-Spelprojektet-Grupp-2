@@ -653,8 +653,6 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderEnemies()
 {
-	if (enemies[0].getAlive() == true) {
-
 		gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
 		gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 		gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
@@ -674,10 +672,7 @@ void SceneContainer::renderEnemies()
 		gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
 
-		//enemies[0].draw(gHandler.gDeviceContext, iceEnemyVertices.size());
 		gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfEnemies, 0, 0);
-
-	}
 	
 }
 
