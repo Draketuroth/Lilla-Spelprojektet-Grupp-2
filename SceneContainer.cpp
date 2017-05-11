@@ -35,7 +35,12 @@ void SceneContainer::releaseAll() {
 	tHandler.ReleaseAll();
 
 	character.releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
-	enemies[0].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
+
+	for(UINT i = 0; i < nrOfEnemies; i++){
+
+		enemies[i].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
+
+	}
 
 	SAFE_RELEASE(enemyIceVertexBuffer);
 
@@ -181,7 +186,7 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 
 	for (UINT i = 0; i < nrOfEnemies; i++) {
 
-	enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler);
+	enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
 	enemies[i].createProjectile(bulletPhysicsHandler);
 
 	}

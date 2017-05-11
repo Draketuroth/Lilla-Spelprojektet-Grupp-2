@@ -138,7 +138,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bo
 	return true;
 }
 
-void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler) {
+void CharacterBase::CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler) {
 
 	//----------------------------------------------------------------------//
 	// CREATE THE RIGID BODY
@@ -173,7 +173,6 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 ex
 	// Create the rigid body
 	btRigidBody* playerRigidBody = new btRigidBody(info);
 	
-	
 	// Set the rigid body to the current platform 
 	this->rigidBody = playerRigidBody;
 	this->rigidBody->setActivationState(DISABLE_DEACTIVATION);
@@ -182,6 +181,52 @@ void CharacterBase::CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 ex
 	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
 	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
 	
+}
+
+void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler, int enemyIndex) {
+
+	//----------------------------------------------------------------------//
+	// CREATE THE RIGID BODY
+	//----------------------------------------------------------------------//
+
+	// Platform Rigid Body only uses an identity matrix as its world matrix. Might have to be changed later
+	XMMATRIX translation = XMMatrixTranslation(spawnPos.x, spawnPos.y, spawnPos.z);
+	XMFLOAT4X4 t;
+	XMStoreFloat4x4(&t, translation);
+
+	btTransform transform;
+	transform.setFromOpenGLMatrix((float*)&t);
+
+	// Define the kind of shape we want and construct rigid body information
+	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
+	boxShape->setMargin(0.04);
+
+	btVector3 inertia(0, 0, 0);
+
+	/*if (mass != 0.0) {
+
+	boxShape->calculateLocalInertia(mass, inertia);
+	}*/
+
+	btMotionState* motion = new btDefaultMotionState(transform);
+
+	// Definition of the rigid body
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape, inertia);
+
+	this->boundingBoxExtents = extents;
+
+	// Create the rigid body
+	btRigidBody* playerRigidBody = new btRigidBody(info);
+	playerRigidBody->setUserIndex(enemyIndex);
+
+	// Set the rigid body to the current platform 
+	this->rigidBody = playerRigidBody;
+	this->rigidBody->setActivationState(DISABLE_DEACTIVATION);
+
+	// Add the new rigid body to the dynamic world
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
+	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
+
 }
 
 BoundingBox CharacterBase::getBoundingBox()

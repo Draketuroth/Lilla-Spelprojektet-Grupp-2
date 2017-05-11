@@ -27,7 +27,7 @@ public:
 	XMFLOAT3 getSpawnPos()const;
 	void setSpawnPos(XMFLOAT3 spawnPos);
 
-	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
+	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, int enemyIndex);
 	void EnemyPhysics();
 
 	void moveTowardsPosition(XMFLOAT3 position);

@@ -29,6 +29,7 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gInstanceBuffer);
 	
 	SAFE_RELEASE(gCubeVertexBuffer);
+	SAFE_RELEASE(gProjectileTransformBuffer);
 
 	SAFE_RELEASE(gDebugVertexBuffer);
 	SAFE_RELEASE(gDebugIndexBuffer);
@@ -599,16 +600,16 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 	float lAspect = float(WIDTH) / (float)HEIGHT;
 
 
-	XMVECTOR lightPos = { 5, 10, 4 };
-	XMVECTOR lightVec = { 0, 0, 4 };
+	XMVECTOR lightPos = { 4, 10, 0 };
+	XMVECTOR lightVec = { 0, 0, 0 };
 	XMVECTOR upVec = { 0, 1, 0};
 
 	XMMATRIX lightView = XMMatrixLookAtLH(lightPos, lightVec, upVec);
 
-	float lNearP = 0.1f;
-	float lFarP = 40.0f;
+	float lNearP = 2.0f;
+	float lFarP = 28.0f;
 
-	XMMATRIX lightProj = XMMatrixOrthographicLH(45, 45, lNearP, lFarP);
+	XMMATRIX lightProj = XMMatrixOrthographicLH(35, 35, lNearP, lFarP);
 	
 	//XMMATRIX lightProj = XMMatrixOrthographicLH(WIDTH, HEIGHT, -100.0f, 100.0f);
 	XMMATRIX lightProjPerspective = XMMatrixPerspectiveFovLH(lFov, lAspect, lNearP, lFarP);
