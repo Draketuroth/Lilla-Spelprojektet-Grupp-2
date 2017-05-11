@@ -47,7 +47,7 @@ float4 PS_main(PS_IN input) : SV_Target
 	float sum = 0;
 	float x, y;
 
-	float shadowFactor = (shadowMap.Sample(shadowSampler, smTexture).r + < depth) ? 0.25f : 1.0f;
+	float shadowFactor = (shadowMap.Sample(shadowSampler, smTexture).r < depth) ? 0.25f : 1.0f;
 
 	//for (y = -1; y < 1; y++)
 	//{
