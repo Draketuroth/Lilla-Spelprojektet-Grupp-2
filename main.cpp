@@ -78,7 +78,6 @@ int RunApplication()
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
-	sceneContainer.lava.time.initialize();
 	updateLava();
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
