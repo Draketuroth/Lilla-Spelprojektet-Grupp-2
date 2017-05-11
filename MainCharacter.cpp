@@ -267,7 +267,7 @@ bool MainCharacter::isGrounded()
 	}
 }
 
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy> enemyArray, btDynamicsWorld* bulletDynamicsWorld)
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
@@ -343,7 +343,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
 {
 
 	XMFLOAT3 start, end;

@@ -102,6 +102,8 @@ public:
 	void loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
 	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices);
 
+	float RandomNumber(float Minimum, float Maximum);
+
 	//------------------------------------------------------------//
 	// FILES
 	//------------------------------------------------------------//
@@ -139,7 +141,7 @@ public:
 	ID3D11Buffer* gProjectileIndexBuffer;
 
 	int nrOfEnemies;
-	Enemy enemies[4];
+	vector<Enemy> enemies;
 	ID3D11Buffer* enemyIceVertexBuffer;
 	vector<StandardVertex>iceEnemyVertices;
 

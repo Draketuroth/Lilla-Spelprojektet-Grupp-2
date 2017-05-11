@@ -11,13 +11,23 @@ SceneContainer::SceneContainer() {
 	tHandler = TextureComponents();
 
 	character = MainCharacter();
-	enemies[0] = Enemy(0, { 5, 2, 5 });
-	enemies[1] = Enemy(0, { 8, 2, 8 });
-	enemies[2] = Enemy(0, { -7, 2, -5 });
-	enemies[3] = Enemy(0, { -5, 2, -5 });
+
+	this->nrOfEnemies = 15;
+	enemies.resize(nrOfEnemies);
+
+	XMFLOAT3 initSpawnPos;
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		initSpawnPos.x = RandomNumber(-15, 15);
+		initSpawnPos.y = 2;
+		initSpawnPos.z = RandomNumber(-15, 15);
+
+		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+
+	}
 
 	bulletPhysicsHandler = BulletComponents();
-	this->nrOfEnemies = 4;
 
 	this->ai = AI();
 
@@ -368,6 +378,11 @@ bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<S
 	}
 
 	return true;
+}
+
+float SceneContainer::RandomNumber(float Minimum, float Maximum) {
+
+	return ((float(rand()) / float(RAND_MAX)) * (Maximum - Minimum)) + Minimum;
 }
 
 bool SceneContainer::readFiles() {
