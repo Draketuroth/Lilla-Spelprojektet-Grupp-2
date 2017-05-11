@@ -146,7 +146,7 @@ int RunApplication()
 				for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
 
 					MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[i]);
-					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[0].rigidBody, enemyCallBack);
+					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[i].rigidBody, enemyCallBack);
 
 					if (sceneContainer.enemies[i].getAlive() == false) {
 
