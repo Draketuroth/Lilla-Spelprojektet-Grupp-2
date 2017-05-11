@@ -19,7 +19,8 @@ float4 PS_main(PS_IN input) : SV_Target
 	float4 color;
 
 	texColor = tex0.Sample(texSampler, input.Tex);
-
+	//texColor.x *= 0;
+	//texColor.z *= 0;
 	color = float4(texColor);
 
 	return color;

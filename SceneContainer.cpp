@@ -18,6 +18,7 @@ SceneContainer::SceneContainer() {
 
 	bulletPhysicsHandler = BulletComponents();
 	this->nrOfEnemies = 4;
+	this->level = 0;
 
 	this->ai = AI();
 
@@ -149,7 +150,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
-	enemies[0].Spawn(gHandler.gDevice,bulletPhysicsHandler, iceEnemyFile);
+	
 	HUD.setElementPos(gHandler.gDevice);
 	HUD.CreateIndexBuffer(gHandler.gDevice);
 	HUD.loadBitMap();
@@ -435,6 +436,19 @@ void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 	{
 		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
 	}
+}
+
+void SceneContainer::incrementLevels()
+{
+	level++;
+
+	HUD.setElementPos(gHandler.gDevice);
+	HUD.CreateIndexBuffer(gHandler.gDevice);
+	HUD.loadBitMap();
+	HUD.setText(level);
+	HUD.setFont(gHandler.gDevice);
+	HUD.CreateFontIndexBuffer(gHandler.gDevice);
+
 }
 
 void SceneContainer::drawFortress() {

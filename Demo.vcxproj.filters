@@ -121,6 +121,15 @@
     <Filter Include="Header Files\AnimationHandler">
       <UniqueIdentifier>{47dccfb6-b965-4518-b6ac-dd883bb7e82c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HUD">
+      <UniqueIdentifier>{fc537500-a31d-47bc-a48f-68545f26ed24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\HUDShaders">
+      <UniqueIdentifier>{7eb9ea92-6477-4390-a14a-0b03bc0aaefc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HUD">
+      <UniqueIdentifier>{52652c59-9891-4df0-a0c5-857bab2f8359}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -188,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="AnimationHandler.cpp">
       <Filter>Source Files\AnimationHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>Source Files\HUD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +275,9 @@
     <ClInclude Include="Lava.h">
       <Filter>Header Files\Lava</Filter>
     </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Header Files\HUD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\StandardShaders\Fragment.hlsl">
@@ -327,6 +342,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\ProjectileShaders\ProjectileVertex.hlsl">
       <Filter>Source Files\HLSL\ProjectileShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HUDShaders\HUDPixelShader.hlsl">
+      <Filter>Source Files\HLSL\HUDShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HUDShaders\HUDVertexShader.hlsl">
+      <Filter>Source Files\HLSL\HUDShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

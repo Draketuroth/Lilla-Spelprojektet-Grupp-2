@@ -104,6 +104,8 @@ public:
 	void loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
 	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices);
 
+	void IncrementLevels();
+
 	//------------------------------------------------------------//
 	// FILES
 	//------------------------------------------------------------//
@@ -131,6 +133,8 @@ public:
 	HUDClass HUD;
 
 	BoundingBox sides[4];
+
+	int level;
 
 	BulletComponents bulletPhysicsHandler;
 
