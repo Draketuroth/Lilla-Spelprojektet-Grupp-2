@@ -12,21 +12,6 @@ SceneContainer::SceneContainer() {
 
 	character = MainCharacter();
 
-	this->nrOfEnemies = 15;
-	enemies.resize(nrOfEnemies);
-
-	XMFLOAT3 initSpawnPos;
-
-	for (UINT i = 0; i < nrOfEnemies; i++) {
-
-		initSpawnPos.x = RandomNumber(-15, 15);
-		initSpawnPos.y = 2;
-		initSpawnPos.z = RandomNumber(-15, 15);
-
-		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-
-	}
-
 	bulletPhysicsHandler = BulletComponents();
 
 	this->ai = AI();
@@ -174,6 +159,23 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle) {
 
+	this->nrOfEnemies = 15;
+
+	enemies.clear();
+	enemies.resize(nrOfEnemies);
+
+	XMFLOAT3 initSpawnPos;
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		initSpawnPos.x = RandomNumber(-15, 15);
+		initSpawnPos.y = 2;
+		initSpawnPos.z = RandomNumber(-15, 15);
+
+		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+
+	}
+
 	// Create the projectile vertex and index buffer all enemies will share
 	createProjectileBox(gHandler.gDevice);
 
@@ -184,13 +186,17 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 	// Create the vertex buffer all the lava enemies will share
 
 	// Spawn the enemies with their unique content, such as rigidbodies
-
 	for (UINT i = 0; i < nrOfEnemies; i++) {
 
 	enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
 	enemies[i].createProjectile(bulletPhysicsHandler);
 
 	}
+	
+}
+
+void SceneContainer::ReInitialize() {
+
 	
 }
 

@@ -97,6 +97,7 @@ public:
 	void useAI(MainCharacter &player, Enemy &enemy);
 
 	void InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
+	void ReInitialize();
 	bool createProjectileBox(ID3D11Device* gDevice);
 
 	void loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice);

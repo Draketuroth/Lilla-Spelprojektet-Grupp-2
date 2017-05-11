@@ -150,7 +150,7 @@ int RunApplication()
 
 					if (sceneContainer.enemies[i].getAlive() == false) {
 
-						sceneContainer.enemies[i].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+						//sceneContainer.enemies[i].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
 					}
 
 				}
