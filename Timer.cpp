@@ -43,11 +43,12 @@ void Timer::updateCurrentTime()
 {
 	this->previousTime = this->currentTime;
 	
-	if (this->frameCount > 400000)
+	
+	if (this->frameCount > 4000)
 	{
 		this->frameCount = 0;
 	}
-	this->frameCount += currentTime;
+	this->frameCount += 300 * getDeltaTime();
 }
 
 void Timer::resetTimer()
@@ -63,3 +64,4 @@ float Timer::getCountsPerSecond()
 {
 	return this->countsPerSecond;
 }
+

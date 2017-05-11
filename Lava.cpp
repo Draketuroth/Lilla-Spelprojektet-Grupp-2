@@ -90,10 +90,7 @@ void Lava::VBuffer(ID3D11Device* device, int current, float weightScalar)
 			float x = -halfDepth + j * patchWidth;
 			float y = map[current].heightMap[i*cols + j] * weightScalar;
 			y += map[lastMap].heightMap[i*cols + j] * secondWeightScalar;
-			if (secondWeightScalar > 0)
-			{
-				int hablababbla = 0;
-			}
+		
 			verticis[i*cols + j].pos = XMFLOAT3(x, y, z);
 
 			//sträcka texturen över griden
@@ -183,14 +180,36 @@ void Lava::IBuffer(ID3D11Device* device)
 
 int Lava::swap(int frameCounter, ID3D11Device* device)
 {
-	//0-500
-	if (frameCounter <= 100000)
+	//0-1000
+	if (frameCounter <= 1000)
+	{
+		currentMap = 0;
+		lastMap = 3; 
+	}
+
+	else if (frameCounter > 1000 && frameCounter < 2000)
+	{
+		currentMap = 1;
+		lastMap = 0; 
+		
+	}
+	else if (frameCounter > 2000 && frameCounter < 3000)
+	{
+		currentMap = 2;
+		lastMap = 1;
+	}
+	else if (frameCounter > 3000)
+	{
+		currentMap = 3;
+		lastMap = 2;
+	}
+
+	if (frameCounter <= 1000)
 	{
 		currentMap = 0;
 		
-		weightSwap = true;
 	}
-	//500 och över
+	
 	else
 	{
 		lastMap = 1;
@@ -198,18 +217,19 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 		
 	}
 	//1000-1500
-	if (frameCounter >= 200000 && frameCounter <= 300000)
+	if (frameCounter >= 2000 && frameCounter <= 3000)
 	{
 		currentMap = 2;
 		weightSwap = true;
 	}
 	//1500 och över
-	else if (frameCounter > 300000)
+	else if (frameCounter > 3000)
 	{
 		lastMap = 3;
 		weightSwap = false;
 	}
 
+	interPol(frameCounter);
 
 	if (weightSwap)
 	{
@@ -223,7 +243,6 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 			secondWeightScalar -= 0.001f;
 		}
 		
-		
 	}
 	else
 	{
@@ -232,13 +251,112 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 			secondWeightScalar += 0.001f;
 		}
 
-		if (weightScalar > 0)
-		{
-			weightScalar -= 0.001f;
-		}
-	}
+	//	if (weightScalar > 0)
+	//	{
+	//		weightScalar -= 0.001f;
+	//	}
+	//}
 
 	this->VBuffer(device, currentMap, weightScalar);
 
 	return currentMap; 
+}
+
+void Lava::interPol(int frameCounter)
+{
+	
+	if (currentMap == 0)
+	{
+		 //0 - 1000
+		// 0 - 1
+				
+		value = frameCounter / 1000.0f;
+		if (weightScalar < 1)
+		{
+			weightScalar += value;
+		}
+		
+		if (secondWeightScalar > 0)
+		{
+			secondWeightScalar -= value; 
+		}
+
+		else
+		{
+			if (secondWeightScalar < 1)
+				{
+					secondWeightScalar += 0.001f;
+				}
+		}
+	}
+	
+	else if (currentMap == 1)
+	{
+		
+		value = frameCounter / 2000.0f;
+		if (weightScalar < 1)
+		{
+			weightScalar += value;
+		}
+
+		if (secondWeightScalar > 0)
+		{
+			secondWeightScalar -= value;
+		}
+
+		else
+		{
+			if (secondWeightScalar < 1)
+			{
+				secondWeightScalar += 0.001f;
+			}
+		}
+	}
+
+	else if (currentMap == 2)
+	{
+
+		value = frameCounter / 3000.0f;
+		if (weightScalar < 1)
+		{
+			weightScalar += value;
+		}
+
+		if (secondWeightScalar > 0)
+		{
+			secondWeightScalar -= value;
+		}
+
+		else
+		{
+			if (secondWeightScalar < 1)
+			{
+				secondWeightScalar += 0.001f;
+			}
+		}
+	}
+
+	else
+	{
+	
+		value = frameCounter / 4000.0f;
+		if (weightScalar < 1)
+		{
+			weightScalar += value;
+		}
+
+		if (secondWeightScalar > 0)
+		{
+			secondWeightScalar -= value;
+		}
+
+		else
+		{
+			if (secondWeightScalar < 1)
+			{
+				secondWeightScalar += 0.001f;
+			}
+		}
+	}
+	
 }
