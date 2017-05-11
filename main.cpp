@@ -6,7 +6,6 @@
 // Philip Velandria, Jonathan Sundberg, Linnea Vajda, Fredrik Linde
 //----------------------------------------------------------------------------------------------------------------------------------//
 
-
 #include "SceneContainer.h"
 #include "Timer.h"
 #include "GameState.h"
@@ -37,9 +36,23 @@ void updateBuffers();
 void updateLava();
 void lavamovmentUpdate(); 
 
+//----------------------------------------------------------------------------------------------------------------------------------//
+// MEMORY LEAK DETECTION
+//----------------------------------------------------------------------------------------------------------------------------------//
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 int main() {
 
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// Memory leak detection flag
+	// Memory leak detection
+
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(65);
+#endif
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
 	

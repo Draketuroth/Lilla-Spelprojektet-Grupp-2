@@ -174,8 +174,6 @@ public:
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
 
-	XMMATRIX invertedBindPose[30];	// Bind pose matrix
-
 	vector<Vertex_Bone>vertices;	// Extra copy of vertices
 
 	float animTimePos;
