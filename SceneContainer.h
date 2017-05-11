@@ -139,7 +139,7 @@ public:
 	ID3D11Buffer* gProjectileIndexBuffer;
 
 	int nrOfEnemies;
-	Enemy enemies[3];
+	Enemy enemies[4];
 	ID3D11Buffer* enemyIceVertexBuffer;
 	vector<StandardVertex>iceEnemyVertices;
 

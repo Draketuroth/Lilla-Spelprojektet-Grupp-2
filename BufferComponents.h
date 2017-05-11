@@ -39,10 +39,15 @@ struct PLAYER_TRANSFORM {
 	XMMATRIX matrixWVP;
 };
 
+struct ENEMY_TRANSFORM {
+
+	XMMATRIX matrixW[15];
+};
+
+
 struct PROJECTILE_TRANSFORM
 {
-	XMMATRIX worldMatrix;
-	XMMATRIX worldViewProjection;
+	XMMATRIX worldMatrix[15];
 };
 
 struct CubeObjects {
@@ -98,13 +103,12 @@ public:
 
 	btRigidBody* lavaPitRigidBody;
 
-	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfEnemies);
 
 	bool CreateDebugVertexBuffer(ID3D11Device* &gDevice);
 	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer);
 	bool CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter &fortressImporter);
 	bool CreatePlatforms(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler);
-	bool CreateCubeIndices(ID3D11Device* &gDevice);
 	void CreateCollisionPlane(BulletComponents &bulletPhysicsHandler, XMFLOAT3 translation);
 	bool DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float yOffset, float spacing, int cubes, BulletComponents &bulletPhysicsHandler);
 	void updatePlatformWorldMatrices();
@@ -112,8 +116,8 @@ public:
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreateInstanceBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
-	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice);
-	bool CreateProjectileTransformBuffer(ID3D11Device* &gDevice);
+	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
+	bool CreateProjectileTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
 	void CreateRigidBodyTags();
 
 	float spaceX;

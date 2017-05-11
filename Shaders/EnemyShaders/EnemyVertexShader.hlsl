@@ -9,6 +9,7 @@ struct VS_IN
 	float3 Pos : POSITION;
 	float2 Tex : TEXCOORD;
 	float3 Norm : NORMAL;
+	uint InstanceId : SV_InstanceId;
 };
 
 struct VS_OUT
@@ -16,6 +17,7 @@ struct VS_OUT
 	float3 Pos : POSITION;
 	float2 Tex : TEXCOORD;
 	float3 Norm : NORMAL;
+	uint InstanceId : SV_InstanceId;
 };
 
 VS_OUT VS_main(VS_IN input)
@@ -27,6 +29,8 @@ VS_OUT VS_main(VS_IN input)
 	output.Tex = input.Tex;
 
 	output.Norm = input.Norm;
+
+	output.InstanceId = input.InstanceId;
 
 	return output;
 }

@@ -176,9 +176,13 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.update(windowhandle);
 	
-	if(sceneContainer.enemies[0].getAlive() == true){
+	for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+
+		if(sceneContainer.enemies[i].getAlive() == true){
 	
-		sceneContainer.enemies[0].EnemyPhysics();
+			sceneContainer.enemies[i].EnemyPhysics();
+
+		}
 
 	}
 	
@@ -212,15 +216,14 @@ void updateBuffers()
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	D3D11_MAPPED_SUBRESOURCE playerMappedResource;
-	
 	D3D11_MAPPED_SUBRESOURCE EnemyMappedResource;
 	D3D11_MAPPED_SUBRESOURCE platformMappedResource;
+	D3D11_MAPPED_SUBRESOURCE ProjectileMappedResource;
+
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&playerMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&EnemyMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	ZeroMemory(&platformMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
-	D3D11_MAPPED_SUBRESOURCE ProjectileMappedResource;
 	ZeroMemory(&ProjectileMappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	XMMATRIX tCameraViewProj = XMMatrixTranspose(sceneContainer.character.camera.ViewProj());
@@ -268,13 +271,13 @@ void updateBuffers()
 
 	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
 
-	PLAYER_TRANSFORM* EnemyTransformPointer = (PLAYER_TRANSFORM*)EnemyMappedResource.pData;
+	ENEMY_TRANSFORM* EnemyTransformPointer = (ENEMY_TRANSFORM*)EnemyMappedResource.pData;
 
-	XMMATRIX tEnemyTranslation = XMMatrixTranspose(sceneContainer.enemies[0].tPlayerTranslation);
+	for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
 
-	EnemyTransformPointer->matrixW = tEnemyTranslation;
+		EnemyTransformPointer->matrixW[i] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
 
-	EnemyTransformPointer->matrixWVP = tCameraViewProj * tEnemyTranslation;
+	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
 
@@ -301,11 +304,11 @@ void updateBuffers()
 
 	PROJECTILE_TRANSFORM* ProjectileTransformPointer = (PROJECTILE_TRANSFORM*)ProjectileMappedResource.pData;
 
-	XMMATRIX tProjectileTranslation = XMMatrixTranspose(sceneContainer.enemies[0].fireBall.worldMatrix);
+	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
 
-	ProjectileTransformPointer->worldMatrix = tProjectileTranslation;
+		ProjectileTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.enemies[i].fireBall.worldMatrix);
 
-	ProjectileTransformPointer->worldViewProjection = tCameraViewProj * tProjectileTranslation;
+		}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 

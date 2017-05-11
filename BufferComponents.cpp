@@ -40,7 +40,7 @@ void BufferComponents::ReleaseAll() {
 
 }
 
-bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter) {
+bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfEnemies) {
 
 	if (!CreatePlatformVertexBuffer(gDevice, platFormImporter)) {
 
@@ -78,11 +78,11 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 
 		return false;
 	}
-	if (!CreateEnemyTransformBuffer(gDevice))
+	if (!CreateEnemyTransformBuffer(gDevice, nrOfEnemies))
 	{
 		return false;
 	}
-	if (!CreateProjectileTransformBuffer(gDevice))
+	if (!CreateProjectileTransformBuffer(gDevice, nrOfEnemies))
 	{
 		return false;
 	}
@@ -229,21 +229,25 @@ bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileIm
 
 	HRESULT hr;
 
-	StandardVertex cubeVertices[1248];
+	vector<StandardVertex>cubeVertices;
 	cubeScaling = platFormImporter.standardMeshes[0].meshTransformation.meshScale;
 	
 	for (UINT i = 0; i < platFormImporter.standardMeshes[0].vertices.size(); i++) {
 
-		cubeVertices[i].x = platFormImporter.standardMeshes[0].vertices[i].pos[0];
-		cubeVertices[i].y = platFormImporter.standardMeshes[0].vertices[i].pos[1];
-		cubeVertices[i].z = platFormImporter.standardMeshes[0].vertices[i].pos[2];
+		StandardVertex vertex;
 
-		cubeVertices[i].u = platFormImporter.standardMeshes[0].vertices[i].uv[0];
-		cubeVertices[i].v = platFormImporter.standardMeshes[0].vertices[i].uv[1];
+		vertex.x = platFormImporter.standardMeshes[0].vertices[i].pos[0];
+		vertex.y = platFormImporter.standardMeshes[0].vertices[i].pos[1];
+		vertex.z = platFormImporter.standardMeshes[0].vertices[i].pos[2];
 
-		cubeVertices[i].nx = platFormImporter.standardMeshes[0].vertices[i].normal[0];
-		cubeVertices[i].ny = platFormImporter.standardMeshes[0].vertices[i].normal[1];
-		cubeVertices[i].nz = platFormImporter.standardMeshes[0].vertices[i].normal[1];
+		vertex.u = platFormImporter.standardMeshes[0].vertices[i].uv[0];
+		vertex.v = platFormImporter.standardMeshes[0].vertices[i].uv[1];
+
+		vertex.nx = platFormImporter.standardMeshes[0].vertices[i].normal[0];
+		vertex.ny = platFormImporter.standardMeshes[0].vertices[i].normal[1];
+		vertex.nz = platFormImporter.standardMeshes[0].vertices[i].normal[1];
+
+		cubeVertices.push_back(vertex);
 	}
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -254,10 +258,10 @@ bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileIm
 	memset(&bufferDesc, 0, sizeof(bufferDesc));
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(cubeVertices);
+	bufferDesc.ByteWidth = sizeof(StandardVertex) * cubeVertices.size();
 
 	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = cubeVertices;
+	data.pSysMem = &cubeVertices[0];
 	hr = gDevice->CreateBuffer(&bufferDesc, &data, &gCubeVertexBuffer);
 
 	if (FAILED(hr)) {
@@ -272,22 +276,27 @@ bool BufferComponents::CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter
 
 	HRESULT hr;
 
-	StandardVertex fortressVertices[3264];
+	vector<StandardVertex>fortressVertices;
+
 	fortressScaling = fortressImporter.standardMeshes[0].meshTransformation.meshScale;
 	fortressWorld = XMMatrixScaling(0.025, 0.025, 0.025);
 
 	for (UINT i = 0; i < fortressImporter.standardMeshes[0].vertices.size(); i++) {
 
-		fortressVertices[i].x = fortressImporter.standardMeshes[0].vertices[i].pos[0];
-		fortressVertices[i].y = fortressImporter.standardMeshes[0].vertices[i].pos[1];
-		fortressVertices[i].z = fortressImporter.standardMeshes[0].vertices[i].pos[2];
+		StandardVertex vertex;
 
-		fortressVertices[i].u = fortressImporter.standardMeshes[0].vertices[i].uv[0];
-		fortressVertices[i].v = fortressImporter.standardMeshes[0].vertices[i].uv[1];
+		vertex.x = fortressImporter.standardMeshes[0].vertices[i].pos[0];
+		vertex.y = fortressImporter.standardMeshes[0].vertices[i].pos[1];
+		vertex.z = fortressImporter.standardMeshes[0].vertices[i].pos[2];
 
-		fortressVertices[i].nx = fortressImporter.standardMeshes[0].vertices[i].normal[0];
-		fortressVertices[i].ny = fortressImporter.standardMeshes[0].vertices[i].normal[1];
-		fortressVertices[i].nz = fortressImporter.standardMeshes[0].vertices[i].normal[1];
+		vertex.u = fortressImporter.standardMeshes[0].vertices[i].uv[0];
+		vertex.v = fortressImporter.standardMeshes[0].vertices[i].uv[1];
+
+		vertex.nx = fortressImporter.standardMeshes[0].vertices[i].normal[0];
+		vertex.ny = fortressImporter.standardMeshes[0].vertices[i].normal[1];
+		vertex.nz = fortressImporter.standardMeshes[0].vertices[i].normal[1];
+
+		fortressVertices.push_back(vertex);
 	}
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -298,10 +307,10 @@ bool BufferComponents::CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter
 	memset(&bufferDesc, 0, sizeof(bufferDesc));
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(fortressVertices);
+	bufferDesc.ByteWidth = sizeof(StandardVertex) * fortressVertices.size();
 
 	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = fortressVertices;
+	data.pSysMem = &fortressVertices[0];
 	hr = gDevice->CreateBuffer(&bufferDesc, &data, &gFortressBuffer);
 
 	if (FAILED(hr)) {
@@ -328,9 +337,6 @@ bool BufferComponents::CreatePlatforms(ID3D11Device* &gDevice, BulletComponents 
 		spaceX = incrementSpace(spaceX);
 		
 	}
-	
-
-	
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RENDER CHECK TEST
@@ -702,18 +708,22 @@ bool BufferComponents::CreatePlayerTransformBuffer(ID3D11Device* &gDevice) {
 	return true;
 }
 
-bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
+bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies) {
 
 	HRESULT hr;
 
-	PLAYER_TRANSFORM eTransformData;
+	ENEMY_TRANSFORM eTransformData;
 
-	eTransformData.matrixW = XMMatrixIdentity();
-	eTransformData.matrixWVP = XMMatrixIdentity();
+	for(UINT i = 0; i < nrOfEnemies; i++){
+
+		eTransformData.matrixW[i] = XMMatrixIdentity();
+
+	}
 
 	D3D11_BUFFER_DESC enemyBufferDesc;
 	ZeroMemory(&enemyBufferDesc, sizeof(enemyBufferDesc));
-	enemyBufferDesc.ByteWidth = sizeof(GS_CONSTANT_BUFFER);
+
+	enemyBufferDesc.ByteWidth = sizeof(ENEMY_TRANSFORM);
 	enemyBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	enemyBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	enemyBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -735,18 +745,21 @@ bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice) {
 	return true;
 }
 
-bool BufferComponents::CreateProjectileTransformBuffer(ID3D11Device *& gDevice)
+bool BufferComponents::CreateProjectileTransformBuffer(ID3D11Device *& gDevice, int nrOfEnemies)
 {
 	HRESULT hr;
 
 	PROJECTILE_TRANSFORM eTransformData;
 
-	eTransformData.worldMatrix = XMMatrixIdentity();
-	eTransformData.worldViewProjection = XMMatrixIdentity();
+	for(UINT i = 0; i < nrOfEnemies; i++){
+
+	eTransformData.worldMatrix[i] = XMMatrixIdentity();
+
+	}
 
 	D3D11_BUFFER_DESC projectileBufferDesc;
 	ZeroMemory(&projectileBufferDesc, sizeof(projectileBufferDesc));
-	projectileBufferDesc.ByteWidth = sizeof(GS_CONSTANT_BUFFER);
+	projectileBufferDesc.ByteWidth = sizeof(PROJECTILE_TRANSFORM);
 	projectileBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	projectileBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	projectileBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;

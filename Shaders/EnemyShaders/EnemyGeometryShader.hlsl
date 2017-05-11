@@ -1,3 +1,5 @@
+#define MAX_ENEMY 15
+
 cbuffer GS_CONSTANT_BUFFER : register(b0) {
 
 	matrix worldViewProj;
@@ -10,11 +12,10 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 
 };
 
-cbuffer PLAYER_TRANSFORM : register(b1) {
+cbuffer ENEMY_TRANSFORM : register(b1) {
 
-	matrix matrixW;
-	matrix matrixWVP;
-}
+	matrix matrixW[MAX_ENEMY];
+};
 
 
 struct GS_IN
@@ -22,6 +23,7 @@ struct GS_IN
 	float3 Pos : POSITION;
 	float2 Tex: TEXCOORD;
 	float3 Norm : NORMAL;
+	uint InstanceId : SV_InstanceId;
 
 };
 
@@ -46,16 +48,18 @@ void GS_main(triangle GS_IN input[3], inout TriangleStream<GS_OUT> triStream)
 	for (i = 0; i < 3; i++)
 	{
 		// To store and calculate the World position for output to the pixel shader, the input position must be multiplied with the World matrix
-		float3 worldPosition = mul(float4(input[i].Pos, 1.0f), matrixW).xyz;
+		float3 worldPosition = mul(float4(input[i].Pos, 1.0f), matrixW[input[i].InstanceId]).xyz;
 		output.WPos = worldPosition;
 
 		// To store and calculate the WorldViewProj, the input position must be multiplied with the WorldViewProj matrix
 
-		output.Pos = mul(float4(input[i].Pos.xyz, 1.0f), matrixWVP);
+		output.Pos = mul(float4(input[i].Pos.xyz, 1.0f), matrixW[input[i].InstanceId]);
+		output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixView);
+		output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixProjection);
 
 		// For the normal to properly work and to later be used correctly when creating the basic diffuse shading, it's required to be computed in world coordinates
 
-		output.Norm = mul(float4(input[i].Norm, 1.0f), matrixW);
+		output.Norm = mul(float4(input[i].Norm, 1.0f), worldPosition);
 
 		output.Tex = input[i].Tex;
 
