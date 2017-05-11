@@ -30,7 +30,8 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 
 	animTimePos = playerAnimTimePos;
 	// Open up a new XMFLOAT4x4 array to temporarily store the updated joint transformations
-	XMFLOAT4X4* globalJointTransforms = new XMFLOAT4X4[importer.skinnedMeshes[0].hierarchy.size()];
+	vector<XMFLOAT4X4> globalJointTransforms;
+	globalJointTransforms.resize(importer.skinnedMeshes[0].hierarchy.size());
 
 	// Interpolate will sort out the interpolation for every joint's animation, thus returns a matrix for every iteration
 	for (int i = 0; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
@@ -68,8 +69,6 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 	}
 
 	gDeviceContext->Unmap(gCharacterBoneBuffer, 0);
-
-	delete globalJointTransforms;
 
 }
 
