@@ -123,7 +123,7 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	shadowSamp.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	shadowSamp.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	shadowSamp.ComparisonFunc = D3D11_COMPARISON_LESS;
 	shadowSamp.MinLOD = 0;
 	shadowSamp.MaxLOD = D3D11_FLOAT32_MAX;
 
