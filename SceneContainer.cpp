@@ -13,7 +13,6 @@ SceneContainer::SceneContainer() {
 	character = MainCharacter();
 
 	bulletPhysicsHandler = BulletComponents();
-	this->nrOfEnemies = 4;
 	this->level = 0;
 
 	this->ai = AI();
@@ -169,6 +168,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle) {
 
+	// Set the number of enemies
 	this->nrOfEnemies = 15;
 
 	enemies.clear();
@@ -704,9 +704,11 @@ void SceneContainer::renderCharacters()
 void SceneContainer::renderEnemies()
 {
 		gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
-		gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-		gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
-		gHandler.gDeviceContext->GSSetShader(gHandler.gEnemyGeometryShader, nullptr, 0);
+		gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+		gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
+
+		ID3D11GeometryShader* nullShader = nullptr;
+		gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
 
 		gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
 		gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);

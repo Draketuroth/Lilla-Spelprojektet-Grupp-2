@@ -171,6 +171,9 @@
     <ClCompile Include="FileImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BufferComponents.h">
@@ -245,6 +248,9 @@
     <ClInclude Include="FileImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\StandardShaders\Fragment.hlsl">
@@ -286,13 +292,7 @@
     <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
       <Filter>Source Files\HLSL\MenuShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\EnemyShaders\EnemyGeometryShader.hlsl">
-      <Filter>Source Files\HLSL\EnemyShaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shaders\EnemyShaders\EnemyPixelShader.hlsl">
-      <Filter>Source Files\HLSL\EnemyShaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
@@ -315,6 +315,11 @@
     </FxCompile>
     <FxCompile Include="Shaders\ShadowShaders\ShadowPlatformVertex.hlsl">
       <Filter>Source Files\HLSL\ShadowShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HUDShaders\HUDPixelShader.hlsl" />
+    <FxCompile Include="Shaders\HUDShaders\HUDVertexShader.hlsl" />
+    <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

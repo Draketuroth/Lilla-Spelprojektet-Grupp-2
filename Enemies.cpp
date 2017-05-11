@@ -24,7 +24,7 @@ Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 
 void Enemy::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
-	SAFE_RELEASE(vertexBuffer);
+	//SAFE_RELEASE(vertexBuffer);
 	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 

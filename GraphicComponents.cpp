@@ -1147,42 +1147,6 @@ bool GraphicComponents::CreateEnemyShaders()
 
 	psBlob->Release();
 
-	ID3DBlob* gsBlob = nullptr;
-	ID3DBlob* gsErrorBlob = nullptr;
-	hr = D3DCompileFromFile(
-		L"Shaders\\EnemyShaders\\EnemyGeometryShader.hlsl",
-		nullptr,
-		nullptr,
-		"GS_main",
-		"gs_5_0",
-		D3DCOMPILE_DEBUG,
-		0,
-		&gsBlob,
-		&gsErrorBlob
-	);
-
-	if (FAILED(hr)) {
-
-		cout << "Geometry Shader Error: Geometry Shader could not be compiled or loaded from file" << endl;
-
-		if (gsErrorBlob) {
-
-			OutputDebugStringA((char*)gsBlob->GetBufferPointer());
-			gsErrorBlob->Release();
-		}
-
-	}
-
-	hr = gDevice->CreateGeometryShader(gsBlob->GetBufferPointer(), gsBlob->GetBufferSize(), nullptr, &gEnemyGeometryShader);
-
-	if (FAILED(hr)) {
-
-		cout << "Geometry Shader Error: Geometry Shader could not be created" << endl;
-		return false;
-	}
-
-	gsBlob->Release();
-
 	return true;
 }
 
