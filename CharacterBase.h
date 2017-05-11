@@ -60,7 +60,8 @@ public:
 
 	XMVECTOR forwardVector;
 
-	void CreateBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler);
+	void CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler);
+	void CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler, int enemyIndex);
 	BoundingBox getBoundingBox();
 	XMMATRIX getPlayerTanslationMatrix();
 
