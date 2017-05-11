@@ -178,6 +178,7 @@ public:
 	void renderProjectile();
 
 	void createSideBoundingBoxes();
+	void incrementLevels();
 
 };
 

@@ -137,7 +137,7 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 				clickSound.play();
 				arenaMusic.play();
 				this->state = START_GAME;
-				restartGame(scene);
+				//restartGame(scene);
 				
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
