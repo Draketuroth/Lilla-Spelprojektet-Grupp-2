@@ -35,7 +35,7 @@ public:
 	void checkGameState();
 
 	void getMousePos(HWND windowHandle, SceneContainer scene);
-
+	void restartGame(SceneContainer scene);
 	void renderMenus(SceneContainer scene);
 
 	sf::SoundBuffer soundBuffer;

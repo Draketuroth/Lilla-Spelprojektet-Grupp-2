@@ -39,7 +39,8 @@ float4 PS_main(PS_IN input) : SV_Target
 	float2 smTexture = float2(0.5f * input.lPos.x + 0.5f, -0.5f * input.lPos.y + 0.5f);
 
 	float depth = input.lPos.z;
-	depth += 0.001f;
+	//depth += 0.01f;
+	float depthBias = 0.003f;
 
 	float dx = 1.0f/1920;
 	float dy = 1.0f/1080;
@@ -74,32 +75,32 @@ float4 PS_main(PS_IN input) : SV_Target
 	ads = Ld * (Ka + diffuseLight + specularLight);
 
 
-	//float sum = 0;
-	//float x, y;
-	//for (y = -1; y < 1; y++)
-	//{
-	//	for (x = -1; x < 1; x++)
-	//	{
-	//		sum += shadowMap.SampleCmpLevelZero(shadowSampler, input.lPos.xy + texOffset(x, y), depth);
-	//	}
-	//}
-	//float shadowFactor = sum / 9;
+	/*float sum = 0;
+	float x, y;
+	for (y = -1.5; y < 1.5; y++)
+	{
+		for (x = -1.5; x < 1.5; x++)
+		{
+			sum += shadowMap.SampleCmpLevelZero(shadowSampler, input.lPos.xy + texOffset(x, y), depth);
+		}
+	}
+	float shadowFactor = sum / 16.0f;*/
 	
 	
-	//float s0 = (shadowMap.Sample(shadowSampler, smTexture).r < depth) ? 0.25f : 1.0f;
-	//float s1 = (shadowMap.Sample(shadowSampler, smTexture + float2(dx, 0.0f)).r < depth) ? 0.25f : 1.0f;
-	//float s2 = (shadowMap.Sample(shadowSampler, smTexture + float2(0.0f, dy)).r < depth) ? 0.25f : 1.0f;
-	//float s3 = (shadowMap.Sample(shadowSampler, smTexture + float2(dx, dy)).r < depth) ? 0.25f : 1.0f;
+	float s0 = (shadowMap.Sample(shadowSampler, smTexture).r + depthBias < depth) ? 0.25f : 1.0f;
+	float s1 = (shadowMap.Sample(shadowSampler, smTexture + float2(dx, 0.0f)).r + depthBias < depth) ? 0.25f : 1.0f;
+	float s2 = (shadowMap.Sample(shadowSampler, smTexture + float2(0.0f, dy)).r + depthBias < depth) ? 0.25f : 1.0f;
+	float s3 = (shadowMap.Sample(shadowSampler, smTexture + float2(dx, dy)).r + depthBias < depth) ? 0.25f : 1.0f;
+
+	float2 texelPos = smTexture * (dx * dy);
+
+	float2 lerps = frac(texelPos);
+
+	float shadowFactor = lerp(lerp(s0, s1, lerps.x), lerp(s2, s3, lerps.x), lerps.y);
+
+//	float shadowFactor = (shadowMap.Sample(shadowSampler, smTexture).r + 0.005f < depth) ? 0.25f : 1.0f;
+
 	// Now the Sample state will sample the color output from the texture file so that we can return the correct color
-
-	//float2 texelPos = smTexture * (dx * dy);
-
-	//float2 lerps = frac(texelPos);
-
-	//float shadowFactor = lerp(lerp(s0, s1, lerps.x), lerp(s2, s3, lerps.x), lerps.y);
-
-	float shadowFactor = (shadowMap.Sample(shadowSampler, smTexture).r < depth) ? 0.25f : 1.0f;
-
 	texColor = tex0.Sample(texSampler, input.Tex).xyz;
 
 	color = float4(texColor, 1.0f);

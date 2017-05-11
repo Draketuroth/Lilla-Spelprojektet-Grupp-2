@@ -117,19 +117,19 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 
 	DXGI_FORMAT resformat = GetDepthResourceFormat(DXGI_FORMAT_D32_FLOAT_S8X24_UINT);
 	DXGI_FORMAT srvformat = GetDepthSRVFormat(DXGI_FORMAT_D32_FLOAT_S8X24_UINT);
-
+	
 	//Shadow map sampler
 	D3D11_SAMPLER_DESC shadowSamp;
 	ZeroMemory(&shadowSamp, sizeof(shadowSamp));
-	shadowSamp.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	shadowSamp.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;//D3D11_FILTER_MIN_MAG_MIP_POINT;
 	shadowSamp.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	shadowSamp.ComparisonFunc = D3D11_COMPARISON_LESS;
+	shadowSamp.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	shadowSamp.MinLOD = 0;
 	shadowSamp.MaxLOD = D3D11_FLOAT32_MAX;
 
-
+	
 	hr = gDevice->CreateSamplerState(&shadowSamp, &this->shadowSampler);
 	if (FAILED(hr))
 	{
