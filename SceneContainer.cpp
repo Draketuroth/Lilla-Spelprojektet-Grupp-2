@@ -13,6 +13,8 @@ SceneContainer::SceneContainer() {
 	character = MainCharacter();
 
 	bulletPhysicsHandler = BulletComponents();
+	this->nrOfEnemies = 4;
+	this->level = 0;
 
 	this->ai = AI();
 
@@ -46,6 +48,7 @@ void SceneContainer::releaseAll() {
 	lightShaders.ReleaseAll();
 
 	lava.ReleaseAll();
+	HUD.ReleaseAll();
 	animHandler.ReleaseAll();
 	bulletPhysicsHandler.ReleaseAll();
 
@@ -148,6 +151,13 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
+	
+	HUD.setElementPos(gHandler.gDevice);
+	HUD.CreateIndexBuffer(gHandler.gDevice);
+	HUD.loadBitMap();
+	HUD.setText(0);
+	HUD.setFont(gHandler.gDevice);
+	HUD.CreateFontIndexBuffer(gHandler.gDevice);
 	
 	InitializeEnemies(gHandler.gDevice, bulletPhysicsHandler);
 
@@ -455,6 +465,19 @@ void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 	}
 }
 
+void SceneContainer::incrementLevels()
+{
+	level++;
+
+	HUD.setElementPos(gHandler.gDevice);
+	HUD.CreateIndexBuffer(gHandler.gDevice);
+	HUD.loadBitMap();
+	HUD.setText(level);
+	HUD.setFont(gHandler.gDevice);
+	HUD.CreateFontIndexBuffer(gHandler.gDevice);
+
+}
+
 void SceneContainer::drawFortress() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gFortressVertexShader, nullptr, 0);
@@ -559,6 +582,7 @@ void SceneContainer::render()
 	renderCharacters();
 	renderEnemies();
 	renderScene();
+	drawHUD();
 	renderProjectile();
 }
 
@@ -817,6 +841,52 @@ void SceneContainer::renderShadowMap()
 
 	//Set the rendertarget to the normal render target view and depthstencilview
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, gHandler.depthView);
+
+
+}
+
+void SceneContainer::drawHUD()
+{
+
+	gHandler.gDeviceContext->OMSetBlendState(tHandler.blendState, 0, 0xffffffff);
+	gHandler.gDeviceContext->VSSetShader(gHandler.gHUDVertexShader, nullptr, 0);	//vs
+	
+	gHandler.gDeviceContext->PSSetShader(gHandler.gHUDPixelShader, nullptr, 0); //ps
+
+																				 //texture
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 0, nullptr);
+
+
+	UINT32 vertexSize = sizeof(HUDElements);
+	UINT32 offset = 0;
+
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gElementVertexBuffer, &vertexSize, &offset);
+	//Set index buffer
+	gHandler.gDeviceContext->IASetIndexBuffer(HUD.gElementIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	//set triangel list
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gHUDVertexLayout);
+
+	gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
+
+
+
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gFontVertexBuffer, &vertexSize, &offset);
+	//Set index buffer
+	gHandler.gDeviceContext->IASetIndexBuffer(HUD.gFontIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+
+
+	gHandler.gDeviceContext->DrawIndexed(HUD.foo, 0, 0);
+
+
+	gHandler.gDeviceContext->OMSetBlendState(nullptr, 0, 0xffffffff);
+
+
 
 
 }

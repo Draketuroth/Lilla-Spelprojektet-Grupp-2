@@ -137,6 +137,8 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 				clickSound.play();
 				arenaMusic.play();
 				this->state = START_GAME;
+				//restartGame(scene);
+				
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
 			{
@@ -189,4 +191,14 @@ void GameState::checkGameState()
 			this->state = PAUSE_MENU;
 		}
 	}
+}
+void GameState::restartGame(SceneContainer scene)
+{
+	scene.bulletPhysicsHandler.ReleaseAll();
+	scene.character.releaseAll(scene.bulletPhysicsHandler.bulletDynamicsWorld);
+
+
+	scene.character.initialize(scene.gHandler.gDevice, XMFLOAT3(2, 2, 5), scene.bulletPhysicsHandler, scene.animHandler, scene.mainCharacterFile);
+	scene.InitializeEnemies(scene.gHandler.gDevice, scene.bulletPhysicsHandler);
+
 }
