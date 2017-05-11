@@ -57,6 +57,7 @@ public:
 	string waveText;
 	int nrOfChars;
 	int indexArr[69][5];
+	int foo;
 	int Vtxs;
 
 	vector<char> text;

@@ -486,7 +486,7 @@ void SceneContainer::drawHUD()
 	gHandler.gDeviceContext->IASetIndexBuffer(HUD.gFontIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
 
 
-	gHandler.gDeviceContext->DrawIndexed(HUD.Vtxs, 0, 0);
+	gHandler.gDeviceContext->DrawIndexed(HUD.foo, 0, 0);
 
 
 	gHandler.gDeviceContext->OMSetBlendState(nullptr, 0, 0xffffffff);

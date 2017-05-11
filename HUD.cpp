@@ -104,10 +104,12 @@ bool HUDClass::setFont(ID3D11Device* &gDevice)
 	width = 25.0f / 256;
 	height = 32.0f / 256;
 	Vtxs = 4 * nrOfChars;
-	float posXleft = 0.0f, posYtop = 0.95f, posXright = 0.1f, posYbot = 0.85f;
+	float posXleft = 0.0f, posYtop = 0.95f, posXright = 0.03f, posYbot = 0.9f;
 	float uStart = 0, vStart = 0, uEnd = 0, vEnd = 0;
+	int index = 0;
 	
-	HUDElements* Elements = new HUDElements[Vtxs];
+	vector<HUDElements> Elements;
+	Elements.resize(Vtxs);
 
 	for (unsigned int i = 0; i < nrOfChars; i++)
 	{
@@ -126,35 +128,40 @@ bool HUDClass::setFont(ID3D11Device* &gDevice)
 			}
 		}
 			
-			Elements[i] =
+			Elements[index] =
 			{
 				// POS				// UV
 				posXleft, posYbot, 0.0f,	uStart, vEnd, //Bot left
 
 			};
-			Elements[i] =
+			index++;
+			Elements[index] =
 			{
 				// POS				// UV
 				posXleft, posYtop, 0.0f,	uStart, vStart, //top left
 
 			};
-			Elements[i] =
+			index++;
+			Elements[index] =
 			{
 				// POS				// UV
 				posXright, posYtop, 0.0f,	uEnd, vStart, //top right
 
 			};
-			Elements[i] =
+			index++;
+			Elements[index] =
 			{
 				// POS				// UV
 				posXright, posYbot, 0.0f,	uEnd, vEnd, //Bot right
 
 			};
-			posXleft += 0.1f;
-			posXright += 0.1f;
+			index++;
+			posXleft += 0.03f;
+			posXright += 0.03f;
 			
 
 	}
+
 
 
 	//HUDElements Elements[4] =
@@ -180,7 +187,7 @@ bool HUDClass::setFont(ID3D11Device* &gDevice)
 	ElementBufferDesc.StructureByteStride = 0;
 
 	D3D11_SUBRESOURCE_DATA vertexData;
-	vertexData.pSysMem = Elements;
+	vertexData.pSysMem = &Elements[0];
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
@@ -198,34 +205,35 @@ bool HUDClass::CreateFontIndexBuffer(ID3D11Device* &gDevice)
 
 
 	HRESULT hr;
-	int foo = nrOfChars * 6;
-	int* indexBuffer = new int[foo];
+	foo = nrOfChars * 6;
+	vector<int> indexBuffer;
+	indexBuffer.resize(foo);
 	int index = 0;
 	int vtxIndex = 0;
 	for (int i = 0; i < nrOfChars; i++)
 	{
 	
-		indexBuffer[index] = vtxIndex; // 0
+		indexBuffer[index] = vtxIndex; // 0	//4
 		vtxIndex++;
 		index++;
 
-		indexBuffer[index] = vtxIndex; // 1
+		indexBuffer[index] = vtxIndex; // 1 //5
 		vtxIndex++;
 		index++;
 
-		indexBuffer[index] = vtxIndex; // 2
+		indexBuffer[index] = vtxIndex; // 2 //6
 		vtxIndex-=2;
 		index++;
 
-		indexBuffer[index] = vtxIndex; // 0
+		indexBuffer[index] = vtxIndex; // 0 //4
 		vtxIndex+=2;
 		index++;
 
-		indexBuffer[index] = vtxIndex; // 2
+		indexBuffer[index] = vtxIndex; // 2 //6
 		vtxIndex++;
 		index++;
 
-		indexBuffer[index] = vtxIndex; // 3
+		indexBuffer[index] = vtxIndex; // 3 //7
 		vtxIndex++;
 		index++;
 	}
@@ -235,19 +243,19 @@ bool HUDClass::CreateFontIndexBuffer(ID3D11Device* &gDevice)
 	D3D11_BUFFER_DESC ElementBufferDesc;
 	ZeroMemory(&ElementBufferDesc, sizeof(ElementBufferDesc));
 
-	ElementBufferDesc.ByteWidth = sizeof(int) * 6;
+	ElementBufferDesc.ByteWidth = sizeof(int) * foo;
 	ElementBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	ElementBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	ElementBufferDesc.MiscFlags = 0;
 	ElementBufferDesc.StructureByteStride = 0;
 
 	D3D11_SUBRESOURCE_DATA vertexData;
-	vertexData.pSysMem = indexBuffer;
+	vertexData.pSysMem = &indexBuffer[0];
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
 	hr = gDevice->CreateBuffer(&ElementBufferDesc, &vertexData, &gFontIndexBuffer);
-
+	
 	if (FAILED(hr)) {
 
 		return false;
@@ -257,8 +265,12 @@ bool HUDClass::CreateFontIndexBuffer(ID3D11Device* &gDevice)
 
 void HUDClass::setText(int wave)
 {
-	
-	waveText = "Wave: 8";
+	stringstream ss;
+	ss << wave;
+	string waveStr = ss.str();
+
+	waveText = "Wave " + waveStr;
+
 	
 	nrOfChars = waveText.length();
 	for (int i = 0; i < nrOfChars; i++)
