@@ -29,6 +29,7 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gInstanceBuffer);
 	
 	SAFE_RELEASE(gCubeVertexBuffer);
+	SAFE_RELEASE(gProjectileTransformBuffer);
 
 	SAFE_RELEASE(gDebugVertexBuffer);
 	SAFE_RELEASE(gDebugIndexBuffer);

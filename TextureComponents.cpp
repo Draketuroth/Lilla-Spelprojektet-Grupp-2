@@ -29,6 +29,7 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(shadowSRV);
 	SAFE_RELEASE(shadowDepthView);
 	SAFE_RELEASE(ShadowMap);
+
 	for (size_t i = 0; i < 9; i++)
 	{
 		SAFE_RELEASE(this->menuResources[i]);
@@ -106,6 +107,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	return true;
 }
+
 bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 {
 	HRESULT hr;
@@ -175,6 +177,7 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 
 	return true;
 }
+
 DXGI_FORMAT TextureComponents::GetDepthResourceFormat(DXGI_FORMAT depthformat)
 {
 	DXGI_FORMAT resformat;
@@ -196,6 +199,7 @@ DXGI_FORMAT TextureComponents::GetDepthResourceFormat(DXGI_FORMAT depthformat)
 
 	return resformat;
 }
+
 DXGI_FORMAT TextureComponents::GetDepthSRVFormat(DXGI_FORMAT depthformat)
 {
 	DXGI_FORMAT srvformat;
