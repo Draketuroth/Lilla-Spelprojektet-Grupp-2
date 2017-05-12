@@ -192,6 +192,7 @@ public:
 
 	void enemiesAlive(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 
+	void spawnEnemies();
 };
 
 

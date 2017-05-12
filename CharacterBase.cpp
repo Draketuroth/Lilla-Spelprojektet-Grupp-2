@@ -227,7 +227,7 @@ void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOA
 	// Add the new rigid body to the dynamic world
 	int enemyCollideWith = COL_PLAYER | COL_LEVEL | COL_ENEMY | COL_RAY;//Flags to determine what objects the enemy can collide with
 	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody, COL_ENEMY, enemyCollideWith);
-	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
+	bulletPhysicsHandler.EnemyRigidBodies.push_back(playerRigidBody);
 
 }
 

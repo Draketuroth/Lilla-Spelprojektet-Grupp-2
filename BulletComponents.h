@@ -34,6 +34,7 @@ public:
 	btConstraintSolver* bulletConstraintSolver;
 
 	vector<btRigidBody*>rigidBodies;
+	vector<btRigidBody*>EnemyRigidBodies;
 
 	//------------------------------------------------------------//
 	// BULLET PHYSICS FUNCTIONS

@@ -431,6 +431,7 @@ void SceneContainer::ReRelease() {
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	bulletPhysicsHandler.rigidBodies.clear();
+	bulletPhysicsHandler.EnemyRigidBodies.clear();
 
 }
 
@@ -478,6 +479,32 @@ void SceneContainer::ReInitialize() {
 
 }
 
+void SceneContainer::spawnEnemies()
+{
+
+	XMFLOAT3 initSpawnPos;
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		initSpawnPos.x = RandomNumber(-15, 15);
+		initSpawnPos.y = 2;
+		initSpawnPos.z = RandomNumber(-15, 15);
+
+		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+
+	}
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		//enemies[i].setHealth
+		enemies[i].setAlive(true);
+		enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+		enemies[i].createProjectile(bulletPhysicsHandler);
+
+	}
+
+
+}
+
 bool SceneContainer::readFiles() {
 
 	// Load file for the main character
@@ -513,8 +540,16 @@ void SceneContainer::update(HWND &windowHandle)
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
 	enemiesAlive(gHandler.gDevice, bulletPhysicsHandler);
-	for (UINT i = 0; i < this->nrOfEnemies; i++){
-	
+	for (UINT i = 0; i < this->nrOfEnemies; i++)
+	{
+		if (!enemies[i].getAlive())
+		{
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].rigidBody);
+
+			// Remove projectile rigid body
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].fireBall.projectileRigidBody);
+		}
+
 		this->useAI(character, enemies[i]);
 		enemies[i].updateProjectile();
 
