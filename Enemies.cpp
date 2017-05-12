@@ -214,7 +214,8 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	fireBall.projectileRigidBody = new btRigidBody(info);
 	fireBall.projectileRigidBody->setActivationState(DISABLE_DEACTIVATION);
 
-	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(fireBall.projectileRigidBody);
+	int projCollideWith = COL_PLAYER | COL_LEVEL;
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(fireBall.projectileRigidBody, COL_PROJ, projCollideWith);
 	bulletPhysicsHandler.rigidBodies.push_back(fireBall.projectileRigidBody);
 
 }

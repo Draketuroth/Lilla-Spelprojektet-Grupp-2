@@ -40,7 +40,7 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	float depth = input.lPos.z;
 	//depth += 0.01f;
-	float depthBias = 0.003f;
+	float depthBias = 0.0017f;
 
 	float dx = 1.0f/1920;
 	float dy = 1.0f/1080;
