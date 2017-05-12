@@ -184,14 +184,14 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 	if (frameCounter <= 1000)
 	{
 		currentMap = 0;
-		value = frameCounter / 10000.0f;
+		value = frameCounter / 100000.0f;
 		weightSwap = true;
 	}
 	//1000 och över
 	else
 	{
 		lastMap = 1;
-		value = frameCounter / 20000.0f;
+		value = frameCounter / 200000.0f;
 		weightSwap = false;
 
 	}
@@ -199,14 +199,14 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 	if (frameCounter >= 2000 && frameCounter <= 3000)
 	{
 		currentMap = 2;
-		value = frameCounter / 30000.0f; 
+		value = frameCounter / 300000.0f; 
 		weightSwap = true;
 	}
 	//3000 och över
-	else if (frameCounter > 30000)
+	else if (frameCounter > 3000)
 	{
 		lastMap = 3;
-		value = frameCounter / 40000.0f;
+		value = frameCounter / 400000.0f;
 		weightSwap = false;
 	}
 
