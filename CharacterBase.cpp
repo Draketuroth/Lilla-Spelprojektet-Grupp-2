@@ -178,7 +178,8 @@ void CharacterBase::CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLO
 	this->rigidBody->setActivationState(DISABLE_DEACTIVATION);
 
 	// Add the new rigid body to the dynamic world
-	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
+	int playerCollideWith = COL_ENEMY | COL_LEVEL | COL_PROJ;
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody, COL_PLAYER, playerCollideWith);
 	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
 	
 }
@@ -224,7 +225,8 @@ void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOA
 	this->rigidBody->setActivationState(DISABLE_DEACTIVATION);
 
 	// Add the new rigid body to the dynamic world
-	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody);
+	int enemyCollideWith = COL_PLAYER | COL_LEVEL | COL_ENEMY | COL_RAY;//Flags to determine what objects the enemy can collide with
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody, COL_ENEMY, enemyCollideWith);
 	bulletPhysicsHandler.rigidBodies.push_back(playerRigidBody);
 
 }

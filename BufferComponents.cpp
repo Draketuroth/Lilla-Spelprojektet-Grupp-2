@@ -417,7 +417,9 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 		platformRigidBody->setIslandTag(platformRigid);//Tag to skip rayTesting for character projectiles
 		// Add the new rigid body to the dynamic world
-		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody);
+
+		int arenaCollideWith = COL_PLAYER | COL_ENEMY | COL_PROJ;
+		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody, COL_LEVEL, arenaCollideWith);
 		bulletPhysicsHandler.rigidBodies.push_back(platformRigidBody);
 
 		cubeObjects[nrOfCubes].worldMatrix = platformTranslation;
