@@ -178,9 +178,9 @@ public:
 	void renderProjectile();
 
 	void createSideBoundingBoxes();
-	void incrementLevels();
+	void incrementLevels(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 
-	void enemiesAlive();
+	void enemiesAlive(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 
 };
 

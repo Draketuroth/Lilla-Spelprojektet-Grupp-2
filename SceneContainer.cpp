@@ -413,7 +413,7 @@ void SceneContainer::update(HWND &windowHandle)
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
-	enemiesAlive();
+	enemiesAlive(gHandler.gDevice, bulletPhysicsHandler);
 	for (UINT i = 0; i < this->nrOfEnemies; i++){
 	
 		this->useAI(character, enemies[i]);
@@ -443,7 +443,7 @@ void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
 	}
 }
 
-void SceneContainer::incrementLevels()
+void SceneContainer::incrementLevels(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle)
 {
 	level++;
 
@@ -454,9 +454,19 @@ void SceneContainer::incrementLevels()
 	HUD.setFont(gHandler.gDevice);
 	HUD.CreateFontIndexBuffer(gHandler.gDevice);
 
+	nrOfEnemies++;
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+
+		enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+		
+
+	}
+
 }
 
-void SceneContainer::enemiesAlive()
+void SceneContainer::enemiesAlive(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle)
 {
 	int nrOfDeadEnemies = 0;
 	for (int i = 0; i < nrOfEnemies; i++)
@@ -468,7 +478,7 @@ void SceneContainer::enemiesAlive()
 	}
 	if (nrOfDeadEnemies == nrOfEnemies)
 	{
-		incrementLevels();
+		incrementLevels(graphicDevice, bulletPhysicsHandle);
 	}
 }
 
