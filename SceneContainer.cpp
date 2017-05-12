@@ -169,7 +169,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle) {
 
 	// Set the number of enemies
-	this->nrOfEnemies = 4;
+	this->nrOfEnemies = 15;
 
 	enemies.clear();
 	enemies.resize(nrOfEnemies);

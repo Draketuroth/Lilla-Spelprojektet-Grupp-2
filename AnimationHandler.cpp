@@ -65,7 +65,7 @@ void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext,
 	// Clear last frame's jonit transformation
 	iceEnemyFinalTransformations[currentInstance].clear();
 
-	animTimePos = instanceTimePos;
+	//animTimePos = instanceTimePos;
 
 	vector<XMFLOAT4X4> globalJointTransforms;
 	globalJointTransforms.resize(importer.skinnedMeshes[0].hierarchy.size());
