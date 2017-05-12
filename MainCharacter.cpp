@@ -267,7 +267,7 @@ bool MainCharacter::isGrounded()
 	}
 }
 
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyArray[], btDynamicsWorld* bulletDynamicsWorld)
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy> enemyArray, btDynamicsWorld* bulletDynamicsWorld)
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
@@ -343,7 +343,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemyA
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemies[], btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
 {
 
 	XMFLOAT3 start, end;
@@ -386,7 +386,6 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
 	
-		
 		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
 		rayCallBack.m_collisionFilterGroup = COL_RAY;// Making the ray a collisiontype COL_RAY
 		rayCallBack.m_collisionFilterMask = COL_ENEMY;//Only checks collision with Enemies
@@ -396,13 +395,14 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 		end = XMFLOAT3{ direction.x * 50, 1.2f, direction.z * 50 };
 		//Drawing the ray for debug purposes
 		
-
 		if (rayCallBack.hasHit())
 		{
 			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
 			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
 
 			int i = rayCallBack.m_collisionObject->getUserIndex();
+
+			assert(i < 15 && i >= 0);
 
 			//Used for knockback----------------------------------------------------------
 			btTransform playerTrans;
@@ -442,7 +442,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 			this->shooting = false;
 		}
 	}
-	//renderRay(gHandler, bHandler, start, end);
+	
 }
 
 //bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)

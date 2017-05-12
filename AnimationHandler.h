@@ -38,7 +38,7 @@ struct CHARACTER_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose m
 	XMFLOAT4X4 gBoneTransform[30];
 };
 
-struct ENEMY_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
+struct PerIceEnemyInstanceData { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
 
 	XMFLOAT4X4 gBoneTransform[24];
 };

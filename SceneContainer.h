@@ -106,6 +106,16 @@ public:
 
 	
 
+	float RandomNumber(float Minimum, float Maximum);
+
+	//------------------------------------------------------------//
+	// RE-INTIALIZE
+	//------------------------------------------------------------//
+	
+
+	void ReRelease();
+	void ReInitialize();
+
 	//------------------------------------------------------------//
 	// FILES
 	//------------------------------------------------------------//
@@ -146,7 +156,7 @@ public:
 	ID3D11Buffer* gProjectileIndexBuffer;
 
 	int nrOfEnemies;
-	Enemy enemies[4];
+	vector<Enemy> enemies;
 	ID3D11Buffer* enemyIceVertexBuffer;
 	vector<StandardVertex>iceEnemyVertices;
 

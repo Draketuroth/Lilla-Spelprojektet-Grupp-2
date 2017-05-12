@@ -104,15 +104,15 @@ int RunApplication()
 			switch (menuState.state)
 			{
 			case MAIN_MENU:
-				//sceneContainer.character.attackSound.stop();
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
 			case PAUSE_MENU:
-				//sceneContainer.character.attackSound.stop();
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
 			case GAME_OVER:
-			//	sceneContainer.character.attackSound.stop();
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				sceneContainer.character.setAlive(true);
 				break;
@@ -120,7 +120,7 @@ int RunApplication()
 				windowMessage.message = WM_QUIT;
 				break;
 			case START_GAME:
-				//sceneContainer.character.initialize(sceneContainer.gHandler.gDevice, XMFLOAT3(2, 2, 5), sceneContainer.bulletPhysicsHandler, sceneContainer.animHandler, sceneContainer.mainCharacterFile);
+				//sceneContainer.character.setAlive(true);
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateBuffers();

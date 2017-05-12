@@ -6,7 +6,7 @@ GameState::GameState()
 
 	soundBuffer.loadFromFile("Sounds//click.wav");
 	arenaMusic.openFromFile("Sounds//music.wav");
-	//clickSound.setBuffer(soundBuffer);
+	clickSound.setBuffer(soundBuffer);
 
 }
 
@@ -15,7 +15,7 @@ GameState::~GameState()
 
 }
 
-int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMessage)
+int GameState::menuHandler(HWND windowHandle, SceneContainer &scene, MSG windowMessage)
 {
 	if (this->state == MAIN_MENU)
 	{
@@ -32,7 +32,7 @@ int GameState::menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMe
 	return state;
 }
 
-int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
+int GameState::mainMenu(HWND windowHandle, SceneContainer &scene)
 {
 	if (this->state == MAIN_MENU)
 	{
@@ -56,8 +56,8 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
-			/*	clickSound.play();
-				arenaMusic.play();*/
+				clickSound.play();
+				arenaMusic.play();
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -69,11 +69,11 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer scene)
 	return state;
 }
 
-int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMessage)
+int GameState::pauseMenu(HWND windowHandle, SceneContainer &scene, MSG windowMessage)
 {
 	if (this->state == PAUSE_MENU)
 	{
-	/*	arenaMusic.pause();*/
+		arenaMusic.pause();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -94,8 +94,8 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMess
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
-			/*	clickSound.play();
-				arenaMusic.play();*/
+				clickSound.play();
+				arenaMusic.play();
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -108,11 +108,11 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMess
 	return state;
 }
 
-int GameState::gameOver(HWND windowHandle, SceneContainer scene)
+int GameState::gameOver(HWND windowHandle, SceneContainer &scene)
 {
 	if (this->state == GAME_OVER)
 	{
-	/*	arenaMusic.stop();*/
+		arenaMusic.stop();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -134,10 +134,10 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
-	/*			clickSound.play();
-				arenaMusic.play();*/
+				clickSound.play();
+				arenaMusic.play();
 				this->state = START_GAME;
-				//restartGame(scene, windowHandle);
+				restartGame(scene, windowHandle);
 				
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -150,7 +150,7 @@ int GameState::gameOver(HWND windowHandle, SceneContainer scene)
 	return state;
 }
 
-void GameState::renderMenus(SceneContainer scene)
+void GameState::renderMenus(SceneContainer &scene)
 {
 	scene.clear();
 
@@ -192,12 +192,13 @@ void GameState::checkGameState()
 		}
 	}
 }
-void GameState::restartGame(SceneContainer scene, HWND windowHandle)
-{
-	scene.releaseAll();
-	scene.initialize(windowHandle);
 
-	/*scene.character.initialize(scene.gHandler.gDevice, XMFLOAT3(2, 2, 5), scene.bulletPhysicsHandler, scene.animHandler, scene.mainCharacterFile);
-	scene.InitializeEnemies(scene.gHandler.gDevice, scene.bulletPhysicsHandler);*/
+void GameState::restartGame(SceneContainer &scene, HWND windowHandle)
+{
+	scene.ReRelease();
+
+	scene.ReInitialize();
+
+	this->state = START_GAME;
 
 }
