@@ -48,7 +48,7 @@ void Timer::updateCurrentTime()
 	{
 		this->frameCount = 0;
 	}
-	this->frameCount += 300 * getDeltaTime();
+	this->frameCount += 1500 * getDeltaTime();
 }
 
 void Timer::resetTimer()

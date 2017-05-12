@@ -184,82 +184,63 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 	if (frameCounter <= 1000)
 	{
 		currentMap = 0;
-		lastMap = 3; 
+		value = frameCounter / 10000.0f;
+		weightSwap = true;
 	}
-
-	else if (frameCounter > 1000 && frameCounter < 2000)
-	{
-		currentMap = 1;
-		lastMap = 0; 
-		
-	}
-	else if (frameCounter > 2000 && frameCounter < 3000)
-	{
-		currentMap = 2;
-		lastMap = 1;
-	}
-	else if (frameCounter > 3000)
-	{
-		currentMap = 3;
-		lastMap = 2;
-	}
-
-	if (frameCounter <= 1000)
-	{
-		currentMap = 0;
-		
-	}
-	
+	//1000 och över
 	else
 	{
 		lastMap = 1;
+		value = frameCounter / 20000.0f;
 		weightSwap = false;
-		
+
 	}
-	//1000-1500
+	//2000-3000
 	if (frameCounter >= 2000 && frameCounter <= 3000)
 	{
 		currentMap = 2;
+		value = frameCounter / 30000.0f; 
 		weightSwap = true;
 	}
-	//1500 och över
-	else if (frameCounter > 3000)
+	//3000 och över
+	else if (frameCounter > 30000)
 	{
 		lastMap = 3;
+		value = frameCounter / 40000.0f;
 		weightSwap = false;
 	}
 
-	interPol(frameCounter);
 
 	if (weightSwap)
 	{
 		if (weightScalar < 1)
 		{
-			weightScalar += 0.001f;
+			weightScalar += value;
 		}
-		
+
 		if (secondWeightScalar > 0)
 		{
-			secondWeightScalar -= 0.001f;
+			secondWeightScalar -= value;
 		}
-		
+
+
 	}
 	else
 	{
 		if (secondWeightScalar < 1)
 		{
-			secondWeightScalar += 0.001f;
+			secondWeightScalar += value;
 		}
 
-	//	if (weightScalar > 0)
-	//	{
-	//		weightScalar -= 0.001f;
-	//	}
-	//}
+		if (weightScalar > 0)
+		{
+			weightScalar -= value;
+		}
+	}
 
 	this->VBuffer(device, currentMap, weightScalar);
 
-	return currentMap; 
+	return currentMap;
 }
 
 void Lava::interPol(int frameCounter)
