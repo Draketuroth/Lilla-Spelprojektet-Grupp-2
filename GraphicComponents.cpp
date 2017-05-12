@@ -77,6 +77,11 @@ void GraphicComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gShadowVertexLayout);
 	SAFE_RELEASE(gShadowVertexLayout);
+	SAFE_RELEASE(gHUDVertexShader);
+	SAFE_RELEASE(gHUDVertexLayout);
+	SAFE_RELEASE(gHUDPixelShader);
+
+
 }
 
 bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
@@ -134,6 +139,10 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 		return false;
 	}
 	if (!CreateShadowShaders())
+	{
+		return false;
+	}
+	if (!CreateHUDShaders())
 	{
 		return false;
 	}
@@ -1396,3 +1405,102 @@ bool GraphicComponents::CreateShadowShaders()
 	return true;
 }
 
+bool GraphicComponents::CreateHUDShaders()
+{
+	HRESULT hr;
+
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* vsErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\HUDShaders\\HUDVertexShader.hlsl",
+		nullptr,
+		nullptr,
+		"VS_main",
+		"vs_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&vsBlob,
+		&vsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "HUD Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
+
+		if (vsErrorBlob) {
+
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer());
+			vsErrorBlob->Release();
+		}
+		return false;
+	}
+
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gHUDVertexShader);
+
+	if (FAILED(hr)) {
+
+		cout << "HUD Vertex Shader Error: Vertex Shader could not be created" << endl;
+		return false;
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
+
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		/*{ "SV_InstanceID", 0, DXGI_FORMAT_R32_UINT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }*/
+
+	};
+
+	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gHUDVertexLayout);
+
+	if (FAILED(hr)) {
+
+		cout << "HUD Vertex Shader Error: Shader Input Layout could not be created" << endl;
+	}
+
+	vsBlob->Release();
+
+	ID3DBlob* psBlob = nullptr;
+	ID3DBlob* psErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\HUDShaders\\HUDPixelShader.hlsl",
+		nullptr,
+		nullptr,
+		"PS_main",
+		"ps_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&psBlob,
+		&psErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "HUD Pixel Shader Error: Pixel Shader could not be compiled or loaded from file" << endl;
+
+		if (psErrorBlob) {
+
+			OutputDebugStringA((char*)psErrorBlob->GetBufferPointer());
+			psErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gHUDPixelShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Debug Pixel Shader Error: Pixel Shader could not be created" << endl;
+		return false;
+	}
+
+	psBlob->Release();		
+
+
+	return true;
+}

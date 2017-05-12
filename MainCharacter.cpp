@@ -5,8 +5,8 @@
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
 {
-	cameraDistanceY = 6.0f;
-	cameraDistanceZ = 3.0f;
+	cameraDistanceY = 8.0f;
+	cameraDistanceZ = 5.0f;
 	playerHeight = 2.0f;
 	currentAnimIndex = 0;
 
@@ -44,7 +44,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, vertices, animHandler, skinData);
-	CreateBoundingBox(0.10, this->getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandle);
+	CreatePlayerBoundingBox(0.10, this->getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 
 	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
@@ -399,34 +399,32 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, Enemy enemie
 		{
 			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
 			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
-				
 
-		
-			for (size_t i = 0; i < nrOfEnemies; i++)
+			int i = rayCallBack.m_collisionObject->getUserIndex();
+
+			//Used for knockback----------------------------------------------------------
+			btTransform playerTrans;
+			btTransform enemyTrans;
+			this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
+			enemies[i].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+
+			btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
+			correctedForce.normalize();
+			enemies[i].rigidBody->applyCentralImpulse(-correctedForce / 2);
+			//----------------------------------------------------------------------------
+
+			cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
+			if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
 			{
-				//Used for knockback----------------------------------------------------------
-				btTransform playerTrans;
-				btTransform enemyTrans;
-				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
-				enemies[i].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
-
-				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
-				correctedForce.normalize();
-				enemies[i].rigidBody->applyCentralImpulse(-correctedForce / 2);
-				//----------------------------------------------------------------------------
-
-				cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
-				if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
-				{
-					cout << "Enemy Shot!! -1 health\n";
-					enemies[i].setHealth(enemies[i].getHealth() - 1);
-				}
-				if (enemies[i].getHealth() == 0)
-				{
-					enemies[i].setAlive(false);
-					cout << "Enemy Deleted\n";
-				}
+				cout << "Enemy Shot!! -1 health\n";
+				enemies[i].setHealth(enemies[i].getHealth() - 1);
 			}
+			if (enemies[i].getHealth() == 0)
+			{
+				enemies[i].setAlive(false);
+				cout << "Enemy Deleted\n";
+			}
+			
 		}
 	}
 

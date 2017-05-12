@@ -120,6 +120,7 @@ int RunApplication()
 				windowMessage.message = WM_QUIT;
 				break;
 			case START_GAME:
+				//sceneContainer.character.initialize(sceneContainer.gHandler.gDevice, XMFLOAT3(2, 2, 5), sceneContainer.bulletPhysicsHandler, sceneContainer.animHandler, sceneContainer.mainCharacterFile);
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateBuffers();

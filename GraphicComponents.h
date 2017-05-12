@@ -64,6 +64,9 @@ public:
 	ID3D11VertexShader* gDebugVertexShader;
 	ID3D11PixelShader* gDebugPixelShader;
 
+	ID3D11InputLayout* gHUDVertexLayout;
+	ID3D11VertexShader* gHUDVertexShader;
+	ID3D11PixelShader* gHUDPixelShader;
 	ID3D11VertexShader* gShadowVertexShader;
 	ID3D11InputLayout* gShadowVertexLayout;
 
@@ -89,6 +92,8 @@ public:
 	bool CreateFortressShader();
 	bool CreateEnemyShaders();
 	bool CreateLavaShaders(); 
+	bool CreateHUDShaders();
+
 	bool CreateProjectileShaders();
 	void SetViewport();		// Functions to define the properties of our viewport
 

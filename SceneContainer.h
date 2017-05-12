@@ -32,6 +32,8 @@
 #include "Lava.h"
 #include <SFML\Audio.hpp>
 
+#include "HUD.h"
+
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
 	MyCharacterContactResultCallback(CharacterBase* ptr) : character(ptr) {}
@@ -102,6 +104,8 @@ public:
 	void loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
 	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices);
 
+	void IncrementLevels();
+
 	//------------------------------------------------------------//
 	// FILES
 	//------------------------------------------------------------//
@@ -126,8 +130,11 @@ public:
 	MainCharacter character;
 	AnimationHandler animHandler;
 	Lava lava; 
+	HUDClass HUD;
 
 	BoundingBox sides[4];
+
+	int level;
 
 	BulletComponents bulletPhysicsHandler;
 
@@ -150,7 +157,8 @@ public:
 	void drawFortress();
 	void drawPlatforms();
 	void drawDebugCubes();
-	
+	void drawHUD();
+
 	void clear();
 	void resetRenderTarget(GraphicComponents &gHandler);
 
@@ -170,6 +178,7 @@ public:
 	void renderProjectile();
 
 	void createSideBoundingBoxes();
+	void incrementLevels();
 
 };
 

@@ -20,15 +20,20 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(platformResource);
 	SAFE_RELEASE(fortressResource);
 	SAFE_RELEASE(defaultResource);
+	SAFE_RELEASE(texSampler);
+	
+	SAFE_RELEASE(HUDResource);
+	SAFE_RELEASE(blendState);
 	SAFE_RELEASE(playerResource);
 	SAFE_RELEASE(LavaResource);
 	
-	SAFE_RELEASE(texSampler);
+	
 	SAFE_RELEASE(shadowSampler);
 
 	SAFE_RELEASE(shadowSRV);
 	SAFE_RELEASE(shadowDepthView);
 	SAFE_RELEASE(ShadowMap);
+
 	for (size_t i = 0; i < 9; i++)
 	{
 		SAFE_RELEASE(this->menuResources[i]);
@@ -58,6 +63,23 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	hr = gDevice->CreateSamplerState(&sampDesc, &texSampler);
 
+
+
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc.RenderTarget[0].BlendEnable = true;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;//D3D11_BLEND_SRC1_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_DEST_ALPHA;//D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	hr = gDevice->CreateBlendState(&blendDesc, &blendState);
+
+
+
 	if (FAILED(hr)) {
 
 		return false;
@@ -80,6 +102,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER.png", NULL, &menuResources[6], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER_RESTART_CLICK.png", NULL, &menuResources[7], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER_QUIT_CLICK.png", NULL, &menuResources[8], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Fonts\\HUDFont.png", NULL, &HUDResource, 256);
 
 	if (SUCCEEDED(hr) && texture != 0) {
 
@@ -97,6 +120,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[6]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[7]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[8]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &HUDResource);
 
 		if (FAILED(hr)) {
 
@@ -106,6 +130,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	return true;
 }
+
 bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 {
 	HRESULT hr;
@@ -115,19 +140,19 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 
 	DXGI_FORMAT resformat = GetDepthResourceFormat(DXGI_FORMAT_D32_FLOAT_S8X24_UINT);
 	DXGI_FORMAT srvformat = GetDepthSRVFormat(DXGI_FORMAT_D32_FLOAT_S8X24_UINT);
-
+	
 	//Shadow map sampler
 	D3D11_SAMPLER_DESC shadowSamp;
 	ZeroMemory(&shadowSamp, sizeof(shadowSamp));
-	shadowSamp.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	shadowSamp.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;//D3D11_FILTER_MIN_MAG_MIP_POINT;
 	shadowSamp.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	shadowSamp.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	shadowSamp.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	shadowSamp.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	shadowSamp.MinLOD = 0;
 	shadowSamp.MaxLOD = D3D11_FLOAT32_MAX;
 
-
+	
 	hr = gDevice->CreateSamplerState(&shadowSamp, &this->shadowSampler);
 	if (FAILED(hr))
 	{
@@ -175,6 +200,7 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 
 	return true;
 }
+
 DXGI_FORMAT TextureComponents::GetDepthResourceFormat(DXGI_FORMAT depthformat)
 {
 	DXGI_FORMAT resformat;
@@ -196,6 +222,7 @@ DXGI_FORMAT TextureComponents::GetDepthResourceFormat(DXGI_FORMAT depthformat)
 
 	return resformat;
 }
+
 DXGI_FORMAT TextureComponents::GetDepthSRVFormat(DXGI_FORMAT depthformat)
 {
 	DXGI_FORMAT srvformat;
