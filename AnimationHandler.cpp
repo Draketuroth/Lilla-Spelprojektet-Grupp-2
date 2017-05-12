@@ -13,6 +13,7 @@
 AnimationHandler::AnimationHandler() {
 
 	gCharacterBoneBuffer = nullptr;
+	gEnemyBoneBuffer = nullptr;
 }
 
 AnimationHandler::~AnimationHandler() {
@@ -23,7 +24,7 @@ AnimationHandler::~AnimationHandler() {
 void AnimationHandler::ReleaseAll() {
 
 	SAFE_RELEASE(gCharacterBoneBuffer);
-	SAFE_RELEASE(gEnemyBoneBUffer);
+	SAFE_RELEASE(gEnemyBoneBuffer);
 }
 
 void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext, int animIndex, FileImporter &importer) {
@@ -44,20 +45,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 	gDeviceContext->Map(gCharacterBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &boneMappedResource);
 	CHARACTER_SKINNED_DATA* boneBufferPointer = (CHARACTER_SKINNED_DATA*)boneMappedResource.pData;
 
-	XMMATRIX globalTx, invBindPose, skinnedTx;
-	int startIndex = 0;
-
-	// Initialize the root joint
-	importer.skinnedMeshes[0].hierarchy[0].GlobalTx = XMLoadFloat4x4(&globalJointTransforms[0]);	// skel[0].GlobalTx = skel[0].LocalTx
-
-	globalTx = importer.skinnedMeshes[0].hierarchy[0].GlobalTx;
-	invBindPose = importer.skinnedMeshes[0].hierarchy[0].inverseBindPoseMatrix;
-	skinnedTx = invBindPose * globalTx;
-
-	XMStoreFloat4x4(&boneBufferPointer->gBoneTransform[0], XMMatrixTranspose(skinnedTx));	// skel[0].GlobalTx * skel[0].invBindPose
-
-	// Every joint must be updated before unmapping the subresource
-	for (UINT i = startIndex; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
+	for (UINT i = 0; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
 
 		// Create a reference to the currenct joint to be processed
 		Joint_Container &b = importer.skinnedMeshes[0].hierarchy[i];
@@ -70,6 +58,73 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 
 	gDeviceContext->Unmap(gCharacterBoneBuffer, 0);
 
+}
+
+void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, int instanceTimePos) {
+
+	// Clear last frame's jonit transformation
+	iceEnemyFinalTransformations[currentInstance].clear();
+
+	animTimePos = instanceTimePos;
+
+	vector<XMFLOAT4X4> globalJointTransforms;
+	globalJointTransforms.resize(importer.skinnedMeshes[0].hierarchy.size());
+
+	// Interpolate will sort out the interpolation for every joint's animation, thus returns a matrix for every iteration
+	for (int i = 0; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
+
+		globalJointTransforms[i] = Interpolate(i, gDeviceContext, animIndex, importer); // check Interpolate function.
+	}
+
+	for (UINT i = 0; i < importer.skinnedMeshes[0].hierarchy.size(); i++) {
+
+		// Create a reference to the currenct joint to be processed
+		Joint_Container &b = importer.skinnedMeshes[0].hierarchy[i];
+
+		// Get the current joint LOCAL transformation at the current animation time pose
+		b.GlobalTx = XMLoadFloat4x4(&globalJointTransforms[i]);
+
+		XMFLOAT4X4 finalTransform;
+
+		// Store the final transformation of the current joint and push back to its transformation vector
+		XMStoreFloat4x4(&finalTransform, XMMatrixTranspose(b.inverseBindPoseMatrix * b.GlobalTx));
+		iceEnemyFinalTransformations[currentInstance].push_back(finalTransform);
+	}
+
+}
+
+bool AnimationHandler::MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies, FileImporter &importer) {
+
+	HRESULT hr;
+
+	// With all the precalculated matrices at our disposal, let's update the enemy transformations on the GPU
+	ZeroMemory(&boneMappedResource, sizeof(boneMappedResource));
+	
+	// Check if the mapping was okay
+	hr = gDeviceContext->Map(gEnemyBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &boneMappedResource);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	// Create buffer to the instance buffer
+	ICE_ENEMY_SKINNED_DATA* boneBufferPointer = (ICE_ENEMY_SKINNED_DATA*)boneMappedResource.pData;
+
+	for (int instanceIndex = 0; instanceIndex < nrOfEnemies; instanceIndex++) {
+
+		for (UINT transformIndex = 0; transformIndex  < iceEnemyFinalTransformations[instanceIndex].size(); transformIndex++) {
+
+			// Get the current joint LOCAL transformation at the current animation time pose
+			XMFLOAT4X4 finalTransform = iceEnemyFinalTransformations[instanceIndex][transformIndex];
+
+			boneBufferPointer->enemyInstance[instanceIndex].gBoneTransform[transformIndex] = finalTransform;
+		}
+	}
+
+	gDeviceContext->Unmap(gEnemyBoneBuffer, 0);
+
+	return true;
 }
 
 XMFLOAT4X4 AnimationHandler::Interpolate(int jointIndex, ID3D11DeviceContext* gDeviceContext, int animIndex, FileImporter &importer) {

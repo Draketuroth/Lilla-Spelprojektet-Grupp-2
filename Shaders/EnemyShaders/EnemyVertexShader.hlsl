@@ -22,12 +22,18 @@ cbuffer ENEMY_TRANSFORM : register(b1) {
 	matrix matrixW[MAX_ENEMY];
 };
 
+cbuffer ICE_ENEMY_SKINNED_DATA : register(b2) {
+
+	PerIceEnemyInstanceData enemyInstance[15];
+};
 
 struct VS_IN
 {
 	float3 Pos : POSITION;
-	float2 Tex: TEXCOORD;
+	float2 Tex : TEXCOORD;
 	float3 Norm : NORMAL;
+	float4 Weight : BLENDWEIGHT;
+	uint4 BoneIndices : BLENDINDICES;
 	uint InstanceId : SV_InstanceId;
 
 };
@@ -41,18 +47,30 @@ struct VS_OUT
 	float3 ViewPos : POSITION1;
 };
 
-
 VS_OUT VS_main(VS_IN input){
 		
 	VS_OUT output;
 
+	// Perform vertex blending
+
+	float3 position = float3(0.0f, 0.0f, 0.0f);
+	float3 normal = float3(0.0f, 0.0f, 0.0f);
+
+	for (int i = 0; i < 4; ++i) // loop trough the 4 weights
+	{
+
+		position += input.Weight[i] * mul(float4(input.Pos, 1.0f), enemyInstance[input.InstanceId].gBoneTransform[input.BoneIndices[i]]).xyz; // the vertex position is affected by the joint movement and influenced by the corresponding weight
+
+		normal += input.Weight[i] * mul(input.Norm, (float3x3)enemyInstance[input.InstanceId].gBoneTransform[input.BoneIndices[i]]); // we make it 3x3 matrix to skip homogenus and take away translation.
+	}
+
 	// To store and calculate the World position for output to the pixel shader, the input position must be multiplied with the World matrix
-	float3 worldPosition = mul(float4(input.Pos, 1.0f), matrixW[input.InstanceId]).xyz;
+	float3 worldPosition = mul(float4(position, 1.0f), matrixW[input.InstanceId]).xyz;
 	output.WPos = worldPosition;
 
 	// To store and calculate the WorldViewProj, the input position must be multiplied with the WorldViewProj matrix
 
-	output.Pos = mul(float4(input.Pos.xyz, 1.0f), matrixW[input.InstanceId]);
+	output.Pos = mul(float4(position, 1.0f), matrixW[input.InstanceId]);
 	output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixView);
 	output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixProjection);
 

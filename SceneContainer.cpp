@@ -191,7 +191,7 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 
 	// Create the vertex buffer all the ice enemies will share
 	loadEnemyIceVertices(iceEnemyFile, graphicDevice);
-	createIceEnemyBuffer(graphicDevice, iceEnemyVertices);
+	createIceEnemyBuffer(graphicDevice, iceEnemyVertices, animHandler, iceEnemySkinData);
 
 	// Create the vertex buffer all the lava enemies will share
 
@@ -344,27 +344,64 @@ void SceneContainer::loadEnemyIceVertices(FileImporter &importer, ID3D11Device* 
 	//load mesh vertices
 	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
 
-		StandardVertex vertex;
+		Vertex_Bone vertex;
 
-		vertex.x = importer.skinnedMeshes[0].vertices[i].pos[0];
-		vertex.y = importer.skinnedMeshes[0].vertices[i].pos[1];
-		vertex.z = importer.skinnedMeshes[0].vertices[i].pos[2];
+		vertex.pos.x = importer.skinnedMeshes[0].vertices[i].pos[0];
+		vertex.pos.y = importer.skinnedMeshes[0].vertices[i].pos[1];
+		vertex.pos.z = importer.skinnedMeshes[0].vertices[i].pos[2];
 
-		vertex.u = importer.skinnedMeshes[0].vertices[i].uv[0];
-		vertex.v = importer.skinnedMeshes[0].vertices[i].uv[1];
+		vertex.uv.x = importer.skinnedMeshes[0].vertices[i].uv[0];
+		vertex.uv.y = importer.skinnedMeshes[0].vertices[i].uv[1];
 
-		vertex.nx = importer.skinnedMeshes[0].vertices[i].normal[0];
-		vertex.ny = importer.skinnedMeshes[0].vertices[i].normal[1];
-		vertex.nz = importer.skinnedMeshes[0].vertices[i].normal[2];
+		vertex.normal.x = importer.skinnedMeshes[0].vertices[i].normal[0];
+		vertex.normal.y = importer.skinnedMeshes[0].vertices[i].normal[1];
+		vertex.normal.z = importer.skinnedMeshes[0].vertices[i].normal[2];
+
+		vertex.boneIndices[0] = importer.skinnedMeshes[0].vertices[i].boneIndices[0];
+		vertex.boneIndices[1] = importer.skinnedMeshes[0].vertices[i].boneIndices[1];
+		vertex.boneIndices[2] = importer.skinnedMeshes[0].vertices[i].boneIndices[2];
+		vertex.boneIndices[3] = importer.skinnedMeshes[0].vertices[i].boneIndices[3];
+
+		vertex.weights[0] = importer.skinnedMeshes[0].vertices[i].weights[0];
+		vertex.weights[1] = importer.skinnedMeshes[0].vertices[i].weights[1];
+		vertex.weights[2] = importer.skinnedMeshes[0].vertices[i].weights[2];
+		vertex.weights[3] = importer.skinnedMeshes[0].vertices[i].weights[3];
 
 		iceEnemyVertices.push_back(vertex);
 
 	}
 }
 
-bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices) {
+bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<Vertex_Bone> vertices, AnimationHandler &animationHandler, ICE_ENEMY_SKINNED_DATA &skinData) {
 
 	HRESULT hr;
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// BONE BUFFER DESCRIPTION
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	D3D11_BUFFER_DESC boneBufferDesc;
+
+	memset(&boneBufferDesc, 0, sizeof(boneBufferDesc));
+
+	boneBufferDesc.ByteWidth = sizeof(ICE_ENEMY_SKINNED_DATA);
+	boneBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	boneBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	boneBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	boneBufferDesc.MiscFlags = 0;
+	boneBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA boneData;
+	boneData.pSysMem = &skinData;
+	boneData.SysMemPitch = 0;
+	boneData.SysMemSlicePitch = 0;
+
+	hr = graphicDevice->CreateBuffer(&boneBufferDesc, &boneData, &animHandler.gEnemyBoneBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
 
 	//----------------------------------------------------------------------//
 	// VERTEX BUFFER
@@ -376,7 +413,7 @@ bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<S
 	memset(&bufferDesc, 0, sizeof(bufferDesc));
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(StandardVertex) * vertices.size();
+	bufferDesc.ByteWidth = sizeof(Vertex_Bone) * vertices.size();
 
 	D3D11_SUBRESOURCE_DATA data;
 	ZeroMemory(&data, sizeof(data));
@@ -780,28 +817,29 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderEnemies()
 {
-		gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
-		gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-		gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
+	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &animHandler.gEnemyBoneBuffer);
 
-		ID3D11GeometryShader* nullShader = nullptr;
-		gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
+	ID3D11GeometryShader* nullShader = nullptr;
+	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
 
-		gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
-		gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
-		gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
-		UINT32 vertexSize = sizeof(StandardVertex);
-		UINT32 offset = 0;
+	UINT32 vertexSize = sizeof(Vertex_Bone);
+	UINT32 offset = 0;
 
-		ID3D11Buffer* nullBuffer = { nullptr };
-		gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
+	ID3D11Buffer* nullBuffer = { nullptr };
+	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyIceVertexBuffer, &vertexSize, &offset);
-		gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyIceVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
 
-		gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfEnemies, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfEnemies, 0, 0);
 	
 }
 

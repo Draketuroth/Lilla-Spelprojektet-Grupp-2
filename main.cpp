@@ -32,6 +32,7 @@ Timer timer;
 //----------------------------------------------------------------------------------------------------------------------------------//
 int RunApplication();
 void updateCharacter(HWND windowhandle);
+void updateEnemies();
 void updateBuffers();
 void updateLava();
 void lavamovmentUpdate(); 
@@ -123,6 +124,7 @@ int RunApplication()
 				//sceneContainer.character.setAlive(true);
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
+				updateEnemies();
 				updateBuffers();
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
@@ -189,16 +191,6 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.update(windowhandle);
 	
-	for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
-
-		if(sceneContainer.enemies[i].getAlive() == true){
-	
-			sceneContainer.enemies[i].EnemyPhysics();
-
-		}
-
-	}
-	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
 	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 30;
@@ -209,6 +201,35 @@ void updateCharacter(HWND windowhandle)
 	}
 
 	sceneContainer.animHandler.UpdatePlayerAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.mainCharacterFile);
+}
+
+void updateEnemies() {
+
+	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++) {
+
+		if (sceneContainer.enemies[i].getAlive() == true) {
+
+			// Update enemy physics
+			sceneContainer.enemies[i].EnemyPhysics();
+
+			// Update enemy animation time pose
+			sceneContainer.animHandler.enemyTimePos[i] = timer.getDeltaTime() * 30;
+
+			// Reset animation time pose if necessary
+			sceneContainer.enemies[i].currentAnimIndex = 0;
+			int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
+			if (sceneContainer.animHandler.animTimePos >= sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length) {
+
+				sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
+			}
+
+			sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.iceEnemyFile, i, sceneContainer.enemies[i].currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
+
+		}
+
+		sceneContainer.animHandler.MapEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfEnemies, sceneContainer.iceEnemyFile);
+
+	}
 }
 
 void lavamovmentUpdate()

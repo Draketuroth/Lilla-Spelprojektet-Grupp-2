@@ -38,6 +38,8 @@ public:
 
 	void updateProjectile();
 
+	int currentAnimIndex;
+
 private:
 	
 	int Type;

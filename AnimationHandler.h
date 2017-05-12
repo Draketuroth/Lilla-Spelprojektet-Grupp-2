@@ -21,6 +21,8 @@
 #include "MacroDefinitions.h"
 #include "FileImporter.h"
 
+
+
 // Necessary lib files kan be linked here, but also be added by going to:
 // Properties->Linker->Input->Additional Dependencies
 #pragma comment (lib, "d3d11.lib")
@@ -41,6 +43,11 @@ struct CHARACTER_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose m
 struct PerIceEnemyInstanceData { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
 
 	XMFLOAT4X4 gBoneTransform[24];
+};
+
+struct ICE_ENEMY_SKINNED_DATA {
+
+	PerIceEnemyInstanceData enemyInstance[15];
 };
 
 struct VertexBlendInfo {
@@ -163,18 +170,23 @@ public:
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	ID3D11Buffer* gCharacterBoneBuffer;
-	ID3D11Buffer* gEnemyBoneBUffer;
+	ID3D11Buffer* gEnemyBoneBuffer;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// PRIMARY FUNCTIONS AND VARIABLES
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
+	void UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, int instanceTimePos);
+	bool MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies, FileImporter &importer);
 	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
 
 	vector<Vertex_Bone>vertices;	// Extra copy of vertices
+
+	vector<XMFLOAT4X4>iceEnemyFinalTransformations[15];
+	int enemyTimePos[15];
 
 	float animTimePos;
 	float playerAnimTimePos;
