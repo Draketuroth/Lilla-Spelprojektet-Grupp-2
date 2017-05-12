@@ -14,6 +14,7 @@ public:
 	float VectorLength(XMFLOAT3 Vector);
 	XMFLOAT3 Cross(XMFLOAT3 VectorA, XMFLOAT3 VectorB);
 	XMFLOAT3 Normalize(XMFLOAT3 VectorA);
+	
 private:
 
 };

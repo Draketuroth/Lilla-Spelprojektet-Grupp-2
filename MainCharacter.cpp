@@ -5,8 +5,8 @@
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
 {
-	cameraDistanceY = 6.0f;
-	cameraDistanceZ = 3.0f;
+	cameraDistanceY = 8.0f;
+	cameraDistanceZ = 5.0f;
 	playerHeight = 2.0f;
 	currentAnimIndex = 0;
 

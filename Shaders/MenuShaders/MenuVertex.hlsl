@@ -30,7 +30,8 @@ struct VS_OUT {
 	float2 tex : TEXCOORD;
 };
 
-VS_OUT VS_main(uint id : SV_VertexID) {
+VS_OUT VS_main(uint id : SV_VertexID)
+{
 
 	VS_OUT output;
 

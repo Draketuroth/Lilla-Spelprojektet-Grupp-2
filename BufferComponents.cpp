@@ -92,7 +92,8 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 
 }
 
-bool BufferComponents::CreateDebugVertexBuffer(ID3D11Device* &gDevice) {
+bool BufferComponents::CreateDebugVertexBuffer(ID3D11Device* &gDevice)
+{
 
 	HRESULT hr;
 

@@ -20,10 +20,14 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(platformResource);
 	SAFE_RELEASE(fortressResource);
 	SAFE_RELEASE(defaultResource);
+	SAFE_RELEASE(texSampler);
+	
+	SAFE_RELEASE(HUDResource);
+	SAFE_RELEASE(blendState);
 	SAFE_RELEASE(playerResource);
 	SAFE_RELEASE(LavaResource);
 	
-	SAFE_RELEASE(texSampler);
+	
 	SAFE_RELEASE(shadowSampler);
 
 	SAFE_RELEASE(shadowSRV);
@@ -59,6 +63,23 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	hr = gDevice->CreateSamplerState(&sampDesc, &texSampler);
 
+
+
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc.RenderTarget[0].BlendEnable = true;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;//D3D11_BLEND_SRC1_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_DEST_ALPHA;//D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	hr = gDevice->CreateBlendState(&blendDesc, &blendState);
+
+
+
 	if (FAILED(hr)) {
 
 		return false;
@@ -81,6 +102,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER.png", NULL, &menuResources[6], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER_RESTART_CLICK.png", NULL, &menuResources[7], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER_QUIT_CLICK.png", NULL, &menuResources[8], 1920);
+	CreateWICTextureFromFile(gDevice, NULL, L"Fonts\\HUDFont.png", NULL, &HUDResource, 256);
 
 	if (SUCCEEDED(hr) && texture != 0) {
 
@@ -98,6 +120,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[6]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[7]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[8]);
+		gDevice->CreateShaderResourceView(texture, nullptr, &HUDResource);
 
 		if (FAILED(hr)) {
 
