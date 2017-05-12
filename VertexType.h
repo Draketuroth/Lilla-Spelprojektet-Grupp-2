@@ -51,5 +51,14 @@ struct RayVertex
 {
 	XMFLOAT3 pos;
 };
-
+// collisionGroup
+#define BIT(x) (1<<(x))
+enum collisiontypes {
+	COL_NOTHING = 0,        //<Collide with nothing
+	COL_PLAYER = BIT(1),    //<Collide with player
+	COL_LEVEL = BIT(2),      //<Collide with arena
+	COL_ENEMY = BIT(3),     //<Collide with enemies
+	COL_PROJ = BIT(4),      //<Collide with projectiles
+	COL_RAY = BIT(5)        //<Collide with ray
+};
 #endif
