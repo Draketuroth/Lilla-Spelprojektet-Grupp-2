@@ -413,7 +413,7 @@ void SceneContainer::update(HWND &windowHandle)
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
-
+	enemiesAlive();
 	for (UINT i = 0; i < this->nrOfEnemies; i++){
 	
 		this->useAI(character, enemies[i]);
@@ -454,6 +454,22 @@ void SceneContainer::incrementLevels()
 	HUD.setFont(gHandler.gDevice);
 	HUD.CreateFontIndexBuffer(gHandler.gDevice);
 
+}
+
+void SceneContainer::enemiesAlive()
+{
+	int nrOfDeadEnemies = 0;
+	for (int i = 0; i < nrOfEnemies; i++)
+	{
+		if (!enemies[i].getAlive())
+		{
+			nrOfDeadEnemies++;
+		}
+	}
+	if (nrOfDeadEnemies == nrOfEnemies)
+	{
+		incrementLevels();
+	}
 }
 
 void SceneContainer::drawFortress() {

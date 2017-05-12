@@ -104,7 +104,7 @@ public:
 	void loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
 	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices);
 
-	void IncrementLevels();
+	
 
 	//------------------------------------------------------------//
 	// FILES
@@ -158,7 +158,7 @@ public:
 	void drawPlatforms();
 	void drawDebugCubes();
 	void drawHUD();
-
+	
 	void clear();
 	void resetRenderTarget(GraphicComponents &gHandler);
 
@@ -178,6 +178,9 @@ public:
 	void renderProjectile();
 
 	void createSideBoundingBoxes();
+	void incrementLevels();
+
+	void enemiesAlive();
 
 };
 
