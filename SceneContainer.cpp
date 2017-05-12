@@ -169,7 +169,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle) {
 
 	// Set the number of enemies
-	this->nrOfEnemies = 15;
+	this->nrOfEnemies = 4;
 
 	enemies.clear();
 	enemies.resize(nrOfEnemies);
@@ -202,11 +202,6 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 	enemies[i].createProjectile(bulletPhysicsHandler);
 
 	}
-	
-}
-
-void SceneContainer::ReInitialize() {
-
 	
 }
 
@@ -399,6 +394,88 @@ bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<S
 float SceneContainer::RandomNumber(float Minimum, float Maximum) {
 
 	return ((float(rand()) / float(RAND_MAX)) * (Maximum - Minimum)) + Minimum;
+}
+
+void SceneContainer::ReRelease() {
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// RIGID BODIES
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	// Remove player rigid body
+	bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(character.rigidBody);
+
+	for (UINT i = 0; i < nrOfEnemies; i++) 
+	{
+
+		// Remove enemy rigid body
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].rigidBody);
+
+		// Remove projectile rigid body
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].fireBall.projectileRigidBody);
+	}
+
+	// Remove platform rigid bodies
+	for(UINT i = 0; i < bHandler.nrOfCubes; i++)
+	{
+
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(bHandler.cubeObjects[i].rigidBody);
+
+	}
+
+	// Remove lava plane rigid body
+	bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(bHandler.lavaPitRigidBody);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// CLEAR THE RIGID BODIES FROM THE DYNAMICS WORLD
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	bulletPhysicsHandler.rigidBodies.clear();
+
+}
+
+void SceneContainer::ReInitialize() {
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// RE-CREATE RIGID BODIES
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	
+	// Recreate player
+	character.setPos(XMFLOAT3(2, 2, 5));
+
+	XMFLOAT3 initSpawnPos;
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		initSpawnPos.x = RandomNumber(-15, 15);
+		initSpawnPos.y = 2;
+		initSpawnPos.z = RandomNumber(-15, 15);
+
+		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+
+	}
+
+	character.CreatePlayerBoundingBox(0.10, character.getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandler);
+	this->character.rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
+
+	// Recreate enemy
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		//enemies[i].setHealth
+		enemies[i].setAlive(true);
+		enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+		enemies[i].createProjectile(bulletPhysicsHandler);
+
+	}
+
+	// Recreate the platforms
+	bHandler.nrOfCubes = 0;
+	bHandler.CreatePlatforms(gHandler.gDevice, bulletPhysicsHandler);
+
+	// Recreate the lava plane rigid body
+	bHandler.CreateCollisionPlane(bulletPhysicsHandler, XMFLOAT3(0, -4, 0));
+
+
 }
 
 bool SceneContainer::readFiles() {

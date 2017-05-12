@@ -386,7 +386,6 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
 	
-		
 		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
 		rayCallBack.m_collisionFilterGroup = COL_RAY;// Making the ray a collisiontype COL_RAY
 		rayCallBack.m_collisionFilterMask = COL_ENEMY;//Only checks collision with Enemies
@@ -396,7 +395,6 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		end = XMFLOAT3{ direction.x * 50, 1.2f, direction.z * 50 };
 		//Drawing the ray for debug purposes
 		
-
 		if (rayCallBack.hasHit())
 		{
 			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
@@ -444,7 +442,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 			this->shooting = false;
 		}
 	}
-	//renderRay(gHandler, bHandler, start, end);
+	
 }
 
 //bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)
