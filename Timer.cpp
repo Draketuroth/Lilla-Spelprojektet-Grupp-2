@@ -48,7 +48,7 @@ void Timer::updateCurrentTime()
 	{
 		this->frameCount = 0;
 	}
-	this->frameCount += 900 * getDeltaTime();
+	this->frameCount += 880 * getDeltaTime();
 }
 
 void Timer::resetTimer()
@@ -65,3 +65,18 @@ float Timer::getCountsPerSecond()
 	return this->countsPerSecond;
 }
 
+int Timer::getSeconds()
+{
+	time_t timer; 
+	int seconds; 
+
+	//timer(&seconds);
+
+	//
+	//if (seconds > 12)
+	//{
+	//	seconds = 0; 
+	//}
+
+	return seconds; 
+}

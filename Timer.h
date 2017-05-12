@@ -1,6 +1,6 @@
 #pragma once
 #include <windows.h>
-
+#include <time.h>
 
 
 
@@ -15,10 +15,14 @@ private:
 
 	float deltaTime;
 	int frameCount;
+
+	//to Lava movment
+	
 public:
 	Timer();
 	~Timer();
-
+	//to Lava movment
+	int getSeconds(); 
 	void initialize();
 	float getDeltaTime();
 	float getCurrentTime();

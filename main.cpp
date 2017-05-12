@@ -168,6 +168,8 @@ int RunApplication()
 
 				timer.updateCurrentTime();
 
+				//timer.getSeconds(); 
+
 				break;
 			}
 			

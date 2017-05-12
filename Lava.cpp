@@ -181,17 +181,19 @@ void Lava::IBuffer(ID3D11Device* device)
 int Lava::swap(int frameCounter, ID3D11Device* device)
 {
 	//0-1000
+
+
 	if (frameCounter <= 1000)
 	{
 		currentMap = 0;
-		value = frameCounter / 100000.0f;
+		value = (frameCounter / 1000.0f);
 		weightSwap = true;
 	}
 	//1000 och över
 	else
 	{
 		lastMap = 1;
-		value = frameCounter / 200000.0f;
+		value = (frameCounter / 2000.0f);
 		weightSwap = false;
 
 	}
@@ -199,14 +201,14 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 	if (frameCounter >= 2000 && frameCounter <= 3000)
 	{
 		currentMap = 2;
-		value = frameCounter / 300000.0f; 
+		value = (frameCounter / 3000.0f);
 		weightSwap = true;
 	}
 	//3000 och över
 	else if (frameCounter > 3000)
 	{
 		lastMap = 3;
-		value = frameCounter / 400000.0f;
+		value = (frameCounter / 4000.0f);
 		weightSwap = false;
 	}
 
