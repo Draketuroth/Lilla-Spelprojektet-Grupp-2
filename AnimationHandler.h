@@ -153,6 +153,16 @@ struct Blend { // Temporary struct containing a VertexBlendInfo vector for debug
 	}
 };
 
+//----------------------------------------------------------------------------------------------------------------------------------//
+// STATES
+//----------------------------------------------------------------------------------------------------------------------------------//
+
+#define RUN 0
+#define IDLE 1
+#define DEATH 2
+#define MELEE 3
+#define RANGE 4
+
 class AnimationHandler { // Handler Class to store FBX data and manage the Skeletal Animation System
 
 public:
@@ -176,7 +186,7 @@ public:
 	// PRIMARY FUNCTIONS AND VARIABLES
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
+	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer, float playerTimePos);
 	void UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, float instanceTimePos);
 	bool MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies, FileImporter &importer);
 	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
@@ -189,8 +199,6 @@ public:
 	float enemyTimePos[15];
 
 	float animTimePos;
-	float playerAnimTimePos;
-	float enemyAnimTimePos;
 
 private:
 

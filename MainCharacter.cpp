@@ -176,6 +176,16 @@ void MainCharacter::CheckInput() {
 
 	}
 
+	if (shooting == true) {
+
+		currentAnimIndex = 4;
+	}
+
+	if (attacking == true) {
+
+		currentAnimIndex = 3;
+	}
+
 	this->rigidBody->setLinearVelocity(speed);
 }
 
@@ -271,7 +281,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
-		currentAnimIndex = 3;
+		playerAnimTimePos = 0;
 		attackSound.setBuffer(soundBuffer[1]);
 		attackSound.play();
 
@@ -356,7 +366,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
-
+		playerAnimTimePos = 0;
 		attackSound.setBuffer(soundBuffer[0]);
 		attackSound.play();
 		
@@ -440,6 +450,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		else
 		{
 			this->shooting = false;
+			
 		}
 	}
 	

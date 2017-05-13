@@ -55,6 +55,8 @@ public:
 	float shootTimer;
 	float shootCD;
 
+	float playerAnimTimePos;
+
 	sf::Sound attackSound;
 	sf::SoundBuffer soundBuffer[2];
 

@@ -82,6 +82,8 @@ int RunApplication()
 	sceneContainer.character.timer.initialize();
 	updateLava();
 
+	int gameOverTimer;
+
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -196,14 +198,17 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 30;
+	sceneContainer.character.playerAnimTimePos += timer.getDeltaTime() * 30;
+	float currentPlayerTimePos = sceneContainer.character.playerAnimTimePos;
+	int currentAnimIndex = sceneContainer.character.currentAnimIndex;
+	int currentAnimationLength = sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
-	if (sceneContainer.animHandler.playerAnimTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
+	if (currentPlayerTimePos >= currentAnimationLength) {
 
-		sceneContainer.animHandler.playerAnimTimePos = 0.0f;
+		sceneContainer.character.playerAnimTimePos = 0.0f;
 	}
 
-	sceneContainer.animHandler.UpdatePlayerAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.mainCharacterFile);
+	sceneContainer.animHandler.UpdatePlayerAnimation(sceneContainer.gHandler.gDeviceContext, currentAnimIndex, sceneContainer.mainCharacterFile, currentPlayerTimePos);
 }
 
 void updateEnemies() {
@@ -216,11 +221,7 @@ void updateEnemies() {
 			sceneContainer.enemies[i].EnemyPhysics();
 
 			// Update enemy animation time pose
-			sceneContainer.animHandler.enemyTimePos[i] = timer.getDeltaTime() * 30;
-
-			// Reset animation time pose if necessary
-			sceneContainer.enemies[i].currentAnimIndex = 0;
-
+			sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
 			float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
 			int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
 			int currentAnimationLength = sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;

@@ -27,9 +27,9 @@ void AnimationHandler::ReleaseAll() {
 	SAFE_RELEASE(gEnemyBoneBuffer);
 }
 
-void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext, int animIndex, FileImporter &importer) {
+void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext, int animIndex, FileImporter &importer, float playerTimePos) {
 
-	animTimePos = playerAnimTimePos;
+	animTimePos = playerTimePos;
 	// Open up a new XMFLOAT4x4 array to temporarily store the updated joint transformations
 	vector<XMFLOAT4X4> globalJointTransforms;
 	globalJointTransforms.resize(importer.skinnedMeshes[0].hierarchy.size());
@@ -65,7 +65,7 @@ void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext,
 	// Clear last frame's jonit transformation
 	iceEnemyFinalTransformations[currentInstance].clear();
 
-	//animTimePos = instanceTimePos;
+	animTimePos = instanceTimePos;
 
 	vector<XMFLOAT4X4> globalJointTransforms;
 	globalJointTransforms.resize(importer.skinnedMeshes[0].hierarchy.size());
