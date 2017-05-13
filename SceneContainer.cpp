@@ -205,6 +205,42 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 	
 }
 
+void SceneContainer::RespawnEnemies() {
+
+	// Remove enemy rigid bodies
+	for (UINT i = 0; i < nrOfEnemies; i++)
+	{
+
+		// Remove enemy rigid body
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].rigidBody);
+
+		// Remove projectile rigid body
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].fireBall.projectileRigidBody);
+	}
+
+	// Clear enemy rigid bodies vector
+	bulletPhysicsHandler.enemyRigidBodies.clear();
+
+	// Recreate enemies and their rigid bodies
+
+	XMFLOAT3 initSpawnPos;
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		initSpawnPos.x = RandomNumber(-15, 15);
+		initSpawnPos.y = 2;
+		initSpawnPos.z = RandomNumber(-15, 15);
+
+		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+
+		enemies[i].setAlive(true);
+		enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+		enemies[i].createProjectile(bulletPhysicsHandler);
+
+	}
+
+}
+
 bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 {
 	HRESULT hr;
@@ -468,6 +504,7 @@ void SceneContainer::ReRelease() {
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	bulletPhysicsHandler.rigidBodies.clear();
+	bulletPhysicsHandler.enemyRigidBodies.clear();
 
 }
 

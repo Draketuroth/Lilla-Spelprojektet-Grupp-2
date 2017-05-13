@@ -39,12 +39,22 @@ void BulletComponents::InitializeBulletPhysics() {
 
 void BulletComponents::ReleaseAll() {
 
-	for (int i = 0; i < rigidBodies.size(); i++) {
+	for (UINT i = 0; i < rigidBodies.size(); i++) {
 
 		bulletDynamicsWorld->removeCollisionObject(rigidBodies[i]);
 		btMotionState* motion = rigidBodies[i]->getMotionState();
 		btCollisionShape* shape = rigidBodies[i]->getCollisionShape();
 		delete rigidBodies[i];
+		delete motion;
+		delete shape;
+	}
+
+	for (UINT i = 0; i < enemyRigidBodies.size(); i++) {
+
+		bulletDynamicsWorld->removeCollisionObject(enemyRigidBodies[i]);
+		btMotionState* motion = enemyRigidBodies[i]->getMotionState();
+		btCollisionShape* shape = enemyRigidBodies[i]->getCollisionShape();
+		delete enemyRigidBodies[i];
 		delete motion;
 		delete shape;
 	}
