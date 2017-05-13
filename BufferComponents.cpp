@@ -281,7 +281,7 @@ bool BufferComponents::CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter
 	vector<StandardVertex>fortressVertices;
 
 	fortressScaling = fortressImporter.standardMeshes[0].meshTransformation.meshScale;
-	fortressWorld = XMMatrixScaling(0.025, 0.025, 0.025);
+	fortressWorld = XMMatrixScaling(0.025, 0.025, 0.025) * XMMatrixRotationY(29.8);
 
 	for (UINT i = 0; i < fortressImporter.standardMeshes[0].vertices.size(); i++) {
 
