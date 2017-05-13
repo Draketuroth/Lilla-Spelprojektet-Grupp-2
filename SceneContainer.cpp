@@ -540,6 +540,11 @@ bool SceneContainer::readFiles() {
 		return false;
 	}
 
+	if (!lavaEnemyFile.readFormat("Format//lavaEnemy_binary.txt"))
+	{
+		return false;
+	}
+
 	return true;
 }
 

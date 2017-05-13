@@ -124,6 +124,7 @@ public:
 	FileImporter iceEnemyFile;
 	FileImporter FortressFile;
 	FileImporter PlatformFile;
+	FileImporter lavaEnemyFile;
 
 	//------------------------------------------------------------//
 	// COMPONENTS
