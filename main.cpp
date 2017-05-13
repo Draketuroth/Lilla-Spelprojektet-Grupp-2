@@ -198,7 +198,7 @@ void updateCharacter(HWND windowhandle)
 
 	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 30;
 
-	if (sceneContainer.animHandler.animTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
+	if (sceneContainer.animHandler.playerAnimTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
 
 		sceneContainer.animHandler.playerAnimTimePos = 0.0f;
 	}
@@ -220,19 +220,24 @@ void updateEnemies() {
 
 			// Reset animation time pose if necessary
 			sceneContainer.enemies[i].currentAnimIndex = 0;
-			int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
-			if (sceneContainer.animHandler.animTimePos >= sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length) {
 
-				sceneContainer.animHandler.enemyAnimTimePos = 0.0f;
+			float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
+			int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
+			int currentAnimationLength = sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
+
+			if (currentEnemyTimePos >= currentAnimationLength) {
+
+				sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
 			}
 
-			sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.iceEnemyFile, i, sceneContainer.enemies[i].currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
+			sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.iceEnemyFile, i, currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
 
 		}
 
-		sceneContainer.animHandler.MapEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfEnemies, sceneContainer.iceEnemyFile);
-
 	}
+
+	sceneContainer.animHandler.MapEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfEnemies, sceneContainer.iceEnemyFile);
+
 }
 
 void lavamovmentUpdate()

@@ -60,7 +60,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 
 }
 
-void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, int instanceTimePos) {
+void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, float instanceTimePos) {
 
 	// Clear last frame's jonit transformation
 	iceEnemyFinalTransformations[currentInstance].clear();

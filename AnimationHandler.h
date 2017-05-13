@@ -177,7 +177,7 @@ public:
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
-	void UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, int instanceTimePos);
+	void UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, float instanceTimePos);
 	bool MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies, FileImporter &importer);
 	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	
@@ -186,7 +186,7 @@ public:
 	vector<Vertex_Bone>vertices;	// Extra copy of vertices
 
 	vector<XMFLOAT4X4>iceEnemyFinalTransformations[15];
-	int enemyTimePos[15];
+	float enemyTimePos[15];
 
 	float animTimePos;
 	float playerAnimTimePos;
