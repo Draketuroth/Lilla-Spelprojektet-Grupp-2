@@ -9,6 +9,7 @@
 #include "SceneContainer.h"
 #include "Timer.h"
 #include "GameState.h"
+#include <thread>
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
@@ -125,6 +126,8 @@ int RunApplication()
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateEnemies();
+				/*thread enemyThread(updateEnemies);
+				enemyThread.join();*/
 				updateBuffers();
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
@@ -220,7 +223,7 @@ void updateEnemies() {
 			int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
 			if (sceneContainer.animHandler.animTimePos >= sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length) {
 
-				sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
+				sceneContainer.animHandler.enemyAnimTimePos = 0.0f;
 			}
 
 			sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.iceEnemyFile, i, sceneContainer.enemies[i].currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
