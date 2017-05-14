@@ -102,8 +102,10 @@ public:
 	void RespawnEnemies();
 	bool createProjectileBox(ID3D11Device* gDevice);
 
-	void loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
-	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<Vertex_Bone> vertices, AnimationHandler &animationHandler, ICE_ENEMY_SKINNED_DATA &skinData);
+	void loadEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice, vector<Vertex_Bone>&vertices);
+	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice);
+	bool createLavaEnemyBuffer(ID3D11Device* &graphicDevice);
+	bool createEnemyBoneBuffer(ID3D11Device* &graphicDevice, ENEMY_SKINNED_DATA &skinData);
 
 	void IncrementLevels();
 
@@ -158,10 +160,15 @@ public:
 	ID3D11Buffer* gProjectileIndexBuffer;
 
 	int nrOfEnemies;
-	ICE_ENEMY_SKINNED_DATA iceEnemySkinData;
 	vector<Enemy> enemies;
+
+	ENEMY_SKINNED_DATA EnemySkinData;
+	
 	ID3D11Buffer* enemyIceVertexBuffer;
 	vector<Vertex_Bone>iceEnemyVertices;
+
+	ID3D11Buffer* enemyLavaVertexBuffer;
+	vector<Vertex_Bone>lavaEnemyVertices;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS

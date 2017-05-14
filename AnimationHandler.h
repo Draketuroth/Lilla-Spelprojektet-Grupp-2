@@ -45,9 +45,9 @@ struct PerIceEnemyInstanceData { // Struct to hold the Inverse Global Bind Pose 
 	XMFLOAT4X4 gBoneTransform[24];
 };
 
-struct ICE_ENEMY_SKINNED_DATA {
+struct ENEMY_SKINNED_DATA {
 
-	PerIceEnemyInstanceData enemyInstance[15];
+	PerIceEnemyInstanceData enemyInstance[25];
 };
 
 struct VertexBlendInfo {
@@ -157,12 +157,6 @@ struct Blend { // Temporary struct containing a VertexBlendInfo vector for debug
 // STATES
 //----------------------------------------------------------------------------------------------------------------------------------//
 
-#define RUN 0
-#define IDLE 1
-#define DEATH 2
-#define MELEE 3
-#define RANGE 4
-
 class AnimationHandler { // Handler Class to store FBX data and manage the Skeletal Animation System
 
 public:
@@ -193,10 +187,8 @@ public:
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
 
-	vector<Vertex_Bone>vertices;	// Extra copy of vertices
-
-	vector<XMFLOAT4X4>iceEnemyFinalTransformations[15];
-	float enemyTimePos[15];
+	vector<XMFLOAT4X4>EnemyFinalTransformations[25];
+	float enemyTimePos[25];
 
 	float animTimePos;
 

@@ -38,6 +38,7 @@ void SceneContainer::releaseAll() {
 	}
 
 	SAFE_RELEASE(enemyIceVertexBuffer);
+	SAFE_RELEASE(enemyLavaVertexBuffer);
 
 	SAFE_RELEASE(gProjectileBuffer);
 	SAFE_RELEASE(gProjectileIndexBuffer);
@@ -189,11 +190,15 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 	// Create the projectile vertex and index buffer all enemies will share
 	createProjectileBox(gHandler.gDevice);
 
-	// Create the vertex buffer all the ice enemies will share
-	loadEnemyIceVertices(iceEnemyFile, graphicDevice);
-	createIceEnemyBuffer(graphicDevice, iceEnemyVertices, animHandler, iceEnemySkinData);
+	// Load the enemy vertices 
+	loadEnemyVertices(iceEnemyFile, graphicDevice, iceEnemyVertices);
+	loadEnemyVertices(lavaEnemyFile, graphicDevice, lavaEnemyVertices);
 
-	// Create the vertex buffer all the lava enemies will share
+	// Create the vertex buffer all the ice enemies will share
+	createLavaEnemyBuffer(gHandler.gDevice);
+	createIceEnemyBuffer(gHandler.gDevice);
+
+	createEnemyBoneBuffer(graphicDevice, EnemySkinData);
 
 	// Spawn the enemies with their unique content, such as rigidbodies
 	for (UINT i = 0; i < nrOfEnemies; i++) {
@@ -374,7 +379,7 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 	return true;
 }
 
-void SceneContainer::loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice) {
+void SceneContainer::loadEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice, vector<Vertex_Bone>&vertices){
 
 	HRESULT hr;
 	//load mesh vertices
@@ -403,12 +408,71 @@ void SceneContainer::loadEnemyIceVertices(FileImporter &importer, ID3D11Device* 
 		vertex.weights[2] = importer.skinnedMeshes[0].vertices[i].weights[2];
 		vertex.weights[3] = importer.skinnedMeshes[0].vertices[i].weights[3];
 
-		iceEnemyVertices.push_back(vertex);
+		vertices.push_back(vertex);
 
 	}
 }
 
-bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<Vertex_Bone> vertices, AnimationHandler &animationHandler, ICE_ENEMY_SKINNED_DATA &skinData) {
+bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice) {
+
+	HRESULT hr;
+
+	//----------------------------------------------------------------------//
+	// VERTEX BUFFER
+	//----------------------------------------------------------------------//
+
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(Vertex_Bone) * iceEnemyVertices.size();
+
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = &iceEnemyVertices[0];
+	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &enemyIceVertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+
+}
+
+bool SceneContainer::createLavaEnemyBuffer(ID3D11Device* &graphicDevice) {
+
+	HRESULT hr;
+
+	//----------------------------------------------------------------------//
+	// VERTEX BUFFER
+	//----------------------------------------------------------------------//
+
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(Vertex_Bone) * lavaEnemyVertices.size();
+
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = &iceEnemyVertices[0];
+	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &enemyLavaVertexBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
+bool SceneContainer::createEnemyBoneBuffer(ID3D11Device* &graphicDevice, ENEMY_SKINNED_DATA &skinData) {
 
 	HRESULT hr;
 
@@ -420,7 +484,7 @@ bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<V
 
 	memset(&boneBufferDesc, 0, sizeof(boneBufferDesc));
 
-	boneBufferDesc.ByteWidth = sizeof(ICE_ENEMY_SKINNED_DATA);
+	boneBufferDesc.ByteWidth = sizeof(ENEMY_SKINNED_DATA);
 	boneBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	boneBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	boneBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -438,30 +502,6 @@ bool SceneContainer::createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<V
 
 		return false;
 	}
-
-	//----------------------------------------------------------------------//
-	// VERTEX BUFFER
-	//----------------------------------------------------------------------//
-
-	D3D11_BUFFER_DESC bufferDesc;
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(Vertex_Bone) * vertices.size();
-
-	D3D11_SUBRESOURCE_DATA data;
-	ZeroMemory(&data, sizeof(data));
-	data.pSysMem = &vertices[0];
-	hr = graphicDevice->CreateBuffer(&bufferDesc, &data, &enemyIceVertexBuffer);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
-
-	return true;
 }
 
 float SceneContainer::RandomNumber(float Minimum, float Maximum) {

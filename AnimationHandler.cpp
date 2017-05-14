@@ -63,7 +63,7 @@ void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext
 void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, float instanceTimePos) {
 
 	// Clear last frame's jonit transformation
-	iceEnemyFinalTransformations[currentInstance].clear();
+	EnemyFinalTransformations[currentInstance].clear();
 
 	animTimePos = instanceTimePos;
 
@@ -88,7 +88,7 @@ void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext,
 
 		// Store the final transformation of the current joint and push back to its transformation vector
 		XMStoreFloat4x4(&finalTransform, XMMatrixTranspose(b.inverseBindPoseMatrix * b.GlobalTx));
-		iceEnemyFinalTransformations[currentInstance].push_back(finalTransform);
+		EnemyFinalTransformations[currentInstance].push_back(finalTransform);
 	}
 
 }
@@ -109,14 +109,14 @@ bool AnimationHandler::MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, i
 	}
 
 	// Create buffer to the instance buffer
-	ICE_ENEMY_SKINNED_DATA* boneBufferPointer = (ICE_ENEMY_SKINNED_DATA*)boneMappedResource.pData;
+	ENEMY_SKINNED_DATA* boneBufferPointer = (ENEMY_SKINNED_DATA*)boneMappedResource.pData;
 
 	for (int instanceIndex = 0; instanceIndex < nrOfEnemies; instanceIndex++) {
 
-		for (UINT transformIndex = 0; transformIndex  < iceEnemyFinalTransformations[instanceIndex].size(); transformIndex++) {
+		for (UINT transformIndex = 0; transformIndex  < EnemyFinalTransformations[instanceIndex].size(); transformIndex++) {
 
 			// Get the current joint LOCAL transformation at the current animation time pose
-			XMFLOAT4X4 finalTransform = iceEnemyFinalTransformations[instanceIndex][transformIndex];
+			XMFLOAT4X4 finalTransform = EnemyFinalTransformations[instanceIndex][transformIndex];
 
 			boneBufferPointer->enemyInstance[instanceIndex].gBoneTransform[transformIndex] = finalTransform;
 		}

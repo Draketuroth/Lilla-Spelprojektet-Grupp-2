@@ -1,4 +1,4 @@
-#define MAX_ENEMY 15
+#define MAX_ENEMY 25
 
 struct PerIceEnemyInstanceData {
 
@@ -24,7 +24,7 @@ cbuffer ENEMY_TRANSFORM : register(b1) {
 
 cbuffer ICE_ENEMY_SKINNED_DATA : register(b2) {
 
-	PerIceEnemyInstanceData enemyInstance[15];
+	PerIceEnemyInstanceData enemyInstance[MAX_ENEMY];
 };
 
 struct VS_IN
