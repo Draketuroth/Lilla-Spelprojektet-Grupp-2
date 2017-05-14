@@ -47,7 +47,7 @@ struct PerIceEnemyInstanceData { // Struct to hold the Inverse Global Bind Pose 
 
 struct ENEMY_SKINNED_DATA {
 
-	PerIceEnemyInstanceData enemyInstance[25];
+	PerIceEnemyInstanceData enemyInstance[30];
 };
 
 struct VertexBlendInfo {
@@ -182,13 +182,13 @@ public:
 
 	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer, float playerTimePos);
 	void UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, float instanceTimePos);
-	bool MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies, FileImporter &importer);
+	bool MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies);
 	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
 
-	vector<XMFLOAT4X4>EnemyFinalTransformations[25];
-	float enemyTimePos[25];
+	vector<XMFLOAT4X4>EnemyFinalTransformations[30];
+	float enemyTimePos[30];
 
 	float animTimePos;
 

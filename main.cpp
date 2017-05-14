@@ -226,24 +226,45 @@ void updateEnemies() {
 			// Update enemy physics
 			sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos());
 
-			// Update enemy animation time pose
-			sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
-			float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
-			int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
-			int currentAnimationLength = sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
+			if(i < sceneContainer.nrOfIceEnemies){
 
-			if (currentEnemyTimePos >= currentAnimationLength) {
+				// Update enemy animation time pose
+				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
+				float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
+				int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
+				int currentAnimationLength = sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
-				sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
+				if (currentEnemyTimePos >= currentAnimationLength) {
+
+					sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
+				}
+
+				sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.iceEnemyFile, i, currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
+
 			}
 
-			sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.iceEnemyFile, i, currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
+			else if (i >= sceneContainer.nrOfIceEnemies) {
+
+				// Update enemy animation time pose
+				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
+				float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
+				int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
+				int currentAnimationLength = sceneContainer.lavaEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
+
+				if (currentEnemyTimePos >= currentAnimationLength) {
+
+					sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
+				}
+
+				sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.lavaEnemyFile, i, currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
+
+			}
 
 		}
 
 	}
 
-	sceneContainer.animHandler.MapEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfEnemies, sceneContainer.iceEnemyFile);
+	sceneContainer.animHandler.MapEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfEnemies);
 
 }
 

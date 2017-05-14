@@ -1,4 +1,4 @@
-#define MAX_ENEMY 25
+#define MAX_ENEMY 30
 
 struct PerIceEnemyInstanceData {
 

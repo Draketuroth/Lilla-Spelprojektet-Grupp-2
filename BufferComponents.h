@@ -41,13 +41,13 @@ struct PLAYER_TRANSFORM {
 
 struct ENEMY_TRANSFORM {
 
-	XMMATRIX matrixW[15];
+	XMMATRIX matrixW[30];
 };
 
 
 struct PROJECTILE_TRANSFORM
 {
-	XMMATRIX worldMatrix[15];
+	XMMATRIX worldMatrix[30];
 };
 
 struct CubeObjects {

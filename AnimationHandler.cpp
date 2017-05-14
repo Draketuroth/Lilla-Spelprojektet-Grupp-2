@@ -93,7 +93,7 @@ void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext,
 
 }
 
-bool AnimationHandler::MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies, FileImporter &importer) {
+bool AnimationHandler::MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies) {
 
 	HRESULT hr;
 

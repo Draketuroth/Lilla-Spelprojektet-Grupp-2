@@ -102,7 +102,8 @@ public:
 	void RespawnEnemies();
 	bool createProjectileBox(ID3D11Device* gDevice);
 
-	void loadEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice, vector<Vertex_Bone>&vertices);
+	void loadIceEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
+	void loadLavaEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
 	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice);
 	bool createLavaEnemyBuffer(ID3D11Device* &graphicDevice);
 	bool createEnemyBoneBuffer(ID3D11Device* &graphicDevice, ENEMY_SKINNED_DATA &skinData);
@@ -160,6 +161,8 @@ public:
 	ID3D11Buffer* gProjectileIndexBuffer;
 
 	int nrOfEnemies;
+	int nrOfIceEnemies;
+	int nrOfLavaEnemies;
 	vector<Enemy> enemies;
 
 	ENEMY_SKINNED_DATA EnemySkinData;
@@ -190,7 +193,8 @@ public:
 
 	void renderScene();
 	void renderCharacters();
-	void renderEnemies();
+	void renderIceEnemies();
+	void renderLavaEnemies();
 	void renderShadowMap();
 
 	void renderLava();

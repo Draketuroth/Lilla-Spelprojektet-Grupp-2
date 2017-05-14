@@ -412,8 +412,6 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 			int i = rayCallBack.m_collisionObject->getUserIndex();
 
-			assert(i < 15 && i >= 0);
-
 			//Used for knockback----------------------------------------------------------
 			btTransform playerTrans;
 			btTransform enemyTrans;
