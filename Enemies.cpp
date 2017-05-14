@@ -70,17 +70,31 @@ void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHa
 	
 }
 
-void Enemy::EnemyPhysics()
+void Enemy::EnemyPhysics(XMFLOAT3 playerPos)
 {
 	XMFLOAT3 pos;
 
 	float time = timer.getDeltaTime();
 
-
+	XMFLOAT3 lookat = { playerPos.x, playerPos.y , playerPos.z };
 	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
 	XMFLOAT3 oldpos = this->getPos();
+	
+	// Calculate rotation to player
+	XMVECTOR target = XMLoadFloat3(&lookat);
+	XMVECTOR enemyPos = XMLoadFloat3(&oldpos);
+	XMVECTOR upVector = { 0.0f, 1.0f, 0.0f };
+	
+	// Calculate rotation matrix axis values
+	XMVECTOR zAxis = XMVector3Normalize(XMVectorSubtract(target, enemyPos));
+	XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross(upVector, zAxis));
+	XMVECTOR yAxis = XMVector3Cross(zAxis, xAxis);
 
-	XMMATRIX R = XMMatrixIdentity();
+	// Important not to forget the w component of the matrix to allow translation
+	XMVECTOR lastRow = { 0.0f, 0.0f, 0.0f , 1.0f};
+
+	// Set rotation and scale matrix
+	XMMATRIX R = XMMATRIX(xAxis, yAxis, zAxis, lastRow);
 	XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
 	updateWorldMatrix(R, scaling);
 	
@@ -104,10 +118,6 @@ void Enemy::EnemyPhysics()
 	XMStoreFloat3(&rigidPos, t);
 
 	this->setPos(rigidPos);
-
-	
-
-	
 
 	timer.updateCurrentTime();
 }

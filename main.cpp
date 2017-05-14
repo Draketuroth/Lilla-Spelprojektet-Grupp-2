@@ -224,7 +224,7 @@ void updateEnemies() {
 		if (sceneContainer.enemies[i].getAlive() == true) {
 
 			// Update enemy physics
-			sceneContainer.enemies[i].EnemyPhysics();
+			sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos());
 
 			// Update enemy animation time pose
 			sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
