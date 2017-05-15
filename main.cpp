@@ -226,7 +226,7 @@ void updateEnemies() {
 			// Update enemy physics
 			sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos());
 
-			if(i < sceneContainer.nrOfIceEnemies){
+			if (i < sceneContainer.nrOfIceEnemies){
 
 				// Update enemy animation time pose
 				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;

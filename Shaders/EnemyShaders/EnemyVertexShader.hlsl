@@ -1,8 +1,9 @@
 #define MAX_ENEMY 30
+#define MAX_JOINTS 24
 
 struct PerIceEnemyInstanceData {
 
-	matrix gBoneTransform[24];
+	matrix gBoneTransform[MAX_JOINTS];
 };
 
 cbuffer VS_CONSTANT_BUFFER : register(b0) {
@@ -22,7 +23,7 @@ cbuffer ENEMY_TRANSFORM : register(b1) {
 	matrix matrixW[MAX_ENEMY];
 };
 
-cbuffer ICE_ENEMY_SKINNED_DATA : register(b2) {
+cbuffer ENEMY_SKINNED_DATA : register(b2) {
 
 	PerIceEnemyInstanceData enemyInstance[MAX_ENEMY];
 };

@@ -829,7 +829,7 @@ void SceneContainer::render()
 	//drawDebugCubes();
 	renderCharacters();
 	renderIceEnemies();
-	//renderLavaEnemies();
+	renderLavaEnemies();
 	renderScene();
 	drawHUD();
 	renderProjectile();
@@ -980,23 +980,11 @@ void SceneContainer::renderIceEnemies()
 
 void SceneContainer::renderLavaEnemies()
 {
-	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &animHandler.gEnemyBoneBuffer);
-
-	ID3D11GeometryShader* nullShader = nullptr;
-	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
-
-	gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
+	
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResource);
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
-
-	ID3D11Buffer* nullBuffer = { nullptr };
-	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
