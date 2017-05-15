@@ -70,7 +70,7 @@ void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHa
 	
 }
 
-void Enemy::EnemyPhysics(XMFLOAT3 playerPos)
+void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 {
 	XMFLOAT3 pos;
 
@@ -95,7 +95,6 @@ void Enemy::EnemyPhysics(XMFLOAT3 playerPos)
 
 	// Set rotation and scale matrix
 	XMMATRIX R = XMMATRIX(xAxis, yAxis, zAxis, lastRow);
-	XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
 	updateWorldMatrix(R, scaling);
 	
 	XMMATRIX transform;

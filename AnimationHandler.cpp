@@ -13,7 +13,8 @@
 AnimationHandler::AnimationHandler() {
 
 	gCharacterBoneBuffer = nullptr;
-	gEnemyBoneBuffer = nullptr;
+	gIceEnemyBoneBuffer = nullptr;
+	gLavaEnemyBoneBuffer = nullptr;
 }
 
 AnimationHandler::~AnimationHandler() {
@@ -24,7 +25,8 @@ AnimationHandler::~AnimationHandler() {
 void AnimationHandler::ReleaseAll() {
 
 	SAFE_RELEASE(gCharacterBoneBuffer);
-	SAFE_RELEASE(gEnemyBoneBuffer);
+	SAFE_RELEASE(gIceEnemyBoneBuffer);
+	SAFE_RELEASE(gLavaEnemyBoneBuffer);
 }
 
 void AnimationHandler::UpdatePlayerAnimation(ID3D11DeviceContext* gDeviceContext, int animIndex, FileImporter &importer, float playerTimePos) {
@@ -93,7 +95,7 @@ void AnimationHandler::UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext,
 
 }
 
-bool AnimationHandler::MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies) {
+bool AnimationHandler::MapIceEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfIceEnemies) {
 
 	HRESULT hr;
 
@@ -101,7 +103,7 @@ bool AnimationHandler::MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, i
 	ZeroMemory(&boneMappedResource, sizeof(boneMappedResource));
 	
 	// Check if the mapping was okay
-	hr = gDeviceContext->Map(gEnemyBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &boneMappedResource);
+	hr = gDeviceContext->Map(gIceEnemyBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &boneMappedResource);
 
 	if (FAILED(hr)) {
 
@@ -109,10 +111,11 @@ bool AnimationHandler::MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, i
 	}
 
 	// Create buffer to the instance buffer
-	ENEMY_SKINNED_DATA* boneBufferPointer = (ENEMY_SKINNED_DATA*)boneMappedResource.pData;
+	ICE_ENEMY_SKINNED_DATA* boneBufferPointer = (ICE_ENEMY_SKINNED_DATA*)boneMappedResource.pData;
 
-	for (int instanceIndex = 0; instanceIndex < nrOfEnemies; instanceIndex++) {
+	for (int instanceIndex = 0; instanceIndex < nrOfIceEnemies; instanceIndex++) {
 
+		assert(EnemyFinalTransformations[instanceIndex].size() == 24);
 		for (UINT transformIndex = 0; transformIndex  < EnemyFinalTransformations[instanceIndex].size(); transformIndex++) {
 
 			// Get the current joint LOCAL transformation at the current animation time pose
@@ -122,7 +125,47 @@ bool AnimationHandler::MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, i
 		}
 	}
 
-	gDeviceContext->Unmap(gEnemyBoneBuffer, 0);
+	gDeviceContext->Unmap(gIceEnemyBoneBuffer, 0);
+
+	return true;
+}
+
+bool AnimationHandler::MapLavaEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int offsetStart, int nrOfEnemies) {
+
+	HRESULT hr;
+
+	// With all the precalculated matrices at our disposal, let's update the enemy transformations on the GPU
+	ZeroMemory(&boneMappedResource, sizeof(boneMappedResource));
+
+	// Check if the mapping was okay
+	hr = gDeviceContext->Map(gLavaEnemyBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &boneMappedResource);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	// Create buffer to the instance buffer
+	LAVA_ENEMY_SKINNED_DATA* boneBufferPointer = (LAVA_ENEMY_SKINNED_DATA*)boneMappedResource.pData;
+
+	int lavaEnemyIndex = 0;
+
+	for (int instanceIndex = offsetStart; instanceIndex < nrOfEnemies; instanceIndex++) {
+
+		assert(EnemyFinalTransformations[instanceIndex].size() == 16);
+		for (UINT transformIndex = 0; transformIndex < EnemyFinalTransformations[instanceIndex].size(); transformIndex++) {
+
+			// Get the current joint LOCAL transformation at the current animation time pose
+			XMFLOAT4X4 finalTransform = EnemyFinalTransformations[instanceIndex][transformIndex];
+
+			boneBufferPointer->enemyInstance[lavaEnemyIndex].gBoneTransform[transformIndex] = finalTransform;
+			
+		}
+
+		lavaEnemyIndex++;
+	}
+
+	gDeviceContext->Unmap(gLavaEnemyBoneBuffer, 0);
 
 	return true;
 }

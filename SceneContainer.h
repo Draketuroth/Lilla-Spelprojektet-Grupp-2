@@ -104,9 +104,12 @@ public:
 
 	void loadIceEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
 	void loadLavaEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
+
 	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice);
 	bool createLavaEnemyBuffer(ID3D11Device* &graphicDevice);
-	bool createEnemyBoneBuffer(ID3D11Device* &graphicDevice, ENEMY_SKINNED_DATA &skinData);
+
+	bool createIceEnemyBoneBuffer(ID3D11Device* &graphicDevice, ICE_ENEMY_SKINNED_DATA &skinData);
+	bool createLavaEnemyBoneBuffer(ID3D11Device* &graphicDevice, LAVA_ENEMY_SKINNED_DATA &skinData);
 
 	void IncrementLevels();
 
@@ -165,7 +168,8 @@ public:
 	int nrOfLavaEnemies;
 	vector<Enemy> enemies;
 
-	ENEMY_SKINNED_DATA EnemySkinData;
+	ICE_ENEMY_SKINNED_DATA iceEnemySkinData;
+	LAVA_ENEMY_SKINNED_DATA lavaEnemySkinData;
 	
 	ID3D11Buffer* enemyIceVertexBuffer;
 	vector<Vertex_Bone>iceEnemyVertices;

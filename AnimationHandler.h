@@ -45,9 +45,14 @@ struct PerIceEnemyInstanceData { // Struct to hold the Inverse Global Bind Pose 
 	XMFLOAT4X4 gBoneTransform[24];
 };
 
-struct ENEMY_SKINNED_DATA {
+struct ICE_ENEMY_SKINNED_DATA {
 
-	PerIceEnemyInstanceData enemyInstance[30];
+	PerIceEnemyInstanceData enemyInstance[20];
+};
+
+struct LAVA_ENEMY_SKINNED_DATA {
+
+	PerIceEnemyInstanceData enemyInstance[10];
 };
 
 struct VertexBlendInfo {
@@ -88,7 +93,7 @@ struct Joint { // Stores the attributes of a joint node
 	string Name;
 	int ParentIndex;
 
-	Animation Animations[3];
+	Animation Animations[5];
 
 };
 
@@ -174,7 +179,8 @@ public:
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	ID3D11Buffer* gCharacterBoneBuffer;
-	ID3D11Buffer* gEnemyBoneBuffer;
+	ID3D11Buffer* gIceEnemyBoneBuffer;
+	ID3D11Buffer* gLavaEnemyBoneBuffer;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// PRIMARY FUNCTIONS AND VARIABLES
@@ -182,7 +188,10 @@ public:
 
 	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer, float playerTimePos);
 	void UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, float instanceTimePos);
-	bool MapEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies);
+	
+	bool MapIceEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies);
+	bool MapLavaEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int offsetStart, int nrOfEnemies);
+
 	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;

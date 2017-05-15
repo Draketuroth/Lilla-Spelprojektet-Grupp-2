@@ -212,7 +212,9 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 	createLavaEnemyBuffer(gHandler.gDevice);
 	createIceEnemyBuffer(gHandler.gDevice);
 
-	createEnemyBoneBuffer(graphicDevice, EnemySkinData);
+	// Create the enemy bone buffers
+	createIceEnemyBoneBuffer(graphicDevice, iceEnemySkinData);
+	createLavaEnemyBoneBuffer(graphicDevice, lavaEnemySkinData);
 
 }
 
@@ -512,19 +514,27 @@ bool SceneContainer::createLavaEnemyBuffer(ID3D11Device* &graphicDevice) {
 	return true;
 }
 
-bool SceneContainer::createEnemyBoneBuffer(ID3D11Device* &graphicDevice, ENEMY_SKINNED_DATA &skinData) {
+bool SceneContainer::createIceEnemyBoneBuffer(ID3D11Device* &graphicDevice, ICE_ENEMY_SKINNED_DATA &skinData) {
 
 	HRESULT hr;
 
+	for (UINT i = 0; i < nrOfIceEnemies; i++) {
+
+		for (UINT j = 0; j < 24; j++) {
+
+			XMStoreFloat4x4(&skinData.enemyInstance[i].gBoneTransform[j], XMMatrixIdentity());
+		}
+	}
+
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	// BONE BUFFER DESCRIPTION
+	// ICE ENEMY BONE BUFFER DESCRIPTION
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	D3D11_BUFFER_DESC boneBufferDesc;
 
 	memset(&boneBufferDesc, 0, sizeof(boneBufferDesc));
 
-	boneBufferDesc.ByteWidth = sizeof(ENEMY_SKINNED_DATA);
+	boneBufferDesc.ByteWidth = sizeof(ICE_ENEMY_SKINNED_DATA);
 	boneBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	boneBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	boneBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -536,7 +546,49 @@ bool SceneContainer::createEnemyBoneBuffer(ID3D11Device* &graphicDevice, ENEMY_S
 	boneData.SysMemPitch = 0;
 	boneData.SysMemSlicePitch = 0;
 
-	hr = graphicDevice->CreateBuffer(&boneBufferDesc, &boneData, &animHandler.gEnemyBoneBuffer);
+	hr = graphicDevice->CreateBuffer(&boneBufferDesc, &boneData, &animHandler.gIceEnemyBoneBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
+bool SceneContainer::createLavaEnemyBoneBuffer(ID3D11Device* &graphicDevice, LAVA_ENEMY_SKINNED_DATA &skinData) {
+
+	HRESULT hr;
+
+	for (UINT i = 0; i < nrOfLavaEnemies; i++) {
+
+		for (UINT j = 0; j < 16; j++) {
+
+			XMStoreFloat4x4(&skinData.enemyInstance[i].gBoneTransform[j], XMMatrixIdentity());
+		}
+	}
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// LAVA ENEMY BONE BUFFER DESCRIPTION
+	//----------------------------------------------------------------------------------------------------------------------------------//
+
+	D3D11_BUFFER_DESC boneBufferDesc;
+
+	memset(&boneBufferDesc, 0, sizeof(boneBufferDesc));
+
+	boneBufferDesc.ByteWidth = sizeof(LAVA_ENEMY_SKINNED_DATA);
+	boneBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	boneBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	boneBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	boneBufferDesc.MiscFlags = 0;
+	boneBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA boneData;
+	boneData.pSysMem = &skinData;
+	boneData.SysMemPitch = 0;
+	boneData.SysMemSlicePitch = 0;
+
+	hr = graphicDevice->CreateBuffer(&boneBufferDesc, &boneData, &animHandler.gLavaEnemyBoneBuffer);
 
 	if (FAILED(hr)) {
 
@@ -952,15 +1004,15 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderIceEnemies()
 {
-	gHandler.gDeviceContext->VSSetShader(gHandler.gEnemyVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetShader(gHandler.gIceEnemyVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gEnemyTransformBuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &animHandler.gEnemyBoneBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gIceEnemyTransformBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &animHandler.gIceEnemyBoneBuffer);
 
 	ID3D11GeometryShader* nullShader = nullptr;
 	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
 
-	gHandler.gDeviceContext->PSSetShader(gHandler.gEnemyPixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShader(gHandler.gIceEnemyPixelShader, nullptr, 0);
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
@@ -972,7 +1024,7 @@ void SceneContainer::renderIceEnemies()
 
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyIceVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gIceEnemyVertexLayout);
 
 	gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfIceEnemies, 0, 0);
 	
@@ -980,18 +1032,30 @@ void SceneContainer::renderIceEnemies()
 
 void SceneContainer::renderLavaEnemies()
 {
-	
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gIceEnemyVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gLavaEnemyTransformBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &animHandler.gLavaEnemyBoneBuffer);
+
+	ID3D11GeometryShader* nullShader = nullptr;
+	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gIceEnemyPixelShader, nullptr, 0);
 	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
 
+	ID3D11Buffer* nullBuffer = { nullptr };
+	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
+
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	gHandler.gDeviceContext->IASetInputLayout(gHandler.gEnemyVertexLayout);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaEnemyVertexLayout);
 
-	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), this->nrOfLavaEnemies, 0, this->nrOfIceEnemies);
-
+	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), 10, 0, 0);
 }
 
 void SceneContainer::renderLava()

@@ -37,7 +37,8 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gFortressBuffer);
 
 	SAFE_RELEASE(gPlayerTransformBuffer);
-	SAFE_RELEASE(gEnemyTransformBuffer);
+	SAFE_RELEASE(gIceEnemyTransformBuffer);
+	SAFE_RELEASE(gLavaEnemyTransformBuffer);
 
 }
 
@@ -79,10 +80,17 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 
 		return false;
 	}
-	if (!CreateEnemyTransformBuffer(gDevice, nrOfEnemies))
+
+	if (!CreateIceEnemyTransformBuffer(gDevice, 20))
 	{
 		return false;
 	}
+
+	if (!CreateLavaEnemyTransformBuffer(gDevice, 10))
+	{
+		return false;
+	}
+
 	if (!CreateProjectileTransformBuffer(gDevice, nrOfEnemies))
 	{
 		return false;
@@ -712,11 +720,11 @@ bool BufferComponents::CreatePlayerTransformBuffer(ID3D11Device* &gDevice) {
 	return true;
 }
 
-bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies) {
+bool BufferComponents::CreateIceEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies) {
 
 	HRESULT hr;
 
-	ENEMY_TRANSFORM eTransformData;
+	ICE_ENEMY_TRANSFORM eTransformData;
 
 	for(UINT i = 0; i < nrOfEnemies; i++){
 
@@ -727,7 +735,7 @@ bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice, int nr
 	D3D11_BUFFER_DESC enemyBufferDesc;
 	ZeroMemory(&enemyBufferDesc, sizeof(enemyBufferDesc));
 
-	enemyBufferDesc.ByteWidth = sizeof(ENEMY_TRANSFORM);
+	enemyBufferDesc.ByteWidth = sizeof(ICE_ENEMY_TRANSFORM);
 	enemyBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	enemyBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	enemyBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -739,7 +747,44 @@ bool BufferComponents::CreateEnemyTransformBuffer(ID3D11Device* &gDevice, int nr
 	constData.SysMemPitch = 0;
 	constData.SysMemSlicePitch = 0;
 
-	hr = gDevice->CreateBuffer(&enemyBufferDesc, &constData, &gEnemyTransformBuffer);
+	hr = gDevice->CreateBuffer(&enemyBufferDesc, &constData, &gIceEnemyTransformBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	return true;
+}
+
+bool BufferComponents::CreateLavaEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies) {
+
+	HRESULT hr;
+
+	LAVA_ENEMY_TRANSFORM eTransformData;
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		eTransformData.matrixW[i] = XMMatrixIdentity();
+
+	}
+
+	D3D11_BUFFER_DESC enemyBufferDesc;
+	ZeroMemory(&enemyBufferDesc, sizeof(enemyBufferDesc));
+
+	enemyBufferDesc.ByteWidth = sizeof(LAVA_ENEMY_TRANSFORM);
+	enemyBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	enemyBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	enemyBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	enemyBufferDesc.MiscFlags = 0;
+	enemyBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA constData;
+	constData.pSysMem = &eTransformData;
+	constData.SysMemPitch = 0;
+	constData.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&enemyBufferDesc, &constData, &gLavaEnemyTransformBuffer);
 
 	if (FAILED(hr)) {
 

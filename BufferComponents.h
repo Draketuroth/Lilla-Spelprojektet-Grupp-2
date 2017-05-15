@@ -39,9 +39,14 @@ struct PLAYER_TRANSFORM {
 	XMMATRIX matrixWVP;
 };
 
-struct ENEMY_TRANSFORM {
+struct ICE_ENEMY_TRANSFORM {
 
-	XMMATRIX matrixW[30];
+	XMMATRIX matrixW[20];
+};
+
+struct LAVA_ENEMY_TRANSFORM {
+
+	XMMATRIX matrixW[10];
 };
 
 
@@ -83,7 +88,9 @@ public:
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
 	ID3D11Buffer* gInstanceBuffer;
 	ID3D11Buffer* gPlayerTransformBuffer;
-	ID3D11Buffer* gEnemyTransformBuffer;
+
+	ID3D11Buffer* gIceEnemyTransformBuffer;
+	ID3D11Buffer* gLavaEnemyTransformBuffer;
 
 	ID3D11Buffer* gProjectileTransformBuffer;
 
@@ -116,7 +123,10 @@ public:
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreateInstanceBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
-	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
+
+	bool CreateIceEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
+	bool CreateLavaEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
+
 	bool CreateProjectileTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
 	void CreateRigidBodyTags();
 

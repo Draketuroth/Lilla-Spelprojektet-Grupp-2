@@ -54,11 +54,13 @@ public:
 	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
 	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture
 
+	ID3D11InputLayout* gIceEnemyVertexLayout;
+	ID3D11VertexShader* gIceEnemyVertexShader;
+	ID3D11PixelShader* gIceEnemyPixelShader;
 
-	ID3D11InputLayout* gEnemyVertexLayout;
-	ID3D11VertexShader* gEnemyVertexShader;
-	ID3D11PixelShader* gEnemyPixelShader;
-	ID3D11GeometryShader* gEnemyGeometryShader;
+	ID3D11InputLayout* gLavaEnemyVertexLayout;
+	ID3D11VertexShader* gLavaEnemyVertexShader;
+	ID3D11PixelShader* gLavaEnemyPixelShader;
 
 	ID3D11InputLayout* gDebugVertexLayout;
 	ID3D11VertexShader* gDebugVertexShader;
@@ -80,17 +82,17 @@ public:
 	bool CreateRenderTargetView();	// We require a render target view for rendering and we create this by taking the back buffer from the swap chain
 	bool CreateSwapChainAndDevice(HWND &windowHandle);	// Function to create the graphic device responsible for interactions with the graphic card and the swap chain to switch between back & front buffer
 
-
-	bool initializeShadowMap();
 	bool CreateShadowShaders();
-	bool CreateRayShaders();
 
 	bool CreateDebugShaders();
 	bool CreateMenuShaders();
 	bool CreateStandardShaders();
 	bool CreatePlatformShaders();
 	bool CreateFortressShader();
-	bool CreateEnemyShaders();
+
+	bool CreateIceEnemyShaders();
+	bool CreateLavaEnemyShaders();
+
 	bool CreateLavaShaders(); 
 	bool CreateHUDShaders();
 

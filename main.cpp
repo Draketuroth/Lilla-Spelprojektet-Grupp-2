@@ -128,8 +128,6 @@ int RunApplication()
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateEnemies();
-				/*thread enemyThread(updateEnemies);
-				enemyThread.join();*/
 				updateBuffers();
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
@@ -223,10 +221,11 @@ void updateEnemies() {
 
 		if (sceneContainer.enemies[i].getAlive() == true) {
 
-			// Update enemy physics
-			sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos());
-
 			if (i < sceneContainer.nrOfIceEnemies){
+
+				// Update ice enemy physics
+				XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
+				sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos(), scaling);
 
 				// Update enemy animation time pose
 				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
@@ -245,8 +244,12 @@ void updateEnemies() {
 
 			else if (i >= sceneContainer.nrOfIceEnemies) {
 
+				// Update lava enemy physics
+				XMMATRIX scaling = XMMatrixScaling(0.3, 0.3, 0.3);
+				sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos(), scaling);
+
 				// Update enemy animation time pose
-				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
+				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 80;
 				float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
 				int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
 				int currentAnimationLength = sceneContainer.lavaEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
@@ -264,7 +267,8 @@ void updateEnemies() {
 
 	}
 
-	sceneContainer.animHandler.MapEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfEnemies);
+	sceneContainer.animHandler.MapIceEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfIceEnemies);
+	sceneContainer.animHandler.MapLavaEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfIceEnemies, sceneContainer.nrOfEnemies);
 
 }
 
@@ -336,20 +340,40 @@ void updateBuffers()
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gPlayerTransformBuffer, 0);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	// ENEMY TRANSFORM BUFFER UPDATE
+	// ICE ENEMY TRANSFORM BUFFER UPDATE
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gIceEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
 
-	ENEMY_TRANSFORM* EnemyTransformPointer = (ENEMY_TRANSFORM*)EnemyMappedResource.pData;
+	ICE_ENEMY_TRANSFORM* iceEnemyTransformPointer = (ICE_ENEMY_TRANSFORM*)EnemyMappedResource.pData;
 
-	for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+	for(UINT i = 0; i < sceneContainer.nrOfIceEnemies; i++){
 
-		EnemyTransformPointer->matrixW[i] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
+		iceEnemyTransformPointer->matrixW[i] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
 
 	}
 
-	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gIceEnemyTransformBuffer, 0);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// LAVA ENEMY TRANSFORM BUFFER UPDATE
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	ZeroMemory(&EnemyMappedResource, sizeof(EnemyMappedResource));
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gLavaEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
+
+	LAVA_ENEMY_TRANSFORM* lavaEnemyTransformPointer = (LAVA_ENEMY_TRANSFORM*)EnemyMappedResource.pData;
+
+	int lavaEnemyIndex = 0;
+	int offsetStart = sceneContainer.nrOfIceEnemies;
+	for (UINT i = offsetStart; i < sceneContainer.nrOfEnemies; i++) {
+
+		lavaEnemyTransformPointer->matrixW[lavaEnemyIndex] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
+		lavaEnemyIndex++;
+
+	}
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gLavaEnemyTransformBuffer, 0);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// PLATFORM INSTANCE BUFFER UPDATE
