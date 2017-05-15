@@ -110,7 +110,7 @@ public:
 
 	btRigidBody* lavaPitRigidBody;
 
-	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfEnemies);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfIceEnemies, int nrOfLavaEnemies);
 
 	bool CreateDebugVertexBuffer(ID3D11Device* &gDevice);
 	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer);

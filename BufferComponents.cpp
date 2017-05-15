@@ -42,7 +42,7 @@ void BufferComponents::ReleaseAll() {
 
 }
 
-bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfEnemies) {
+bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfIceEnemies, int nrOfLavaEnemies) {
 
 	if (!CreatePlatformVertexBuffer(gDevice, platFormImporter)) {
 
@@ -81,17 +81,17 @@ bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bull
 		return false;
 	}
 
-	if (!CreateIceEnemyTransformBuffer(gDevice, 20))
+	if (!CreateIceEnemyTransformBuffer(gDevice, nrOfIceEnemies))
 	{
 		return false;
 	}
 
-	if (!CreateLavaEnemyTransformBuffer(gDevice, 10))
+	if (!CreateLavaEnemyTransformBuffer(gDevice, nrOfLavaEnemies))
 	{
 		return false;
 	}
 
-	if (!CreateProjectileTransformBuffer(gDevice, nrOfEnemies))
+	if (!CreateProjectileTransformBuffer(gDevice, nrOfLavaEnemies))
 	{
 		return false;
 	}
