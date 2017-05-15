@@ -27,18 +27,23 @@ void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gConstantBuffer);
 	SAFE_RELEASE(gInstanceBuffer);
+	SAFE_RELEASE(gPlayerTransformBuffer);
+
+	SAFE_RELEASE(gIceEnemyTransformBuffer);
+	SAFE_RELEASE(gLavaEnemyTransformBuffer);
 	
-	SAFE_RELEASE(gCubeVertexBuffer);
 	SAFE_RELEASE(gProjectileTransformBuffer);
+
+	SAFE_RELEASE(gCubeVertexBuffer);
 
 	SAFE_RELEASE(gDebugVertexBuffer);
 	SAFE_RELEASE(gDebugIndexBuffer);
 
 	SAFE_RELEASE(gFortressBuffer);
 
-	SAFE_RELEASE(gPlayerTransformBuffer);
-	SAFE_RELEASE(gIceEnemyTransformBuffer);
-	SAFE_RELEASE(gLavaEnemyTransformBuffer);
+	SAFE_RELEASE(gBufferArr[0]);
+	SAFE_RELEASE(gBufferArr[1]);
+	SAFE_RELEASE(gBufferArr[2]);
 
 }
 

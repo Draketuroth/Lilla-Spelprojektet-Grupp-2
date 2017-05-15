@@ -111,6 +111,8 @@ public:
 	bool createIceEnemyBoneBuffer(ID3D11Device* &graphicDevice, ICE_ENEMY_SKINNED_DATA &skinData);
 	bool createLavaEnemyBoneBuffer(ID3D11Device* &graphicDevice, LAVA_ENEMY_SKINNED_DATA &skinData);
 
+	void reportLiveObjects();
+
 	void IncrementLevels();
 
 	float RandomNumber(float Minimum, float Maximum);

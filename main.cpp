@@ -1,4 +1,4 @@
-//----------------------------------------------------------------------------------------------------------------------------------//
+﻿//----------------------------------------------------------------------------------------------------------------------------------//
 // main.cpp
 // DV1541 3D PROGMRAMMING: PROJECT
 //
@@ -36,7 +36,7 @@ void updateCharacter(HWND windowhandle);
 void updateEnemies();
 void updateBuffers();
 void updateLava();
-void lavamovmentUpdate(); 
+void lavamovmentUpdate();
 
 //----------------------------------------------------------------------------------------------------------------------------------//
 // MEMORY LEAK DETECTION
@@ -407,5 +407,4 @@ void updateBuffers()
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 
 }
-
 
