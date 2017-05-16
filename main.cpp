@@ -157,12 +157,12 @@ int RunApplication()
 
 				for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
 
-					MyEnemyContactResultCallback enemyCallBack(&sceneContainer.enemies[i]);
-					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[i].rigidBody, enemyCallBack);
+					MyEnemyContactResultCallback enemyCallBack(sceneContainer.enemies[i]);
+					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.enemies[i]->rigidBody, enemyCallBack);
 
-					if (sceneContainer.enemies[i].getAlive() == false) {
+					if (sceneContainer.enemies[i]->getAlive() == false) {
 
-						sceneContainer.enemies[i].releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+						sceneContainer.enemies[i]->releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
 					}
 
 				}
@@ -219,18 +219,18 @@ void updateEnemies() {
 
 	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++) {
 
-		if (sceneContainer.enemies[i].getAlive() == true) {
+		if (sceneContainer.enemies[i]->getAlive() == true) {
 
 			if (i < sceneContainer.nrOfIceEnemies){
 
 				// Update ice enemy physics
 				XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
-				sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos(), scaling);
+				sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
 
 				// Update enemy animation time pose
 				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
 				float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
-				int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
+				int currentAnimIndex = sceneContainer.enemies[i]->currentAnimIndex;
 				int currentAnimationLength = sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
 				if (currentEnemyTimePos >= currentAnimationLength) {
@@ -246,12 +246,12 @@ void updateEnemies() {
 
 				// Update lava enemy physics
 				XMMATRIX scaling = XMMatrixScaling(0.3, 0.3, 0.3);
-				sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos(), scaling);
+				sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
 
 				// Update enemy animation time pose
 				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 80;
 				float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
-				int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
+				int currentAnimIndex = sceneContainer.enemies[i]->currentAnimIndex;
 				int currentAnimationLength = sceneContainer.lavaEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
 				if (currentEnemyTimePos >= currentAnimationLength) {
@@ -349,7 +349,7 @@ void updateBuffers()
 
 	for(UINT i = 0; i < sceneContainer.nrOfIceEnemies; i++){
 
-		iceEnemyTransformPointer->matrixW[i] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
+		iceEnemyTransformPointer->matrixW[i] = XMMatrixTranspose(sceneContainer.enemies[i]->tPlayerTranslation);
 
 	}
 
@@ -368,7 +368,7 @@ void updateBuffers()
 	int offsetStart = sceneContainer.nrOfIceEnemies;
 	for (UINT i = offsetStart; i < sceneContainer.nrOfEnemies; i++) {
 
-		lavaEnemyTransformPointer->matrixW[lavaEnemyIndex] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
+		lavaEnemyTransformPointer->matrixW[lavaEnemyIndex] = XMMatrixTranspose(sceneContainer.enemies[i]->tPlayerTranslation);
 		lavaEnemyIndex++;
 
 	}
@@ -400,7 +400,7 @@ void updateBuffers()
 
 	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
 
-		ProjectileTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.enemies[i].fireBall.worldMatrix);
+		ProjectileTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.enemies[i]->fireBall.worldMatrix);
 
 		}
 
