@@ -1,4 +1,4 @@
-#define MAX_PROJECTILE 15
+#define MAX_PROJECTILE 30
 
 cbuffer GS_CONSTANT_BUFFER : register(b0) {
 

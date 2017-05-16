@@ -24,7 +24,7 @@ Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 
 void Enemy::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
-	SAFE_RELEASE(vertexBuffer);
+	//SAFE_RELEASE(vertexBuffer);
 	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
@@ -64,24 +64,37 @@ void Enemy::setSpawnPos(XMFLOAT3 SpawnPos)
 
 void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, int enemyIndex)
 {
-	
+	currentAnimIndex = 0;
 	CreateEnemyBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle, enemyIndex);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 	
 }
 
-void Enemy::EnemyPhysics()
+void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 {
 	XMFLOAT3 pos;
 
 	float time = timer.getDeltaTime();
 
-
+	XMFLOAT3 lookat = { playerPos.x, playerPos.y , playerPos.z };
 	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
 	XMFLOAT3 oldpos = this->getPos();
+	
+	// Calculate rotation to player
+	XMVECTOR target = XMLoadFloat3(&lookat);
+	XMVECTOR enemyPos = XMLoadFloat3(&oldpos);
+	XMVECTOR upVector = { 0.0f, 1.0f, 0.0f };
+	
+	// Calculate rotation matrix axis values
+	XMVECTOR zAxis = XMVector3Normalize(XMVectorSubtract(target, enemyPos));
+	XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross(upVector, zAxis));
+	XMVECTOR yAxis = XMVector3Cross(zAxis, xAxis);
 
-	XMMATRIX R = XMMatrixIdentity();
-	XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
+	// Important not to forget the w component of the matrix to allow translation
+	XMVECTOR lastRow = { 0.0f, 0.0f, 0.0f , 1.0f};
+
+	// Set rotation and scale matrix
+	XMMATRIX R = XMMATRIX(xAxis, yAxis, zAxis, lastRow);
 	updateWorldMatrix(R, scaling);
 	
 	XMMATRIX transform;
@@ -104,10 +117,6 @@ void Enemy::EnemyPhysics()
 	XMStoreFloat3(&rigidPos, t);
 
 	this->setPos(rigidPos);
-
-	
-
-	
 
 	timer.updateCurrentTime();
 }
@@ -189,6 +198,7 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 	}
 
 	this->rigidBody->setLinearVelocity(speed);
+	
 }
 
 void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)

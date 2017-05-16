@@ -13,10 +13,9 @@ GraphicComponents::GraphicComponents() {
 	gPixelShader = nullptr;
 	gGeometryShader = nullptr;
 
-	gEnemyVertexLayout = nullptr;
-	gEnemyVertexShader = nullptr;
-	gEnemyPixelShader = nullptr;
-	gEnemyGeometryShader = nullptr;
+	gIceEnemyVertexLayout = nullptr;
+	gIceEnemyVertexShader = nullptr;
+	gIceEnemyPixelShader = nullptr;
 
 	gLavaVertexLayout = nullptr; 
 	gLavaVertexShader = nullptr; 
@@ -66,10 +65,13 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gMenuVertex);
 	SAFE_RELEASE(gMenuPixel);
 
-	SAFE_RELEASE(gEnemyGeometryShader);
-	SAFE_RELEASE(gEnemyPixelShader);
-	SAFE_RELEASE(gEnemyVertexLayout);
-	SAFE_RELEASE(gEnemyVertexShader);
+	SAFE_RELEASE(gIceEnemyPixelShader);
+	SAFE_RELEASE(gIceEnemyVertexLayout);
+	SAFE_RELEASE(gIceEnemyVertexShader);
+
+	SAFE_RELEASE(gLavaEnemyPixelShader);
+	SAFE_RELEASE(gLavaEnemyVertexLayout);
+	SAFE_RELEASE(gLavaEnemyVertexShader);
 
 	SAFE_RELEASE(gDebugVertexLayout);
 	SAFE_RELEASE(gDebugPixelShader);
@@ -120,7 +122,12 @@ bool GraphicComponents::InitalizeDirect3DContext(HWND &windowHandle) {
 		return false;
 	}
 
-	if (!CreateEnemyShaders())
+	if (!CreateIceEnemyShaders())
+	{
+		return false;
+	}
+
+	if (!CreateLavaEnemyShaders())
 	{
 		return false;
 	}
@@ -1049,7 +1056,7 @@ bool GraphicComponents::CreateMenuShaders()
 	return true;
 }
 
-bool GraphicComponents::CreateEnemyShaders()
+bool GraphicComponents::CreateIceEnemyShaders()
 {
 	HRESULT hr;
 
@@ -1057,7 +1064,7 @@ bool GraphicComponents::CreateEnemyShaders()
 	ID3DBlob* vsErrorBlob = nullptr;
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\EnemyShaders\\EnemyVertexShader.hlsl",
+		L"Shaders\\EnemyShaders\\EnemyIceVertexShader.hlsl",
 		nullptr,
 		nullptr,
 		"VS_main",
@@ -1070,7 +1077,7 @@ bool GraphicComponents::CreateEnemyShaders()
 
 	if (FAILED(hr)) {
 
-		cout << "Vertex Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
+		cout << "Ice Enemy Vertex Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
 
 		if (vsErrorBlob) {
 
@@ -1081,28 +1088,30 @@ bool GraphicComponents::CreateEnemyShaders()
 	}
 
 
-	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gEnemyVertexShader);
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gIceEnemyVertexShader);
 
 	if (FAILED(hr)) {
 
-		cout << "Vertex Shader Error: Vertex Shader could not be created" << endl;
+		cout << "Ice Enemy Vertex Shader Error: Vertex Shader could not be created" << endl;
 		return false;
 	}
 
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT",			0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDICES",	0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "SV_InstanceID", 0, DXGI_FORMAT_R32_UINT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 	};
 
 	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
-	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gEnemyVertexLayout);
+	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gIceEnemyVertexLayout);
 
 	if (FAILED(hr)) {
 
-		cout << "Vertex Shader Error: Shader Input Layout could not be created" << endl;
+		cout << "Ice Enemy Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
 
 	vsBlob->Release();
@@ -1113,7 +1122,7 @@ bool GraphicComponents::CreateEnemyShaders()
 	ID3DBlob* psErrorBlob = nullptr;
 
 	hr = D3DCompileFromFile(
-		L"Shaders\\EnemyShaders\\EnemyPixelShader.hlsl",
+		L"Shaders\\EnemyShaders\\EnemyIcePixelShader.hlsl",
 		nullptr,
 		nullptr,
 		"PS_main",
@@ -1126,7 +1135,7 @@ bool GraphicComponents::CreateEnemyShaders()
 
 	if (FAILED(hr)) {
 
-		cout << "Pixel Shader Error: Pixel Shader could not be compiled or loaded from file" << endl;
+		cout << "Ice Enemy Pixel Shader Error: Pixel Shader could not be compiled or loaded from file" << endl;
 
 		if (psErrorBlob) {
 
@@ -1137,51 +1146,118 @@ bool GraphicComponents::CreateEnemyShaders()
 		return false;
 	}
 
-	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gEnemyPixelShader);
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gIceEnemyPixelShader);
 
 	if (FAILED(hr)) {
 
-		cout << "Pixel Shader Error: Pixel Shader could not be created" << endl;
+		cout << "Ice Enemy Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
 
 	psBlob->Release();
 
-	ID3DBlob* gsBlob = nullptr;
-	ID3DBlob* gsErrorBlob = nullptr;
+	return true;
+}
+
+bool GraphicComponents::CreateLavaEnemyShaders() {
+
+	HRESULT hr;
+
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* vsErrorBlob = nullptr;
+
 	hr = D3DCompileFromFile(
-		L"Shaders\\EnemyShaders\\EnemyGeometryShader.hlsl",
+		L"Shaders\\EnemyShaders\\EnemyLavaVertexShader.hlsl",
 		nullptr,
 		nullptr,
-		"GS_main",
-		"gs_5_0",
+		"VS_main",
+		"vs_5_0",
 		D3DCOMPILE_DEBUG,
 		0,
-		&gsBlob,
-		&gsErrorBlob
+		&vsBlob,
+		&vsErrorBlob
 	);
 
 	if (FAILED(hr)) {
 
-		cout << "Geometry Shader Error: Geometry Shader could not be compiled or loaded from file" << endl;
+		cout << "Lava Enemy Vertex Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
 
-		if (gsErrorBlob) {
+		if (vsErrorBlob) {
 
-			OutputDebugStringA((char*)gsBlob->GetBufferPointer());
-			gsErrorBlob->Release();
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer());
+			vsErrorBlob->Release();
 		}
-
-	}
-
-	hr = gDevice->CreateGeometryShader(gsBlob->GetBufferPointer(), gsBlob->GetBufferSize(), nullptr, &gEnemyGeometryShader);
-
-	if (FAILED(hr)) {
-
-		cout << "Geometry Shader Error: Geometry Shader could not be created" << endl;
 		return false;
 	}
 
-	gsBlob->Release();
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gLavaEnemyVertexShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Lava Enemy Vertex Shader Error: Vertex Shader could not be created" << endl;
+		return false;
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
+
+		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT",			0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDICES",	0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "SV_InstanceID", 0, DXGI_FORMAT_R32_UINT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
+	};
+
+	int inputLayoutSize = sizeof(vertexInputDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	gDevice->CreateInputLayout(vertexInputDesc, inputLayoutSize, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gLavaEnemyVertexLayout);
+
+	if (FAILED(hr)) {
+
+		cout << "Lava Enemy Vertex Shader Error: Shader Input Layout could not be created" << endl;
+	}
+
+	vsBlob->Release();
+
+	//Pixel shader
+
+	ID3DBlob* psBlob = nullptr;
+	ID3DBlob* psErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\EnemyShaders\\EnemyLavaPixelShader.hlsl",
+		nullptr,
+		nullptr,
+		"PS_main",
+		"ps_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&psBlob,
+		&psErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Lava Enemy Pixel Shader Error: Pixel Shader could not be compiled or loaded from file" << endl;
+
+		if (psErrorBlob) {
+
+			OutputDebugStringA((char*)psErrorBlob->GetBufferPointer());
+			psErrorBlob->Release();
+		}
+
+		return false;
+	}
+
+	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gLavaEnemyPixelShader);
+
+	if (FAILED(hr)) {
+
+		cout << "Lava Enemy Pixel Shader Error: Pixel Shader could not be created" << endl;
+		return false;
+	}
+
+	psBlob->Release();
 
 	return true;
 }

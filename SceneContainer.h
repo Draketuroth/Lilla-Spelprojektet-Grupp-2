@@ -99,12 +99,31 @@ public:
 	void useAI(MainCharacter &player, Enemy &enemy);
 
 	void InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
+	void RespawnEnemies();
 	bool createProjectileBox(ID3D11Device* gDevice);
 
-	void loadEnemyIceVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
-	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice, vector<StandardVertex> vertices);
+	void loadIceEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
+	void loadLavaEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice);
+
+	bool createIceEnemyBuffer(ID3D11Device* &graphicDevice);
+	bool createLavaEnemyBuffer(ID3D11Device* &graphicDevice);
+
+	bool createIceEnemyBoneBuffer(ID3D11Device* &graphicDevice, ICE_ENEMY_SKINNED_DATA &skinData);
+	bool createLavaEnemyBoneBuffer(ID3D11Device* &graphicDevice, LAVA_ENEMY_SKINNED_DATA &skinData);
+
+	void reportLiveObjects();
 
 	void IncrementLevels();
+
+	float RandomNumber(float Minimum, float Maximum);
+
+	//------------------------------------------------------------//
+	// RE-INTIALIZE
+	//------------------------------------------------------------//
+	
+
+	void ReRelease();
+	void ReInitialize();
 
 	//------------------------------------------------------------//
 	// FILES
@@ -114,6 +133,7 @@ public:
 	FileImporter iceEnemyFile;
 	FileImporter FortressFile;
 	FileImporter PlatformFile;
+	FileImporter lavaEnemyFile;
 
 	//------------------------------------------------------------//
 	// COMPONENTS
@@ -146,9 +166,18 @@ public:
 	ID3D11Buffer* gProjectileIndexBuffer;
 
 	int nrOfEnemies;
-	Enemy enemies[4];
+	int nrOfIceEnemies;
+	int nrOfLavaEnemies;
+	vector<Enemy> enemies;
+
+	ICE_ENEMY_SKINNED_DATA iceEnemySkinData;
+	LAVA_ENEMY_SKINNED_DATA lavaEnemySkinData;
+	
 	ID3D11Buffer* enemyIceVertexBuffer;
-	vector<StandardVertex>iceEnemyVertices;
+	vector<Vertex_Bone>iceEnemyVertices;
+
+	ID3D11Buffer* enemyLavaVertexBuffer;
+	vector<Vertex_Bone>lavaEnemyVertices;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
@@ -170,7 +199,8 @@ public:
 
 	void renderScene();
 	void renderCharacters();
-	void renderEnemies();
+	void renderIceEnemies();
+	void renderLavaEnemies();
 	void renderShadowMap();
 
 	void renderLava();

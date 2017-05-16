@@ -27,16 +27,16 @@ public:
 	GameState();
 	~GameState();
 
-	int menuHandler(HWND windowHandle, SceneContainer scene, MSG windowMessage);
-	int mainMenu(HWND windowHandle, SceneContainer scene);
-	int pauseMenu(HWND windowHandle, SceneContainer scene, MSG windowMessage);
-	int gameOver(HWND windowHandle, SceneContainer scene);
+	int menuHandler(HWND windowHandle, SceneContainer &scene, MSG windowMessage);
+	int mainMenu(HWND windowHandle, SceneContainer &scene);
+	int pauseMenu(HWND windowHandle, SceneContainer &scene, MSG windowMessage);
+	int gameOver(HWND windowHandle, SceneContainer &scene);
 
 	void checkGameState();
 
 	void getMousePos(HWND windowHandle, SceneContainer scene);
-	void restartGame(SceneContainer scene, HWND windowHandle);
-	void renderMenus(SceneContainer scene);
+	void restartGame(SceneContainer &scene, HWND windowHandle);
+	void renderMenus(SceneContainer &scene);
 
 	sf::SoundBuffer soundBuffer;
 

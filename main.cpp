@@ -1,4 +1,4 @@
-//----------------------------------------------------------------------------------------------------------------------------------//
+﻿//----------------------------------------------------------------------------------------------------------------------------------//
 // main.cpp
 // DV1541 3D PROGMRAMMING: PROJECT
 //
@@ -9,6 +9,7 @@
 #include "SceneContainer.h"
 #include "Timer.h"
 #include "GameState.h"
+#include <thread>
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 
@@ -32,9 +33,10 @@ Timer timer;
 //----------------------------------------------------------------------------------------------------------------------------------//
 int RunApplication();
 void updateCharacter(HWND windowhandle);
+void updateEnemies();
 void updateBuffers();
 void updateLava();
-void lavamovmentUpdate(); 
+void lavamovmentUpdate();
 
 //----------------------------------------------------------------------------------------------------------------------------------//
 // MEMORY LEAK DETECTION
@@ -80,6 +82,8 @@ int RunApplication()
 	sceneContainer.character.timer.initialize();
 	updateLava();
 
+	int gameOverTimer;
+
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -104,15 +108,15 @@ int RunApplication()
 			switch (menuState.state)
 			{
 			case MAIN_MENU:
-				//sceneContainer.character.attackSound.stop();
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
 			case PAUSE_MENU:
-				//sceneContainer.character.attackSound.stop();
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				break;
 			case GAME_OVER:
-			//	sceneContainer.character.attackSound.stop();
+				sceneContainer.character.attackSound.stop();
 				menuState.menuHandler(windowHandle, sceneContainer, windowMessage);
 				sceneContainer.character.setAlive(true);
 				break;
@@ -120,12 +124,19 @@ int RunApplication()
 				windowMessage.message = WM_QUIT;
 				break;
 			case START_GAME:
-				//sceneContainer.character.initialize(sceneContainer.gHandler.gDevice, XMFLOAT3(2, 2, 5), sceneContainer.bulletPhysicsHandler, sceneContainer.animHandler, sceneContainer.mainCharacterFile);
+				//sceneContainer.character.setAlive(true);
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
+				updateEnemies();
 				updateBuffers();
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
+
+				if (GetAsyncKeyState('N')) {
+
+					sceneContainer.RespawnEnemies();
+					Sleep(200);
+				}
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// PLAYER LAVA HIT DETECTION
@@ -191,26 +202,76 @@ void updateCharacter(HWND windowhandle)
 	
 	sceneContainer.character.update(windowhandle);
 	
-	for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-		if(sceneContainer.enemies[i].getAlive() == true){
-	
-			sceneContainer.enemies[i].EnemyPhysics();
+	sceneContainer.character.playerAnimTimePos += timer.getDeltaTime() * 30;
+	float currentPlayerTimePos = sceneContainer.character.playerAnimTimePos;
+	int currentAnimIndex = sceneContainer.character.currentAnimIndex;
+	int currentAnimationLength = sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
+
+	if (currentPlayerTimePos >= currentAnimationLength) {
+
+		sceneContainer.character.playerAnimTimePos = 0.0f;
+	}
+
+	sceneContainer.animHandler.UpdatePlayerAnimation(sceneContainer.gHandler.gDeviceContext, currentAnimIndex, sceneContainer.mainCharacterFile, currentPlayerTimePos);
+}
+
+void updateEnemies() {
+
+	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++) {
+
+		if (sceneContainer.enemies[i].getAlive() == true) {
+
+			if (i < sceneContainer.nrOfIceEnemies){
+
+				// Update ice enemy physics
+				XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
+				sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos(), scaling);
+
+				// Update enemy animation time pose
+				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
+				float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
+				int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
+				int currentAnimationLength = sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
+
+				if (currentEnemyTimePos >= currentAnimationLength) {
+
+					sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
+				}
+
+				sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.iceEnemyFile, i, currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
+
+			}
+
+			else if (i >= sceneContainer.nrOfIceEnemies) {
+
+				// Update lava enemy physics
+				XMMATRIX scaling = XMMatrixScaling(0.3, 0.3, 0.3);
+				sceneContainer.enemies[i].EnemyPhysics(sceneContainer.character.getPos(), scaling);
+
+				// Update enemy animation time pose
+				sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 80;
+				float currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
+				int currentAnimIndex = sceneContainer.enemies[i].currentAnimIndex;
+				int currentAnimationLength = sceneContainer.lavaEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
+
+				if (currentEnemyTimePos >= currentAnimationLength) {
+
+					sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
+				}
+
+				sceneContainer.animHandler.UpdateEnemyAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.lavaEnemyFile, i, currentAnimIndex, sceneContainer.animHandler.enemyTimePos[i]);
+
+			}
 
 		}
 
 	}
-	
-	sceneContainer.character.camera.UpdateViewMatrix();	// Update Camera View and Projection Matrix for each frame
 
-	sceneContainer.animHandler.playerAnimTimePos += timer.getDeltaTime() * 30;
+	sceneContainer.animHandler.MapIceEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfIceEnemies);
+	sceneContainer.animHandler.MapLavaEnemyAnimations(sceneContainer.gHandler.gDeviceContext, sceneContainer.nrOfIceEnemies, sceneContainer.nrOfEnemies);
 
-	if (sceneContainer.animHandler.animTimePos >= sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[sceneContainer.character.currentAnimIndex].Length) {
-
-		sceneContainer.animHandler.playerAnimTimePos = 0.0f;
-	}
-
-	sceneContainer.animHandler.UpdatePlayerAnimation(sceneContainer.gHandler.gDeviceContext, sceneContainer.character.currentAnimIndex, sceneContainer.mainCharacterFile);
 }
 
 void lavamovmentUpdate()
@@ -281,20 +342,40 @@ void updateBuffers()
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gPlayerTransformBuffer, 0);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	// ENEMY TRANSFORM BUFFER UPDATE
+	// ICE ENEMY TRANSFORM BUFFER UPDATE
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gIceEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
 
-	ENEMY_TRANSFORM* EnemyTransformPointer = (ENEMY_TRANSFORM*)EnemyMappedResource.pData;
+	ICE_ENEMY_TRANSFORM* iceEnemyTransformPointer = (ICE_ENEMY_TRANSFORM*)EnemyMappedResource.pData;
 
-	for(UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+	for(UINT i = 0; i < sceneContainer.nrOfIceEnemies; i++){
 
-		EnemyTransformPointer->matrixW[i] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
+		iceEnemyTransformPointer->matrixW[i] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
 
 	}
 
-	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gEnemyTransformBuffer, 0);
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gIceEnemyTransformBuffer, 0);
+
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	// LAVA ENEMY TRANSFORM BUFFER UPDATE
+	//----------------------------------------------------------------------------------------------------------------------------------//
+	ZeroMemory(&EnemyMappedResource, sizeof(EnemyMappedResource));
+
+	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gLavaEnemyTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &EnemyMappedResource);
+
+	LAVA_ENEMY_TRANSFORM* lavaEnemyTransformPointer = (LAVA_ENEMY_TRANSFORM*)EnemyMappedResource.pData;
+
+	int lavaEnemyIndex = 0;
+	int offsetStart = sceneContainer.nrOfIceEnemies;
+	for (UINT i = offsetStart; i < sceneContainer.nrOfEnemies; i++) {
+
+		lavaEnemyTransformPointer->matrixW[lavaEnemyIndex] = XMMatrixTranspose(sceneContainer.enemies[i].tPlayerTranslation);
+		lavaEnemyIndex++;
+
+	}
+
+	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gLavaEnemyTransformBuffer, 0);
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// PLATFORM INSTANCE BUFFER UPDATE
@@ -328,5 +409,4 @@ void updateBuffers()
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 
 }
-
 
