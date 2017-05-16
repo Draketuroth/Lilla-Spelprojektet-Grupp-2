@@ -767,7 +767,7 @@ void SceneContainer::update(HWND &windowHandle)
 	for (UINT i = 0; i < this->nrOfEnemies; i++){
 	
 
-		if (i < nrOfIceEnemies){
+		/*if (i < nrOfIceEnemies){
 
 			this->useAI(character, enemies[i]);
 
@@ -778,7 +778,30 @@ void SceneContainer::update(HWND &windowHandle)
 			this->useAI(character, enemies[i]);
 			enemies[i]->updateProjectile();
 
+		}*/
+
+		this->useAI(character, enemies[i]);
+
+		if (enemies[i]->getType() == 1)
+		{
+			enemies[i]->updateProjectile();
 		}
+
+		btVector3 velVec = enemies[i]->rigidBody->getLinearVelocity();
+		
+		XMFLOAT3 vel = { velVec.getX(), velVec.getY(), velVec.getZ()};
+
+
+		if ( vel.x < 0.1 && vel.z < 0.1)
+		{
+			enemies[i]->currentAnimIndex = 1;
+		}
+		else
+		{ 
+			enemies[i]->currentAnimIndex = 0;
+		}
+
+
 	}
 
 	//cout << "Side Center: " << sides[2].Center.x << ", " << sides[2].Center.y << ", " << sides[2].Center.z << endl;
