@@ -34,6 +34,8 @@
 
 #include "HUD.h"
 
+#include <chrono>
+
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
 	MyCharacterContactResultCallback(CharacterBase* ptr) : character(ptr) {}

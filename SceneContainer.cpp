@@ -71,7 +71,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 			PostQuitMessage(0);
 	}
-
+	
 	if (!WindowInitialize(windowHandle)) {
 
 		// If the window cannot be created during startup, it's more known as a terminal error
@@ -160,7 +160,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	HUD.setElementPos(gHandler.gDevice);
 	HUD.CreateIndexBuffer(gHandler.gDevice);
 	HUD.loadBitMap();
-	HUD.setText(0);
+	HUD.setText(level);
 	HUD.setFont(gHandler.gDevice);
 	HUD.CreateFontIndexBuffer(gHandler.gDevice);
 	
@@ -283,6 +283,9 @@ void SceneContainer::RespawnEnemies() {
 		}
 
 	}
+
+	
+	
 
 }
 
@@ -675,6 +678,13 @@ void SceneContainer::ReRelease() {
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
 	}
 
+	nrOfEnemies = 2;
+	nrOfIceEnemies = 2;
+	nrOfLavaEnemies = 0;
+	level = 0;
+	incrementLevels();
+
+
 	// Remove platform rigid bodies
 	for(UINT i = 0; i < bHandler.nrOfCubes; i++)
 	{
@@ -695,7 +705,8 @@ void SceneContainer::ReRelease() {
 
 }
 
-void SceneContainer::ReInitialize() {
+void SceneContainer::ReInitialize()
+{
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RE-CREATE RIGID BODIES
