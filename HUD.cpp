@@ -267,7 +267,7 @@ void HUDClass::setText(int wave)
 	{
 		text.push_back(waveText[i]);
 		ascii.push_back((int)text[i]);
-		cout << ascii[i] << endl;
+		
 	}
 	
 
