@@ -752,7 +752,7 @@ void SceneContainer::ReInitialize()
 	
 	// Recreate player
 	character.setPos(XMFLOAT3(2, 2, 5));
-	character.setHealth(5);
+	character.setHealth(10);
 
 	character.CreatePlayerBoundingBox(0.10, character.getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandler);
 	this->character.rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
@@ -824,12 +824,12 @@ bool SceneContainer::readFiles() {
 	return true;
 }
 
-void SceneContainer::update(HWND &windowHandle)
+void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30])
 {
 	int deadEnemies = 0;
 	bHandler.CreateRigidBodyTags();
-	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
-	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
+	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, enemyTimePoses);
+	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler, enemyTimePoses);
 
 	for (UINT i = 0; i < this->nrOfEnemies; i++){
 	

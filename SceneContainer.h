@@ -95,7 +95,7 @@ public:
 	void releaseAll();
 
 	bool initialize(HWND &windowHandle);
-	void update(HWND &windowHandle);
+	void update(HWND &windowHandle, float enemyTimePoses[30]);
 	bool readFiles();
 
 	void useAI(MainCharacter &player, Enemy* &enemy);
@@ -115,15 +115,12 @@ public:
 
 	void reportLiveObjects();
 
-	
-
 	float RandomNumber(float Minimum, float Maximum);
 
 	//------------------------------------------------------------//
 	// RE-INTIALIZE
 	//------------------------------------------------------------//
 	
-
 	void ReRelease();
 	void ReInitialize();
 
