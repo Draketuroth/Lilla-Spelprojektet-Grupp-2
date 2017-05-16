@@ -1,8 +1,10 @@
 #pragma once
 #include <windows.h>
 #include <time.h>
-
-
+#include <chrono>
+#include <iostream>
+using namespace std;
+using namespace chrono;
 
 class Timer
 {
@@ -15,14 +17,14 @@ private:
 
 	float deltaTime;
 	int frameCount;
-
+	float secondCounter;
 	//to Lava movment
 	
 public:
 	Timer();
 	~Timer();
 	//to Lava movment
-	int getSeconds(); 
+	float getSeconds(); 
 	void initialize();
 	float getDeltaTime();
 	float getCurrentTime();

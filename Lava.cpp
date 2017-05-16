@@ -181,34 +181,39 @@ void Lava::IBuffer(ID3D11Device* device)
 int Lava::swap(int frameCounter, ID3D11Device* device)
 {
 	//0-1000
-
-
+	int fc = 0; 
+	
 	if (frameCounter <= 1000)
 	{
 		currentMap = 0;
-		value = (frameCounter / 1000.0f);
+		value = frameCounter / 100000.0f;
 		weightSwap = true;
 	}
+
 	//1000 och över
-	else
+	else if(frameCounter <= 2000)
 	{
+		fc = frameCounter - 1000; 
 		lastMap = 1;
-		value = (frameCounter / 2000.0f);
+		value = fc / 100000.0f;
 		weightSwap = false;
 
 	}
 	//2000-3000
-	if (frameCounter >= 2000 && frameCounter <= 3000)
+	else if (frameCounter >= 2000 && frameCounter <= 3000)
 	{
+		fc = frameCounter - 2000; 
 		currentMap = 2;
-		value = (frameCounter / 3000.0f);
+		value = fc / 100000.0f;
 		weightSwap = true;
 	}
+
 	//3000 och över
-	else if (frameCounter > 3000)
+	else// (frameCounter > 3000)
 	{
+		fc = frameCounter - 3000; 
 		lastMap = 3;
-		value = (frameCounter / 4000.0f);
+		value = fc / 100000.0f; 
 		weightSwap = false;
 	}
 
@@ -224,7 +229,6 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 		{
 			secondWeightScalar -= value;
 		}
-
 
 	}
 	else
@@ -245,101 +249,3 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 	return currentMap;
 }
 
-void Lava::interPol(int frameCounter)
-{
-	
-	if (currentMap == 0)
-	{
-		 //0 - 1000
-		// 0 - 1
-				
-		value = frameCounter / 1000.0f;
-		if (weightScalar < 1)
-		{
-			weightScalar += value;
-		}
-		
-		if (secondWeightScalar > 0)
-		{
-			secondWeightScalar -= value; 
-		}
-
-		else
-		{
-			if (secondWeightScalar < 1)
-				{
-					secondWeightScalar += 0.001f;
-				}
-		}
-	}
-	
-	else if (currentMap == 1)
-	{
-		
-		value = frameCounter / 2000.0f;
-		if (weightScalar < 1)
-		{
-			weightScalar += value;
-		}
-
-		if (secondWeightScalar > 0)
-		{
-			secondWeightScalar -= value;
-		}
-
-		else
-		{
-			if (secondWeightScalar < 1)
-			{
-				secondWeightScalar += 0.001f;
-			}
-		}
-	}
-
-	else if (currentMap == 2)
-	{
-
-		value = frameCounter / 3000.0f;
-		if (weightScalar < 1)
-		{
-			weightScalar += value;
-		}
-
-		if (secondWeightScalar > 0)
-		{
-			secondWeightScalar -= value;
-		}
-
-		else
-		{
-			if (secondWeightScalar < 1)
-			{
-				secondWeightScalar += 0.001f;
-			}
-		}
-	}
-
-	else
-	{
-	
-		value = frameCounter / 4000.0f;
-		if (weightScalar < 1)
-		{
-			weightScalar += value;
-		}
-
-		if (secondWeightScalar > 0)
-		{
-			secondWeightScalar -= value;
-		}
-
-		else
-		{
-			if (secondWeightScalar < 1)
-			{
-				secondWeightScalar += 0.001f;
-			}
-		}
-	}
-	
-}

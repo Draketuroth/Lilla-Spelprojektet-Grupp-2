@@ -37,8 +37,6 @@ public:
 	
 	int swap(int frameCounter, ID3D11Device* device);
 
-	void interPol(int frameCounter);
-
 	ID3D11Buffer* LavaVB;
 	ID3D11Buffer* LavaIB;
 
@@ -54,7 +52,7 @@ private:
 	int lastMap;
 	int currentMap;
 
-	float value;
+	float value; 
 	bool weightSwap;
 	float weightScalar;
 	float secondWeightScalar;
