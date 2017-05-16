@@ -277,7 +277,7 @@ bool MainCharacter::isGrounded()
 	}
 }
 
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy> enemyArray, btDynamicsWorld* bulletDynamicsWorld)
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemyArray, btDynamicsWorld* bulletDynamicsWorld)
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
@@ -314,27 +314,29 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		
 		for (int i = 0; i < nrOfEnemies; i++)
 		{
-			BoundingBox enemyBox = enemyArray[i].getBoundingBox();
+			BoundingBox enemyBox = enemyArray[i]->getBoundingBox();
 			if (enemyBox.Intersects(meleeBox))
 			{
 				cout << "HIT!" << endl;
-				enemyArray[i].setHealth(enemyArray[i].getHealth() - 1);
+				int h = enemyArray[i]->getHealth();
+				enemyArray[i]->setHealth(enemyArray[i]->getHealth() - 1);
+				h = enemyArray[i]->getHealth();
 				
 		// ------------- Knockback ----------------------------------------------
 				btTransform playerTrans;
 				btTransform enemyTrans;
 				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
-				enemyArray[i].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+				enemyArray[i]->rigidBody->getMotionState()->getWorldTransform(enemyTrans);
 				
 				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
 				correctedForce.normalize();
 
-				enemyArray[i].rigidBody->applyCentralImpulse(-correctedForce / 2);
+				enemyArray[i]->rigidBody->applyCentralImpulse(-correctedForce / 2);
 		// -----------------------------------------------------------------------
 
-				if (enemyArray[i].getHealth() <= 0 && enemyArray[i].getAlive() == true)
+				if (enemyArray[i]->getHealth() <= 0 && enemyArray[i]->getAlive() == true)
 				{
-					enemyArray[i].setAlive(false);
+					enemyArray[i]->setAlive(false);
 					cout << "ENEMY DEAD" << endl;
 				}
 			}
@@ -353,7 +355,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
 {
 
 	XMFLOAT3 start, end;
@@ -361,7 +363,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 	
 	for (size_t i = 0; i < nrOfEnemies; i++)
 	{
-		enemies[i].rigidBody->setIslandTag(characterRigid);
+		enemies[i]->rigidBody->setIslandTag(characterRigid);
 	}
 
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
@@ -416,22 +418,22 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 			btTransform playerTrans;
 			btTransform enemyTrans;
 			this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
-			enemies[i].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+			enemies[i]->rigidBody->getMotionState()->getWorldTransform(enemyTrans);
 
 			btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
 			correctedForce.normalize();
-			enemies[i].rigidBody->applyCentralImpulse(-correctedForce / 2);
+			enemies[i]->rigidBody->applyCentralImpulse(-correctedForce / 2);
 			//----------------------------------------------------------------------------
 
-			cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
-			if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
+			cout << "Enemy Tag: " << enemies[i]->rigidBody->getIslandTag() << endl << endl;
+			if (enemies[i]->rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
 			{
 				cout << "Enemy Shot!! -1 health\n";
-				enemies[i].setHealth(enemies[i].getHealth() - 1);
+				enemies[i]->setHealth(enemies[i]->getHealth() - 1);
 			}
-			if (enemies[i].getHealth() == 0)
+			if (enemies[i]->getHealth() == 0)
 			{
-				enemies[i].setAlive(false);
+				enemies[i]->setAlive(false);
 				cout << "Enemy Deleted\n";
 			}
 			

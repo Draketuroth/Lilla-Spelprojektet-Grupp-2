@@ -96,7 +96,7 @@ public:
 	void update(HWND &windowHandle);
 	bool readFiles();
 
-	void useAI(MainCharacter &player, Enemy &enemy);
+	void useAI(MainCharacter &player, Enemy* &enemy);
 
 	void InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void RespawnEnemies();
@@ -168,7 +168,7 @@ public:
 	int nrOfEnemies;
 	int nrOfIceEnemies;
 	int nrOfLavaEnemies;
-	vector<Enemy> enemies;
+	vector<Enemy*> enemies;
 
 	ICE_ENEMY_SKINNED_DATA iceEnemySkinData;
 	LAVA_ENEMY_SKINNED_DATA lavaEnemySkinData;

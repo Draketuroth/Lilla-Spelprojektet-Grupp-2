@@ -33,7 +33,7 @@ void SceneContainer::releaseAll() {
 
 	for(UINT i = 0; i < nrOfEnemies; i++){
 
-		enemies[i].releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
+		enemies[i]->releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
 
 	}
 
@@ -187,16 +187,16 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 
 		if(i < nrOfIceEnemies){
 
-		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-		enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+		enemies[i] = new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+		enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
 
 		}
 
 		else if (i >= nrOfIceEnemies) {
 
-			enemies[i] = Enemy(1, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-			enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
-			enemies[i].createProjectile(bulletPhysicsHandler);
+			enemies[i] = new Enemy(1, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i]->createProjectile(bulletPhysicsHandler);
 
 		}
 
@@ -226,16 +226,16 @@ void SceneContainer::RespawnEnemies() {
 	{
 
 		// Remove ice enemy rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].rigidBody);
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
 	}
 
 	for (UINT i = nrOfIceEnemies; i < nrOfEnemies; i++) {
 
 		// Remove lava enemy rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].rigidBody);
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
 
 		// Remove lava enemy projectile rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].fireBall.projectileRigidBody);
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
 	}
 
 	// Clear enemy rigid bodies vector
@@ -253,16 +253,16 @@ void SceneContainer::RespawnEnemies() {
 
 		if (i < nrOfIceEnemies) {
 
-			enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-			enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i] = new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
 
 		}
 
 		else if (i >= nrOfIceEnemies) {
 
-			enemies[i] = Enemy(1, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-			enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
-			enemies[i].createProjectile(bulletPhysicsHandler);
+			enemies[i] = new Enemy(1, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i]->createProjectile(bulletPhysicsHandler);
 
 		}
 
@@ -646,17 +646,17 @@ void SceneContainer::ReRelease() {
 	{
 
 		// Remove ice enemy rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].rigidBody);
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
 
 	}
 
 	for (UINT i = nrOfIceEnemies; i < nrOfEnemies; i++) {
 
 		// Remove lava enemy enemy rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].rigidBody);
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
 
 		// Remove projectile rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].fireBall.projectileRigidBody);
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
 	}
 
 	// Remove platform rigid bodies
@@ -697,7 +697,7 @@ void SceneContainer::ReInitialize() {
 		initSpawnPos.y = 2;
 		initSpawnPos.z = RandomNumber(-15, 15);
 
-		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+		enemies[i] =  new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
 
 	}
 
@@ -708,9 +708,9 @@ void SceneContainer::ReInitialize() {
 	for (UINT i = 0; i < nrOfEnemies; i++) {
 
 		//enemies[i].setHealth
-		enemies[i].setAlive(true);
-		enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
-		enemies[i].createProjectile(bulletPhysicsHandler);
+		enemies[i]->setAlive(true);
+		enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+		enemies[i]->createProjectile(bulletPhysicsHandler);
 
 	}
 
@@ -776,7 +776,7 @@ void SceneContainer::update(HWND &windowHandle)
 		else if (i >= nrOfIceEnemies) {
 
 			this->useAI(character, enemies[i]);
-			enemies[i].updateProjectile();
+			enemies[i]->updateProjectile();
 
 		}
 	}
@@ -787,17 +787,17 @@ void SceneContainer::update(HWND &windowHandle)
 	render();
 }
 
-void SceneContainer::useAI(MainCharacter &player, Enemy &enemy)
+void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy)
 {
 	btVector3 edge = ai.collisionEdge(sides, enemy);
 
-	enemy.rigidBody->applyCentralForce(edge);
+	enemy->rigidBody->applyCentralForce(edge);
 
-	if (enemy.getType() == 0)
+	if (enemy->getType() == 0)
 	{
 		this->ai.iceAI(player, enemy);
 	}
-	else if (enemy.getType() == 1)
+	else if (enemy->getType() == 1)
 	{
 		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
 	}
