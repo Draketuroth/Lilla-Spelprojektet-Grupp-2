@@ -548,6 +548,7 @@ void SceneContainer::update(HWND &windowHandle)
 
 			// Remove projectile rigid body
 			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i].fireBall.projectileRigidBody);
+			//bulletPhysicsHandler.EnemyRigidBodies
 		}
 
 		this->useAI(character, enemies[i]);
