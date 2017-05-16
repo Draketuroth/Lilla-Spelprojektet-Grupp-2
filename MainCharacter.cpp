@@ -3,7 +3,7 @@
 #include"Window.h"
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 3, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
+	:CharacterBase(true, 10, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 8.0f;
 	cameraDistanceZ = 5.0f;

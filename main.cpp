@@ -145,9 +145,7 @@ int RunApplication()
 				{
 					if (sceneContainer.character.getHealth() <= 0)
 					{
-						sceneContainer.character.DeathTimer();
-						cout << "Timer:  " << sceneContainer.character.deathCountdown << endl;
-						
+						sceneContainer.character.DeathTimer();						
 						if (sceneContainer.character.deathCountdown >= 3.0f)
 						{
 							menuState.state = GAME_OVER;	
