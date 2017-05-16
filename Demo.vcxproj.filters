@@ -357,5 +357,8 @@
     <FxCompile Include="Shaders\EnemyShaders\EnemyLavaVertexShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders\LavaEnemy</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\ShadowShaders\ShadowLavaVertex.hlsl">
+      <Filter>Source Files\HLSL\ShadowShader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

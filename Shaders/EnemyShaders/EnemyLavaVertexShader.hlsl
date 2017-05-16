@@ -46,6 +46,7 @@ struct VS_OUT
 	float4 Pos : SV_POSITION;
 	float3 WPos : WPOSITION;
 	float3 ViewPos : POSITION1;
+	float4 lPos : TEXCOORD1;
 };
 
 VS_OUT VS_main(VS_IN input){
@@ -68,7 +69,7 @@ VS_OUT VS_main(VS_IN input){
 	// To store and calculate the World position for output to the pixel shader, the input position must be multiplied with the World matrix
 	float3 worldPosition = mul(float4(position, 1.0f), matrixW[input.InstanceId]).xyz;
 	output.WPos = worldPosition;
-
+	output.lPos = mul(float4(worldPosition, 1.0f), lightViewProj);
 	// To store and calculate the WorldViewProj, the input position must be multiplied with the WorldViewProj matrix
 
 	output.Pos = mul(float4(position, 1.0f), matrixW[input.InstanceId]);

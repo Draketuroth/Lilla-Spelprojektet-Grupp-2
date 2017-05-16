@@ -69,11 +69,15 @@ public:
 	ID3D11InputLayout* gHUDVertexLayout;
 	ID3D11VertexShader* gHUDVertexShader;
 	ID3D11PixelShader* gHUDPixelShader;
-	ID3D11VertexShader* gShadowVertexShader;
+
+	ID3D11VertexShader* gShadowVertexShader;//Player shadow map
 	ID3D11InputLayout* gShadowVertexLayout;
 
-	ID3D11VertexShader* gShadowPlatformVertex;
+	ID3D11VertexShader* gShadowPlatformVertex;//Shadow map for platform
 	ID3D11InputLayout* gShadowPlatformLayout;
+
+	ID3D11VertexShader* gShadowLavaVertex;
+	ID3D11InputLayout* gShadowLayaLayout;
 
 
 

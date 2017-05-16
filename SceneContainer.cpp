@@ -1070,6 +1070,11 @@ void SceneContainer::renderIceEnemies()
 
 void SceneContainer::renderLavaEnemies()
 {
+	tHandler.texArr[0] = tHandler.LavaResource;
+	tHandler.texArr[1] = tHandler.shadowSRV;
+	
+	tHandler.samplerArr[0] = tHandler.texSampler;
+	tHandler.samplerArr[1] = tHandler.shadowSampler;
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gLavaEnemyVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -1080,8 +1085,8 @@ void SceneContainer::renderLavaEnemies()
 	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gLavaEnemyPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.LavaResource);
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
@@ -1192,6 +1197,18 @@ void SceneContainer::renderShadowMap()
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	character.draw(gHandler.gDeviceContext, mainCharacterFile.skinnedMeshes[0].vertices.size());
 	//-----------------------------------------------------------------------------------------------------//
+
+	//Lava enemy pass------------------------------------------------------------------------------------------------//
+
+	bHandler.gBufferArr[1] = bHandler.gLavaEnemyTransformBuffer;
+	bHandler.gBufferArr[2] = animHandler.gLavaEnemyBoneBuffer;
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowLavaVertex, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
+
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
+
+	//--------------------------------------------------------------------------------------------------------------//
 
 	//Platform pass--------------------------------------------------------------------------------------------------//
 	bHandler.gBufferArr[1] = bHandler.gInstanceBuffer;
