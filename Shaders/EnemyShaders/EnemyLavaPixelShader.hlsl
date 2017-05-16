@@ -25,7 +25,7 @@ float4 PS_main(PS_IN input) : SV_Target
 	float2 smTexture = float2(0.5f * input.lPos.x + 0.5f, -0.5f * input.lPos.y + 0.5f);
 
 
-	float depthBias = 0.0017f;
+	float depthBias = 0.0017;
 
 	float depth = input.lPos.z;
 	float dx = 1.0f / 1920;

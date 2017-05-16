@@ -1,5 +1,5 @@
 #define MAX_JOINTS 24
-#define MAX_ENEMY 10
+#define MAX_ENEMY 20
 
 cbuffer GS_CONSTANT_BUFFER : register(b0) {
 
@@ -16,6 +16,16 @@ struct PerIceEnemyInstanceData {
 
 	matrix gBoneTransform[MAX_JOINTS];
 };
+cbuffer ICE_ENEMY_TRANSFORM : register(b1) {
+
+	matrix matrixW[MAX_ENEMY];
+};
+
+cbuffer ICE_ENEMY_SKINNED_DATA : register(b2) {
+
+	PerIceEnemyInstanceData enemyInstance[MAX_ENEMY];
+};
+
 struct VS_IN
 {
 	float3 Pos : POSITION;
@@ -29,20 +39,10 @@ struct VS_OUT
 {
 	float4 Pos : SV_POSITION;
 };
-cbuffer ICE_ENEMY_TRANSFORM : register(b1) {
-
-	matrix matrixW[MAX_ENEMY];
-};
-
-cbuffer ICE_ENEMY_SKINNED_DATA : register(b2) {
-
-	PerIceEnemyInstanceData enemyInstance[MAX_ENEMY];
-};
 
 VS_OUT VS_main(VS_IN input)
 {
 	VS_OUT output = (VS_OUT)0;
-
 	float3 position = float3(0.0f, 0.0f, 0.0f);
 	for (int i = 0; i < 4; ++i) // loop trough the 4 weights
 	{

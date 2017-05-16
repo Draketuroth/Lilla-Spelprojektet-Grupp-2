@@ -92,7 +92,7 @@ void AI::attackMelee(MainCharacter &player, Enemy* self)
 		BoundingBox meleeBox = BoundingBox(boxCenter, boxRange);
 
 		BoundingBox playerBox = player.getBoundingBox();
-		if (playerBox.Intersects(meleeBox))
+		if (playerBox.Intersects(meleeBox) && player.getAlive() == true)
 		{
 			cout << "PLAYER GOT HIT" << endl;
 

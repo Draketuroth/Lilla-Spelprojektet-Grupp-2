@@ -1532,7 +1532,65 @@ bool GraphicComponents::CreateShadowShaders()
 
 		cout << "Shadow Lava Enemy Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+	//vsBlob->Release();
+
+
+	//Ice enemy shader-----------------------------------------------------------------------------------------------------------------//
+	vsBlob = nullptr;
+	vsErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(
+		L"Shaders\\ShadowShaders\\ShadowIceVertex.hlsl",
+		nullptr,
+		nullptr,
+		"VS_main",
+		"vs_5_0",
+		D3DCOMPILE_DEBUG,
+		0,
+		&vsBlob,
+		&vsErrorBlob
+	);
+
+	if (FAILED(hr)) {
+
+		cout << "Shadow Ice Enemy Vertex Shader Error: Vertex Shader could not be compiled or loaded from file" << endl;
+
+		if (vsErrorBlob) {
+
+			OutputDebugStringA((char*)vsErrorBlob->GetBufferPointer());
+			vsErrorBlob->Release();
+		}
+		return false;
+	}
+
+
+	hr = gDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &gShadowIceVertex);
+
+	if (FAILED(hr)) {
+
+		cout << "Shadow Ice Enemy Vertex Shader Error: Vertex Shader could not be created" << endl;
+		return false;
+	}
+
+	D3D11_INPUT_ELEMENT_DESC vertexInputDesc3[] = {
+
+		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD",		0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",			0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT",			0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDICES",	0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "SV_InstanceID", 0, DXGI_FORMAT_R32_UINT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
+	};
+
+	int inputLayoutSize3 = sizeof(vertexInputDesc3) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	gDevice->CreateInputLayout(vertexInputDesc3, inputLayoutSize3, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gShadowIceLayout);
+
+	if (FAILED(hr)) {
+
+		cout << "Shadow Lava Enemy Vertex Shader Error: Shader Input Layout could not be created" << endl;
+	}
 	vsBlob->Release();
+
 
 	return true;
 }

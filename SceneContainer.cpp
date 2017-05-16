@@ -1042,6 +1042,12 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderIceEnemies()
 {
+	tHandler.texArr[0] = tHandler.defaultResource;
+	tHandler.texArr[1] = tHandler.shadowSRV;
+
+	tHandler.samplerArr[0] = tHandler.texSampler;
+	tHandler.samplerArr[1] = tHandler.shadowSampler;
+
 	gHandler.gDeviceContext->VSSetShader(gHandler.gIceEnemyVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gIceEnemyTransformBuffer);
@@ -1051,8 +1057,8 @@ void SceneContainer::renderIceEnemies()
 	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gIceEnemyPixelShader, nullptr, 0);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);
-	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
@@ -1207,8 +1213,23 @@ void SceneContainer::renderShadowMap()
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
 
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowLayaLayout);
+
+	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), 10, 0, 0);
+
 
 	//--------------------------------------------------------------------------------------------------------------//
+	//Ice enemy pass-----------------------------------------------------------------------------------------------//
+	bHandler.gBufferArr[1] = bHandler.gIceEnemyTransformBuffer;
+	bHandler.gBufferArr[2] = animHandler.gIceEnemyBoneBuffer;
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowIceVertex, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
+
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyIceVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowIceLayout);
+
+	gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfIceEnemies, 0, 0);
 
 	//Platform pass--------------------------------------------------------------------------------------------------//
 	bHandler.gBufferArr[1] = bHandler.gInstanceBuffer;
@@ -1228,8 +1249,6 @@ void SceneContainer::renderShadowMap()
 
 	//Set the rendertarget to the normal render target view and depthstencilview
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, gHandler.depthView);
-
-
 }
 
 void SceneContainer::drawHUD()

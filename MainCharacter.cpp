@@ -3,7 +3,7 @@
 #include"Window.h"
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
+	:CharacterBase(true, 3, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 8.0f;
 	cameraDistanceZ = 5.0f;
@@ -17,6 +17,7 @@ MainCharacter::MainCharacter()
 	this->shooting = false;
 	this->shootCD = 0.3f;
 	this->shootTimer = 0.0f;
+	this->deathCountdown = 0.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
@@ -454,6 +455,15 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		}
 	}
 	
+}
+
+void MainCharacter::DeathTimer()
+{
+	if (deathCountdown <= 3.0f)
+	{
+		deathCountdown += timer.getDeltaTime();
+	}
+	timer.updateCurrentTime();
 }
 
 //bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)

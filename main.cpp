@@ -9,6 +9,7 @@
 #include "SceneContainer.h"
 #include "Timer.h"
 #include "GameState.h"
+#include <iostream>
 #include <thread>
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
@@ -146,8 +147,22 @@ int RunApplication()
 
 				if (!sceneContainer.character.getAlive())
 				{
-					menuState.state = GAME_OVER;
+					if (sceneContainer.character.getHealth() <= 0)
+					{
+						sceneContainer.character.DeathTimer();
+						cout << "Timer:  " << sceneContainer.character.deathCountdown << endl;
+						
+						if (sceneContainer.character.deathCountdown >= 3.0f)
+						{
+							menuState.state = GAME_OVER;	
+						}	
+					}	
+					else
+					{
+						menuState.state = GAME_OVER;
+					}
 				}
+
 				
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.bHandler.lavaPitRigidBody, sceneContainer.character.rigidBody, characterCallBack);
 

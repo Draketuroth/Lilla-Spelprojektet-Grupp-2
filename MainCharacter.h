@@ -31,6 +31,7 @@ public:
 	void rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler);
 	bool renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end);
 	bool isGrounded();
+	void DeathTimer();
 
 	Camera camera;
 
@@ -54,6 +55,8 @@ public:
 	bool shooting;
 	float shootTimer;
 	float shootCD;
+
+	float deathCountdown;
 
 	float playerAnimTimePos;
 
