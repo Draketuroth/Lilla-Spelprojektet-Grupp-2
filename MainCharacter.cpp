@@ -3,7 +3,7 @@
 #include"Window.h"
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
+	:CharacterBase(true, 100000, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
 {
 	cameraDistanceY = 8.0f;
 	cameraDistanceZ = 5.0f;
@@ -15,7 +15,7 @@ MainCharacter::MainCharacter()
 	this->attackCd = 0.3f;
 
 	this->shooting = false;
-	this->shootCD = 0.3f;
+	this->shootCD = 1.0f;
 	this->shootTimer = 0.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
