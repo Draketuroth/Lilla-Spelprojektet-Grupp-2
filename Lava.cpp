@@ -5,8 +5,8 @@ Lava::Lava()
 {
 	map[0].filename = L"Textures\\HeightLava1.raw";
 	map[1].filename = L"Textures\\HeightLava2.raw";
-	map[2].filename = L"Textures\\HeightLava3.raw";
-	map[3].filename = L"Textures\\HeightLava4.raw";
+	map[2].filename = L"Textures\\HeightLava1.raw";
+	map[3].filename = L"Textures\\HeightLava3.raw";
 
 	weightScalar = 1;
 	lastMap = 1;
