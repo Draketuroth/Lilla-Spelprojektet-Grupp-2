@@ -113,7 +113,7 @@ public:
 
 	void reportLiveObjects();
 
-	void IncrementLevels();
+	
 
 	float RandomNumber(float Minimum, float Maximum);
 

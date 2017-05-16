@@ -132,11 +132,7 @@ int RunApplication()
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				if (GetAsyncKeyState('N')) {
-
-					sceneContainer.RespawnEnemies();
-					Sleep(200);
-				}
+				
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// PLAYER LAVA HIT DETECTION

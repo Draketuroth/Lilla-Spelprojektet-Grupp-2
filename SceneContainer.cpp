@@ -12,12 +12,12 @@ SceneContainer::SceneContainer() {
 
 	character = MainCharacter();
 
-	this->nrOfIceEnemies = 20;
-	this->nrOfLavaEnemies = 10;
+	this->nrOfIceEnemies = 2;
+	this->nrOfLavaEnemies = 0;
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
-	this->level = 0;
+	this->level = 1;
 
 	this->ai = AI();
 
@@ -244,6 +244,22 @@ void SceneContainer::RespawnEnemies() {
 	// Recreate enemies and their rigid bodies
 
 	XMFLOAT3 initSpawnPos;
+
+	
+
+	if (nrOfEnemies % 3 == 0 && nrOfLavaEnemies < 15)
+	{
+		nrOfLavaEnemies++;
+		nrOfEnemies++;
+	}
+	else if( nrOfIceEnemies < 15)
+	{
+		nrOfIceEnemies++;
+		nrOfEnemies++;
+	}
+
+	enemies.clear();
+	enemies.resize(nrOfEnemies);
 
 	for (UINT i = 0; i < nrOfEnemies; i++) {
 
@@ -759,7 +775,7 @@ bool SceneContainer::readFiles() {
 
 void SceneContainer::update(HWND &windowHandle)
 {
-	
+	int deadEnemies = 0;
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
@@ -781,8 +797,20 @@ void SceneContainer::update(HWND &windowHandle)
 		}
 	}
 
-	//cout << "Side Center: " << sides[2].Center.x << ", " << sides[2].Center.y << ", " << sides[2].Center.z << endl;
-	//cout << "Enemy Center: " << enemies[0].getBoundingBox().Center.x << ", " << enemies[0].getBoundingBox().Center.y << ", " << enemies[0].getBoundingBox().Center.z << endl;
+	for (int i = 0; i < nrOfEnemies; i++)
+	{
+		if (!enemies[i]->getAlive())
+		{
+			deadEnemies++;
+		}
+	}
+	if (deadEnemies == nrOfEnemies)
+	{
+		incrementLevels();
+		RespawnEnemies();
+		
+	}
+	
 	
 	render();
 }
@@ -813,6 +841,8 @@ void SceneContainer::incrementLevels()
 	HUD.setText(level);
 	HUD.setFont(gHandler.gDevice);
 	HUD.CreateFontIndexBuffer(gHandler.gDevice);
+
+	
 
 }
 
