@@ -15,7 +15,7 @@ MainCharacter::MainCharacter()
 	this->attackCd = 0.3f;
 
 	this->shooting = false;
-	this->shootCD = 0.3f;
+	this->shootCD = 1.0f;
 	this->shootTimer = 0.0f;
 	this->deathCountdown = 0.0f;
 

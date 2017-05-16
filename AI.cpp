@@ -8,7 +8,7 @@ AI::AI()
 
 	this->rangedAttack = true;
 	this->rangedTimer = 10.0;
-	this->rangedCd = 10.0;
+	this->rangedCd = 5.0;
 	
 	this->timer.initialize();
 }
@@ -46,15 +46,15 @@ void AI::fireAI(MainCharacter &player, Enemy* self, BulletComponents &bulletPhys
 {
 	float distance = getDistance(player.getPos(), self->getPos());
 
-	if (distance <= 8 )
+	if (distance >= 12 && distance <= 16  )
 	{
 		attackRanged(player, self, bulletPhysicsHandler);
 	}
-	else if (distance <= 5)
+	else if (distance <= 10)
 	{
 		moveAwayFromPlayer(player.getPos(), self);
 	}
-	else
+	else if( distance > 16)
 	{
 		moveTowardsPlayer(player.getPos(), self);
 	}
@@ -137,6 +137,11 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 	{
 		rangedAttack = true;
 		rangedTimer = rangedCd;
+
+		btTransform transform = self->fireBall.projectileRigidBody->getCenterOfMassTransform();
+		transform.setOrigin(btVector3(self->getPos().x, self->getPos().y + 2, self->getPos().z));
+		self->fireBall.projectileRigidBody->setWorldTransform(transform);
+
 
 		//----------Räkna ut kastet--------------------------------------------------------------
 		

@@ -34,6 +34,8 @@
 
 #include "HUD.h"
 
+#include <chrono>
+
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
 	MyCharacterContactResultCallback(CharacterBase* ptr) : character(ptr) {}
@@ -113,7 +115,7 @@ public:
 
 	void reportLiveObjects();
 
-	void IncrementLevels();
+	
 
 	float RandomNumber(float Minimum, float Maximum);
 

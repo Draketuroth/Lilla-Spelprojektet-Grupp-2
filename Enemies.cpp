@@ -234,9 +234,9 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 {
 	
 
-	float forceVz = forceVx * direction.z * 0.4;
-	forceVx = forceVx * direction.x * 0.4;
-	forceVy *= 0.7;
+	float forceVz = forceVx * direction.z;
+	forceVx = forceVx * direction.x;
+	//forceVy *= 0.7;
 	
 	btVector3 force = { forceVx, forceVy, forceVz };
 
@@ -247,7 +247,7 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 	float fireBallDistance =  enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
 
 
-	if (fireBallDistance <= 1.5)
+	if (fireBallDistance <= 4)
 	{
 		fireBall.projectileRigidBody->applyCentralForce(force);
 		fireBall.projectileRigidBody->setFriction(3);	

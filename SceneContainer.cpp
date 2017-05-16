@@ -12,12 +12,12 @@ SceneContainer::SceneContainer() {
 
 	character = MainCharacter();
 
-	this->nrOfIceEnemies = 20;
-	this->nrOfLavaEnemies = 10;
+	this->nrOfIceEnemies = 2;
+	this->nrOfLavaEnemies = 0;
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
-	this->level = 0;
+	this->level = 1;
 
 	this->ai = AI();
 
@@ -71,7 +71,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			MB_OK);
 			PostQuitMessage(0);
 	}
-
+	
 	if (!WindowInitialize(windowHandle)) {
 
 		// If the window cannot be created during startup, it's more known as a terminal error
@@ -160,7 +160,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 	HUD.setElementPos(gHandler.gDevice);
 	HUD.CreateIndexBuffer(gHandler.gDevice);
 	HUD.loadBitMap();
-	HUD.setText(0);
+	HUD.setText(level);
 	HUD.setFont(gHandler.gDevice);
 	HUD.CreateFontIndexBuffer(gHandler.gDevice);
 	
@@ -245,6 +245,22 @@ void SceneContainer::RespawnEnemies() {
 
 	XMFLOAT3 initSpawnPos;
 
+	
+
+	if (nrOfEnemies % 3 == 0 && nrOfLavaEnemies < 15)
+	{
+		nrOfLavaEnemies++;
+		nrOfEnemies++;
+	}
+	else if( nrOfIceEnemies < 15)
+	{
+		nrOfIceEnemies++;
+		nrOfEnemies++;
+	}
+
+	enemies.clear();
+	enemies.resize(nrOfEnemies);
+
 	for (UINT i = 0; i < nrOfEnemies; i++) {
 
 		initSpawnPos.x = RandomNumber(-15, 15);
@@ -267,6 +283,9 @@ void SceneContainer::RespawnEnemies() {
 		}
 
 	}
+
+	
+	
 
 }
 
@@ -659,6 +678,13 @@ void SceneContainer::ReRelease() {
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
 	}
 
+	nrOfEnemies = 2;
+	nrOfIceEnemies = 2;
+	nrOfLavaEnemies = 0;
+	level = 0;
+	incrementLevels();
+
+
 	// Remove platform rigid bodies
 	for(UINT i = 0; i < bHandler.nrOfCubes; i++)
 	{
@@ -679,7 +705,8 @@ void SceneContainer::ReRelease() {
 
 }
 
-void SceneContainer::ReInitialize() {
+void SceneContainer::ReInitialize()
+{
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RE-CREATE RIGID BODIES
@@ -759,7 +786,7 @@ bool SceneContainer::readFiles() {
 
 void SceneContainer::update(HWND &windowHandle)
 {
-	
+	int deadEnemies = 0;
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
@@ -767,7 +794,7 @@ void SceneContainer::update(HWND &windowHandle)
 	for (UINT i = 0; i < this->nrOfEnemies; i++){
 	
 
-		if (i < nrOfIceEnemies){
+		/*if (i < nrOfIceEnemies){
 
 			this->useAI(character, enemies[i]);
 
@@ -778,11 +805,46 @@ void SceneContainer::update(HWND &windowHandle)
 			this->useAI(character, enemies[i]);
 			enemies[i]->updateProjectile();
 
+		}*/
+
+		this->useAI(character, enemies[i]);
+
+		if (enemies[i]->getType() == 1)
+		{
+			enemies[i]->updateProjectile();
 		}
+
+		btVector3 velVec = enemies[i]->rigidBody->getLinearVelocity();
+		
+		XMFLOAT3 vel = { velVec.getX(), velVec.getY(), velVec.getZ()};
+
+
+		if ( vel.x < 0.1 && vel.z < 0.1)
+		{
+			enemies[i]->currentAnimIndex = 1;
+		}
+		else
+		{ 
+			enemies[i]->currentAnimIndex = 0;
+		}
+
+
 	}
 
-	//cout << "Side Center: " << sides[2].Center.x << ", " << sides[2].Center.y << ", " << sides[2].Center.z << endl;
-	//cout << "Enemy Center: " << enemies[0].getBoundingBox().Center.x << ", " << enemies[0].getBoundingBox().Center.y << ", " << enemies[0].getBoundingBox().Center.z << endl;
+	for (int i = 0; i < nrOfEnemies; i++)
+	{
+		if (!enemies[i]->getAlive())
+		{
+			deadEnemies++;
+		}
+	}
+	if (deadEnemies == nrOfEnemies)
+	{
+		incrementLevels();
+		RespawnEnemies();
+		
+	}
+	
 	
 	render();
 }
@@ -813,6 +875,8 @@ void SceneContainer::incrementLevels()
 	HUD.setText(level);
 	HUD.setFont(gHandler.gDevice);
 	HUD.CreateFontIndexBuffer(gHandler.gDevice);
+
+	
 
 }
 
