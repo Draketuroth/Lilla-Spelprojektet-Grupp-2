@@ -72,6 +72,12 @@ void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHa
 
 void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 {
+
+	if (attackFlag == true) {
+
+		currentAnimIndex = 3;
+	}
+
 	XMFLOAT3 pos;
 
 	float time = timer.getDeltaTime();

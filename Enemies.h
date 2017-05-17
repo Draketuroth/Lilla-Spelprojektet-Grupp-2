@@ -41,6 +41,9 @@ public:
 
 	int currentAnimIndex;
 
+	bool attacking;
+	bool attackFlag;
+
 private:
 	
 	int Type;
