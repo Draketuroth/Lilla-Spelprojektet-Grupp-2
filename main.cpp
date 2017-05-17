@@ -285,10 +285,6 @@ void updateEnemies() {
 
 					sceneContainer.enemies[i]->currentAnimIndex = 2;
 
-					// Update ice enemy physics
-					XMMATRIX scaling = XMMatrixScaling(0.1, 0.1, 0.1);
-					sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
-
 					// Update enemy animation time pose
 					sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
 					currentEnemyTimePos = sceneContainer.animHandler.enemyTimePos[i];
