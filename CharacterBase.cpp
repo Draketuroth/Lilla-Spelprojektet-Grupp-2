@@ -217,17 +217,17 @@ void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOA
 	this->boundingBoxExtents = extents;
 
 	// Create the rigid body
-	btRigidBody* playerRigidBody = new btRigidBody(info);
-	playerRigidBody->setUserIndex(enemyIndex);
+	btRigidBody* enemyRigidBody = new btRigidBody(info);
+	enemyRigidBody->setUserIndex(enemyIndex);
 
 	// Set the rigid body to the current platform 
-	this->rigidBody = playerRigidBody;
+	this->rigidBody = enemyRigidBody;
 	this->rigidBody->setActivationState(DISABLE_DEACTIVATION);
 
 	// Add the new rigid body to the dynamic world
 	int enemyCollideWith = COL_PLAYER | COL_LEVEL | COL_ENEMY | COL_RAY;//Flags to determine what objects the enemy can collide with
-	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(playerRigidBody, COL_ENEMY, enemyCollideWith);
-	bulletPhysicsHandler.EnemyRigidBodies.push_back(playerRigidBody);
+	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(enemyRigidBody, COL_ENEMY, enemyCollideWith);
+	bulletPhysicsHandler.enemyRigidBodies.push_back(enemyRigidBody);
 
 }
 

@@ -39,15 +39,20 @@ struct PLAYER_TRANSFORM {
 	XMMATRIX matrixWVP;
 };
 
-struct ENEMY_TRANSFORM {
+struct ICE_ENEMY_TRANSFORM {
 
-	XMMATRIX matrixW[15];
+	XMMATRIX matrixW[20];
+};
+
+struct LAVA_ENEMY_TRANSFORM {
+
+	XMMATRIX matrixW[10];
 };
 
 
 struct PROJECTILE_TRANSFORM
 {
-	XMMATRIX worldMatrix[15];
+	XMMATRIX worldMatrix[30];
 };
 
 struct CubeObjects {
@@ -83,7 +88,9 @@ public:
 	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
 	ID3D11Buffer* gInstanceBuffer;
 	ID3D11Buffer* gPlayerTransformBuffer;
-	ID3D11Buffer* gEnemyTransformBuffer;
+
+	ID3D11Buffer* gIceEnemyTransformBuffer;
+	ID3D11Buffer* gLavaEnemyTransformBuffer;
 
 	ID3D11Buffer* gProjectileTransformBuffer;
 
@@ -103,7 +110,7 @@ public:
 
 	btRigidBody* lavaPitRigidBody;
 
-	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfEnemies);
+	bool SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfIceEnemies, int nrOfLavaEnemies);
 
 	bool CreateDebugVertexBuffer(ID3D11Device* &gDevice);
 	bool CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileImporter &importer);
@@ -116,7 +123,10 @@ public:
 	bool CreateConstantBuffer(ID3D11Device* &gDevice);
 	bool CreateInstanceBuffer(ID3D11Device* &gDevice);
 	bool CreatePlayerTransformBuffer(ID3D11Device* &gDevice);
-	bool CreateEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
+
+	bool CreateIceEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
+	bool CreateLavaEnemyTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
+
 	bool CreateProjectileTransformBuffer(ID3D11Device* &gDevice, int nrOfEnemies);
 	void CreateRigidBodyTags();
 

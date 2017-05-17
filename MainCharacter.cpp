@@ -15,8 +15,9 @@ MainCharacter::MainCharacter()
 	this->attackCd = 0.3f;
 
 	this->shooting = false;
-	this->shootCD = 0.3f;
+	this->shootCD = 1.0f;
 	this->shootTimer = 0.0f;
+	this->deathCountdown = 0.0f;
 
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
@@ -176,6 +177,16 @@ void MainCharacter::CheckInput() {
 
 	}
 
+	if (shooting == true) {
+
+		currentAnimIndex = 4;
+	}
+
+	if (attacking == true) {
+
+		currentAnimIndex = 3;
+	}
+
 	this->rigidBody->setLinearVelocity(speed);
 }
 
@@ -267,11 +278,11 @@ bool MainCharacter::isGrounded()
 	}
 }
 
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy> enemyArray, btDynamicsWorld* bulletDynamicsWorld)
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemyArray, btDynamicsWorld* bulletDynamicsWorld, float enemyTimePoses[30])
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
-		currentAnimIndex = 3;
+		playerAnimTimePos = 0;
 		attackSound.setBuffer(soundBuffer[1]);
 		attackSound.play();
 
@@ -304,27 +315,30 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		
 		for (int i = 0; i < nrOfEnemies; i++)
 		{
-			BoundingBox enemyBox = enemyArray[i].getBoundingBox();
+			BoundingBox enemyBox = enemyArray[i]->getBoundingBox();
 			if (enemyBox.Intersects(meleeBox))
 			{
 				cout << "HIT!" << endl;
-				enemyArray[i].setHealth(enemyArray[i].getHealth() - 1);
+				int h = enemyArray[i]->getHealth();
+				enemyArray[i]->setHealth(enemyArray[i]->getHealth() - 1);
+				h = enemyArray[i]->getHealth();
 				
 		// ------------- Knockback ----------------------------------------------
 				btTransform playerTrans;
 				btTransform enemyTrans;
 				this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
-				enemyArray[i].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+				enemyArray[i]->rigidBody->getMotionState()->getWorldTransform(enemyTrans);
 				
 				btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
 				correctedForce.normalize();
 
-				enemyArray[i].rigidBody->applyCentralImpulse(-correctedForce / 2);
+				enemyArray[i]->rigidBody->applyCentralImpulse(-correctedForce / 2);
 		// -----------------------------------------------------------------------
 
-				if (enemyArray[i].getHealth() <= 0 && enemyArray[i].getAlive() == true)
+				if (enemyArray[i]->getHealth() <= 0 && enemyArray[i]->getAlive() == true)
 				{
-					enemyArray[i].setAlive(false);
+					enemyArray[i]->setAlive(false);
+					enemyTimePoses[i] = 0.0f;
 					cout << "ENEMY DEAD" << endl;
 				}
 			}
@@ -343,7 +357,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler, float enemyTimePoses[30])
 {
 
 	XMFLOAT3 start, end;
@@ -351,12 +365,12 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 	
 	for (size_t i = 0; i < nrOfEnemies; i++)
 	{
-		enemies[i].rigidBody->setIslandTag(characterRigid);
+		enemies[i]->rigidBody->setIslandTag(characterRigid);
 	}
 
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
-
+		playerAnimTimePos = 0;
 		attackSound.setBuffer(soundBuffer[0]);
 		attackSound.play();
 		
@@ -402,28 +416,27 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 			int i = rayCallBack.m_collisionObject->getUserIndex();
 
-			assert(i < 15 && i >= 0);
-
 			//Used for knockback----------------------------------------------------------
 			btTransform playerTrans;
 			btTransform enemyTrans;
 			this->rigidBody->getMotionState()->getWorldTransform(playerTrans);
-			enemies[i].rigidBody->getMotionState()->getWorldTransform(enemyTrans);
+			enemies[i]->rigidBody->getMotionState()->getWorldTransform(enemyTrans);
 
 			btVector3 correctedForce = playerTrans.getOrigin() - enemyTrans.getOrigin();
 			correctedForce.normalize();
-			enemies[i].rigidBody->applyCentralImpulse(-correctedForce / 2);
+			enemies[i]->rigidBody->applyCentralImpulse(-correctedForce / 2);
 			//----------------------------------------------------------------------------
 
-			cout << "Enemy Tag: " << enemies[i].rigidBody->getIslandTag() << endl << endl;
-			if (enemies[i].rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
+			cout << "Enemy Tag: " << enemies[i]->rigidBody->getIslandTag() << endl << endl;
+			if (enemies[i]->rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
 			{
 				cout << "Enemy Shot!! -1 health\n";
-				enemies[i].setHealth(enemies[i].getHealth() - 1);
+				enemies[i]->setHealth(enemies[i]->getHealth() - 1);
 			}
-			if (enemies[i].getHealth() == 0)
+			if (enemies[i]->getHealth() == 0)
 			{
-				enemies[i].setAlive(false);
+				enemies[i]->setAlive(false);
+				enemyTimePoses[i] = 0.0f;
 				cout << "Enemy Deleted\n";
 			}
 			
@@ -435,14 +448,25 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 	
 		if (this->shootTimer > 0)
 		{
+
 			this->shootTimer -= timer.getDeltaTime();
 		}
 		else
 		{
 			this->shooting = false;
+			
 		}
 	}
 	
+}
+
+void MainCharacter::DeathTimer()
+{
+	if (deathCountdown <= 3.0f)
+	{
+		deathCountdown += timer.getDeltaTime();
+	}
+	timer.updateCurrentTime();
 }
 
 //bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)

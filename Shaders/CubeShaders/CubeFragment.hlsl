@@ -75,16 +75,16 @@ float4 PS_main(PS_IN input) : SV_Target
 	ads = Ld * (Ka + diffuseLight + specularLight);
 
 
-	/*float sum = 0;
-	float x, y;
-	for (y = -1.5; y < 1.5; y++)
-	{
-		for (x = -1.5; x < 1.5; x++)
-		{
-			sum += shadowMap.SampleCmpLevelZero(shadowSampler, input.lPos.xy + texOffset(x, y), depth);
-		}
-	}
-	float shadowFactor = sum / 16.0f;*/
+	//float sum = 0;
+	//float x, y;
+	//for (y = -1.5; y < 1.5; y++)
+	//{
+	//	for (x = -1.5; x < 1.5; x++)
+	//	{
+	//		sum += shadowMap.SampleCmpLevelZero(shadowSampler, input.lPos.xy + texOffset(x, y), depth);
+	//	}
+	//}
+	//float shadowFactor = sum / 16.0f;
 	
 	
 	float s0 = (shadowMap.Sample(shadowSampler, smTexture).r + depthBias < depth) ? 0.25f : 1.0f;
@@ -98,7 +98,7 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	float shadowFactor = lerp(lerp(s0, s1, lerps.x), lerp(s2, s3, lerps.x), lerps.y);
 
-//	float shadowFactor = (shadowMap.Sample(shadowSampler, smTexture).r + 0.005f < depth) ? 0.25f : 1.0f;
+
 
 	// Now the Sample state will sample the color output from the texture file so that we can return the correct color
 	texColor = tex0.Sample(texSampler, input.Tex).xyz;

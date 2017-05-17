@@ -34,9 +34,8 @@ public:
 	float GetDepth()const;
 
 	void ReleaseAll(); 
-
+	
 	int swap(int frameCounter, ID3D11Device* device);
-
 
 	ID3D11Buffer* LavaVB;
 	ID3D11Buffer* LavaIB;
@@ -53,7 +52,7 @@ private:
 	int lastMap;
 	int currentMap;
 
-	float value;
+	float value; 
 	bool weightSwap;
 	float weightScalar;
 	float secondWeightScalar;
@@ -62,6 +61,8 @@ private:
 	int cols; 
 	int NrOfVert;
 	int lastFrame;
+
+
 };
 
 #endif

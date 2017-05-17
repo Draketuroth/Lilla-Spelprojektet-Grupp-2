@@ -35,7 +35,6 @@ private:
 public:
 	
 	ID3D11Buffer* vertexBuffer;
-	//ID3D11Buffer* indexBuffer;
 
 	XMMATRIX tPlayerTranslation;
 	btRigidBody* rigidBody;

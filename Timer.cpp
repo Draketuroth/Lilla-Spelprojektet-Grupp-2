@@ -12,6 +12,7 @@ Timer::Timer()
 
 	this->deltaTime;
 	this->frameCount = 0;
+	this->secondCounter = 0;
 }
 Timer::~Timer()
 {
@@ -42,12 +43,16 @@ float Timer::getCurrentTime()
 void Timer::updateCurrentTime()
 {
 	this->previousTime = this->currentTime;
-	
-	if (this->frameCount ==	4000)
+	//this->secondCounter += this->getSeconds();
+	cout << this->secondCounter << endl;
+
+	if (this->frameCount > 4000)
 	{
 		this->frameCount = 0;
 	}
-	this->frameCount += 1;
+
+	this->frameCount += getDeltaTime() * 750;
+	//this->frameCount += 1;
 }
 
 void Timer::resetTimer()
@@ -63,3 +68,4 @@ float Timer::getCountsPerSecond()
 {
 	return this->countsPerSecond;
 }
+

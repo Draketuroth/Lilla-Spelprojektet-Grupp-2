@@ -70,6 +70,16 @@ bool FileImporter::readFormat(string file) {
 								  << currentMesh.meshTransformation.meshScale.y << ", "
 								  << currentMesh.meshTransformation.meshScale.z << endl;
 
+				
+				in.read(reinterpret_cast<char*>(&currentMesh.meshBoundingBox), sizeof(BBox));
+				cout << "Bounding Box Max: " << currentMesh.meshBoundingBox.xMax << ", "
+											 << currentMesh.meshBoundingBox.yMax << ", "
+											 << currentMesh.meshBoundingBox.zMax << endl;
+
+				cout << "Bounding Box Min: " << currentMesh.meshBoundingBox.xMin << ", "
+											 << currentMesh.meshBoundingBox.yMin << ", "
+											 << currentMesh.meshBoundingBox.zMin << endl;
+
 				//------------------------------------------------------//
 				// MATERIAL ATTRIBUTES
 				//------------------------------------------------------//
@@ -159,6 +169,16 @@ bool FileImporter::readFormat(string file) {
 				cout << "Scale: " << currentMesh.meshTransformation.meshScale.x << ", "
 								  << currentMesh.meshTransformation.meshScale.y << ", "
 								  << currentMesh.meshTransformation.meshScale.z << endl;
+
+
+				in.read(reinterpret_cast<char*>(&currentMesh.meshBoundingBox), sizeof(BBox));
+				cout << "Bounding Box Max: " << currentMesh.meshBoundingBox.xMax << ", "
+											 << currentMesh.meshBoundingBox.yMax << ", "
+											 << currentMesh.meshBoundingBox.zMax << endl;
+
+				cout << "Bounding Box Min: " << currentMesh.meshBoundingBox.xMin << ", "
+											 << currentMesh.meshBoundingBox.yMin << ", "
+											 << currentMesh.meshBoundingBox.zMin << endl;
 
 				//------------------------------------------------------//
 				// MATERIAL ATTRIBUTES

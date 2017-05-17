@@ -88,12 +88,6 @@
     <Filter Include="Source Files\HLSL\EnemyShaders">
       <UniqueIdentifier>{cdbb6087-8e59-409e-a15f-740b8c3490d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\FBXLoader">
-      <UniqueIdentifier>{57230deb-6b5f-4aeb-bfdd-20b77b9940aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FBXLoader">
-      <UniqueIdentifier>{8b83be13-04f7-415f-8126-98c3ba5a2b09}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\HLSL\LavaShaders">
       <UniqueIdentifier>{889167de-cb34-4bb9-b214-05791ae3e389}</UniqueIdentifier>
     </Filter>
@@ -102,6 +96,42 @@
     </Filter>
     <Filter Include="Source Files\HLSL\ShadowShader">
       <UniqueIdentifier>{4435caeb-22f1-4f86-9a65-dce945e6c0b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HUD">
+      <UniqueIdentifier>{3e3384ff-a141-4e54-b24d-413d24811574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AI">
+      <UniqueIdentifier>{5e302764-e899-427b-9721-fa0cfee3ad82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FileImporter">
+      <UniqueIdentifier>{5ca207d2-d409-424a-a45d-b83b05320425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AnimationHandler">
+      <UniqueIdentifier>{dee03e00-807a-4dfc-8c52-32ff5fcf6ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lava">
+      <UniqueIdentifier>{c59ab235-0ac2-4e11-a398-f11da22cc9ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AI">
+      <UniqueIdentifier>{1a7d82af-6795-4dd7-98e1-b68b9a1633d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HUD">
+      <UniqueIdentifier>{0f9f5b33-c62c-4841-a534-01290a0c6661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FileImporter">
+      <UniqueIdentifier>{f0de7ae6-d170-4263-b46a-931e36315b95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AnimationHandler">
+      <UniqueIdentifier>{08ee7b87-df0c-43e1-9696-ebbd0b51056c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lava">
+      <UniqueIdentifier>{0733e9ff-70be-417d-a057-8d107a4988aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\EnemyShaders\IceEnemy">
+      <UniqueIdentifier>{9a89ddf3-853c-41c4-bfce-ca821aeaf8b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\EnemyShaders\LavaEnemy">
+      <UniqueIdentifier>{8618c443-320d-48c0-86e4-36ed1fa0ba57}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -159,20 +189,20 @@
     <ClCompile Include="Enemies.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
-    <ClCompile Include="Lava.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileImporter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\AI</Filter>
     </ClCompile>
     <ClCompile Include="HUD.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="FileImporter.cpp">
+      <Filter>Source Files\FileImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationHandler.cpp">
+      <Filter>Source Files\AnimationHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="Lava.cpp">
+      <Filter>Source Files\Lava</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,20 +266,20 @@
     <ClInclude Include="BasicMath.h">
       <Filter>Header Files\Global</Filter>
     </ClInclude>
-    <ClInclude Include="Lava.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FileImporter.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\AI</Filter>
     </ClInclude>
     <ClInclude Include="HUD.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="FileImporter.h">
+      <Filter>Header Files\FileImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationHandler.h">
+      <Filter>Header Files\AnimationHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="Lava.h">
+      <Filter>Header Files\Lava</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -292,9 +322,6 @@
     <FxCompile Include="Shaders\MenuShaders\MenuFragment.hlsl">
       <Filter>Source Files\HLSL\MenuShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\EnemyShaders\EnemyPixelShader.hlsl">
-      <Filter>Source Files\HLSL\EnemyShaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shaders\LavaShaders\VertexShaderLava.hlsl">
       <Filter>Source Files\HLSL\LavaShaders</Filter>
     </FxCompile>
@@ -318,8 +345,23 @@
     </FxCompile>
     <FxCompile Include="Shaders\HUDShaders\HUDPixelShader.hlsl" />
     <FxCompile Include="Shaders\HUDShaders\HUDVertexShader.hlsl" />
-    <FxCompile Include="Shaders\EnemyShaders\EnemyVertexShader.hlsl">
-      <Filter>Source Files\HLSL\EnemyShaders</Filter>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyIcePixelShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders\IceEnemy</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyIceVertexShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders\IceEnemy</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyLavaPixelShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders\LavaEnemy</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EnemyShaders\EnemyLavaVertexShader.hlsl">
+      <Filter>Source Files\HLSL\EnemyShaders\LavaEnemy</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowShaders\ShadowLavaVertex.hlsl">
+      <Filter>Source Files\HLSL\ShadowShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowShaders\ShadowIceVertex.hlsl">
+      <Filter>Source Files\HLSL\ShadowShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

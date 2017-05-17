@@ -195,6 +195,7 @@ void GameState::checkGameState()
 
 void GameState::restartGame(SceneContainer &scene, HWND windowHandle)
 {
+
 	scene.ReRelease();
 
 	scene.ReInitialize();

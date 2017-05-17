@@ -21,6 +21,8 @@
 #include "MacroDefinitions.h"
 #include "FileImporter.h"
 
+
+
 // Necessary lib files kan be linked here, but also be added by going to:
 // Properties->Linker->Input->Additional Dependencies
 #pragma comment (lib, "d3d11.lib")
@@ -41,6 +43,16 @@ struct CHARACTER_SKINNED_DATA { // Struct to hold the Inverse Global Bind Pose m
 struct PerIceEnemyInstanceData { // Struct to hold the Inverse Global Bind Pose matrices on the GPU
 
 	XMFLOAT4X4 gBoneTransform[24];
+};
+
+struct ICE_ENEMY_SKINNED_DATA {
+
+	PerIceEnemyInstanceData enemyInstance[20];
+};
+
+struct LAVA_ENEMY_SKINNED_DATA {
+
+	PerIceEnemyInstanceData enemyInstance[10];
 };
 
 struct VertexBlendInfo {
@@ -81,7 +93,7 @@ struct Joint { // Stores the attributes of a joint node
 	string Name;
 	int ParentIndex;
 
-	Animation Animations[3];
+	Animation Animations[5];
 
 };
 
@@ -146,6 +158,10 @@ struct Blend { // Temporary struct containing a VertexBlendInfo vector for debug
 	}
 };
 
+//----------------------------------------------------------------------------------------------------------------------------------//
+// STATES
+//----------------------------------------------------------------------------------------------------------------------------------//
+
 class AnimationHandler { // Handler Class to store FBX data and manage the Skeletal Animation System
 
 public:
@@ -163,22 +179,27 @@ public:
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	ID3D11Buffer* gCharacterBoneBuffer;
-	ID3D11Buffer* gEnemyBoneBUffer;
+	ID3D11Buffer* gIceEnemyBoneBuffer;
+	ID3D11Buffer* gLavaEnemyBoneBuffer;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// PRIMARY FUNCTIONS AND VARIABLES
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
-	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
+	void UpdatePlayerAnimation(ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer, float playerTimePos);
+	void UpdateEnemyAnimation(ID3D11DeviceContext* gDeviceContext, FileImporter &importer, int currentInstance, int animIndex, float instanceTimePos);
+	
+	bool MapIceEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int nrOfEnemies);
+	bool MapLavaEnemyAnimations(ID3D11DeviceContext* gDeviceContext, int offsetStart, int nrOfEnemies);
+
 	XMFLOAT4X4 Interpolate(int jointIndex, ID3D11DeviceContext* gDevice, int animIndex, FileImporter &importer);
 	
 	D3D11_MAPPED_SUBRESOURCE boneMappedResource;
 
-	vector<Vertex_Bone>vertices;	// Extra copy of vertices
+	vector<XMFLOAT4X4>EnemyFinalTransformations[30];
+	float enemyTimePos[30];
 
 	float animTimePos;
-	float playerAnimTimePos;
-	float enemyAnimTimePos;
 
 private:
 

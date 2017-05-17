@@ -33,6 +33,7 @@ public:
 	btBroadphaseInterface* bulletBroadPhase;
 	btConstraintSolver* bulletConstraintSolver;
 
+	vector <btRigidBody*>enemyRigidBodies;
 	vector<btRigidBody*>rigidBodies;
 	vector<btRigidBody*>EnemyRigidBodies;
 

@@ -28,7 +28,7 @@ public:
 	void setSpawnPos(XMFLOAT3 spawnPos);
 
 	void Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, int enemyIndex);
-	void EnemyPhysics();
+	void EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling);
 
 	void moveTowardsPosition(XMFLOAT3 position);
 	void avoidPlayer(XMFLOAT3 position);
@@ -37,6 +37,8 @@ public:
 	void shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction);
 
 	void updateProjectile();
+
+	int currentAnimIndex;
 
 private:
 	
