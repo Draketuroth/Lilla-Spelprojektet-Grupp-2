@@ -849,7 +849,11 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 
 		}*/
 
-		this->useAI(character, enemies[i]);
+		if(enemies[i]->getAlive() == true){
+
+			this->useAI(character, enemies[i], enemyTimePoses[i]);
+
+		}
 
 		if (enemies[i]->getType() == 1)
 		{
@@ -897,7 +901,7 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 	render();
 }
 
-void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy)
+void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy, float enemyTimePos)
 {
 	btVector3 edge = ai.collisionEdge(sides, enemy);
 
@@ -905,11 +909,11 @@ void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy)
 
 	if (enemy->getType() == 0)
 	{
-		this->ai.iceAI(player, enemy);
+		this->ai.iceAI(player, enemy, enemyTimePos);
 	}
 	else if (enemy->getType() == 1)
 	{
-		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
+		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler, enemyTimePos);
 	}
 }
 

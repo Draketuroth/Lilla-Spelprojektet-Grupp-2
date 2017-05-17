@@ -22,11 +22,11 @@ public:
 	AI();
 	~AI();
 
-	void iceAI(MainCharacter &player, Enemy* self);
-	void fireAI(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler);
+	void iceAI(MainCharacter &player, Enemy* self, float enemyTimePos);
+	void fireAI(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler, float enemyTimePos);
 
-	void attackMelee(MainCharacter &player, Enemy* self);
-	void attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler);
+	void attackMelee(MainCharacter &player, Enemy* self, float enemyTimePos);
+	void attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler, float enemyTimePos);
 
 	void moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy *self);
 	void moveAwayFromPlayer(XMFLOAT3 playerPosition, Enemy *self);
