@@ -81,6 +81,7 @@ int RunApplication()
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
+	sceneContainer.sceneTimer.initialize();
 	updateLava();
 
 	int gameOverTimer;
@@ -181,8 +182,8 @@ int RunApplication()
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
-
-				sceneContainer.update(windowHandle, sceneContainer.animHandler.enemyTimePos);
+			
+				sceneContainer.update(windowHandle, sceneContainer.animHandler.enemyTimePos, timer);
 
 				showFPS(windowHandle, deltaTime);
 
