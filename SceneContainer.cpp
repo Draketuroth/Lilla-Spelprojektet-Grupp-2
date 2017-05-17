@@ -795,32 +795,6 @@ void SceneContainer::ReInitialize()
 
 }
 
-void SceneContainer::spawnEnemies()
-{
-
-	XMFLOAT3 initSpawnPos;
-
-	for (UINT i = 0; i < nrOfEnemies; i++) {
-
-		initSpawnPos.x = RandomNumber(-15, 15);
-		initSpawnPos.y = 2;
-		initSpawnPos.z = RandomNumber(-15, 15);
-
-		enemies[i] = Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-
-	}
-	for (UINT i = 0; i < nrOfEnemies; i++) {
-
-		//enemies[i].setHealth
-		enemies[i].setAlive(true);
-		enemies[i].Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
-		enemies[i].createProjectile(bulletPhysicsHandler);
-
-	}
-
-
-}
-
 bool SceneContainer::readFiles() {
 
 	// Load file for the main character
@@ -950,7 +924,7 @@ void SceneContainer::delayWave(Timer timer)
 	sceneTimer.updateCurrentTime();
 }
 
-void SceneContainer::incrementLevels(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle)
+void SceneContainer::incrementLevels()
 {
 	level++;
 

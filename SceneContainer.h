@@ -211,9 +211,9 @@ public:
 	void renderProjectile();
 
 	void createSideBoundingBoxes();
-	void incrementLevels(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
+	
 
-	void enemiesAlive(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
+	
 
 	void delayWave(Timer timer);
 	void incrementLevels();

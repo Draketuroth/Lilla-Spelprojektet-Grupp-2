@@ -15,6 +15,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 cbuffer PROJECTILE_TRANSFORM : register(b1)
 {
 	matrix worldMatrix[MAX_PROJECTILE];
+	
 };
 
 struct VS_IN
@@ -28,6 +29,7 @@ struct VS_OUT
 {
 	float4 Pos : SV_POSITION;
 	float2 Tex : TEXCOORD;
+	
 };
 
 
@@ -38,6 +40,8 @@ VS_OUT VS_Main(VS_IN input)
 	output.Pos = mul(float4(input.Pos.xyz, 1.0f), worldMatrix[input.InstanceId]);
 	output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixView);
 	output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixProjection);
+
+	
 
 	output.Tex = input.Tex;
 	return output;

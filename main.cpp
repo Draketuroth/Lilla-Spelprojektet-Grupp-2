@@ -484,11 +484,13 @@ void updateBuffers()
 
 	PROJECTILE_TRANSFORM* ProjectileTransformPointer = (PROJECTILE_TRANSFORM*)ProjectileMappedResource.pData;
 
-	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
+	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++)
+	{
 
 		ProjectileTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.enemies[i]->fireBall.worldMatrix);
+		
 
-		}
+	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 

@@ -53,6 +53,7 @@ struct LAVA_ENEMY_TRANSFORM {
 struct PROJECTILE_TRANSFORM
 {
 	XMMATRIX worldMatrix[30];
+	
 };
 
 struct CubeObjects {

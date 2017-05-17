@@ -261,6 +261,9 @@ void Enemy::updateProjectile()
 {
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
+	XMMATRIX rigidBodPos;
+	XMVECTOR t, s, r;
+	XMFLOAT3 bombPos;
 
 	// Gather the rigid body matrix
 	btTransform btRigidTransform;
@@ -274,7 +277,9 @@ void Enemy::updateProjectile()
 
 	// Build the new world matrix
 	fireBall.worldMatrix = transform;
-
+	
+	
+	
 }
 
 
