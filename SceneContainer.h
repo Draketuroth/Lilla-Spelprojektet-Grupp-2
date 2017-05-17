@@ -98,7 +98,7 @@ public:
 	void update(HWND &windowHandle, float enemyTimePoses[30]);
 	bool readFiles();
 
-	void useAI(MainCharacter &player, Enemy* &enemy);
+	void useAI(MainCharacter &player, Enemy* &enemy, float enemyTimePos);
 
 	void InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void RespawnEnemies();
