@@ -16,6 +16,8 @@ Byte offset: 36
 Position: 0, 0, 0
 Rotation: 0, 0, 0
 Scale: 1, 1, 1
+BBox max values: 1240.48, 712.124, 1361.71
+BBox min values: -1240.48, -338.849, -1361.71
 Ambient: 0, 0, 0, 1
 Diffuse: 1, 1, 1, 1
 Specular: 0, 0, 0, 0
