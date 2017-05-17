@@ -52,6 +52,7 @@ void Timer::updateCurrentTime()
 	}
 
 	this->frameCount += getDeltaTime() * 750;
+	//this->frameCount += 1;
 }
 
 void Timer::resetTimer()
@@ -68,20 +69,3 @@ float Timer::getCountsPerSecond()
 	return this->countsPerSecond;
 }
 
-float Timer::getSeconds()
-{
-	time_t timer; 
-	float secondCounter; 
-	auto start = high_resolution_clock::now();
-	auto end = high_resolution_clock::now();
-	secondCounter = duration_cast<seconds>(end - start).count();
-	//timer(&seconds);
-
-	//
-	//if (seconds > 12)
-	//{
-	//	seconds = 0; 
-	//}
-
-	return secondCounter;
-}

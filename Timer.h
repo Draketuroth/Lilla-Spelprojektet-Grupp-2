@@ -18,13 +18,12 @@ private:
 	float deltaTime;
 	int frameCount;
 	float secondCounter;
-	//to Lava movment
+
 	
 public:
 	Timer();
 	~Timer();
-	//to Lava movment
-	float getSeconds(); 
+ 
 	void initialize();
 	float getDeltaTime();
 	float getCurrentTime();
