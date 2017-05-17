@@ -5,8 +5,8 @@ Lava::Lava()
 {
 	map[0].filename = L"Textures\\HeightLava1.raw";
 	map[1].filename = L"Textures\\HeightLava2.raw";
-	map[2].filename = L"Textures\\HeightLava3.raw";
-	map[3].filename = L"Textures\\HeightLava4.raw";
+	map[2].filename = L"Textures\\HeightLava1.raw";
+	map[3].filename = L"Textures\\HeightLava3.raw";
 
 	weightScalar = 1;
 	lastMap = 1;
@@ -90,10 +90,7 @@ void Lava::VBuffer(ID3D11Device* device, int current, float weightScalar)
 			float x = -halfDepth + j * patchWidth;
 			float y = map[current].heightMap[i*cols + j] * weightScalar;
 			y += map[lastMap].heightMap[i*cols + j] * secondWeightScalar;
-			if (secondWeightScalar > 0)
-			{
-				int hablababbla = 0;
-			}
+		
 			verticis[i*cols + j].pos = XMFLOAT3(x, y, z);
 
 			//sträcka texturen över griden
@@ -183,30 +180,40 @@ void Lava::IBuffer(ID3D11Device* device)
 
 int Lava::swap(int frameCounter, ID3D11Device* device)
 {
-	//0-500
+	//0-1000
+	int fc = 0; 
+	
 	if (frameCounter <= 1000)
 	{
 		currentMap = 0;
-		
+		value = frameCounter / 100000.0f;
 		weightSwap = true;
 	}
-	//500 och över
-	else
+
+	//1000 och över
+	else if(frameCounter <= 2000)
 	{
+		fc = frameCounter - 1000; 
 		lastMap = 1;
+		value = fc / 100000.0f;
 		weightSwap = false;
-		
+
 	}
-	//1000-1500
-	if (frameCounter >= 2000 && frameCounter <= 3000)
+	//2000-3000
+	else if (frameCounter >= 2000 && frameCounter <= 3000)
 	{
+		fc = frameCounter - 2000; 
 		currentMap = 2;
+		value = fc / 100000.0f;
 		weightSwap = true;
 	}
-	//1500 och över
-	else if (frameCounter > 3000)
+
+	//3000 och över
+	else// (frameCounter > 3000)
 	{
+		fc = frameCounter - 3000; 
 		lastMap = 3;
+		value = fc / 100000.0f; 
 		weightSwap = false;
 	}
 
@@ -215,30 +222,30 @@ int Lava::swap(int frameCounter, ID3D11Device* device)
 	{
 		if (weightScalar < 1)
 		{
-			weightScalar += 0.001f;
+			weightScalar += value;
 		}
-		
+
 		if (secondWeightScalar > 0)
 		{
-			secondWeightScalar -= 0.001f;
+			secondWeightScalar -= value;
 		}
-		
-		
+
 	}
 	else
 	{
 		if (secondWeightScalar < 1)
 		{
-			secondWeightScalar += 0.001f;
+			secondWeightScalar += value;
 		}
 
 		if (weightScalar > 0)
 		{
-			weightScalar -= 0.001f;
+			weightScalar -= value;
 		}
 	}
 
 	this->VBuffer(device, currentMap, weightScalar);
 
-	return currentMap; 
+	return currentMap;
 }
+

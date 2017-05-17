@@ -366,7 +366,7 @@ void lavamovmentUpdate()
 void updateLava()
 {
 	sceneContainer.lava.LoadRawFile();
-	//sceneContainer.lava.VBuffer(sceneContainer.gHandler.gDevice, sceneContainer.lava.swap(timer.getFrameCount()));
+
 	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
 }
 
