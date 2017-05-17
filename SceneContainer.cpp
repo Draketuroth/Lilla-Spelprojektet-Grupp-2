@@ -813,12 +813,20 @@ bool SceneContainer::readFiles() {
 		return false;
 	}
 
+	// Laod file for platforms
 	if (!PlatformFile.readFormat("Format//Platform_binary.txt"))
 	{
 		return false;
 	}
 
+	// Load file for lava enemy
 	if (!lavaEnemyFile.readFormat("Format//lavaEnemy_binary.txt"))
+	{
+		return false;
+	}
+
+	// Load file for projectile and explosion shape
+	if (!projectileFile.readFormat("Format//Projectile_binary.txt"))
 	{
 		return false;
 	}

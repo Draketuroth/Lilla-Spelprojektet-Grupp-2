@@ -134,6 +134,7 @@ public:
 	FileImporter FortressFile;
 	FileImporter PlatformFile;
 	FileImporter lavaEnemyFile;
+	FileImporter projectileFile;
 
 	//------------------------------------------------------------//
 	// COMPONENTS
