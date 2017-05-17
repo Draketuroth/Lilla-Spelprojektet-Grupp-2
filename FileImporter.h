@@ -64,6 +64,16 @@ struct Mesh_Header {
 // STRUCTS
 //--------------------------------------------------------//
 
+struct BBox {
+
+	float xMax;
+	float yMax;
+	float zMax;
+	float xMin;
+	float yMin;
+	float zMin;
+};
+
 struct Mesh_Transform {
 
 	XMFLOAT3 meshPosition;
@@ -84,6 +94,7 @@ struct Mesh_Standard {
 	Material_Attributes materialAttributes;
 	string textureName;
 	vector<Vertex>vertices;
+	BBox meshBoundingBox;
 };
 
 struct Joint_Keyframe {
@@ -116,6 +127,7 @@ struct Mesh_Skinned {
 	string textureName;
 	vector<Vertex_Deformer> vertices;
 	vector<Joint_Container>hierarchy;
+	BBox meshBoundingBox;
 
 };
 

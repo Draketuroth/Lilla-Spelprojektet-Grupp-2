@@ -278,7 +278,7 @@ bool MainCharacter::isGrounded()
 	}
 }
 
-void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemyArray, btDynamicsWorld* bulletDynamicsWorld)
+void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemyArray, btDynamicsWorld* bulletDynamicsWorld, float enemyTimePoses[30])
 {
 	if (GetAsyncKeyState(MK_LBUTTON) && !attacking && attackTimer <= 0)
 	{
@@ -338,6 +338,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 				if (enemyArray[i]->getHealth() <= 0 && enemyArray[i]->getAlive() == true)
 				{
 					enemyArray[i]->setAlive(false);
+					enemyTimePoses[i] = 0.0f;
 					cout << "ENEMY DEAD" << endl;
 				}
 			}
@@ -356,7 +357,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler)
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler, float enemyTimePoses[30])
 {
 
 	XMFLOAT3 start, end;
@@ -435,6 +436,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 			if (enemies[i]->getHealth() == 0)
 			{
 				enemies[i]->setAlive(false);
+				enemyTimePoses[i] = 0.0f;
 				cout << "Enemy Deleted\n";
 			}
 			
@@ -446,6 +448,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 	
 		if (this->shootTimer > 0)
 		{
+
 			this->shootTimer -= timer.getDeltaTime();
 		}
 		else

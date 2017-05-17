@@ -82,6 +82,7 @@ class SceneContainer {
 
 private:
 	AI ai;
+	
 
 public:
 
@@ -95,7 +96,7 @@ public:
 	void releaseAll();
 
 	bool initialize(HWND &windowHandle);
-	void update(HWND &windowHandle);
+	void update(HWND &windowHandle, float enemyTimePoses[30], Timer timer);
 	bool readFiles();
 
 	void useAI(MainCharacter &player, Enemy* &enemy);
@@ -115,15 +116,12 @@ public:
 
 	void reportLiveObjects();
 
-	
-
 	float RandomNumber(float Minimum, float Maximum);
 
 	//------------------------------------------------------------//
 	// RE-INTIALIZE
 	//------------------------------------------------------------//
 	
-
 	void ReRelease();
 	void ReInitialize();
 
@@ -157,6 +155,7 @@ public:
 	BoundingBox sides[4];
 
 	int level;
+	Timer sceneTimer;
 
 	BulletComponents bulletPhysicsHandler;
 
@@ -180,6 +179,8 @@ public:
 
 	ID3D11Buffer* enemyLavaVertexBuffer;
 	vector<Vertex_Bone>lavaEnemyVertices;
+
+	float waveDelay;
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
@@ -210,6 +211,8 @@ public:
 	void renderProjectile();
 
 	void createSideBoundingBoxes();
+
+	void delayWave(Timer timer);
 	void incrementLevels();
 
 };

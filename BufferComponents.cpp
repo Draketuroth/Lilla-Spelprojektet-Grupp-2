@@ -41,9 +41,9 @@ void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gFortressBuffer);
 
-	/*SAFE_RELEASE(gBufferArr[0]);
-	SAFE_RELEASE(gBufferArr[1]);
-	SAFE_RELEASE(gBufferArr[2]);*/
+	//SAFE_RELEASE(gBufferArr[0]);
+	//SAFE_RELEASE(gBufferArr[1]);
+	//SAFE_RELEASE(gBufferArr[2]);
 
 }
 

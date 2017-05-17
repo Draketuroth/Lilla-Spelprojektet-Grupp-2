@@ -1,8 +1,10 @@
 #pragma once
 #include <windows.h>
-
-
-
+#include <time.h>
+#include <chrono>
+#include <iostream>
+using namespace std;
+using namespace chrono;
 
 class Timer
 {
@@ -15,10 +17,13 @@ private:
 
 	float deltaTime;
 	int frameCount;
+	float secondCounter;
+
+	
 public:
 	Timer();
 	~Timer();
-
+ 
 	void initialize();
 	float getDeltaTime();
 	float getCurrentTime();

@@ -17,6 +17,8 @@ SceneContainer::SceneContainer() {
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
+
+	this->waveDelay = 3.0f;
 	this->level = 1;
 
 	this->ai = AI();
@@ -660,12 +662,22 @@ void SceneContainer::ReRelease() {
 
 	// Remove player rigid body
 	bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(character.rigidBody);
+	btMotionState* playerMotion = character.rigidBody->getMotionState();
+	btCollisionShape* playerShape = character.rigidBody->getCollisionShape();
+	delete character.rigidBody;
+	delete playerMotion;
+	delete playerShape;
 
 	for (UINT i = 0; i < nrOfIceEnemies; i++) 
 	{
 
 		// Remove ice enemy rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+		delete enemies[i]->rigidBody;
+		delete enemyMotion;
+		delete enemyShape;
 
 	}
 
@@ -673,9 +685,24 @@ void SceneContainer::ReRelease() {
 
 		// Remove lava enemy enemy rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+		delete enemies[i]->rigidBody;
+		delete enemyMotion;
+		delete enemyShape;
 
 		// Remove projectile rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
+		btMotionState* projectileMotion = enemies[i]->fireBall.projectileRigidBody->getMotionState();
+		btCollisionShape* projectileShape = enemies[i]->fireBall.projectileRigidBody->getCollisionShape();
+		delete enemies[i]->fireBall.projectileRigidBody;
+		delete projectileMotion;
+		delete projectileShape;
+	}
+
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		delete enemies[i];
 	}
 
 	nrOfEnemies = 2;
@@ -690,11 +717,21 @@ void SceneContainer::ReRelease() {
 	{
 
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(bHandler.cubeObjects[i].rigidBody);
+		btMotionState* cubeMotion = bHandler.cubeObjects[i].rigidBody->getMotionState();
+		btCollisionShape* cubeShape = bHandler.cubeObjects[i].rigidBody->getCollisionShape();
+		delete bHandler.cubeObjects[i].rigidBody;
+		delete cubeMotion;
+		delete cubeShape;
 
 	}
 
 	// Remove lava plane rigid body
 	bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(bHandler.lavaPitRigidBody);
+	btMotionState* planeMotion = bHandler.lavaPitRigidBody->getMotionState();
+	btCollisionShape* planeShape = bHandler.lavaPitRigidBody->getCollisionShape();
+	delete bHandler.lavaPitRigidBody;
+	delete planeMotion;
+	delete planeShape;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// CLEAR THE RIGID BODIES FROM THE DYNAMICS WORLD
@@ -708,13 +745,19 @@ void SceneContainer::ReRelease() {
 void SceneContainer::ReInitialize()
 {
 
+	enemies.clear();
+	enemies.resize(nrOfEnemies);
+
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// RE-CREATE RIGID BODIES
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	
 	// Recreate player
 	character.setPos(XMFLOAT3(2, 2, 5));
-	character.setHealth(5);
+	character.setHealth(10);
+
+	character.CreatePlayerBoundingBox(0.10, character.getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandler);
+	this->character.rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 
 	XMFLOAT3 initSpawnPos;
 
@@ -724,20 +767,20 @@ void SceneContainer::ReInitialize()
 		initSpawnPos.y = 2;
 		initSpawnPos.z = RandomNumber(-15, 15);
 
-		enemies[i] =  new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+		if (i < nrOfIceEnemies) {
 
-	}
+			enemies[i] = new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
 
-	character.CreatePlayerBoundingBox(0.10, character.getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandler);
-	this->character.rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
+		}
 
-	// Recreate enemy
-	for (UINT i = 0; i < nrOfEnemies; i++) {
+		else if (i >= nrOfIceEnemies) {
 
-		//enemies[i].setHealth
-		enemies[i]->setAlive(true);
-		enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
-		enemies[i]->createProjectile(bulletPhysicsHandler);
+			enemies[i] = new Enemy(1, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i]->createProjectile(bulletPhysicsHandler);
+
+		}
 
 	}
 
@@ -747,7 +790,6 @@ void SceneContainer::ReInitialize()
 
 	// Recreate the lava plane rigid body
 	bHandler.CreateCollisionPlane(bulletPhysicsHandler, XMFLOAT3(0, -4, 0));
-
 
 }
 
@@ -784,12 +826,12 @@ bool SceneContainer::readFiles() {
 	return true;
 }
 
-void SceneContainer::update(HWND &windowHandle)
+void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer timer)
 {
 	int deadEnemies = 0;
 	bHandler.CreateRigidBodyTags();
-	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld);
-	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler);
+	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, enemyTimePoses);
+	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler, enemyTimePoses);
 
 	for (UINT i = 0; i < this->nrOfEnemies; i++){
 	
@@ -840,9 +882,15 @@ void SceneContainer::update(HWND &windowHandle)
 	}
 	if (deadEnemies == nrOfEnemies)
 	{
-		incrementLevels();
-		RespawnEnemies();
-		
+		delayWave(timer);
+
+		if (waveDelay <= 0)
+		{
+			waveDelay = 3.0f;
+
+			incrementLevels();
+			RespawnEnemies();
+		}
 	}
 	
 	
@@ -863,6 +911,15 @@ void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy)
 	{
 		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
 	}
+}
+
+void SceneContainer::delayWave(Timer timer)
+{
+	if (waveDelay >= 0.0f)
+	{
+		waveDelay -= timer.getDeltaTime();
+	}
+	sceneTimer.updateCurrentTime();
 }
 
 void SceneContainer::incrementLevels()

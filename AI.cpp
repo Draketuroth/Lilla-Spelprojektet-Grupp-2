@@ -114,6 +114,7 @@ void AI::attackMelee(MainCharacter &player, Enemy* self)
 			if (player.getHealth() <= 0 && player.getAlive() == true)
 			{
 				player.setAlive(false);
+				player.playerAnimTimePos = 0.0f;
 				cout << "PLAYER IS DEAD" << endl;
 			}
 		}
