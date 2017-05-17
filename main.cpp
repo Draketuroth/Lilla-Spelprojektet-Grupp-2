@@ -134,8 +134,6 @@ int RunApplication()
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				
-
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// PLAYER LAVA HIT DETECTION
 				//----------------------------------------------------------------------------------------------------------------------------------//
@@ -177,6 +175,21 @@ int RunApplication()
 					}
 
 				}
+
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// PROJECTILE HIT VS PLATFORM
+				//----------------------------------------------------------------------------------------------------------------------------------//
+
+				for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
+
+					for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
+
+						MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
+						sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.enemies[i]->fireBall.projectileRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
+					}
+
+				}
+
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER

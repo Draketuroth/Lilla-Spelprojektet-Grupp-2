@@ -41,10 +41,6 @@ void BufferComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gFortressBuffer);
 
-	//SAFE_RELEASE(gBufferArr[0]);
-	//SAFE_RELEASE(gBufferArr[1]);
-	//SAFE_RELEASE(gBufferArr[2]);
-
 }
 
 bool BufferComponents::SetupScene(ID3D11Device* &gDevice, BulletComponents &bulletPhysicsHandler, FileImporter &platFormImporter, FileImporter &fortressImporter, int nrOfIceEnemies, int nrOfLavaEnemies) {
@@ -430,6 +426,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 		platformRigidBody->setIslandTag(platformRigid);//Tag to skip rayTesting for character projectiles
 		// Add the new rigid body to the dynamic world
+		platformRigidBody->setUserIndex2(i);
 
 		int arenaCollideWith = COL_PLAYER | COL_ENEMY | COL_PROJ;
 		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody, COL_LEVEL, arenaCollideWith);

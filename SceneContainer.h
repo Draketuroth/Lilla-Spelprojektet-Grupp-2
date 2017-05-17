@@ -78,6 +78,31 @@ struct MyEnemyContactResultCallback : public btCollisionWorld::ContactResultCall
 	Enemy* enemy;
 };
 
+struct MyPlatformContactResultCallback : public btCollisionWorld::ContactResultCallback
+{
+	MyPlatformContactResultCallback(CubeObjects* ptr) : platform(ptr) {}
+
+	btScalar addSingleResult(btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,
+		int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,
+		int index1)
+	{
+		btTransform transform;
+		XMFLOAT4X4 convert;
+		transform.setOrigin(btVector3(0, -100, 0));
+		transform.getOpenGLMatrix((float*)&convert);
+		
+		platform->rigidBody->getMotionState()->setWorldTransform(transform);
+		platform->worldMatrix = XMLoadFloat4x4(&convert);
+		return 0;
+	}
+
+	CubeObjects* platform;
+};
+
 class SceneContainer {
 
 private:

@@ -402,7 +402,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
-	
+		
 		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
 		rayCallBack.m_collisionFilterGroup = COL_RAY;// Making the ray a collisiontype COL_RAY
 		rayCallBack.m_collisionFilterMask = COL_ENEMY;//Only checks collision with Enemies
