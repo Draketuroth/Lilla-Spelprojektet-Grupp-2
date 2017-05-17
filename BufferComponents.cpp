@@ -621,7 +621,7 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 
 	XMMATRIX lightView = XMMatrixLookAtLH(lightPos, lightVec, upVec);
 
-	float lNearP = 2.0f;
+	float lNearP = 2.5f;
 	float lFarP = 28.0f;
 
 	XMMATRIX lightProj = XMMatrixOrthographicLH(35, 35, lNearP, lFarP);

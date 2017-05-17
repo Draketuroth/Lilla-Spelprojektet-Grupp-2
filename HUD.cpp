@@ -164,17 +164,7 @@ bool HUDClass::setFont(ID3D11Device* &gDevice)
 
 
 
-	//HUDElements Elements[4] =
-	//{
-	//	// POS				// UV
-	//	0.0f, 0.85f, 0.0f,	0.0f, height, //Bot left
-	//	0.0f, 0.95f, 0.0f,	0.0f, 0.0f, //Top left
-	//	0.1f, 0.95f, 0.0f,	width, 0.0f, //Top right
-
-	//	0.1f, 0.85f, 0.0f,	width, height	//Bot right	
-
-
-	//};
+	ascii.clear();
 	
 
 	D3D11_BUFFER_DESC ElementBufferDesc;
@@ -271,7 +261,7 @@ void HUDClass::setText(int wave)
 
 	waveText = "Wave " + waveStr;
 
-	
+	text.clear();
 	nrOfChars = waveText.length();
 	for (int i = 0; i < nrOfChars; i++)
 	{
@@ -279,7 +269,7 @@ void HUDClass::setText(int wave)
 		ascii.push_back((int)text[i]);
 		cout << ascii[i] << endl;
 	}
-
+	
 
 
 }

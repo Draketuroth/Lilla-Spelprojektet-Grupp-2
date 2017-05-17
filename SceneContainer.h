@@ -34,6 +34,8 @@
 
 #include "HUD.h"
 
+#include <chrono>
+
 struct MyCharacterContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
 	MyCharacterContactResultCallback(CharacterBase* ptr) : character(ptr) {}
@@ -93,10 +95,10 @@ public:
 	void releaseAll();
 
 	bool initialize(HWND &windowHandle);
-	void update(HWND &windowHandle);
+	void update(HWND &windowHandle, float enemyTimePoses[30]);
 	bool readFiles();
 
-	void useAI(MainCharacter &player, Enemy &enemy);
+	void useAI(MainCharacter &player, Enemy* &enemy);
 
 	void InitializeEnemies(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle);
 	void RespawnEnemies();
@@ -113,15 +115,12 @@ public:
 
 	void reportLiveObjects();
 
-	void IncrementLevels();
-
 	float RandomNumber(float Minimum, float Maximum);
 
 	//------------------------------------------------------------//
 	// RE-INTIALIZE
 	//------------------------------------------------------------//
 	
-
 	void ReRelease();
 	void ReInitialize();
 
@@ -168,7 +167,7 @@ public:
 	int nrOfEnemies;
 	int nrOfIceEnemies;
 	int nrOfLavaEnemies;
-	vector<Enemy> enemies;
+	vector<Enemy*> enemies;
 
 	ICE_ENEMY_SKINNED_DATA iceEnemySkinData;
 	LAVA_ENEMY_SKINNED_DATA lavaEnemySkinData;
