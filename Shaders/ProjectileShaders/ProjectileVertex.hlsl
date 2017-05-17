@@ -22,6 +22,7 @@ struct VS_IN
 {
 	float3 Pos : POSITION;
 	float2 Tex : TEXCOORD;
+	float3 Norm : NORMAL;
 	uint InstanceId : SV_InstanceId;
 };
 
@@ -29,6 +30,7 @@ struct VS_OUT
 {
 	float4 Pos : SV_POSITION;
 	float2 Tex : TEXCOORD;
+	float3 Norm : NORMAL;
 	
 };
 
@@ -41,7 +43,7 @@ VS_OUT VS_Main(VS_IN input)
 	output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixView);
 	output.Pos = mul(float4(output.Pos.xyz, 1.0f), matrixProjection);
 
-	
+	output.Norm = input.Norm;
 
 	output.Tex = input.Tex;
 	return output;

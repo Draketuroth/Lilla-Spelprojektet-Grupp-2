@@ -178,6 +178,12 @@ public:
 	ID3D11Buffer* enemyIceVertexBuffer;
 	vector<Vertex_Bone>iceEnemyVertices;
 
+	vector<StandardVertex>ExplosionVertices;
+	ID3D11Buffer* ExplosionVertexBuffer;
+
+	vector<StandardVertex>projectileVertices;
+	ID3D11Buffer* projectileVertexBuffer;
+
 	ID3D11Buffer* enemyLavaVertexBuffer;
 	vector<Vertex_Bone>lavaEnemyVertices;
 

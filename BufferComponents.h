@@ -56,7 +56,8 @@ struct PROJECTILE_TRANSFORM
 	
 };
 
-struct CubeObjects {
+struct CubeObjects 
+{
 
 	btRigidBody* rigidBody;
 	XMMATRIX worldMatrix;
