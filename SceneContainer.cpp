@@ -17,6 +17,8 @@ SceneContainer::SceneContainer() {
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
+
+	this->waveDelay = 3.0f;
 	this->level = 1;
 
 	this->ai = AI();
@@ -824,7 +826,7 @@ bool SceneContainer::readFiles() {
 	return true;
 }
 
-void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30])
+void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer timer)
 {
 	int deadEnemies = 0;
 	bHandler.CreateRigidBodyTags();
@@ -880,9 +882,15 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30])
 	}
 	if (deadEnemies == nrOfEnemies)
 	{
-		incrementLevels();
-		RespawnEnemies();
-		
+		delayWave(timer);
+
+		if (waveDelay <= 0)
+		{
+			waveDelay = 3.0f;
+
+			incrementLevels();
+			RespawnEnemies();
+		}
 	}
 	
 	
@@ -903,6 +911,15 @@ void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy)
 	{
 		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
 	}
+}
+
+void SceneContainer::delayWave(Timer timer)
+{
+	if (waveDelay >= 0.0f)
+	{
+		waveDelay -= timer.getDeltaTime();
+	}
+	sceneTimer.updateCurrentTime();
 }
 
 void SceneContainer::incrementLevels()
