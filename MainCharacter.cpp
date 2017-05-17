@@ -177,12 +177,12 @@ void MainCharacter::CheckInput() {
 
 	}
 
-	if (shooting == true) {
+	if (shotFlag == true) {
 
 		currentAnimIndex = 4;
 	}
 
-	if (attacking == true) {
+	if (attackFlag == true) {
 
 		currentAnimIndex = 3;
 	}
@@ -289,6 +289,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		cout << "ATTACK" << endl;
 
 		attacking = true;
+		attackFlag = true;
 		attackTimer = attackCd;
 		//-----------------Calculate the hit area-------------------------------
 		float angle = characterLookAt(windowHandle);
@@ -352,6 +353,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		else
 		{
 			attacking = false;
+			attackFlag = false;
 		}
 	}
 
@@ -377,6 +379,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		float angle = this->characterLookAt(windowHandle);
 	
 		this->shooting = true;
+		this->shotFlag = true;
 		this->shootTimer = this->shootCD;
 
 		cout << "Player Tag: " << this->rigidBody->getIslandTag() << endl << endl;
@@ -448,12 +451,12 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 	
 		if (this->shootTimer > 0)
 		{
-
 			this->shootTimer -= timer.getDeltaTime();
 		}
 		else
 		{
 			this->shooting = false;
+			this->shotFlag = false;
 			
 		}
 	}

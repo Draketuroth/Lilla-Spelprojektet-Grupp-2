@@ -49,10 +49,12 @@ public:
 	int currentAnimIndex;
 
 	bool attacking;
+	bool attackFlag;
 	float attackTimer;
 	float attackCd;
 
 	bool shooting;
+	bool shotFlag;
 	float shootTimer;
 	float shootCD;
 
