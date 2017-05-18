@@ -238,6 +238,13 @@ void SceneContainer::RespawnEnemies() {
 
 		// Remove lava enemy projectile rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
+		
+	}
+
+	// Reset platform hit flag
+	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+
+		bHandler.cubeObjects[i].Hit = false;
 	}
 
 	// Clear enemy rigid bodies vector

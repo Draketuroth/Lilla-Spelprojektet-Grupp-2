@@ -133,6 +133,12 @@
     <Filter Include="Source Files\HLSL\EnemyShaders\LavaEnemy">
       <UniqueIdentifier>{8618c443-320d-48c0-86e4-36ed1fa0ba57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Platform">
+      <UniqueIdentifier>{aaa134a8-c4fd-4965-ad61-e0af9d626be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform">
+      <UniqueIdentifier>{f7f11d0a-081a-4cfe-9a56-94cdac86165b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -203,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="Lava.cpp">
       <Filter>Source Files\Lava</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Source Files\Platform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="Lava.h">
       <Filter>Header Files\Lava</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Header Files\Platform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

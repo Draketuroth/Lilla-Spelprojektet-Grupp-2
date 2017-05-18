@@ -80,7 +80,7 @@ struct MyEnemyContactResultCallback : public btCollisionWorld::ContactResultCall
 
 struct MyPlatformContactResultCallback : public btCollisionWorld::ContactResultCallback
 {
-	MyPlatformContactResultCallback(CubeObjects* ptr) : platform(ptr) {}
+	MyPlatformContactResultCallback(Platform* ptr) : platform(ptr) {}
 
 	btScalar addSingleResult(btManifoldPoint& cp,
 		const btCollisionObjectWrapper* colObj0Wrap,
@@ -96,7 +96,7 @@ struct MyPlatformContactResultCallback : public btCollisionWorld::ContactResultC
 		return 0;
 	}
 
-	CubeObjects* platform;
+	Platform* platform;
 };
 
 class SceneContainer {

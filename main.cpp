@@ -180,23 +180,35 @@ int RunApplication()
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// PROJECTILE HIT VS PLATFORM
 				//----------------------------------------------------------------------------------------------------------------------------------//
+				
+				// Index for the primary platform that has been hit
+				int platformIndex;
 
+				// Iterate through the currently active lava enemy projectiles
 				for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
 
 					for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
 
+						// Perform a contact pair test between projectile and cube to see if it collided with a platform
 						MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
 						sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.enemies[i]->fireBall.projectileRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
 
+						// If a platform was hit, we receive its index
 						if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
 
-							sceneContainer.enemies[i]->fireBall.projectileRigidBody->getCollisionShape()->setMargin(2);
-							sceneContainer.bHandler.platformDecension(sceneContainer.bHandler.cubeObjects[j]);
+							platformIndex = j;
+							break;
 						}
 					}
 
 				}
 
+				// Only perform platform descension if a valid platform index was passed from the collision
+				if (platformIndex >= 0 && platformIndex < sceneContainer.bHandler.nrOfCubes){
+
+					sceneContainer.bHandler.cubeObjects[platformIndex].platformDecension();
+
+				}
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
