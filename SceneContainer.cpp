@@ -295,140 +295,97 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 {
 	HRESULT hr;
 
-	float scale = 0.3f;
-
-	TriangleVertex triangleVertices[24] =
+	for (UINT i = 0; i < projectileFile.standardMeshes[0].vertices.size(); i++)
 	{
 
-		//Front face
+		StandardVertex vertex;
 
-		-scale, scale, -scale, 0.0f, 0.0f,
-		scale, scale, -scale, 1.0f, 0.0f,
-		-scale, -scale, -scale, 0.0f, 1.0f,
-		scale, -scale, -scale, 1.0f, 1.0f,
+		vertex.x = projectileFile.standardMeshes[0].vertices[i].pos[0];
+		vertex.y = projectileFile.standardMeshes[0].vertices[i].pos[1];
+		vertex.z = projectileFile.standardMeshes[0].vertices[i].pos[2];
 
-		// Back face
+		vertex.u = projectileFile.standardMeshes[0].vertices[i].uv[0];
+		vertex.v = projectileFile.standardMeshes[0].vertices[i].uv[1];
 
-		scale, scale, scale, 0.0f, 0.0f,
-		-scale, scale, scale, 1.0f, 0.0f,
-		scale, -scale, scale, 0.0f, 1.0f,
-		-scale, -scale, scale, 1.0f, 1.0f,
+		vertex.nx = projectileFile.standardMeshes[0].vertices[i].normal[0];
+		vertex.ny = projectileFile.standardMeshes[0].vertices[i].normal[1];
+		vertex.nz = projectileFile.standardMeshes[0].vertices[i].normal[2];
 
-		// Left face
+		ExplosionVertices.push_back(vertex);
+	}
 
-		-scale, scale, scale, 0.0f, 0.0f,
-		-scale, scale, -scale, 1.0f, 0.0f,
-		-scale, -scale, scale, 0.0f, 1.0f,
-		-scale, -scale, -scale, 1.0f, 1.0f,
+	for (UINT i = 0; i < projectileFile.standardMeshes[1].vertices.size(); i++)
+	{
 
-		// Right face
+		StandardVertex vertex;
 
-		scale, scale, -scale, 0.0f, 0.0f,
-		scale, scale, scale, 1.0f, 0.0f,
-		scale, -scale, -scale, 0.0f, 1.0f,
-		scale, -scale,  scale, 1.0f, 1.0f,
+		vertex.x = projectileFile.standardMeshes[0].vertices[i].pos[0];
+		vertex.y = projectileFile.standardMeshes[0].vertices[i].pos[1];
+		vertex.z = projectileFile.standardMeshes[0].vertices[i].pos[2];
 
-		// Top face
+		vertex.u = projectileFile.standardMeshes[0].vertices[i].uv[0];
+		vertex.v = projectileFile.standardMeshes[0].vertices[i].uv[1];
 
-		-scale, scale, scale, 0.0f, 0.0f,
-		scale, scale, scale, 1.0f, 0.0f,
-		-scale, scale, -scale, 0.0f, 1.0f,
-		scale, scale, -scale, 1.0f, 1.0f,
+		vertex.nx = projectileFile.standardMeshes[0].vertices[i].normal[0];
+		vertex.ny = projectileFile.standardMeshes[0].vertices[i].normal[1];
+		vertex.nz = projectileFile.standardMeshes[0].vertices[i].normal[2];
 
-		// Bottom face
+		projectileVertices.push_back(vertex);
+	}
+	
 
-		scale, -scale, scale, 0.0f, 0.0f,
-		-scale, -scale, scale, 1.0f, 0.0f,
-		scale, -scale, -scale, 0.0f, 1.0f,
-		-scale, -scale, -scale, 1.0f, 1.0f
+	
+
+	//D3D11_BUFFER_DESC bufferDesc;
+	//ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+	//memset(&bufferDesc, 0, sizeof(bufferDesc));
+	//bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	//bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	//bufferDesc.ByteWidth = sizeof(StandardVertex) * ExplosionVertices.size();
+
+	//D3D11_SUBRESOURCE_DATA data;
+	//ZeroMemory(&data, sizeof(data));
+	//data.pSysMem = &ExplosionVertices[0];
+	//hr = gDevice->CreateBuffer(&bufferDesc, &data, &ExplosionVertexBuffer);
+
+	//if (FAILED(hr)) {
+
+	//	return false;
+	//}
 
 
-	};
+	D3D11_BUFFER_DESC bufferDesc2;
+	ZeroMemory(&bufferDesc2, sizeof(bufferDesc2));
 
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+	memset(&bufferDesc2, 0, sizeof(bufferDesc2));
+	bufferDesc2.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc2.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc2.ByteWidth = sizeof(StandardVertex) * projectileVertices.size();
 
-	vertexBufferDesc.ByteWidth = sizeof(TriangleVertex) * 24;
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA data2;
+	ZeroMemory(&data2, sizeof(data2));
+	data2.pSysMem = &projectileVertices[0];
+	hr = gDevice->CreateBuffer(&bufferDesc2, &data2, &projectileVertexBuffer);
 
-	D3D11_SUBRESOURCE_DATA vertexData;
-	vertexData.pSysMem = triangleVertices;
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
-
-	hr = gDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &gProjectileBuffer);
-
-	if (FAILED(hr)) {
+	if (FAILED(hr)) 
+	{
 
 		return false;
 	}
 
-	// Create Indices
-	unsigned int indices[] = {
-
-		// Front face
-		0,1,2,
-		2,1,3,
-
-		// Back face
-
-		4,5,6,
-		6,5,7,
-
-		// Left face
-
-		8,9,10,
-		10,9,11,
-
-		// Right face
-
-		12,13,14,
-		14,13,15,
-
-		// Top face
-
-		16,17,18,
-		18,17,19,
-
-		// Bottom face
-
-		20,21,22,
-		22,21,23 };
-
-	// Create the buffer description
-	D3D11_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(unsigned int) * 36;
-	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = 0;
-
-	// Set the subresource data
-
-	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = indices;
-	initData.SysMemPitch = 0;
-	initData.SysMemSlicePitch = 0;
-	// Create the buffer
-
-	hr = gDevice->CreateBuffer(&bufferDesc, &initData, &gProjectileIndexBuffer);
-
-	if (FAILED(hr)) {
-
-		return false;
-	}
+	
 
 	return true;
 }
 
-void SceneContainer::loadIceEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice){
+void SceneContainer::loadIceEnemyVertices(FileImporter &importer, ID3D11Device* &graphicDevice)
+{
 
 	HRESULT hr;
 	//load mesh vertices
-	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) {
+	for (UINT i = 0; i < importer.skinnedMeshes[0].vertices.size(); i++) 
+	{
 
 		Vertex_Bone vertex;
 
@@ -945,8 +902,6 @@ void SceneContainer::incrementLevels()
 	HUD.setFont(gHandler.gDevice);
 	HUD.CreateFontIndexBuffer(gHandler.gDevice);
 
-	
-
 }
 
 void SceneContainer::drawFortress() {
@@ -1052,10 +1007,15 @@ void SceneContainer::render()
 	//drawDebugCubes();
 	renderCharacters();
 	renderIceEnemies();
-	renderLavaEnemies();
+	if (nrOfLavaEnemies>0)
+	{
+		renderLavaEnemies();
+		renderProjectile();
+	}
+	
 	renderScene();
 	drawHUD();
-	renderProjectile();
+	
 }
 
 bool SceneContainer::renderDeferred() {
@@ -1279,15 +1239,16 @@ void SceneContainer::renderProjectile()
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gProjectilePixelShader, nullptr, 0);
 
-	UINT32 vertexSize = sizeof(TriangleVertex);
+	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;
 
-	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &gProjectileBuffer, &vertexSize, &offset);
-	gHandler.gDeviceContext->IASetIndexBuffer(gProjectileIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gProjectileVertexLayout);
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &projectileVertexBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, offset);
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	gHandler.gDeviceContext->DrawIndexedInstanced(36, this->nrOfEnemies, 0, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(projectileVertices.size(), this->nrOfLavaEnemies, 0, 0);
 
 }
 

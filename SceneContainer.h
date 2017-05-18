@@ -178,6 +178,12 @@ public:
 	ID3D11Buffer* enemyIceVertexBuffer;
 	vector<Vertex_Bone>iceEnemyVertices;
 
+	vector<StandardVertex>ExplosionVertices;
+	ID3D11Buffer* ExplosionVertexBuffer;
+
+	vector<StandardVertex>projectileVertices;
+	ID3D11Buffer* projectileVertexBuffer;
+
 	ID3D11Buffer* enemyLavaVertexBuffer;
 	vector<Vertex_Bone>lavaEnemyVertices;
 
@@ -191,7 +197,7 @@ public:
 	void drawPlatforms();
 	void drawDebugCubes();
 	void drawHUD();
-
+	
 	void clear();
 	void resetRenderTarget(GraphicComponents &gHandler);
 
@@ -212,10 +218,14 @@ public:
 	void renderProjectile();
 
 	void createSideBoundingBoxes();
+	
+
+	
 
 	void delayWave(Timer timer);
 	void incrementLevels();
 
+	void spawnEnemies();
 };
 
 

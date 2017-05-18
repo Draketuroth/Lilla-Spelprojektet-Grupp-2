@@ -44,7 +44,7 @@ void Timer::updateCurrentTime()
 {
 	this->previousTime = this->currentTime;
 	//this->secondCounter += this->getSeconds();
-	cout << this->secondCounter << endl;
+	//cout << this->secondCounter << endl;
 
 	if (this->frameCount > 4000)
 	{

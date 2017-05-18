@@ -53,7 +53,8 @@ bool FileImporter::readFormat(string file) {
 
 			// Check the vertex layout for the mesh
 
-			if (meshHeader[i].vertexLayout == 0) {
+			if (meshHeader[i].vertexLayout == 0)
+			{
 
 				Mesh_Standard currentMesh;
 
@@ -139,7 +140,8 @@ bool FileImporter::readFormat(string file) {
 					vertices.resize(vertexCount);
 					in.read(reinterpret_cast<char*>(&vertices[0]), sizeof(Vertex) * vertexCount);
 
-					for (UINT i = 0; i < vertexCount; i++) {
+					for (UINT i = 0; i < vertexCount; i++)
+					{
 
 						currentMesh.vertices.push_back(vertices[i]);
 					}
@@ -263,7 +265,7 @@ bool FileImporter::readFormat(string file) {
 					joints[i].inverseBindPoseMatrix = XMLoadFloat4x4(&bindPoseMatrix);
 					joints[i].parentIndex = jointParentIndex;
 
-					cout << jointParentIndex << endl;
+					//cout << jointParentIndex << endl;
 				}
 
 				//------------------------------------------------------//
