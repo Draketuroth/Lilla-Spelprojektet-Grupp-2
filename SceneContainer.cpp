@@ -17,6 +17,8 @@ SceneContainer::SceneContainer() {
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
+
+	this->waveDelay = 3.0f;
 	this->level = 1;
 
 	this->ai = AI();
@@ -811,12 +813,20 @@ bool SceneContainer::readFiles() {
 		return false;
 	}
 
+	// Laod file for platforms
 	if (!PlatformFile.readFormat("Format//Platform_binary.txt"))
 	{
 		return false;
 	}
 
+	// Load file for lava enemy
 	if (!lavaEnemyFile.readFormat("Format//lavaEnemy_binary.txt"))
+	{
+		return false;
+	}
+
+	// Load file for projectile and explosion shape
+	if (!projectileFile.readFormat("Format//Projectile_binary.txt"))
 	{
 		return false;
 	}
@@ -824,7 +834,7 @@ bool SceneContainer::readFiles() {
 	return true;
 }
 
-void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30])
+void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer timer)
 {
 	int deadEnemies = 0;
 	bHandler.CreateRigidBodyTags();
@@ -847,7 +857,11 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30])
 
 		}*/
 
-		this->useAI(character, enemies[i]);
+		if(enemies[i]->getAlive() == true){
+
+			this->useAI(character, enemies[i], enemyTimePoses[i]);
+
+		}
 
 		if (enemies[i]->getType() == 1)
 		{
@@ -880,16 +894,22 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30])
 	}
 	if (deadEnemies == nrOfEnemies)
 	{
-		incrementLevels();
-		RespawnEnemies();
-		
+		delayWave(timer);
+
+		if (waveDelay <= 0)
+		{
+			waveDelay = 3.0f;
+
+			incrementLevels();
+			RespawnEnemies();
+		}
 	}
 	
 	
 	render();
 }
 
-void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy)
+void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy, float enemyTimePos)
 {
 	btVector3 edge = ai.collisionEdge(sides, enemy);
 
@@ -897,12 +917,21 @@ void SceneContainer::useAI(MainCharacter &player, Enemy* &enemy)
 
 	if (enemy->getType() == 0)
 	{
-		this->ai.iceAI(player, enemy);
+		this->ai.iceAI(player, enemy, enemyTimePos);
 	}
 	else if (enemy->getType() == 1)
 	{
-		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler);
+		this->ai.fireAI(player, enemy, this->bulletPhysicsHandler, enemyTimePos);
 	}
+}
+
+void SceneContainer::delayWave(Timer timer)
+{
+	if (waveDelay >= 0.0f)
+	{
+		waveDelay -= timer.getDeltaTime();
+	}
+	sceneTimer.updateCurrentTime();
 }
 
 void SceneContainer::incrementLevels()

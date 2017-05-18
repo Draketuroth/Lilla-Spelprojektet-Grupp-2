@@ -81,6 +81,7 @@ int RunApplication()
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
+	sceneContainer.sceneTimer.initialize();
 	updateLava();
 
 	int gameOverTimer;
@@ -181,8 +182,8 @@ int RunApplication()
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
-
-				sceneContainer.update(windowHandle, sceneContainer.animHandler.enemyTimePos);
+			
+				sceneContainer.update(windowHandle, sceneContainer.animHandler.enemyTimePos, timer);
 
 				showFPS(windowHandle, deltaTime);
 
@@ -228,6 +229,18 @@ void updateCharacter(HWND windowhandle)
 		currentAnimationLength = sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
 		if (currentPlayerTimePos >= currentAnimationLength) {
+
+			if (sceneContainer.character.currentAnimIndex == 4) {
+
+				sceneContainer.character.currentAnimIndex = 0;
+				sceneContainer.character.shotFlag = false;
+			}
+
+			else if (sceneContainer.character.currentAnimIndex == 3) {
+
+				sceneContainer.character.currentAnimIndex = 0;
+				sceneContainer.character.attackFlag = false;
+			}
 
 			sceneContainer.character.playerAnimTimePos = 0.0f;
 		}
@@ -275,6 +288,12 @@ void updateEnemies() {
 				currentAnimationLength = sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
 				if (currentEnemyTimePos >= currentAnimationLength) {
+
+					if (sceneContainer.enemies[i]->currentAnimIndex == 3){
+
+						sceneContainer.enemies[i]->currentAnimIndex = 0;
+						sceneContainer.enemies[i]->attackFlag = false;
+					}
 
 					sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
 				}
