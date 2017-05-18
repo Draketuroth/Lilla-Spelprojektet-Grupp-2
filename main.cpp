@@ -186,6 +186,12 @@ int RunApplication()
 
 						MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
 						sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.enemies[i]->fireBall.projectileRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
+
+						if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
+
+							sceneContainer.enemies[i]->fireBall.projectileRigidBody->getCollisionShape()->setMargin(2);
+							sceneContainer.bHandler.platformDecension(sceneContainer.bHandler.cubeObjects[j]);
+						}
 					}
 
 				}

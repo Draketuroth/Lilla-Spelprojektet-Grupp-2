@@ -61,6 +61,7 @@ struct CubeObjects {
 	XMMATRIX worldMatrix;
 	bool renderCheck;
 	int ID;
+	bool Hit;
 	btVector3 startPos;
 };
 

@@ -426,7 +426,6 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 
 		platformRigidBody->setIslandTag(platformRigid);//Tag to skip rayTesting for character projectiles
 		// Add the new rigid body to the dynamic world
-		platformRigidBody->setUserIndex2(i);
 
 		int arenaCollideWith = COL_PLAYER | COL_ENEMY | COL_PROJ;
 		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(platformRigidBody, COL_LEVEL, arenaCollideWith);
@@ -894,7 +893,7 @@ void BufferComponents::platformDecension(CubeObjects cube)
 	if (pos.y > -11)
 	{
 		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
-		lerpScalar += 0.001f;
+		lerpScalar += 0.0001f;
 		btMatrix3x3 movementMatrix;
 		movementMatrix.setIdentity();
 		btTransform plat{ movementMatrix,lerpResult };

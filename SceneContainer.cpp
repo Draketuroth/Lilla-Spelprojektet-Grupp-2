@@ -1030,15 +1030,19 @@ void SceneContainer::render()
 	clear();
 
 	renderShadowMap();
-	//renderDeferred();
 	renderLava(); 
-	//drawDebugCubes();
 	renderCharacters();
 	renderIceEnemies();
+
+	if(nrOfLavaEnemies > 0){
+
 	renderLavaEnemies();
+	renderProjectile();
+	
+	}
+
 	renderScene();
 	drawHUD();
-	renderProjectile();
 }
 
 bool SceneContainer::renderDeferred() {

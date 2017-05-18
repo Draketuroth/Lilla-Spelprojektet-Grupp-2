@@ -90,13 +90,9 @@ struct MyPlatformContactResultCallback : public btCollisionWorld::ContactResultC
 		int partId1,
 		int index1)
 	{
-		btTransform transform;
-		XMFLOAT4X4 convert;
-		transform.setOrigin(btVector3(0, -100, 0));
-		transform.getOpenGLMatrix((float*)&convert);
 		
-		platform->rigidBody->getMotionState()->setWorldTransform(transform);
-		platform->worldMatrix = XMLoadFloat4x4(&convert);
+		platform->Hit = true;
+
 		return 0;
 	}
 
