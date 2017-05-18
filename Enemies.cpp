@@ -65,7 +65,7 @@ void Enemy::setSpawnPos(XMFLOAT3 SpawnPos)
 void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, int enemyIndex)
 {
 	currentAnimIndex = 0;
-	CreateEnemyBoundingBox(0.10, this->getPos(), XMFLOAT3(1, 1, 1), bulletPhysicsHandle, enemyIndex);
+	CreateEnemyBoundingBox(0.10, this->getPos(), 0.25, 0.2 , bulletPhysicsHandle, enemyIndex);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 	
 }

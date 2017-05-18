@@ -138,7 +138,7 @@ bool CharacterBase::createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bo
 	return true;
 }
 
-void CharacterBase::CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler) {
+void CharacterBase::CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, float radius, float height, BulletComponents &bulletPhysicsHandler) {
 
 	//----------------------------------------------------------------------//
 	// CREATE THE RIGID BODY
@@ -153,8 +153,12 @@ void CharacterBase::CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLO
 	transform.setFromOpenGLMatrix((float*)&t);
 
 	// Define the kind of shape we want and construct rigid body information
-	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
-	boxShape->setMargin(0.04);
+	//btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
+	//boxShape->setMargin(0.04);
+
+	btCapsuleShape* capsule = new btCapsuleShape(radius, height);
+	//capsule->setMargin(0.04);
+
 
 	btVector3 inertia(0, 0, 0);
 
@@ -166,9 +170,9 @@ void CharacterBase::CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLO
 	btMotionState* motion = new btDefaultMotionState(transform);
 
 	// Definition of the rigid body
-	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape, inertia);
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, capsule, inertia);
 
-	this->boundingBoxExtents = extents;
+	//this->boundingBoxExtents = capsule;
 
 	// Create the rigid body
 	btRigidBody* playerRigidBody = new btRigidBody(info);
@@ -184,7 +188,7 @@ void CharacterBase::CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLO
 	
 }
 
-void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler, int enemyIndex) {
+void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, float radius, float height, BulletComponents &bulletPhysicsHandler, int enemyIndex) {
 
 	//----------------------------------------------------------------------//
 	// CREATE THE RIGID BODY
@@ -199,9 +203,11 @@ void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOA
 	transform.setFromOpenGLMatrix((float*)&t);
 
 	// Define the kind of shape we want and construct rigid body information
-	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
-	boxShape->setMargin(0.04);
+	//btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
+	//boxShape->setMargin(0.04);
 
+	btCapsuleShape* capsule = new btCapsuleShape(radius, height); 
+	
 	btVector3 inertia(0, 0, 0);
 
 	/*if (mass != 0.0) {
@@ -212,9 +218,9 @@ void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOA
 	btMotionState* motion = new btDefaultMotionState(transform);
 
 	// Definition of the rigid body
-	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, boxShape, inertia);
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, capsule, inertia);
 
-	this->boundingBoxExtents = extents;
+	//this->boundingBoxExtents = extents;
 
 	// Create the rigid body
 	btRigidBody* enemyRigidBody = new btRigidBody(info);
@@ -237,6 +243,14 @@ BoundingBox CharacterBase::getBoundingBox()
 	XMFLOAT3 center = this->position;
 	XMFLOAT3 extents = this->boundingBoxExtents;
 	return BoundingBox(center, extents);
+}
+
+// onödig funktion
+btCapsuleShape CharacterBase::getBoundingCapsule()
+{
+	float radius = 0.0; 
+	float height = 0.0; 
+	return btCapsuleShape(radius, height); 
 }
 
 XMMATRIX CharacterBase::getPlayerTanslationMatrix()

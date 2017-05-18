@@ -45,7 +45,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, vertices, animHandler, skinData);
-	CreatePlayerBoundingBox(0.10, this->getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandle);
+	CreatePlayerBoundingBox(0.10, this->getPos(), 0.7, 0.3, bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 
 	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
