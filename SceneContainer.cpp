@@ -223,6 +223,8 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 
 void SceneContainer::RespawnEnemies() {
 
+	collisionIndices.clear();
+
 	// Remove enemy rigid bodies
 	for (UINT i = 0; i < nrOfIceEnemies; i++)
 	{

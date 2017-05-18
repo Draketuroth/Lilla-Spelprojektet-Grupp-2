@@ -141,6 +141,12 @@ public:
 
 	float RandomNumber(float Minimum, float Maximum);
 
+	// Indices to store for the neighbor platforms
+	vector<int>collisionIndices;
+
+	// Index for the primary platform that has been hit
+	int platformIndex;
+
 	//------------------------------------------------------------//
 	// RE-INTIALIZE
 	//------------------------------------------------------------//

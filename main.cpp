@@ -37,6 +37,7 @@ void updateCharacter(HWND windowhandle);
 void updateEnemies();
 void updateBuffers();
 void updateLava();
+void gatherProjectileIndices(vector<int>collisionIndices, int platformIndex);
 void lavamovmentUpdate();
 
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -180,87 +181,8 @@ int RunApplication()
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// PROJECTILE HIT VS PLATFORM
 				//----------------------------------------------------------------------------------------------------------------------------------//
-				
-				// Index for the primary platform that has been hit
-				int platformIndex;
 
-				// Iterate through the currently active lava enemy projectiles
-				for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
-
-					for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
-
-						// Perform a contact pair test between projectile and cube to see if it collided with a platform
-						MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
-						sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.enemies[i]->fireBall.projectileRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
-
-						// If a platform was hit, we receive its index
-						if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
-
-							platformIndex = j;
-							break;
-						}
-					}
-
-				}
-
-				vector<int>collisionIndices;
-				// Create sphere rigid body
-				for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
-				
-					// Create new sphere shape
-					btSphereShape* sphereShape = new btSphereShape(2);
-
-					// Get projectile transform
-					btTransform projectileTransform = sceneContainer.enemies[i]->fireBall.projectileRigidBody->getWorldTransform();
-
-					// Set the motion state
-					btMotionState* motion = new btDefaultMotionState(projectileTransform);
-
-					// Definition of the rigid body
-					btScalar mass(0.0f);
-					btRigidBody::btRigidBodyConstructionInfo info(mass, motion, sphereShape);
-
-					// Create the rigid body
-					btRigidBody* sphereRigidBody = new btRigidBody(info);
-
-					int arenaCollideWith = COL_PLAYER | COL_ENEMY;
-					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, arenaCollideWith);
-
-					for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
-						
-						MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
-						sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
-
-						if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
-
-							collisionIndices.push_back(j);
-							
-						}
-
-					}
-
-					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
-					btMotionState* destructMotion = sphereRigidBody->getMotionState();
-					btCollisionShape* destructShape = sphereRigidBody->getCollisionShape();
-
-					delete sphereRigidBody;
-					delete destructMotion;
-					delete destructShape;
-
-				}
-
-
-				// Only perform platform descension if a valid platform index was passed from the collision
-				if (platformIndex >= 0 && platformIndex < sceneContainer.bHandler.nrOfCubes){
-
-					sceneContainer.bHandler.cubeObjects[platformIndex].platformDecension();
-
-					for (UINT i = 0; i < collisionIndices.size(); i++) {
-
-						sceneContainer.bHandler.cubeObjects[collisionIndices[i]].platformDecension();
-					}
-
-				}
+				gatherProjectileIndices(sceneContainer.collisionIndices, sceneContainer.platformIndex);
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
@@ -595,5 +517,87 @@ void updateBuffers()
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 
+}
+
+void gatherProjectileIndices(vector<int>collisionIndices, int platformIndex){
+
+	// Iterate through the currently active lava enemy projectiles
+	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
+
+		// Iterate through the platforms
+		for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
+
+			// Perform a contact pair test between projectile and cube to see if it collided with a platform
+			MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
+			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.enemies[i]->fireBall.projectileRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
+
+			// If a platform was hit, we receive its index
+			if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
+
+				platformIndex = j;
+				break;
+			}
+		}
+
+	}
+
+	// Create sphere rigid body
+	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
+
+		// Create new sphere shape
+		btSphereShape* sphereShape = new btSphereShape(2);
+
+		// Get projectile transform
+		btTransform projectileTransform = sceneContainer.enemies[i]->fireBall.projectileRigidBody->getWorldTransform();
+
+		// Set the motion state
+		btMotionState* motion = new btDefaultMotionState(projectileTransform);
+
+		// Definition of the rigid body
+		btScalar mass(0.0f);
+		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, sphereShape);
+
+		// Create the rigid body
+		btRigidBody* sphereRigidBody = new btRigidBody(info);
+
+		int arenaCollideWith = COL_PLAYER | COL_ENEMY;
+		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, arenaCollideWith);
+
+		for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
+
+			MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
+			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
+
+			if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
+
+				collisionIndices.push_back(j);
+
+			}
+
+		}
+
+		// Delete the sphere rigid body 
+		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
+		btMotionState* destructMotion = sphereRigidBody->getMotionState();
+		btCollisionShape* destructShape = sphereRigidBody->getCollisionShape();
+
+		delete sphereRigidBody;
+		delete destructMotion;
+		delete destructShape;
+
+	}
+
+
+	// Perform platform ascension for the selected platforms
+	if (platformIndex >= 0 && platformIndex < sceneContainer.bHandler.nrOfCubes) {
+
+		sceneContainer.bHandler.cubeObjects[platformIndex].platformDecension();
+
+		for (UINT i = 0; i < collisionIndices.size(); i++) {
+
+			sceneContainer.bHandler.cubeObjects[collisionIndices[i]].platformDecension();
+		}
+
+	}
 }
 
