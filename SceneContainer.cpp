@@ -159,7 +159,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
 	
-	HUD.setElementPos(gHandler.gDevice);
+	HUD.setElementPos(gHandler.gDevice, character.getHealth());
 	HUD.CreateIndexBuffer(gHandler.gDevice);
 	HUD.loadBitMap();
 	HUD.setText(level);
@@ -806,6 +806,12 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, enemyTimePoses);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler, enemyTimePoses);
+	
+	if (character.currentHealth != character.getHealth())
+	{
+		HUD.setElementPos(gHandler.gDevice, character.getHealth());
+		character.currentHealth = character.getHealth();
+	}
 
 	for (UINT i = 0; i < this->nrOfEnemies; i++){
 	
@@ -904,7 +910,7 @@ void SceneContainer::incrementLevels()
 {
 	level++;
 
-	HUD.setElementPos(gHandler.gDevice);
+	HUD.setElementPos(gHandler.gDevice, this->character.getHealth());
 	HUD.CreateIndexBuffer(gHandler.gDevice);
 	HUD.loadBitMap();
 	HUD.setText(level);
@@ -1357,13 +1363,18 @@ void SceneContainer::renderShadowMap()
 void SceneContainer::drawHUD()
 {
 
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	//						PORTRAIT DRAWCALL
+	///////////////////////////////////////////////////////////////////////////////////////
 	gHandler.gDeviceContext->OMSetBlendState(tHandler.blendState, 0, 0xffffffff);
+	//gHandler.gDeviceContext->ClearDepthStencilView(gHandler.depthView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	gHandler.gDeviceContext->VSSetShader(gHandler.gHUDVertexShader, nullptr, 0);	//vs
 	
 	gHandler.gDeviceContext->PSSetShader(gHandler.gHUDPixelShader, nullptr, 0); //ps
 
 																				 //texture
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDResource);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDPortrait);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 0, nullptr);
@@ -1382,7 +1393,11 @@ void SceneContainer::drawHUD()
 
 	gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
 
+	///////////////////////////////////////////////////////////////////////////////////////
+	//						FONT DRAWCALL
+	///////////////////////////////////////////////////////////////////////////////////////
 
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDResource);
 
 	//set vertex buffer
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gFontVertexBuffer, &vertexSize, &offset);
@@ -1393,7 +1408,37 @@ void SceneContainer::drawHUD()
 	gHandler.gDeviceContext->DrawIndexed(HUD.foo, 0, 0);
 
 
+	///////////////////////////////////////////////////////////////////////////////////////
+	//						HPBAR DRAWCALL
+	///////////////////////////////////////////////////////////////////////////////////////
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gHUDVertexShader, nullptr, 0);	//vs
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gHUDPixelShader, nullptr, 0); //ps
+
+																				//texture
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDHealth);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 0, nullptr);
+
+
+	 vertexSize = sizeof(HUDElements);
+	 offset = 0;
+
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gHPBarVtxBuffer, &vertexSize, &offset);
+	//Set index buffer
+	gHandler.gDeviceContext->IASetIndexBuffer(HUD.gElementIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	//set triangel list
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gHUDVertexLayout);
+
+	gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
+
+
 	gHandler.gDeviceContext->OMSetBlendState(nullptr, 0, 0xffffffff);
+
 
 
 
