@@ -532,12 +532,14 @@ void updateBuffers()
 	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gProjectileTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &ProjectileMappedResource);
 
 	PROJECTILE_TRANSFORM* ProjectileTransformPointer = (PROJECTILE_TRANSFORM*)ProjectileMappedResource.pData;
+	int index = 0;
+	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++)
+	{
 
-	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
-
-		ProjectileTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.enemies[i]->fireBall.worldMatrix);
-
-		}
+		ProjectileTransformPointer->worldMatrix[index] = XMMatrixTranspose(sceneContainer.enemies[i]->fireBall.worldMatrix);
+		
+		index++;
+	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 

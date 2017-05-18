@@ -382,7 +382,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		this->shotFlag = true;
 		this->shootTimer = this->shootCD;
 
-		cout << "Player Tag: " << this->rigidBody->getIslandTag() << endl << endl;
+		
 
 		XMFLOAT3 characterPos = this->getPos();
 		XMVECTOR RayOrigin = XMLoadFloat3(&characterPos);
@@ -414,8 +414,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		
 		if (rayCallBack.hasHit())
 		{
-			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
-			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
+			
 
 			int i = rayCallBack.m_collisionObject->getUserIndex();
 
@@ -430,7 +429,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 			enemies[i]->rigidBody->applyCentralImpulse(-correctedForce / 2);
 			//----------------------------------------------------------------------------
 
-			cout << "Enemy Tag: " << enemies[i]->rigidBody->getIslandTag() << endl << endl;
+			
 			if (enemies[i]->rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
 			{
 				cout << "Enemy Shot!! -1 health\n";

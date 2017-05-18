@@ -7,6 +7,7 @@ struct projectile
 	XMMATRIX worldMatrix;
 	XMFLOAT3 projectileRigidBodyExtents;
 	btRigidBody* projectileRigidBody;
+	
 
 };
 
