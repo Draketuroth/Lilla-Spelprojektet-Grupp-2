@@ -89,7 +89,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	CoInitialize(NULL); 
 	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\platformTexture.png", NULL, &platformResource, 1024);
-	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\FortressTexture.png", NULL, &fortressResource, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\file1.png", NULL, &fortressResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\playerTexture.png", NULL, &playerResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &defaultResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava1.jpg", NULL, &LavaResource, 1024);
@@ -103,6 +103,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER_RESTART_CLICK.png", NULL, &menuResources[7], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\GAMEOVER_QUIT_CLICK.png", NULL, &menuResources[8], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Fonts\\HUDFont.png", NULL, &HUDResource, 256);
+
 
 	if (SUCCEEDED(hr) && texture != 0) {
 
