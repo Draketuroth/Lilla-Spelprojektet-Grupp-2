@@ -18,14 +18,14 @@ AI::~AI()
 
 //NOTES
 //we need the enemy's position to get he distance
-void AI::iceAI(MainCharacter &player, Enemy* self)
+void AI::iceAI(MainCharacter &player, Enemy* self, float enemyTimePos)
 {
 	
 	//AI
 	float distance = getDistance(player.getPos(), self->getPos());
 	if (distance <= 2)
 	{
-		attackMelee(player, self);
+		attackMelee(player, self, enemyTimePos);
 	}
 	else if (self->getHealth() <= 2 && distance <= 8)
 	{
@@ -42,13 +42,14 @@ void AI::iceAI(MainCharacter &player, Enemy* self)
 	timer.updateCurrentTime();
 
 }
-void AI::fireAI(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler)
+
+void AI::fireAI(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler, float enemyTimePos)
 {
 	float distance = getDistance(player.getPos(), self->getPos());
 
 	if (distance >= 12 && distance <= 16  )
 	{
-		attackRanged(player, self, bulletPhysicsHandler);
+		attackRanged(player, self, bulletPhysicsHandler, enemyTimePos);
 	}
 	else if (distance <= 10)
 	{
@@ -60,14 +61,17 @@ void AI::fireAI(MainCharacter &player, Enemy* self, BulletComponents &bulletPhys
 	}
 }
 
-void AI::attackMelee(MainCharacter &player, Enemy* self)
+void AI::attackMelee(MainCharacter &player, Enemy* self, float enemyTimePos)
 {
 	if (!attacking && attackTimer <= 0)
 	{
 
 		cout << "ENEMY ATTACK!" << endl;
 
+		enemyTimePos = 0.0f;
 		attacking = true;
+		self->attackFlag = true;
+
 		attackTimer = attackCd;
 
 		//-----------------Calculate the hit area-------------------------------
@@ -127,16 +131,21 @@ void AI::attackMelee(MainCharacter &player, Enemy* self)
 		else
 		{
 			attacking = false;
+			self->attackFlag = false;
 		}
 		//play enemy attack animation here
 	}	
 }
-void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler)
+
+void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler, float enemyTimePos)
 {
 
 	if (!rangedAttack && rangedTimer <= 0)
 	{
+		enemyTimePos = 0.0f;
 		rangedAttack = true;
+		self->attackFlag = true;
+
 		rangedTimer = rangedCd;
 
 		btTransform transform = self->fireBall.projectileRigidBody->getCenterOfMassTransform();
@@ -173,6 +182,7 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 		else
 		{
 			rangedAttack = false;
+			self->attackFlag = false;
 		}
 		//play enemy attack animation here
 	}

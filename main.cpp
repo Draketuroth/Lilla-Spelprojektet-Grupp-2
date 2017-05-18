@@ -81,6 +81,7 @@ int RunApplication()
 
 	timer.initialize();
 	sceneContainer.character.timer.initialize();
+	sceneContainer.sceneTimer.initialize();
 	updateLava();
 
 	int gameOverTimer;
@@ -181,8 +182,8 @@ int RunApplication()
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
-
-				sceneContainer.update(windowHandle, sceneContainer.animHandler.enemyTimePos);
+			
+				sceneContainer.update(windowHandle, sceneContainer.animHandler.enemyTimePos, timer);
 
 				showFPS(windowHandle, deltaTime);
 
@@ -228,6 +229,18 @@ void updateCharacter(HWND windowhandle)
 		currentAnimationLength = sceneContainer.mainCharacterFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
 		if (currentPlayerTimePos >= currentAnimationLength) {
+
+			if (sceneContainer.character.currentAnimIndex == 4) {
+
+				sceneContainer.character.currentAnimIndex = 0;
+				sceneContainer.character.shotFlag = false;
+			}
+
+			else if (sceneContainer.character.currentAnimIndex == 3) {
+
+				sceneContainer.character.currentAnimIndex = 0;
+				sceneContainer.character.attackFlag = false;
+			}
 
 			sceneContainer.character.playerAnimTimePos = 0.0f;
 		}
@@ -275,6 +288,12 @@ void updateEnemies() {
 				currentAnimationLength = sceneContainer.iceEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
 				if (currentEnemyTimePos >= currentAnimationLength) {
+
+					if (sceneContainer.enemies[i]->currentAnimIndex == 3){
+
+						sceneContainer.enemies[i]->currentAnimIndex = 0;
+						sceneContainer.enemies[i]->attackFlag = false;
+					}
 
 					sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
 				}
@@ -482,12 +501,14 @@ void updateBuffers()
 	sceneContainer.gHandler.gDeviceContext->Map(sceneContainer.bHandler.gProjectileTransformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &ProjectileMappedResource);
 
 	PROJECTILE_TRANSFORM* ProjectileTransformPointer = (PROJECTILE_TRANSFORM*)ProjectileMappedResource.pData;
+	int index = 0;
+	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++)
+	{
 
-	for (UINT i = 0; i < sceneContainer.nrOfEnemies; i++){
-
-		ProjectileTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.enemies[i]->fireBall.worldMatrix);
-
-		}
+		ProjectileTransformPointer->worldMatrix[index] = XMMatrixTranspose(sceneContainer.enemies[i]->fireBall.worldMatrix);
+		
+		index++;
+	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
 

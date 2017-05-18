@@ -177,12 +177,12 @@ void MainCharacter::CheckInput() {
 
 	}
 
-	if (shooting == true) {
+	if (shotFlag == true) {
 
 		currentAnimIndex = 4;
 	}
 
-	if (attacking == true) {
+	if (attackFlag == true) {
 
 		currentAnimIndex = 3;
 	}
@@ -289,6 +289,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		cout << "ATTACK" << endl;
 
 		attacking = true;
+		attackFlag = true;
 		attackTimer = attackCd;
 		//-----------------Calculate the hit area-------------------------------
 		float angle = characterLookAt(windowHandle);
@@ -352,6 +353,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		else
 		{
 			attacking = false;
+			attackFlag = false;
 		}
 	}
 
@@ -377,9 +379,10 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		float angle = this->characterLookAt(windowHandle);
 	
 		this->shooting = true;
+		this->shotFlag = true;
 		this->shootTimer = this->shootCD;
 
-		cout << "Player Tag: " << this->rigidBody->getIslandTag() << endl << endl;
+		
 
 		XMFLOAT3 characterPos = this->getPos();
 		XMVECTOR RayOrigin = XMLoadFloat3(&characterPos);
@@ -411,8 +414,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		
 		if (rayCallBack.hasHit())
 		{
-			cout << "RayHit Tag: " << rayCallBack.m_collisionObject->getIslandTag() << endl;
-			cout << "Hit pos X: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getX() << "  Hit Pos Y: " << rayCallBack.m_collisionObject->getWorldTransform().getOrigin().getY() << endl << endl;
+			
 
 			int i = rayCallBack.m_collisionObject->getUserIndex();
 
@@ -427,7 +429,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 			enemies[i]->rigidBody->applyCentralImpulse(-correctedForce / 2);
 			//----------------------------------------------------------------------------
 
-			cout << "Enemy Tag: " << enemies[i]->rigidBody->getIslandTag() << endl << endl;
+			
 			if (enemies[i]->rigidBody->getIslandTag() == rayCallBack.m_collisionObject->getIslandTag())
 			{
 				cout << "Enemy Shot!! -1 health\n";
@@ -448,12 +450,12 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 	
 		if (this->shootTimer > 0)
 		{
-
 			this->shootTimer -= timer.getDeltaTime();
 		}
 		else
 		{
 			this->shooting = false;
+			this->shotFlag = false;
 			
 		}
 	}
