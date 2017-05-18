@@ -99,6 +99,8 @@ struct MyPlatformContactResultCallback : public btCollisionWorld::ContactResultC
 	Platform* platform;
 };
 
+
+
 class SceneContainer {
 
 private:

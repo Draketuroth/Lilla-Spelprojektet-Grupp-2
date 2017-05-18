@@ -42,20 +42,20 @@ void lavamovmentUpdate();
 //----------------------------------------------------------------------------------------------------------------------------------//
 // MEMORY LEAK DETECTION
 //----------------------------------------------------------------------------------------------------------------------------------//
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
+//#ifdef _DEBUG
+//#define _CRTDBG_MAP_ALLOC
+//#include <crtdbg.h>
+//#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//#endif
 
 int main() {
 
 	// Memory leak detection
 
-#ifdef _DEBUG
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(65);
-#endif
+//#ifdef _DEBUG
+//	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+//	_CrtSetBreakAlloc(65);
+//#endif
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
 	
@@ -203,10 +203,62 @@ int RunApplication()
 
 				}
 
+				vector<int>collisionIndices;
+				// Create sphere rigid body
+				for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
+				
+					// Create new sphere shape
+					btSphereShape* sphereShape = new btSphereShape(2);
+
+					// Get projectile transform
+					btTransform projectileTransform = sceneContainer.enemies[i]->fireBall.projectileRigidBody->getWorldTransform();
+
+					// Set the motion state
+					btMotionState* motion = new btDefaultMotionState(projectileTransform);
+
+					// Definition of the rigid body
+					btScalar mass(0.0f);
+					btRigidBody::btRigidBodyConstructionInfo info(mass, motion, sphereShape);
+
+					// Create the rigid body
+					btRigidBody* sphereRigidBody = new btRigidBody(info);
+
+					int arenaCollideWith = COL_PLAYER | COL_ENEMY;
+					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, arenaCollideWith);
+
+					for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
+						
+						MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
+						sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
+
+						if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
+
+							collisionIndices.push_back(j);
+							
+						}
+
+					}
+
+					sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
+					btMotionState* destructMotion = sphereRigidBody->getMotionState();
+					btCollisionShape* destructShape = sphereRigidBody->getCollisionShape();
+
+					delete sphereRigidBody;
+					delete destructMotion;
+					delete destructShape;
+
+				}
+
+
 				// Only perform platform descension if a valid platform index was passed from the collision
 				if (platformIndex >= 0 && platformIndex < sceneContainer.bHandler.nrOfCubes){
 
 					sceneContainer.bHandler.cubeObjects[platformIndex].platformDecension();
+
+					for (UINT i = 0; i < collisionIndices.size(); i++) {
+
+						sceneContainer.bHandler.cubeObjects[collisionIndices[i]].platformDecension();
+					}
 
 				}
 

@@ -483,6 +483,7 @@ void BufferComponents::updatePlatformWorldMatrices()
 
 	if (GetAsyncKeyState('L'))
 	{
+
 		cubeObjects[0].platformDecension();
 		//XMMATRIX transform;
 		//XMFLOAT4X4 data;
@@ -507,6 +508,7 @@ void BufferComponents::updatePlatformWorldMatrices()
 		//cout << pos.x << " " << pos.y << " "<< pos.z << endl;
 		
 	}
+
 	if (GetAsyncKeyState('J'))
 	{
 		cubeObjects[0].platformAcension();
