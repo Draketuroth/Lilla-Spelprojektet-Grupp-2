@@ -10,6 +10,7 @@
 #include <sstream>
 #include <vector>
 #include <fstream>
+
 using namespace std;
 using namespace DirectX;
 
@@ -37,7 +38,7 @@ public:
 	HUDClass();
 	~HUDClass();
 
-	bool setElementPos(ID3D11Device* &gDevice);
+	bool setElementPos(ID3D11Device* &gDevice, int playerHP);
 	bool CreateIndexBuffer(ID3D11Device* &gDevice);
 
 	bool setFont(ID3D11Device* &gDevice);
@@ -53,6 +54,8 @@ public:
 
 	ID3D11Buffer* gFontVertexBuffer;
 	ID3D11Buffer* gFontIndexBuffer;
+	ID3D11Buffer* gHPBarVtxBuffer;
+
 
 	string waveText;
 	int nrOfChars;

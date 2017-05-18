@@ -65,6 +65,9 @@ public:
 	sf::Sound attackSound;
 	sf::SoundBuffer soundBuffer[2];
 
+
+	int currentHealth;
+	
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();
 	//XMFLOAT3 getPointOnRay(XMFLOAT3 ray, float distance);

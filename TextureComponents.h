@@ -36,6 +36,9 @@ public:
 	DXGI_FORMAT GetDepthSRVFormat(DXGI_FORMAT depthformat);
 	DXGI_FORMAT GetDepthResourceFormat(DXGI_FORMAT depthformat);
 	ID3D11ShaderResourceView* HUDResource;
+
+	ID3D11ShaderResourceView* HUDPortrait;
+	ID3D11ShaderResourceView* HUDHealth;
 	ID3D11BlendState* blendState;
 
 	ID3D11SamplerState* texSampler;
