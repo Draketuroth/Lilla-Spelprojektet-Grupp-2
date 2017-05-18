@@ -332,6 +332,7 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 
 		projectileVertices.push_back(vertex);
 	}
+	
 
 	
 
@@ -367,7 +368,8 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 	data2.pSysMem = &projectileVertices[0];
 	hr = gDevice->CreateBuffer(&bufferDesc2, &data2, &projectileVertexBuffer);
 
-	if (FAILED(hr)) {
+	if (FAILED(hr)) 
+	{
 
 		return false;
 	}
@@ -1246,7 +1248,7 @@ void SceneContainer::renderProjectile()
 
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
-	gHandler.gDeviceContext->DrawInstanced(projectileVertices.size(), this->nrOfEnemies, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(projectileVertices.size(), this->nrOfLavaEnemies, 0, 0);
 
 }
 

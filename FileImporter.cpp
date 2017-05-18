@@ -265,7 +265,7 @@ bool FileImporter::readFormat(string file) {
 					joints[i].inverseBindPoseMatrix = XMLoadFloat4x4(&bindPoseMatrix);
 					joints[i].parentIndex = jointParentIndex;
 
-					cout << jointParentIndex << endl;
+					//cout << jointParentIndex << endl;
 				}
 
 				//------------------------------------------------------//
