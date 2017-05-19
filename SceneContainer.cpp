@@ -883,6 +883,8 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 	{
 		delayWave(timer);
 
+
+
 		if (waveDelay <= 0)
 		{
 			waveDelay = 3.0f;

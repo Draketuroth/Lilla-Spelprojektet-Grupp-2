@@ -31,6 +31,7 @@ public:
 	int ID;
 	bool Hit;
 	btVector3 startPos;
+	int health;
 
 private:
 };

@@ -186,8 +186,20 @@ int RunApplication()
 
 				for (UINT i = 0; i < sceneContainer.collisionIndices.size(); i++) {
 
-					sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformDecension();
+					if(sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].health > 0){
+
+					sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformBreaking();
+					sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].health--;
+
+					}
+
+					else {
+
+						sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformDecension();
+					}
 				}
+
+				
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER

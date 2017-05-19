@@ -4,6 +4,7 @@
 Platform::Platform() {
 
 	lerpScalar = 0;
+	health = 200;
 }
 
 Platform::~Platform() {
@@ -132,7 +133,7 @@ void Platform::platformBreaking()
 	btScalar rigidYvalue = pos.y;
 	btScalar rigidZvalue = pos.z;
 
-	btVector3 startPos(pos.x, pos.y, pos.z);
+	
 	btVector3 endPos;
 
 	if (pos.x > startPos.x() + 0.05f)
