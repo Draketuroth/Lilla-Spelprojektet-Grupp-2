@@ -220,7 +220,7 @@ void CharacterBase::CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, float 
 	// Definition of the rigid body
 	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, capsule, inertia);
 
-	//this->boundingBoxExtents = extents;
+	this->boundingBoxExtents = XMFLOAT3(0.5, 0.8, 0.3);
 
 	// Create the rigid body
 	btRigidBody* enemyRigidBody = new btRigidBody(info);

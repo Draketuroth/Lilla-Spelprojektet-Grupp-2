@@ -472,6 +472,31 @@ void MainCharacter::DeathTimer()
 	timer.updateCurrentTime();
 }
 
+//void MainCharacter::meleeCollision(HWND windowHandle)
+//{
+//	btPairCachingGhostObject ghostObj;
+//	btBoxShape bb(btVector3(0.8, 0.5, 0.7));
+//	float angle = this->characterLookAt(windowHandle);
+//	btVector3 rotAxis = { 0, 1, 0 };
+//	btQuaternion rotQuat = btQuaternion(rotAxis, angle);
+//	
+//	XMVECTOR pos = XMLoadFloat3(&this->getPos());
+//	pos += this->getForwardVector() * 0.4;
+//	XMFLOAT3 newPos;
+//	XMStoreFloat3(&newPos, pos);
+//
+//	btVector3 playerPos = { newPos.x, newPos.y, newPos.z };
+//
+//	btTransform transform;
+//	transform.setOrigin(playerPos);
+//	transform.setRotation(rotQuat);
+//	ghostObj.setCollisionShape(&bb);
+//	
+//	
+//	
+//
+//
+//}
 //bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)
 //{
 //	HRESULT hr;

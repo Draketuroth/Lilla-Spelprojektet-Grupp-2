@@ -32,6 +32,7 @@ public:
 	bool renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end);
 	bool isGrounded();
 	void DeathTimer();
+	void meleeCollision(HWND windowHandle);
 
 	Camera camera;
 
