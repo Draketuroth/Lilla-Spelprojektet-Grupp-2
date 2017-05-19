@@ -29,9 +29,10 @@ public:
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemyArray, btDynamicsWorld* bulletDynamicsWorld, float enemyTimePoses[30]);
 	void rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler, float enemyTimePoses[30]);
-	bool renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end);
+
 	bool isGrounded();
 	void DeathTimer();
+	
 
 	Camera camera;
 
