@@ -15,6 +15,7 @@
 #include "AnimationHandler.h"
 #include "FileImporter.h"
 
+
 #include <SFML\Audio.hpp>
 
 using namespace std;
@@ -59,10 +60,12 @@ public:
 
 	XMVECTOR forwardVector;
 
-	void CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler);
-	void CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, XMFLOAT3 extents, BulletComponents &bulletPhysicsHandler, int enemyIndex);
+	void CreatePlayerBoundingBox(float mass, XMFLOAT3 spawnPos, float radius, float height, BulletComponents &bulletPhysicsHandler);
+	void CreateEnemyBoundingBox(float mass, XMFLOAT3 spawnPos, float radius, float height, BulletComponents &bulletPhysicsHandler, int enemyIndex); 
 	BoundingBox getBoundingBox();
 	XMMATRIX getPlayerTanslationMatrix();
+
+	btCapsuleShape getBoundingCapsule(); 
 
 	bool createBuffers(ID3D11Device* &graphicDevice, vector<Vertex_Bone>fbxVector, AnimationHandler &animHandler, CHARACTER_SKINNED_DATA &skinData);
 	void draw(ID3D11DeviceContext* &graphicDeviceContext, int vertexCount);
