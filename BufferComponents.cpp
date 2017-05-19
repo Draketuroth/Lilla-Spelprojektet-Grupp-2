@@ -412,7 +412,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		transform.setFromOpenGLMatrix((float*)&platFormWorldMatrix);
 
 		// Define the kind of shape we want and construct rigid body information
-		btBoxShape* boxShape = new btBoxShape(btVector3(1, 1, 1));
+		btBoxShape* boxShape = new btBoxShape(btVector3(1.07, 1.07, 1.07));
 		btMotionState* motion = new btDefaultMotionState(transform);
 
 		// Definition of the rigid body

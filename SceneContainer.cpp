@@ -739,7 +739,7 @@ void SceneContainer::ReInitialize()
 	character.setPos(XMFLOAT3(2, 2, 5));
 	character.setHealth(10);
 
-	character.CreatePlayerBoundingBox(0.10, character.getPos(), XMFLOAT3(0.3, 0.8f, 0.3), bulletPhysicsHandler);
+	character.CreatePlayerBoundingBox(0.10, character.getPos(), 0.22, 1.0, bulletPhysicsHandler);
 	this->character.rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 
 	XMFLOAT3 initSpawnPos;
