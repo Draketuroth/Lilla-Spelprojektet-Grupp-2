@@ -472,71 +472,8 @@ void MainCharacter::DeathTimer()
 	timer.updateCurrentTime();
 }
 
-//void MainCharacter::meleeCollision(HWND windowHandle)
-//{
-//	btPairCachingGhostObject ghostObj;
-//	btBoxShape bb(btVector3(0.8, 0.5, 0.7));
-//	float angle = this->characterLookAt(windowHandle);
-//	btVector3 rotAxis = { 0, 1, 0 };
-//	btQuaternion rotQuat = btQuaternion(rotAxis, angle);
-//	
-//	XMVECTOR pos = XMLoadFloat3(&this->getPos());
-//	pos += this->getForwardVector() * 0.4;
-//	XMFLOAT3 newPos;
-//	XMStoreFloat3(&newPos, pos);
-//
-//	btVector3 playerPos = { newPos.x, newPos.y, newPos.z };
-//
-//	btTransform transform;
-//	transform.setOrigin(playerPos);
-//	transform.setRotation(rotQuat);
-//	ghostObj.setCollisionShape(&bb);
-//	
-//	
-//	
-//
-//
-//}
-//bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)
-//{
-//	HRESULT hr;
-//
-//	RayVertex rayData[2] =
-//	{
-//		start, end
-//	};
-//
-//	D3D11_BUFFER_DESC bufferDesc = {};
-//	memset(&bufferDesc, 0, sizeof(bufferDesc));
-//	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-//	bufferDesc.ByteWidth = sizeof(rayData);
-//
-//	D3D11_SUBRESOURCE_DATA data;
-//	data.pSysMem = rayData;
-//	hr = gHandler.gDevice->CreateBuffer(&bufferDesc, &data, &this->vtxBuffer);
-//	if (FAILED(hr))
-//	{
-//		return false;
-//	}
-//
-//	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-//	gHandler.gDeviceContext->VSSetShader(gHandler.gRayVertexShader, nullptr, 0);
-//	gHandler.gDeviceContext->PSSetShader(gHandler.gRayPixelShader, nullptr, 0);
-//	gHandler.gDeviceContext->PSSetShaderResources(0, 0, nullptr);
-//
-//	UINT32 vertexSize = sizeof(RayVertex);
-//	UINT32 offset = 0;
-//
-//	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-//	gHandler.gDeviceContext->IASetInputLayout(gHandler.gRayVertexLayout);
-//
-//	gHandler.gDeviceContext->Draw(2, 0);
-//
-//	SAFE_RELEASE(this->vtxBuffer);
-//
-//	return true;
-//}
+
+
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()
 //{
