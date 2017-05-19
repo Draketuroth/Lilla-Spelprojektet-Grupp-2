@@ -86,7 +86,6 @@ int RunApplication()
 	updateLava();
 
 	int gameOverTimer;
-	float platformDelay = 0;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
@@ -188,7 +187,6 @@ int RunApplication()
 				for (UINT i = 0; i < sceneContainer.collisionIndices.size(); i++) {
 
 					sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformDecension();
-
 				}
 
 				//----------------------------------------------------------------------------------------------------------------------------------//

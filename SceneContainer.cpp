@@ -311,8 +311,6 @@ void SceneContainer::RespawnEnemies() {
 		}
 
 	}
-
-	
 	
 
 }
