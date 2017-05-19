@@ -43,7 +43,9 @@ void SceneContainer::releaseAll() {
 	SAFE_RELEASE(enemyLavaVertexBuffer);
 
 	SAFE_RELEASE(gProjectileBuffer);
-	SAFE_RELEASE(gProjectileIndexBuffer);
+
+	SAFE_RELEASE(ExplosionVertexBuffer);
+	SAFE_RELEASE(projectileVertexBuffer);
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
@@ -231,15 +233,30 @@ void SceneContainer::RespawnEnemies() {
 
 		// Remove ice enemy rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+		delete enemies[i]->rigidBody;
+		delete enemyMotion;
+		delete enemyShape;
 	}
 
 	for (UINT i = nrOfIceEnemies; i < nrOfEnemies; i++) {
 
 		// Remove lava enemy rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+		delete enemies[i]->rigidBody;
+		delete enemyMotion;
+		delete enemyShape;
 
 		// Remove lava enemy projectile rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
+		btMotionState* projectileMotion = enemies[i]->fireBall.projectileRigidBody->getMotionState();
+		btCollisionShape* projectileShape = enemies[i]->fireBall.projectileRigidBody->getCollisionShape();
+		delete enemies[i]->fireBall.projectileRigidBody;
+		delete projectileMotion;
+		delete projectileShape;
 		
 	}
 
@@ -1179,6 +1196,12 @@ void SceneContainer::renderIceEnemies()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gIceEnemyVertexLayout);
 
 	gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfIceEnemies, 0, 0);
+
+	ID3D11Buffer* nullbuffer = nullptr;
+
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &nullbuffer);
 	
 }
 
@@ -1212,7 +1235,15 @@ void SceneContainer::renderLavaEnemies()
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaEnemyVertexLayout);
 
-	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), 10, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), this->nrOfLavaEnemies, 0, 0);
+
+	ID3D11Buffer* nullbuffer = nullptr;
+
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &nullbuffer);
+
+
 }
 
 void SceneContainer::renderLava()
@@ -1265,6 +1296,10 @@ void SceneContainer::renderProjectile()
 	
 	gHandler.gDeviceContext->DrawInstanced(projectileVertices.size(), this->nrOfLavaEnemies, 0, 0);
 
+	ID3D11Buffer* nullbuffer = nullptr;
+
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullbuffer);
 }
 
 void SceneContainer::createSideBoundingBoxes()
@@ -1293,7 +1328,6 @@ void SceneContainer::renderShadowMap()
 
 	gHandler.gDeviceContext->OMSetRenderTargets(0, nullptr, tHandler.shadowDepthView);
 
-	
 	bHandler.gBufferArr[0] = bHandler.gConstantBuffer;
 	bHandler.gBufferArr[1] = bHandler.gPlayerTransformBuffer;
 	bHandler.gBufferArr[2] = animHandler.gCharacterBoneBuffer;
@@ -1324,7 +1358,7 @@ void SceneContainer::renderShadowMap()
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowLayaLayout);
 
-	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), 10, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), this->nrOfLavaEnemies, 0, 0);
 
 
 	//--------------------------------------------------------------------------------------------------------------//
@@ -1358,6 +1392,7 @@ void SceneContainer::renderShadowMap()
 
 	//Set the rendertarget to the normal render target view and depthstencilview
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, gHandler.depthView);
+
 }
 
 void SceneContainer::drawHUD()

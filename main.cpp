@@ -37,7 +37,7 @@ void updateCharacter(HWND windowhandle);
 void updateEnemies();
 void updateBuffers();
 void updateLava();
-void gatherProjectileIndices(vector<int>collisionIndices, int platformIndex);
+void gatherPlatformIndices(vector<int>&collisionIndices);
 void lavamovmentUpdate();
 
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -55,7 +55,7 @@ int main() {
 
 //#ifdef _DEBUG
 //	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(65);
+//	_CrtSetBreakAlloc(89932);
 //#endif
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
@@ -86,6 +86,7 @@ int RunApplication()
 	updateLava();
 
 	int gameOverTimer;
+	float platformDelay = 0;
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
@@ -182,13 +183,21 @@ int RunApplication()
 				// PROJECTILE HIT VS PLATFORM
 				//----------------------------------------------------------------------------------------------------------------------------------//
 
-				gatherProjectileIndices(sceneContainer.collisionIndices, sceneContainer.platformIndex);
+				gatherPlatformIndices(sceneContainer.collisionIndices);
+
+				for (UINT i = 0; i < sceneContainer.collisionIndices.size(); i++) {
+
+					sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformDecension();
+
+				}
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
 				//----------------------------------------------------------------------------------------------------------------------------------//
 			
 				sceneContainer.update(windowHandle, sceneContainer.animHandler.enemyTimePos, timer);
+
+				sceneContainer.collisionIndices.clear();
 
 				showFPS(windowHandle, deltaTime);
 
@@ -389,6 +398,7 @@ void lavamovmentUpdate()
 
 void updateLava()
 {
+	SAFE_RELEASE(sceneContainer.lava.LavaIB);
 	sceneContainer.lava.LoadRawFile();
 
 	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
@@ -519,33 +529,13 @@ void updateBuffers()
 
 }
 
-void gatherProjectileIndices(vector<int>collisionIndices, int platformIndex){
-
-	// Iterate through the currently active lava enemy projectiles
-	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
-
-		// Iterate through the platforms
-		for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
-
-			// Perform a contact pair test between projectile and cube to see if it collided with a platform
-			MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
-			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sceneContainer.enemies[i]->fireBall.projectileRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
-
-			// If a platform was hit, we receive its index
-			if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
-
-				platformIndex = j;
-				break;
-			}
-		}
-
-	}
+void gatherPlatformIndices(vector<int>&collisionIndices){
 
 	// Create sphere rigid body
 	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
 
 		// Create new sphere shape
-		btSphereShape* sphereShape = new btSphereShape(2);
+		btSphereShape* sphereShape = new btSphereShape(1);
 
 		// Get projectile transform
 		btTransform projectileTransform = sceneContainer.enemies[i]->fireBall.projectileRigidBody->getWorldTransform();
@@ -560,8 +550,8 @@ void gatherProjectileIndices(vector<int>collisionIndices, int platformIndex){
 		// Create the rigid body
 		btRigidBody* sphereRigidBody = new btRigidBody(info);
 
-		int arenaCollideWith = COL_PLAYER | COL_ENEMY;
-		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, arenaCollideWith);
+		//int arenaCollideWith = COL_PLAYER | COL_ENEMY;
+		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, 0);
 
 		for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
 
@@ -587,17 +577,5 @@ void gatherProjectileIndices(vector<int>collisionIndices, int platformIndex){
 
 	}
 
-
-	// Perform platform ascension for the selected platforms
-	if (platformIndex >= 0 && platformIndex < sceneContainer.bHandler.nrOfCubes) {
-
-		sceneContainer.bHandler.cubeObjects[platformIndex].platformDecension();
-
-		for (UINT i = 0; i < collisionIndices.size(); i++) {
-
-			sceneContainer.bHandler.cubeObjects[collisionIndices[i]].platformDecension();
-		}
-
-	}
 }
 

@@ -95,6 +95,7 @@ void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 	XMVECTOR zAxis = XMVector3Normalize(XMVectorSubtract(target, enemyPos));
 	XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross(upVector, zAxis));
 	XMVECTOR yAxis = XMVector3Cross(zAxis, xAxis);
+	XMVECTOR zero = { 0, 0, 0 };
 
 	// Important not to forget the w component of the matrix to allow translation
 	XMVECTOR lastRow = { 0.0f, 0.0f, 0.0f , 1.0f};

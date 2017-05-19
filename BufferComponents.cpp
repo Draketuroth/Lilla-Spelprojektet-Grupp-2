@@ -481,44 +481,33 @@ void BufferComponents::updatePlatformWorldMatrices()
 
 	}
 
-	if (GetAsyncKeyState('L'))
-	{
+	//if (GetAsyncKeyState('L'))
+	//{
 
-		cubeObjects[0].platformDecension();
-		//XMMATRIX transform;
-		//XMFLOAT4X4 data;
-		//XMVECTOR t;
-		//XMVECTOR s;
-		//XMVECTOR r;
-		//XMFLOAT3 pos;
-		//// Gather the rigid body matrix
-		//btTransform btRigidTransform;
-		//cubeObjects[50].rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+	//	cubeObjects[0].platformDecension();
+	//	XMMATRIX transform;
+	//	XMFLOAT4X4 data;
+	//	XMVECTOR t;
+	//	XMVECTOR s;
+	//	XMVECTOR r;
+	//	XMFLOAT3 pos;
+	//	// Gather the rigid body matrix
+	//	btTransform btRigidTransform;
+	//	cubeObjects[50].rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
 
-		//// Load it into an XMFLOAT4x4
-		//btRigidTransform.getOpenGLMatrix((float*)&data);
+	//	// Load it into an XMFLOAT4x4
+	//	btRigidTransform.getOpenGLMatrix((float*)&data);
 
-		//// Load it into an XMMATRIX
-		//transform = XMLoadFloat4x4(&data);
+	//	// Load it into an XMMATRIX
+	//	transform = XMLoadFloat4x4(&data);
 
-		//XMMatrixDecompose(&s, &r, &t, transform);
-		//XMStoreFloat3(&pos, t);
+	//	XMMatrixDecompose(&s, &r, &t, transform);
+	//	XMStoreFloat3(&pos, t);
 
-		//// Build the new world matrix
-		//cout << pos.x << " " << pos.y << " "<< pos.z << endl;
-		
-	}
-
-	if (GetAsyncKeyState('J'))
-	{
-		cubeObjects[0].platformAcension();
-		
-	}
-	if (GetAsyncKeyState('K'))
-	{
-		cubeObjects[0].platformBreaking();
-
-	}
+	//	// Build the new world matrix
+	//	cout << pos.x << " " << pos.y << " "<< pos.z << endl;
+	//	
+	//}
 	
 }
 
