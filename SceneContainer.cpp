@@ -18,7 +18,7 @@ SceneContainer::SceneContainer() {
 
 	bulletPhysicsHandler = BulletComponents();
 
-	this->waveDelay = 3.0f;
+	this->waveDelay = 10.0f;
 	this->level = 1;
 
 	this->ai = AI();
@@ -264,6 +264,7 @@ void SceneContainer::RespawnEnemies() {
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
+		bHandler.cubeObjects[i].health = 200;
 	}
 
 	// Clear enemy rigid bodies vector
@@ -879,15 +880,44 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 			deadEnemies++;
 		}
 	}
+
+	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+
+		if(bHandler.cubeObjects[i].Hit == true){
+
+			bHandler.cubeObjects[i].breakTimer += timer.getDeltaTime();
+
+			if (bHandler.cubeObjects[i].breakTimer > 5) {
+
+				bHandler.cubeObjects[i].descensionTimer += timer.getDeltaTime();
+
+				if (bHandler.cubeObjects[i].descensionTimer >= 20) {
+
+					bHandler.cubeObjects[i].ascensionTimer += timer.getDeltaTime();
+
+					if (bHandler.cubeObjects[i].ascensionTimer >= 20) {
+
+						bHandler.cubeObjects[i].Hit = false;
+						bHandler.cubeObjects[i].descensionTimer = 0;
+						bHandler.cubeObjects[i].breakTimer = 0;
+					}
+
+				}
+			}
+
+		}
+	}
+
+
 	if (deadEnemies == nrOfEnemies)
 	{
 		delayWave(timer);
-
-
+		respawnDelay = true;
 
 		if (waveDelay <= 0)
 		{
-			waveDelay = 3.0f;
+			respawnDelay = false;
+			waveDelay = 10.0f;
 
 			incrementLevels();
 			RespawnEnemies();
@@ -1167,7 +1197,7 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderIceEnemies()
 {
-	tHandler.texArr[0] = tHandler.defaultResource;
+	tHandler.texArr[0] = tHandler.iceEnemyResource;
 	tHandler.texArr[1] = tHandler.shadowSRV;
 
 	tHandler.samplerArr[0] = tHandler.texSampler;
@@ -1207,7 +1237,7 @@ void SceneContainer::renderIceEnemies()
 
 void SceneContainer::renderLavaEnemies()
 {
-	tHandler.texArr[0] = tHandler.LavaResource;
+	tHandler.texArr[0] = tHandler.lavaEnemyResource;
 	tHandler.texArr[1] = tHandler.shadowSRV;
 	
 	tHandler.samplerArr[0] = tHandler.texSampler;

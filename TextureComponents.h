@@ -21,7 +21,8 @@ public:
 
 	ID3D11ShaderResourceView* platformResource;
 	ID3D11ShaderResourceView* fortressResource;
-	ID3D11ShaderResourceView* defaultResource;
+	ID3D11ShaderResourceView* iceEnemyResource;
+	ID3D11ShaderResourceView* lavaEnemyResource;
 	ID3D11ShaderResourceView* playerResource;
 	ID3D11ShaderResourceView* LavaResource;
 	ID3D11ShaderResourceView* menuResources[9];

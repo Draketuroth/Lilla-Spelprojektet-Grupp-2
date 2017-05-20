@@ -32,6 +32,10 @@ public:
 	bool Hit;
 	btVector3 startPos;
 	int health;
+	float platformDelay;
+	float breakTimer;
+	float ascensionTimer;
+	float descensionTimer;
 
 private:
 };

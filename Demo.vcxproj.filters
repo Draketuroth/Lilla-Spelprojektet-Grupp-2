@@ -139,6 +139,12 @@
     <Filter Include="Source Files\Platform">
       <UniqueIdentifier>{f7f11d0a-081a-4cfe-9a56-94cdac86165b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HLSL\HUDShaders">
+      <UniqueIdentifier>{ded56c0e-9b6f-464f-9a31-1323a410af1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HLSL\FortressShaders">
+      <UniqueIdentifier>{52506d77-eb28-4164-b7da-383d9fd6b1fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -355,8 +361,6 @@
     <FxCompile Include="Shaders\ShadowShaders\ShadowPlatformVertex.hlsl">
       <Filter>Source Files\HLSL\ShadowShader</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\HUDShaders\HUDPixelShader.hlsl" />
-    <FxCompile Include="Shaders\HUDShaders\HUDVertexShader.hlsl" />
     <FxCompile Include="Shaders\EnemyShaders\EnemyIcePixelShader.hlsl">
       <Filter>Source Files\HLSL\EnemyShaders\IceEnemy</Filter>
     </FxCompile>
@@ -374,6 +378,18 @@
     </FxCompile>
     <FxCompile Include="Shaders\ShadowShaders\ShadowIceVertex.hlsl">
       <Filter>Source Files\HLSL\ShadowShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HUDShaders\HUDVertexShader.hlsl">
+      <Filter>Source Files\HLSL\HUDShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HUDShaders\HUDPixelShader.hlsl">
+      <Filter>Source Files\HLSL\HUDShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FortressShaders\FortressFragment.hlsl">
+      <Filter>Source Files\HLSL\FortressShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FortressShaders\FortressVertex.hlsl">
+      <Filter>Source Files\HLSL\FortressShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

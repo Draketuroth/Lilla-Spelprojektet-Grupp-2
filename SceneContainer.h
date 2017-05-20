@@ -143,6 +143,7 @@ public:
 
 	// Indices to store for the neighbor platforms
 	vector<int>collisionIndices;
+	bool respawnDelay;
 
 	//------------------------------------------------------------//
 	// RE-INTIALIZE

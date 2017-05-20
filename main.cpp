@@ -86,7 +86,6 @@ int RunApplication()
 	updateLava();
 
 	int gameOverTimer;
-
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -184,22 +183,48 @@ int RunApplication()
 
 				gatherPlatformIndices(sceneContainer.collisionIndices);
 
+				if(sceneContainer.respawnDelay == false){
+
 				for (UINT i = 0; i < sceneContainer.collisionIndices.size(); i++) {
 
-					if(sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].health > 0){
+					if(sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].breakTimer < 5){
 
 					sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformBreaking();
-					sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].health--;
+					//sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].health--;
 
 					}
 
 					else {
 
-						sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformDecension();
+						if (sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].descensionTimer < 20) {
+
+							sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformDecension();
+						}
+
+						else {
+
+							sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformAcension();
+
+						}
+
 					}
 				}
 
+				}
+
+				// Restore the platforms for the next round
+				else {
+
+					for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
 				
+						if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
+
+							sceneContainer.bHandler.cubeObjects[i].platformAcension();
+
+						}
+					}
+
+				}
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER

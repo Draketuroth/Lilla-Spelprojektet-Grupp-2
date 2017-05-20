@@ -37,7 +37,7 @@ void Platform::platformDecension()
 	btScalar rigidZvalue = pos.z;
 
 	btVector3 startPos(startPos.x(), startPos.y(), startPos.z());
-	btVector3 endPos = { startPos.x(),-11,startPos.z() };
+	btVector3 endPos = { startPos.x(),-11 ,startPos.z() };
 
 	if (pos.y > -11)
 	{
@@ -87,12 +87,12 @@ void Platform::platformAcension()
 	btScalar rigidZvalue = pos.z;
 
 	btVector3 startPos(startPos.x(), -11, startPos.z());
-	btVector3 endPos = { startPos.x(),startPos.y(),startPos.z() };
+	btVector3 endPos = { this->startPos.x(),this->startPos.y(), this->startPos.z() };
 
-	if (pos.y < startPos.y())
+	if (pos.y < this->startPos.y())
 	{
 		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
-		lerpScalar += 0.001f;
+		lerpScalar += 0.002f;
 		btMatrix3x3 movementMatrix;
 		movementMatrix.setIdentity();
 		btTransform plat{ movementMatrix,lerpResult };
