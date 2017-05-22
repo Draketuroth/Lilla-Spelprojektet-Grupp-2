@@ -11,6 +11,7 @@
 
 #include "BulletComponents.h"
 #include "FileImporter.h"
+#include "Platform.h"
 
 using namespace DirectX;
 
@@ -49,21 +50,10 @@ struct LAVA_ENEMY_TRANSFORM {
 	XMMATRIX matrixW[10];
 };
 
-
 struct PROJECTILE_TRANSFORM
 {
 	XMMATRIX worldMatrix[30];
 	
-};
-
-struct CubeObjects 
-{
-
-	btRigidBody* rigidBody;
-	XMMATRIX worldMatrix;
-	bool renderCheck;
-	int ID;
-	btVector3 startPos;
 };
 
 class BufferComponents {
@@ -105,7 +95,7 @@ public:
 
 	ID3D11Buffer* gBufferArr[3];
 
-	CubeObjects cubeObjects[CUBECAPACITY];
+	Platform cubeObjects[CUBECAPACITY];
 	int nrOfCubes;
 	XMFLOAT3 cubeScaling;
 	XMFLOAT3 fortressScaling;
@@ -134,16 +124,11 @@ public:
 
 	float spaceX;
 	float spaceZ;
-	float lerpScalar;
 
 
 	float incrementSpace(float offset);
 	float centerPlatformsColls(float offset);
 	float centerPlatformsRows(float offset);
-
-	void platformDecension(CubeObjects cube);
-	void platformAcension(CubeObjects cube);
-	void platformBreaking(CubeObjects cube);
 
 
 

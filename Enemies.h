@@ -44,6 +44,8 @@ public:
 	bool attacking;
 	bool attackFlag;
 
+	bool hasProjectile;
+
 private:
 	
 	int Type;

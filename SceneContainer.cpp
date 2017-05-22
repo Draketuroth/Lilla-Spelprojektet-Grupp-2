@@ -13,12 +13,12 @@ SceneContainer::SceneContainer() {
 	character = MainCharacter();
 
 	this->nrOfIceEnemies = 2;
-	this->nrOfLavaEnemies = 0;
+	this->nrOfLavaEnemies = 2;
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
 
-	this->waveDelay = 3.0f;
+	this->waveDelay = 10.0f;
 	this->level = 1;
 
 	this->ai = AI();
@@ -43,7 +43,9 @@ void SceneContainer::releaseAll() {
 	SAFE_RELEASE(enemyLavaVertexBuffer);
 
 	SAFE_RELEASE(gProjectileBuffer);
-	SAFE_RELEASE(gProjectileIndexBuffer);
+
+	SAFE_RELEASE(ExplosionVertexBuffer);
+	SAFE_RELEASE(projectileVertexBuffer);
 
 	deferredObject.ReleaseAll();
 	deferredShaders.ReleaseAll();
@@ -159,7 +161,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
 	
-	HUD.setElementPos(gHandler.gDevice);
+	HUD.setElementPos(gHandler.gDevice, character.getHealth());
 	HUD.CreateIndexBuffer(gHandler.gDevice);
 	HUD.loadBitMap();
 	HUD.setText(level);
@@ -229,15 +231,42 @@ void SceneContainer::RespawnEnemies() {
 
 		// Remove ice enemy rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+		delete enemies[i]->rigidBody;
+		delete enemyMotion;
+		delete enemyShape;
 	}
 
 	for (UINT i = nrOfIceEnemies; i < nrOfEnemies; i++) {
 
 		// Remove lava enemy rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+		delete enemies[i]->rigidBody;
+		delete enemyMotion;
+		delete enemyShape;
 
 		// Remove lava enemy projectile rigid body
 		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
+		btMotionState* projectileMotion = enemies[i]->fireBall.projectileRigidBody->getMotionState();
+		btCollisionShape* projectileShape = enemies[i]->fireBall.projectileRigidBody->getCollisionShape();
+		delete enemies[i]->fireBall.projectileRigidBody;
+		delete projectileMotion;
+		delete projectileShape;
+		
+	}
+
+	// Reset platform hit flag
+	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+
+		bHandler.cubeObjects[i].Hit = false;
+		bHandler.cubeObjects[i].descensionTimer = 0;
+		bHandler.cubeObjects[i].breakTimer = 0;
+		bHandler.cubeObjects[i].ascensionTimer = 0;
+		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+		
 	}
 
 	// Clear enemy rigid bodies vector
@@ -285,8 +314,6 @@ void SceneContainer::RespawnEnemies() {
 		}
 
 	}
-
-	
 	
 
 }
@@ -319,16 +346,16 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 
 		StandardVertex vertex;
 
-		vertex.x = projectileFile.standardMeshes[0].vertices[i].pos[0];
-		vertex.y = projectileFile.standardMeshes[0].vertices[i].pos[1];
-		vertex.z = projectileFile.standardMeshes[0].vertices[i].pos[2];
+		vertex.x = projectileFile.standardMeshes[1].vertices[i].pos[0];
+		vertex.y = projectileFile.standardMeshes[1].vertices[i].pos[1];
+		vertex.z = projectileFile.standardMeshes[1].vertices[i].pos[2];
 
-		vertex.u = projectileFile.standardMeshes[0].vertices[i].uv[0];
-		vertex.v = projectileFile.standardMeshes[0].vertices[i].uv[1];
+		vertex.u = projectileFile.standardMeshes[1].vertices[i].uv[0];
+		vertex.v = projectileFile.standardMeshes[1].vertices[i].uv[1];
 
-		vertex.nx = projectileFile.standardMeshes[0].vertices[i].normal[0];
-		vertex.ny = projectileFile.standardMeshes[0].vertices[i].normal[1];
-		vertex.nz = projectileFile.standardMeshes[0].vertices[i].normal[2];
+		vertex.nx = projectileFile.standardMeshes[1].vertices[i].normal[0];
+		vertex.ny = projectileFile.standardMeshes[1].vertices[i].normal[1];
+		vertex.nz = projectileFile.standardMeshes[1].vertices[i].normal[2];
 
 		projectileVertices.push_back(vertex);
 	}
@@ -745,6 +772,15 @@ void SceneContainer::ReInitialize()
 	bHandler.nrOfCubes = 0;
 	bHandler.CreatePlatforms(gHandler.gDevice, bulletPhysicsHandler);
 
+	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+
+		bHandler.cubeObjects[i].Hit = false;
+		bHandler.cubeObjects[i].descensionTimer = 0;
+		bHandler.cubeObjects[i].breakTimer = 0;
+		bHandler.cubeObjects[i].ascensionTimer = 0;
+		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+	}
+
 	// Recreate the lava plane rigid body
 	bHandler.CreateCollisionPlane(bulletPhysicsHandler, XMFLOAT3(0, -4, 0));
 
@@ -797,6 +833,12 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 	bHandler.CreateRigidBodyTags();
 	character.meleeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, enemyTimePoses);
 	character.rangeAttack(windowHandle, this->nrOfEnemies, this->enemies, bulletPhysicsHandler.bulletDynamicsWorld, gHandler, bHandler, enemyTimePoses);
+	
+	if (character.currentHealth != character.getHealth())
+	{
+		HUD.setElementPos(gHandler.gDevice, character.getHealth());
+		character.currentHealth = character.getHealth();
+	}
 
 	for (UINT i = 0; i < this->nrOfEnemies; i++){
 	
@@ -849,13 +891,54 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 			deadEnemies++;
 		}
 	}
+
+	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+
+		// If the platform was hit by a projectile...
+		if(bHandler.cubeObjects[i].Hit == true){
+
+			// Add delta time to platform break timer
+			bHandler.cubeObjects[i].breakTimer += timer.getDeltaTime();
+
+			// If the break timer is greater than five...
+			if (bHandler.cubeObjects[i].breakTimer > 5) {
+
+				// Add delta time to platform descension timer
+				bHandler.cubeObjects[i].descensionTimer += timer.getDeltaTime();
+
+				// If descension timer is greater than 20...
+				if (bHandler.cubeObjects[i].descensionTimer >= 20) {
+
+					// Add delta time to to ascension timer
+					bHandler.cubeObjects[i].ascensionTimer += timer.getDeltaTime();
+
+					// If ascension timer is greater than 20...
+					if (bHandler.cubeObjects[i].ascensionTimer >= 20) {
+
+						// Restore platform
+						bHandler.cubeObjects[i].Hit = false;
+						bHandler.cubeObjects[i].descensionTimer = 0;
+						bHandler.cubeObjects[i].breakTimer = 0;
+						bHandler.cubeObjects[i].ascensionTimer = 0;
+						bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+					}
+
+				}
+			}
+
+		}
+	}
+
+
 	if (deadEnemies == nrOfEnemies)
 	{
 		delayWave(timer);
+		respawnDelay = true;
 
 		if (waveDelay <= 0)
 		{
-			waveDelay = 3.0f;
+			respawnDelay = false;
+			waveDelay = 10.0f;
 
 			incrementLevels();
 			RespawnEnemies();
@@ -895,7 +978,7 @@ void SceneContainer::incrementLevels()
 {
 	level++;
 
-	HUD.setElementPos(gHandler.gDevice);
+	HUD.setElementPos(gHandler.gDevice, this->character.getHealth());
 	HUD.CreateIndexBuffer(gHandler.gDevice);
 	HUD.loadBitMap();
 	HUD.setText(level);
@@ -1002,17 +1085,17 @@ void SceneContainer::render()
 	clear();
 
 	renderShadowMap();
-	//renderDeferred();
 	renderLava(); 
-	//drawDebugCubes();
 	renderCharacters();
 	renderIceEnemies();
-	if (nrOfLavaEnemies>0)
-	{
-		renderLavaEnemies();
-		renderProjectile();
-	}
+
+	if(nrOfLavaEnemies > 0){
+
+	renderLavaEnemies();
+	renderProjectile();
 	
+	}
+
 	renderScene();
 	drawHUD();
 	
@@ -1135,7 +1218,7 @@ void SceneContainer::renderCharacters()
 
 void SceneContainer::renderIceEnemies()
 {
-	tHandler.texArr[0] = tHandler.defaultResource;
+	tHandler.texArr[0] = tHandler.iceEnemyResource;
 	tHandler.texArr[1] = tHandler.shadowSRV;
 
 	tHandler.samplerArr[0] = tHandler.texSampler;
@@ -1164,12 +1247,18 @@ void SceneContainer::renderIceEnemies()
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gIceEnemyVertexLayout);
 
 	gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfIceEnemies, 0, 0);
+
+	ID3D11Buffer* nullbuffer = nullptr;
+
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &nullbuffer);
 	
 }
 
 void SceneContainer::renderLavaEnemies()
 {
-	tHandler.texArr[0] = tHandler.LavaResource;
+	tHandler.texArr[0] = tHandler.lavaEnemyResource;
 	tHandler.texArr[1] = tHandler.shadowSRV;
 	
 	tHandler.samplerArr[0] = tHandler.texSampler;
@@ -1197,7 +1286,15 @@ void SceneContainer::renderLavaEnemies()
 	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gLavaEnemyVertexLayout);
 
-	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), 10, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), this->nrOfLavaEnemies, 0, 0);
+
+	ID3D11Buffer* nullbuffer = nullptr;
+
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &nullbuffer);
+
+
 }
 
 void SceneContainer::renderLava()
@@ -1238,6 +1335,8 @@ void SceneContainer::renderProjectile()
 	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gProjectilePixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.projectileResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;
@@ -1250,6 +1349,10 @@ void SceneContainer::renderProjectile()
 	
 	gHandler.gDeviceContext->DrawInstanced(projectileVertices.size(), this->nrOfLavaEnemies, 0, 0);
 
+	ID3D11Buffer* nullbuffer = nullptr;
+
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullbuffer);
 }
 
 void SceneContainer::createSideBoundingBoxes()
@@ -1278,7 +1381,6 @@ void SceneContainer::renderShadowMap()
 
 	gHandler.gDeviceContext->OMSetRenderTargets(0, nullptr, tHandler.shadowDepthView);
 
-	
 	bHandler.gBufferArr[0] = bHandler.gConstantBuffer;
 	bHandler.gBufferArr[1] = bHandler.gPlayerTransformBuffer;
 	bHandler.gBufferArr[2] = animHandler.gCharacterBoneBuffer;
@@ -1309,7 +1411,7 @@ void SceneContainer::renderShadowMap()
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowLayaLayout);
 
-	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), 10, 0, 0);
+	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), this->nrOfLavaEnemies, 0, 0);
 
 
 	//--------------------------------------------------------------------------------------------------------------//
@@ -1343,18 +1445,24 @@ void SceneContainer::renderShadowMap()
 
 	//Set the rendertarget to the normal render target view and depthstencilview
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, gHandler.depthView);
+
 }
 
 void SceneContainer::drawHUD()
 {
 
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	//						PORTRAIT DRAWCALL
+	///////////////////////////////////////////////////////////////////////////////////////
 	gHandler.gDeviceContext->OMSetBlendState(tHandler.blendState, 0, 0xffffffff);
+	//gHandler.gDeviceContext->ClearDepthStencilView(gHandler.depthView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	gHandler.gDeviceContext->VSSetShader(gHandler.gHUDVertexShader, nullptr, 0);	//vs
 	
 	gHandler.gDeviceContext->PSSetShader(gHandler.gHUDPixelShader, nullptr, 0); //ps
 
 																				 //texture
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDResource);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDPortrait);
 	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 0, nullptr);
@@ -1373,7 +1481,11 @@ void SceneContainer::drawHUD()
 
 	gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
 
+	///////////////////////////////////////////////////////////////////////////////////////
+	//						FONT DRAWCALL
+	///////////////////////////////////////////////////////////////////////////////////////
 
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDResource);
 
 	//set vertex buffer
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gFontVertexBuffer, &vertexSize, &offset);
@@ -1384,7 +1496,37 @@ void SceneContainer::drawHUD()
 	gHandler.gDeviceContext->DrawIndexed(HUD.foo, 0, 0);
 
 
+	///////////////////////////////////////////////////////////////////////////////////////
+	//						HPBAR DRAWCALL
+	///////////////////////////////////////////////////////////////////////////////////////
+
+	gHandler.gDeviceContext->VSSetShader(gHandler.gHUDVertexShader, nullptr, 0);	//vs
+
+	gHandler.gDeviceContext->PSSetShader(gHandler.gHUDPixelShader, nullptr, 0); //ps
+
+																				//texture
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.HUDHealth);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
+
+	gHandler.gDeviceContext->GSSetConstantBuffers(0, 0, nullptr);
+
+
+	 vertexSize = sizeof(HUDElements);
+	 offset = 0;
+
+	//set vertex buffer
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &HUD.gHPBarVtxBuffer, &vertexSize, &offset);
+	//Set index buffer
+	gHandler.gDeviceContext->IASetIndexBuffer(HUD.gElementIndexBuffer, DXGI_FORMAT_R32_UINT, offset);
+	//set triangel list
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gHUDVertexLayout);
+
+	gHandler.gDeviceContext->DrawIndexed(6, 0, 0);
+
+
 	gHandler.gDeviceContext->OMSetBlendState(nullptr, 0, 0xffffffff);
+
 
 
 

@@ -6,6 +6,7 @@ Enemy::Enemy()
 	this->Type = 0;
 	this->SpawnPos = { 0,0,0 };
 
+	this->hasProjectile = false;
 }
 
 Enemy::~Enemy()
@@ -95,6 +96,7 @@ void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 	XMVECTOR zAxis = XMVector3Normalize(XMVectorSubtract(target, enemyPos));
 	XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross(upVector, zAxis));
 	XMVECTOR yAxis = XMVector3Cross(zAxis, xAxis);
+	XMVECTOR zero = { 0, 0, 0 };
 
 	// Important not to forget the w component of the matrix to allow translation
 	XMVECTOR lastRow = { 0.0f, 0.0f, 0.0f , 1.0f};
@@ -209,7 +211,7 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 {
-	XMFLOAT3 projectilePos = { this->getPos().x, 4, this->getPos().z };
+	XMFLOAT3 projectilePos = { this->getPos().x, -20, this->getPos().z };
 	XMFLOAT3 extents = { 0.3f, 0.3f, 0.3f };
 
 	XMMATRIX translation = XMMatrixTranslation(projectilePos.x, projectilePos.y, projectilePos.z);
@@ -249,18 +251,20 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 	XMFLOAT3 ePos = this->getPos();
 	btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
 	
-
 	float fireBallDistance =  enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
 
-
-	if (fireBallDistance <= 4)
+	if (fireBallDistance > 2)
+	{
+		btTransform transform =fireBall.projectileRigidBody->getCenterOfMassTransform();
+		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.0f, getPos().z));
+		fireBall.projectileRigidBody->setWorldTransform(transform);
+	}
+	else
 	{
 		fireBall.projectileRigidBody->applyCentralForce(force);
 		fireBall.projectileRigidBody->setFriction(3);	
+		hasProjectile = false;
 	}
-	
-	//On collision explode and teleport away.
-	//Teleport to enemy when it's time to throw again
 }
 
 void Enemy::updateProjectile()
@@ -281,10 +285,11 @@ void Enemy::updateProjectile()
 	// Load it into an XMMATRIX
 	transform = XMLoadFloat4x4(&data);
 
+	// Scale
+	XMMATRIX scaling = XMMatrixScaling(0.6f, 0.6f, 0.6f);
+
 	// Build the new world matrix
-	fireBall.worldMatrix = transform;
-	
-	
+	fireBall.worldMatrix = XMMatrixMultiply(scaling, transform);
 	
 }
 

@@ -5,6 +5,7 @@
 MainCharacter::MainCharacter()
 	:CharacterBase(true, 10, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
 {
+	currentHealth = 10;
 	cameraDistanceY = 8.0f;
 	cameraDistanceZ = 5.0f;
 	playerHeight = 2.0f;
@@ -402,7 +403,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
-	
+		
 		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
 		rayCallBack.m_collisionFilterGroup = COL_RAY;// Making the ray a collisiontype COL_RAY
 		rayCallBack.m_collisionFilterMask = COL_ENEMY;//Only checks collision with Enemies
@@ -471,46 +472,8 @@ void MainCharacter::DeathTimer()
 	timer.updateCurrentTime();
 }
 
-//bool MainCharacter::renderRay(GraphicComponents gHandler, BufferComponents bHandler, XMFLOAT3 start, XMFLOAT3 end)
-//{
-//	HRESULT hr;
-//
-//	RayVertex rayData[2] =
-//	{
-//		start, end
-//	};
-//
-//	D3D11_BUFFER_DESC bufferDesc = {};
-//	memset(&bufferDesc, 0, sizeof(bufferDesc));
-//	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-//	bufferDesc.ByteWidth = sizeof(rayData);
-//
-//	D3D11_SUBRESOURCE_DATA data;
-//	data.pSysMem = rayData;
-//	hr = gHandler.gDevice->CreateBuffer(&bufferDesc, &data, &this->vtxBuffer);
-//	if (FAILED(hr))
-//	{
-//		return false;
-//	}
-//
-//	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-//	gHandler.gDeviceContext->VSSetShader(gHandler.gRayVertexShader, nullptr, 0);
-//	gHandler.gDeviceContext->PSSetShader(gHandler.gRayPixelShader, nullptr, 0);
-//	gHandler.gDeviceContext->PSSetShaderResources(0, 0, nullptr);
-//
-//	UINT32 vertexSize = sizeof(RayVertex);
-//	UINT32 offset = 0;
-//
-//	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-//	gHandler.gDeviceContext->IASetInputLayout(gHandler.gRayVertexLayout);
-//
-//	gHandler.gDeviceContext->Draw(2, 0);
-//
-//	SAFE_RELEASE(this->vtxBuffer);
-//
-//	return true;
-//}
+
+
 //Don't need this
 //XMVECTOR MainCharacter::getPlane()
 //{

@@ -10,7 +10,6 @@ BufferComponents::BufferComponents() {
 	eyePosF = { 0, 0, 4 };
 	lookAtF = { 0, 1, 0 };
 	upF = { 0, 1, 0 };
-	lerpScalar = 0;
 
 	eyePos = XMLoadFloat3(&eyePosF);
 	lookAt = XMLoadFloat3(&lookAtF);
@@ -40,10 +39,6 @@ void BufferComponents::ReleaseAll() {
 	SAFE_RELEASE(gDebugIndexBuffer);
 
 	SAFE_RELEASE(gFortressBuffer);
-
-	//SAFE_RELEASE(gBufferArr[0]);
-	//SAFE_RELEASE(gBufferArr[1]);
-	//SAFE_RELEASE(gBufferArr[2]);
 
 }
 
@@ -436,6 +431,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		bulletPhysicsHandler.rigidBodies.push_back(platformRigidBody);
 
 		cubeObjects[nrOfCubes].worldMatrix = platformTranslation;
+		cubeObjects[nrOfCubes].originMatrix = platformTranslation;
 
 		cubeObjects[nrOfCubes].renderCheck = true;
 
@@ -486,42 +482,33 @@ void BufferComponents::updatePlatformWorldMatrices()
 
 	}
 
-	if (GetAsyncKeyState('L'))
-	{
-		platformDecension(cubeObjects[0]);
-		//XMMATRIX transform;
-		//XMFLOAT4X4 data;
-		//XMVECTOR t;
-		//XMVECTOR s;
-		//XMVECTOR r;
-		//XMFLOAT3 pos;
-		//// Gather the rigid body matrix
-		//btTransform btRigidTransform;
-		//cubeObjects[50].rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
+	//if (GetAsyncKeyState('L'))
+	//{
 
-		//// Load it into an XMFLOAT4x4
-		//btRigidTransform.getOpenGLMatrix((float*)&data);
+	//	cubeObjects[0].platformDecension();
+	//	XMMATRIX transform;
+	//	XMFLOAT4X4 data;
+	//	XMVECTOR t;
+	//	XMVECTOR s;
+	//	XMVECTOR r;
+	//	XMFLOAT3 pos;
+	//	// Gather the rigid body matrix
+	//	btTransform btRigidTransform;
+	//	cubeObjects[50].rigidBody->getMotionState()->getWorldTransform(btRigidTransform);
 
-		//// Load it into an XMMATRIX
-		//transform = XMLoadFloat4x4(&data);
+	//	// Load it into an XMFLOAT4x4
+	//	btRigidTransform.getOpenGLMatrix((float*)&data);
 
-		//XMMatrixDecompose(&s, &r, &t, transform);
-		//XMStoreFloat3(&pos, t);
+	//	// Load it into an XMMATRIX
+	//	transform = XMLoadFloat4x4(&data);
 
-		//// Build the new world matrix
-		//cout << pos.x << " " << pos.y << " "<< pos.z << endl;
-		
-	}
-	if (GetAsyncKeyState('J'))
-	{
-		platformAcension(cubeObjects[0]);
-		
-	}
-	if (GetAsyncKeyState('K'))
-	{
-		platformBreaking(cubeObjects[0]);
+	//	XMMatrixDecompose(&s, &r, &t, transform);
+	//	XMStoreFloat3(&pos, t);
 
-	}
+	//	// Build the new world matrix
+	//	cout << pos.x << " " << pos.y << " "<< pos.z << endl;
+	//	
+	//}
 	
 }
 
@@ -865,159 +852,6 @@ float BufferComponents::centerPlatformsRows(float offset)
 	offset *= -1;
 
 	return offset;
-}
-
-void BufferComponents::platformDecension(CubeObjects cube)
-{
-
-	btTransform rigidCube;
-	XMFLOAT4X4 data;
-	XMMATRIX transform;
-	XMFLOAT3 pos;
-
-	XMVECTOR t;
-	XMVECTOR s;
-	XMVECTOR r;
-
-	cube.rigidBody->getMotionState()->getWorldTransform(rigidCube);
-	rigidCube.getOpenGLMatrix((float*)&data);
-
-	transform = XMLoadFloat4x4(&data);
-	XMMatrixDecompose(&s, &r, &t, transform);
-
-	XMStoreFloat3(&pos, t);
-
-	btScalar rigidXvalue = pos.x;
-	btScalar rigidYvalue = pos.y;
-	btScalar rigidZvalue = pos.z;
-
-	btVector3 startPos(cube.startPos.x(),cube.startPos.y(),cube.startPos.z());
-	btVector3 endPos = { cube.startPos.x(),-11,cube.startPos.z() };
-
-	if (pos.y > -11)
-	{
-		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
-		lerpScalar += 0.001f;
-		btMatrix3x3 movementMatrix;
-		movementMatrix.setIdentity();
-		btTransform plat{ movementMatrix,lerpResult };
-
-
-		cube.rigidBody->setCollisionFlags(cube.rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-		cube.rigidBody->setActivationState(DISABLE_DEACTIVATION);
-
-		//cube.rigidBody->translate(btVector3(0, 1, 0));
-		cube.rigidBody->getMotionState()->setWorldTransform(plat);
-	}
-	else
-	{
-		lerpScalar = 0;
-	}
-	
-
-}
-
-void BufferComponents::platformAcension(CubeObjects cube)
-{
-
-	btTransform rigidCube;
-	XMFLOAT4X4 data;
-	XMMATRIX transform;
-	XMFLOAT3 pos;
-
-	XMVECTOR t;
-	XMVECTOR s;
-	XMVECTOR r;
-
-	cube.rigidBody->getMotionState()->getWorldTransform(rigidCube);
-	rigidCube.getOpenGLMatrix((float*)&data);
-
-	transform = XMLoadFloat4x4(&data);
-	XMMatrixDecompose(&s, &r, &t, transform);
-
-	XMStoreFloat3(&pos, t);
-
-	btScalar rigidXvalue = pos.x;
-	btScalar rigidYvalue = pos.y;
-	btScalar rigidZvalue = pos.z;
-
-	btVector3 startPos(cube.startPos.x(), -11, cube.startPos.z());
-	btVector3 endPos = { cube.startPos.x(),cube.startPos.y(),cube.startPos.z() };
-
-	if (pos.y < cube.startPos.y())
-	{
-		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
-		lerpScalar += 0.001f;
-		btMatrix3x3 movementMatrix;
-		movementMatrix.setIdentity();
-		btTransform plat{ movementMatrix,lerpResult };
-
-
-		cube.rigidBody->setCollisionFlags(cube.rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-		cube.rigidBody->setActivationState(DISABLE_DEACTIVATION);
-
-	
-		cube.rigidBody->getMotionState()->setWorldTransform(plat);
-	}
-	else
-	{
-		lerpScalar = 0;
-	}
-}
-
-void BufferComponents::platformBreaking(CubeObjects cube)
-{
-	btTransform rigidCube;
-	XMFLOAT4X4 data;
-	XMMATRIX transform;
-	XMFLOAT3 pos;
-
-	XMVECTOR t;
-	XMVECTOR s;
-	XMVECTOR r;
-
-	cube.rigidBody->getMotionState()->getWorldTransform(rigidCube);
-	rigidCube.getOpenGLMatrix((float*)&data);
-
-	transform = XMLoadFloat4x4(&data);
-	XMMatrixDecompose(&s, &r, &t, transform);
-
-	XMStoreFloat3(&pos, t);
-
-	btScalar rigidXvalue = pos.x;
-	btScalar rigidYvalue = pos.y;
-	btScalar rigidZvalue = pos.z;
-
-	btVector3 startPos(pos.x, pos.y, pos.z);
-	btVector3 endPos;
-
-	if (pos.x > cube.startPos.x()+0.05f)
-	{
-		
-		endPos = { pos.x - 0.1f,pos.y,pos.z };
-	}
-	else
-	{
-		
-		 endPos = { pos.x + 0.1f,pos.y,pos.z };
-	}
-	
-
-	
-		btVector3 lerpResult = lerp(startPos, endPos, 1);
-		
-		btMatrix3x3 movementMatrix;
-		movementMatrix.setIdentity();
-		btTransform plat{ movementMatrix,lerpResult };
-
-
-		cube.rigidBody->setCollisionFlags(cube.rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-		cube.rigidBody->setActivationState(DISABLE_DEACTIVATION);
-
-		//cube.rigidBody->translate(btVector3(0, 1, 0));
-		cube.rigidBody->getMotionState()->setWorldTransform(plat);
-	
-	
 }
 
 

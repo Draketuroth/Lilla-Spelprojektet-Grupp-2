@@ -78,6 +78,29 @@ struct MyEnemyContactResultCallback : public btCollisionWorld::ContactResultCall
 	Enemy* enemy;
 };
 
+struct MyPlatformContactResultCallback : public btCollisionWorld::ContactResultCallback
+{
+	MyPlatformContactResultCallback(Platform* ptr) : platform(ptr) {}
+
+	btScalar addSingleResult(btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,
+		int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,
+		int index1)
+	{
+		
+		platform->Hit = true;
+
+		return 0;
+	}
+
+	Platform* platform;
+};
+
+
+
 class SceneContainer {
 
 private:
@@ -179,7 +202,6 @@ public:
 	//------------------------------------------------------------//
 
 	ID3D11Buffer* gProjectileBuffer;
-	ID3D11Buffer* gProjectileIndexBuffer;
 
 	int nrOfEnemies;
 	int nrOfIceEnemies;
@@ -241,6 +263,8 @@ public:
 
 	void spawnEnemies();
 };
+
+
 
 
 #endif //SCENECONTAINER_H

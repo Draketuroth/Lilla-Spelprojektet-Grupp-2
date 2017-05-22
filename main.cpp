@@ -37,25 +37,26 @@ void updateCharacter(HWND windowhandle);
 void updateEnemies();
 void updateBuffers();
 void updateLava();
+void PlatformCollisionCheck();
 void lavamovmentUpdate();
 
 //----------------------------------------------------------------------------------------------------------------------------------//
 // MEMORY LEAK DETECTION
 //----------------------------------------------------------------------------------------------------------------------------------//
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
+//#ifdef _DEBUG
+//#define _CRTDBG_MAP_ALLOC
+//#include <crtdbg.h>
+//#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//#endif
 
 int main() {
 
 	// Memory leak detection
 
-#ifdef _DEBUG
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(65);
-#endif
+//#ifdef _DEBUG
+//	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+//	_CrtSetBreakAlloc(89932);
+//#endif
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
 	
@@ -85,7 +86,6 @@ int RunApplication()
 	updateLava();
 
 	int gameOverTimer;
-
 	//----------------------------------------------------------------------------------------------------------------------------------//
 	// GAME LOOP
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -135,8 +135,6 @@ int RunApplication()
 				lavamovmentUpdate();
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
-				
-
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// PLAYER LAVA HIT DETECTION
 				//----------------------------------------------------------------------------------------------------------------------------------//
@@ -175,6 +173,59 @@ int RunApplication()
 					if (sceneContainer.enemies[i]->getAlive() == false) {
 
 						sceneContainer.enemies[i]->releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+					}
+
+				}
+
+				//----------------------------------------------------------------------------------------------------------------------------------//
+				// PROJECTILE HIT VS PLATFORM
+				//----------------------------------------------------------------------------------------------------------------------------------//
+
+				PlatformCollisionCheck();
+
+				if(sceneContainer.respawnDelay == false){
+
+				for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
+
+					if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
+
+					if (sceneContainer.bHandler.cubeObjects[i].breakTimer < 5){
+
+						sceneContainer.bHandler.cubeObjects[i].platformBreaking();
+
+					}
+
+					else {
+
+						if (sceneContainer.bHandler.cubeObjects[i].descensionTimer < 20) {
+
+							sceneContainer.bHandler.cubeObjects[i].platformDecension();
+
+						}
+
+						else {
+
+							sceneContainer.bHandler.cubeObjects[i].platformAcension();
+
+						}
+
+					}
+
+					}
+				}
+
+			}
+
+				// Restore the platforms for the next round
+				else {
+
+					for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
+				
+						if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
+
+							sceneContainer.bHandler.cubeObjects[i].platformAcension();
+
+						}
 					}
 
 				}
@@ -327,7 +378,7 @@ void updateEnemies() {
 				if (sceneContainer.enemies[i]->getAlive() == true) {
 
 					// Update lava enemy physics
-					XMMATRIX scaling = XMMatrixScaling(0.3, 0.3, 0.3);
+					XMMATRIX scaling = XMMatrixScaling(0.6, 0.6, 0.6);
 					sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
 
 					// Update enemy animation time pose
@@ -348,7 +399,7 @@ void updateEnemies() {
 					sceneContainer.enemies[i]->currentAnimIndex = 2;
 
 					// Update lava enemy physics
-					XMMATRIX scaling = XMMatrixScaling(0.3, 0.3, 0.3);
+					XMMATRIX scaling = XMMatrixScaling(0.6, 0.6, 0.6);
 					sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
 
 					// Update enemy animation time pose
@@ -384,6 +435,7 @@ void lavamovmentUpdate()
 
 void updateLava()
 {
+	SAFE_RELEASE(sceneContainer.lava.LavaIB);
 	sceneContainer.lava.LoadRawFile();
 
 	sceneContainer.lava.IBuffer(sceneContainer.gHandler.gDevice);
@@ -511,6 +563,50 @@ void updateBuffers()
 	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
+
+}
+
+void PlatformCollisionCheck(){
+
+	// Create sphere rigid body
+	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
+
+		// Create new sphere shape
+		btSphereShape* sphereShape = new btSphereShape(1);
+
+		// Get projectile transform
+		btTransform projectileTransform = sceneContainer.enemies[i]->fireBall.projectileRigidBody->getWorldTransform();
+
+		// Set the motion state
+		btMotionState* motion = new btDefaultMotionState(projectileTransform);
+
+		// Definition of the rigid body
+		btScalar mass(0.0f);
+		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, sphereShape);
+
+		// Create the rigid body
+		btRigidBody* sphereRigidBody = new btRigidBody(info);
+
+		//int arenaCollideWith = COL_PLAYER | COL_ENEMY;
+		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, 0);
+
+		for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
+
+			MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
+			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
+
+		}
+
+		// Delete the sphere rigid body 
+		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
+		btMotionState* destructMotion = sphereRigidBody->getMotionState();
+		btCollisionShape* destructShape = sphereRigidBody->getCollisionShape();
+
+		delete sphereRigidBody;
+		delete destructMotion;
+		delete destructShape;
+
+	}
 
 }
 

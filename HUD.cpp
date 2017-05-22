@@ -12,22 +12,20 @@ HUDClass::~HUDClass()
 
 }
 
-bool HUDClass::setElementPos(ID3D11Device* &gDevice)
+bool HUDClass::setElementPos(ID3D11Device* &gDevice, int playerHP)
 {
 	HRESULT hr;
 	
-	float width = 0, height = 0;
-	width = 25.0f / 256;
-	height = 32.0f / 256;
+	
 
 	HUDElements Elements[4] =
 	{
 		// POS				// UV
-		-1.0f, 0.8f, 0.0f,	0.0f, height, //Bot left
-		-1.0f, 1.0f, 0.0f,	0.0f, 0.0f, //Top left
-		-0.7f, 1.0f, 0.0f,	width, 0.0f, //Top right
+		-1.0f, 0.85f, 0.8f,	0.0f, 1.0f, //Bot left
+		-1.0f, 1.0f, 0.8f,	0.0f, 0.0f, //Top left
+		-0.7f, 1.0f, 0.8f,	1.0f, 0.0f, //Top right
 
-		-0.7f, 0.8f, 0.0f,	width, height	//Bot right	
+		-0.7f, 0.85f, 0.8f,	1.0f ,1.0f	//Bot right	
 
 		
 		
@@ -56,6 +54,59 @@ bool HUDClass::setElementPos(ID3D11Device* &gDevice)
 
 		return false;
 	}
+
+	float xLength = 0.216;
+	float hpLoss = xLength / 10;
+
+	float right = -0.704;
+	float hpMul = 0.0f;
+	if (playerHP < 10)
+	{
+		hpMul = 10.0f - playerHP;
+	}
+	
+
+	HUDElements Health[4] =
+	{
+		// POS					// UV
+		-0.92f, 0.86f, 0.0f,	0.0f, 1.0f, //Bot left
+		-0.92f, 0.99f, 0.0f,		0.0f, 0.0f, //Top left
+		right - hpLoss * hpMul, 0.99f, 0.0f,		1.0f, 0.0f, //Top right
+
+		right - hpLoss * hpMul, 0.86f, 0.0f,		1.0f ,1.0f	//Bot right	
+
+
+
+
+
+	};
+
+
+	D3D11_BUFFER_DESC ElementBufferDesc2;
+	ZeroMemory(&ElementBufferDesc2, sizeof(ElementBufferDesc2));
+
+	ElementBufferDesc2.ByteWidth = sizeof(HUDElements) * 4;
+	ElementBufferDesc2.Usage = D3D11_USAGE_DEFAULT;
+	ElementBufferDesc2.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	ElementBufferDesc2.MiscFlags = 0;
+	ElementBufferDesc2.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexData2;
+	vertexData2.pSysMem = Health;
+	vertexData2.SysMemPitch = 0;
+	vertexData2.SysMemSlicePitch = 0;
+
+	hr = gDevice->CreateBuffer(&ElementBufferDesc2, &vertexData2, &gHPBarVtxBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+
+
+
+
 	return true;
 }
 void HUDClass::ReleaseAll()
@@ -64,6 +115,7 @@ void HUDClass::ReleaseAll()
 	SAFE_RELEASE(gElementIndexBuffer);
 	SAFE_RELEASE(gFontVertexBuffer);
 	SAFE_RELEASE(gFontIndexBuffer);
+	SAFE_RELEASE(gHPBarVtxBuffer);
 }
 
 bool HUDClass::CreateIndexBuffer(ID3D11Device* &gDevice)

@@ -21,10 +21,11 @@ public:
 
 	ID3D11ShaderResourceView* platformResource;
 	ID3D11ShaderResourceView* fortressResource;
-	ID3D11ShaderResourceView* defaultResource;
+	ID3D11ShaderResourceView* iceEnemyResource;
+	ID3D11ShaderResourceView* lavaEnemyResource;
 	ID3D11ShaderResourceView* playerResource;
 	ID3D11ShaderResourceView* LavaResource;
-	ID3D11ShaderResourceView* LavaEnemyResource;
+	ID3D11ShaderResourceView* projectileResource;
 	ID3D11ShaderResourceView* menuResources[9];
 	ID3D11ShaderResourceView* texArr[2];
 	ID3D11SamplerState* samplerArr[2];
@@ -39,6 +40,9 @@ public:
 	DXGI_FORMAT GetDepthSRVFormat(DXGI_FORMAT depthformat);
 	DXGI_FORMAT GetDepthResourceFormat(DXGI_FORMAT depthformat);
 	ID3D11ShaderResourceView* HUDResource;
+
+	ID3D11ShaderResourceView* HUDPortrait;
+	ID3D11ShaderResourceView* HUDHealth;
 	ID3D11BlendState* blendState;
 
 	ID3D11SamplerState* texSampler;
