@@ -258,6 +258,7 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 		btTransform transform =fireBall.projectileRigidBody->getCenterOfMassTransform();
 		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.0f, getPos().z));
 		fireBall.projectileRigidBody->setWorldTransform(transform);
+		hasProjectile = true;
 	}
 	else
 	{
