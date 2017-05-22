@@ -139,6 +139,7 @@ void AI::attackMelee(MainCharacter &player, Enemy* self, float enemyTimePos)
 
 void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler, float enemyTimePos)
 {
+	
 
 	if (!rangedAttack && rangedTimer <= 0)
 	{
@@ -147,11 +148,6 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 		self->attackFlag = true;
 
 		rangedTimer = rangedCd;
-
-		btTransform transform = self->fireBall.projectileRigidBody->getCenterOfMassTransform();
-		transform.setOrigin(btVector3(self->getPos().x, self->getPos().y + 2, self->getPos().z));
-		self->fireBall.projectileRigidBody->setWorldTransform(transform);
-
 
 		//----------Räkna ut kastet--------------------------------------------------------------
 		
@@ -170,7 +166,11 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 		float v0y = v0 * sin(45);	//kraften i y-led	
 
 		//---------------------------------------------------------------------------------------
+		
 
+		/*btVector3 pos = { self->getPos().x, self->getPos().y, self->getPos().z };
+		float fireBallDistance = pos.distance(self->fireBall.projectileRigidBody->getCenterOfMassPosition());*/
+	
 		self->shootProjectile(v0x, v0y, dir);
 
 	}
@@ -184,7 +184,6 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 			rangedAttack = false;
 			self->attackFlag = false;
 		}
-		//play enemy attack animation here
 	}
 }
 
