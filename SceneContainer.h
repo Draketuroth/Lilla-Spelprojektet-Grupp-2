@@ -141,8 +141,6 @@ public:
 
 	float RandomNumber(float Minimum, float Maximum);
 
-	// Indices to store for the neighbor platforms
-	vector<int>collisionIndices;
 	bool respawnDelay;
 
 	//------------------------------------------------------------//
