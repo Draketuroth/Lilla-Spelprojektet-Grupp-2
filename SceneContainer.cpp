@@ -772,6 +772,7 @@ void SceneContainer::ReInitialize()
 	bHandler.nrOfCubes = 0;
 	bHandler.CreatePlatforms(gHandler.gDevice, bulletPhysicsHandler);
 
+	// Reset platforms
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
