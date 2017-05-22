@@ -1390,3 +1390,40 @@ void SceneContainer::drawHUD()
 
 
 }
+
+
+float SceneContainer::getRadiusCharacter()
+{
+	float radius = (mainCharacterFile.skinnedMeshes[0].meshBoundingBox.zMax - mainCharacterFile.skinnedMeshes[0].meshBoundingBox.zMin) / 2; 
+	return radius;
+}
+
+float SceneContainer::getHeightCharacter()
+{
+	float height  = (mainCharacterFile.skinnedMeshes[0].meshBoundingBox.yMax - mainCharacterFile.skinnedMeshes[0].meshBoundingBox.yMin);
+	return height; 
+}
+
+float SceneContainer::getRadiusLava()
+{
+	float radius = (lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.zMax - lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.zMin) / 2;
+	return radius;
+}
+
+float SceneContainer::getHeightLava()
+{
+	float height = (lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax - lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin);
+	return height;
+}
+
+float SceneContainer::getRadiusIce()
+{
+	float radius = (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.zMax - iceEnemyFile.skinnedMeshes[0].meshBoundingBox.zMin) / 2;
+	return radius;
+}
+
+float SceneContainer::getHeightIce()
+{
+	float height = (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax - iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin);
+	return height;
+}

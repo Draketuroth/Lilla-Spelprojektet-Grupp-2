@@ -118,6 +118,20 @@ public:
 
 	float RandomNumber(float Minimum, float Maximum);
 
+	//Bounding "box" values
+
+	//main Character
+	float getRadiusCharacter();
+	float getHeightCharacter();
+
+	//lava enemy
+	float getRadiusLava();
+	float getHeightLava();
+
+	//ice enemy
+	float getRadiusIce();
+	float getHeightIce();
+
 	//------------------------------------------------------------//
 	// RE-INTIALIZE
 	//------------------------------------------------------------//
@@ -227,8 +241,6 @@ public:
 
 	void spawnEnemies();
 };
-
-
 
 
 #endif //SCENECONTAINER_H

@@ -5,6 +5,7 @@
 #include "Enemies.h"
 #include "BulletCollision\CollisionDispatch\btGhostObject.h"
 
+
 class MainCharacter: public CharacterBase
 {
 private:

@@ -31,7 +31,8 @@ private:
 	bool alive;
 
 	XMFLOAT3 boundingBoxExtents;
-	
+	Mesh_Standard mesh; 
+
 
 public:
 	
@@ -80,6 +81,7 @@ public:
 	void resetWorldMatrix();
 
 	string toString();
-	
+
+
 };
 #endif

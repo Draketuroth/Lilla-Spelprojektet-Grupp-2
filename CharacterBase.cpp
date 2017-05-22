@@ -245,7 +245,7 @@ BoundingBox CharacterBase::getBoundingBox()
 	return BoundingBox(center, extents);
 }
 
-// onödig funktion
+// onödig funktion ?
 btCapsuleShape CharacterBase::getBoundingCapsule()
 {
 	float radius = 0.0; 
@@ -345,3 +345,4 @@ string CharacterBase::toString()
 
 	return toString.str();
 }
+

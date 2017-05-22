@@ -27,7 +27,6 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(playerResource);
 	SAFE_RELEASE(LavaResource);
 	
-	
 	SAFE_RELEASE(shadowSampler);
 
 	SAFE_RELEASE(shadowSRV);
