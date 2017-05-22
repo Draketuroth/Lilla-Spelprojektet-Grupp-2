@@ -344,16 +344,16 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 
 		StandardVertex vertex;
 
-		vertex.x = projectileFile.standardMeshes[0].vertices[i].pos[0];
-		vertex.y = projectileFile.standardMeshes[0].vertices[i].pos[1];
-		vertex.z = projectileFile.standardMeshes[0].vertices[i].pos[2];
+		vertex.x = projectileFile.standardMeshes[1].vertices[i].pos[0];
+		vertex.y = projectileFile.standardMeshes[1].vertices[i].pos[1];
+		vertex.z = projectileFile.standardMeshes[1].vertices[i].pos[2];
 
-		vertex.u = projectileFile.standardMeshes[0].vertices[i].uv[0];
-		vertex.v = projectileFile.standardMeshes[0].vertices[i].uv[1];
+		vertex.u = projectileFile.standardMeshes[1].vertices[i].uv[0];
+		vertex.v = projectileFile.standardMeshes[1].vertices[i].uv[1];
 
-		vertex.nx = projectileFile.standardMeshes[0].vertices[i].normal[0];
-		vertex.ny = projectileFile.standardMeshes[0].vertices[i].normal[1];
-		vertex.nz = projectileFile.standardMeshes[0].vertices[i].normal[2];
+		vertex.nx = projectileFile.standardMeshes[1].vertices[i].normal[0];
+		vertex.ny = projectileFile.standardMeshes[1].vertices[i].normal[1];
+		vertex.nz = projectileFile.standardMeshes[1].vertices[i].normal[2];
 
 		projectileVertices.push_back(vertex);
 	}
@@ -1314,6 +1314,8 @@ void SceneContainer::renderProjectile()
 	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gProjectilePixelShader, nullptr, 0);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.projectileResource);
+	gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
 
 	UINT32 vertexSize = sizeof(StandardVertex);
 	UINT32 offset = 0;

@@ -282,8 +282,11 @@ void Enemy::updateProjectile()
 	// Load it into an XMMATRIX
 	transform = XMLoadFloat4x4(&data);
 
+	// Scale
+	XMMATRIX scaling = XMMatrixScaling(0.6f, 0.6f, 0.6f);
+
 	// Build the new world matrix
-	fireBall.worldMatrix = transform;
+	fireBall.worldMatrix = XMMatrixMultiply(scaling, transform);
 	
 	
 	

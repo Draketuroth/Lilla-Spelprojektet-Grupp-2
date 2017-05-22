@@ -27,6 +27,7 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(blendState);
 	SAFE_RELEASE(playerResource);
 	SAFE_RELEASE(LavaResource);
+	SAFE_RELEASE(projectileResource);
 	
 	
 	SAFE_RELEASE(shadowSampler);
@@ -97,6 +98,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &iceEnemyResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\LavaEnemyTexture.png", NULL, &lavaEnemyResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\Lava1.jpg", NULL, &LavaResource, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\ProjectileTexture.png", NULL, &projectileResource, 512);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN.png", NULL, &menuResources[0], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN_PLAY_CLICK.png", NULL, &menuResources[1], 1920);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\MAIN_QUIT_CLICK.png", NULL, &menuResources[2], 1920);
@@ -110,7 +112,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\HP_frame.png", NULL, &HUDPortrait, 300);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\HP_rect.png", NULL, &HUDHealth, 213);
 
-
+	ID3D11ShaderResourceView* projectileResource;
 	if (SUCCEEDED(hr) && texture != 0) {
 
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformResource);
@@ -119,6 +121,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 		gDevice->CreateShaderResourceView(texture, nullptr, &iceEnemyResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &lavaEnemyResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &LavaResource);
+		gDevice->CreateShaderResourceView(texture, nullptr, &projectileResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[0]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[1]);
 		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[2]);
