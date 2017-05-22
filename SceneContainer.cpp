@@ -159,7 +159,7 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			PostQuitMessage(0);
 	}
 
-	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile);
+	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile, getRadiusCharacter(), getHeightCharacter());
 	
 	HUD.setElementPos(gHandler.gDevice, character.getHealth());
 	HUD.CreateIndexBuffer(gHandler.gDevice);
@@ -740,7 +740,7 @@ void SceneContainer::ReInitialize()
 	character.setPos(XMFLOAT3(2, 2, 5));
 	character.setHealth(10);
 
-	character.CreatePlayerBoundingBox(0.10, character.getPos(), 0.22, 1.0, bulletPhysicsHandler);
+	character.CreatePlayerBoundingBox(0.10, character.getPos(), getRadiusCharacter(), getHeightCharacter(), bulletPhysicsHandler);
 	this->character.rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 
 	XMFLOAT3 initSpawnPos;
@@ -1537,13 +1537,13 @@ void SceneContainer::drawHUD()
 float SceneContainer::getRadiusCharacter()
 {
 	float radius = (mainCharacterFile.skinnedMeshes[0].meshBoundingBox.zMax - mainCharacterFile.skinnedMeshes[0].meshBoundingBox.zMin) / 2; 
-	return radius;
+	return radius / 10;
 }
 
 float SceneContainer::getHeightCharacter()
 {
-	float height  = (mainCharacterFile.skinnedMeshes[0].meshBoundingBox.yMax - mainCharacterFile.skinnedMeshes[0].meshBoundingBox.yMin);
-	return height; 
+	float height = ((mainCharacterFile.skinnedMeshes[0].meshBoundingBox.yMax-2) - (mainCharacterFile.skinnedMeshes[0].meshBoundingBox.yMin+5));
+	return height / 30.0f;
 }
 
 float SceneContainer::getRadiusLava()
