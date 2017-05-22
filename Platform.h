@@ -26,12 +26,12 @@ public:
 	float lerpScalar;
 
 	btRigidBody* rigidBody;
+	XMMATRIX originMatrix;
 	XMMATRIX worldMatrix;
 	bool renderCheck;
 	int ID;
 	bool Hit;
 	btVector3 startPos;
-	int health;
 	float platformDelay;
 	float breakTimer;
 	float ascensionTimer;

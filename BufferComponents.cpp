@@ -431,6 +431,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		bulletPhysicsHandler.rigidBodies.push_back(platformRigidBody);
 
 		cubeObjects[nrOfCubes].worldMatrix = platformTranslation;
+		cubeObjects[nrOfCubes].originMatrix = platformTranslation;
 
 		cubeObjects[nrOfCubes].renderCheck = true;
 

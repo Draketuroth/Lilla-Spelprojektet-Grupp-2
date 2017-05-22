@@ -4,7 +4,6 @@
 Platform::Platform() {
 
 	lerpScalar = 0;
-	health = 200;
 }
 
 Platform::~Platform() {

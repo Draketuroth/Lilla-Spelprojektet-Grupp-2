@@ -13,7 +13,7 @@ SceneContainer::SceneContainer() {
 	character = MainCharacter();
 
 	this->nrOfIceEnemies = 2;
-	this->nrOfLavaEnemies = 1;
+	this->nrOfLavaEnemies = 2;
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
@@ -225,8 +225,6 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 
 void SceneContainer::RespawnEnemies() {
 
-	collisionIndices.clear();
-
 	// Remove enemy rigid bodies
 	for (UINT i = 0; i < nrOfIceEnemies; i++)
 	{
@@ -264,7 +262,11 @@ void SceneContainer::RespawnEnemies() {
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
-		bHandler.cubeObjects[i].health = 200;
+		bHandler.cubeObjects[i].descensionTimer = 0;
+		bHandler.cubeObjects[i].breakTimer = 0;
+		bHandler.cubeObjects[i].ascensionTimer = 0;
+		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+		
 	}
 
 	// Clear enemy rigid bodies vector
@@ -770,6 +772,15 @@ void SceneContainer::ReInitialize()
 	bHandler.nrOfCubes = 0;
 	bHandler.CreatePlatforms(gHandler.gDevice, bulletPhysicsHandler);
 
+	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+
+		bHandler.cubeObjects[i].Hit = false;
+		bHandler.cubeObjects[i].descensionTimer = 0;
+		bHandler.cubeObjects[i].breakTimer = 0;
+		bHandler.cubeObjects[i].ascensionTimer = 0;
+		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+	}
+
 	// Recreate the lava plane rigid body
 	bHandler.CreateCollisionPlane(bulletPhysicsHandler, XMFLOAT3(0, -4, 0));
 
@@ -883,23 +894,33 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
+		// If the platform was hit by a projectile...
 		if(bHandler.cubeObjects[i].Hit == true){
 
+			// Add delta time to platform break timer
 			bHandler.cubeObjects[i].breakTimer += timer.getDeltaTime();
 
+			// If the break timer is greater than five...
 			if (bHandler.cubeObjects[i].breakTimer > 5) {
 
+				// Add delta time to platform descension timer
 				bHandler.cubeObjects[i].descensionTimer += timer.getDeltaTime();
 
+				// If descension timer is greater than 20...
 				if (bHandler.cubeObjects[i].descensionTimer >= 20) {
 
+					// Add delta time to to ascension timer
 					bHandler.cubeObjects[i].ascensionTimer += timer.getDeltaTime();
 
+					// If ascension timer is greater than 20...
 					if (bHandler.cubeObjects[i].ascensionTimer >= 20) {
 
+						// Restore platform
 						bHandler.cubeObjects[i].Hit = false;
 						bHandler.cubeObjects[i].descensionTimer = 0;
 						bHandler.cubeObjects[i].breakTimer = 0;
+						bHandler.cubeObjects[i].ascensionTimer = 0;
+						bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
 					}
 
 				}

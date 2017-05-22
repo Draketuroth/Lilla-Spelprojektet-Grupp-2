@@ -37,7 +37,7 @@ void updateCharacter(HWND windowhandle);
 void updateEnemies();
 void updateBuffers();
 void updateLava();
-void gatherPlatformIndices(vector<int>&collisionIndices);
+void PlatformCollisionCheck();
 void lavamovmentUpdate();
 
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -181,36 +181,40 @@ int RunApplication()
 				// PROJECTILE HIT VS PLATFORM
 				//----------------------------------------------------------------------------------------------------------------------------------//
 
-				gatherPlatformIndices(sceneContainer.collisionIndices);
+				PlatformCollisionCheck();
 
 				if(sceneContainer.respawnDelay == false){
 
-				for (UINT i = 0; i < sceneContainer.collisionIndices.size(); i++) {
+				for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
 
-					if(sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].breakTimer < 5){
+					if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
 
-					sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformBreaking();
-					//sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].health--;
+					if (sceneContainer.bHandler.cubeObjects[i].breakTimer < 5){
+
+						sceneContainer.bHandler.cubeObjects[i].platformBreaking();
 
 					}
 
 					else {
 
-						if (sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].descensionTimer < 20) {
+						if (sceneContainer.bHandler.cubeObjects[i].descensionTimer < 20) {
 
-							sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformDecension();
+							sceneContainer.bHandler.cubeObjects[i].platformDecension();
+
 						}
 
 						else {
 
-							sceneContainer.bHandler.cubeObjects[sceneContainer.collisionIndices[i]].platformAcension();
+							sceneContainer.bHandler.cubeObjects[i].platformAcension();
 
 						}
 
 					}
+
+					}
 				}
 
-				}
+			}
 
 				// Restore the platforms for the next round
 				else {
@@ -231,8 +235,6 @@ int RunApplication()
 				//----------------------------------------------------------------------------------------------------------------------------------//
 			
 				sceneContainer.update(windowHandle, sceneContainer.animHandler.enemyTimePos, timer);
-
-				sceneContainer.collisionIndices.clear();
 
 				showFPS(windowHandle, deltaTime);
 
@@ -376,7 +378,7 @@ void updateEnemies() {
 				if (sceneContainer.enemies[i]->getAlive() == true) {
 
 					// Update lava enemy physics
-					XMMATRIX scaling = XMMatrixScaling(0.3, 0.3, 0.3);
+					XMMATRIX scaling = XMMatrixScaling(0.6, 0.6, 0.6);
 					sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
 
 					// Update enemy animation time pose
@@ -397,7 +399,7 @@ void updateEnemies() {
 					sceneContainer.enemies[i]->currentAnimIndex = 2;
 
 					// Update lava enemy physics
-					XMMATRIX scaling = XMMatrixScaling(0.3, 0.3, 0.3);
+					XMMATRIX scaling = XMMatrixScaling(0.6, 0.6, 0.6);
 					sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
 
 					// Update enemy animation time pose
@@ -564,7 +566,7 @@ void updateBuffers()
 
 }
 
-void gatherPlatformIndices(vector<int>&collisionIndices){
+void PlatformCollisionCheck(){
 
 	// Create sphere rigid body
 	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
@@ -592,12 +594,6 @@ void gatherPlatformIndices(vector<int>&collisionIndices){
 
 			MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
 			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
-
-			if (sceneContainer.bHandler.cubeObjects[j].Hit == true) {
-
-				collisionIndices.push_back(j);
-
-			}
 
 		}
 
