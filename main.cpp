@@ -224,10 +224,6 @@ int RunApplication()
 						if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
 
 							sceneContainer.bHandler.cubeObjects[i].platformAcension();
-							sceneContainer.bHandler.cubeObjects[i].descensionTimer = 0;
-							sceneContainer.bHandler.cubeObjects[i].breakTimer = 0;
-							sceneContainer.bHandler.cubeObjects[i].ascensionTimer = 0;
-							sceneContainer.bHandler.cubeObjects[i].worldMatrix = sceneContainer.bHandler.cubeObjects[i].originMatrix;
 
 						}
 					}

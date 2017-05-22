@@ -262,9 +262,10 @@ void SceneContainer::RespawnEnemies() {
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
-		bHandler.cubeObjects[i].ascensionTimer = 0;
 		bHandler.cubeObjects[i].descensionTimer = 0;
 		bHandler.cubeObjects[i].breakTimer = 0;
+		bHandler.cubeObjects[i].ascensionTimer = 0;
+		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
 		
 	}
 
