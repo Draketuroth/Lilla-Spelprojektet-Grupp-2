@@ -860,12 +860,13 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 
 			this->useAI(character, enemies[i], enemyTimePoses[i]);
 
+			if (enemies[i]->getType() == 1)
+			{
+				enemies[i]->updateProjectile();
+			}
 		}
 
-		if (enemies[i]->getType() == 1)
-		{
-			enemies[i]->updateProjectile();
-		}
+		
 
 		btVector3 velVec = enemies[i]->rigidBody->getLinearVelocity();
 		

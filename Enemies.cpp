@@ -6,7 +6,11 @@ Enemy::Enemy()
 	this->Type = 0;
 	this->SpawnPos = { 0,0,0 };
 
-	this->hasProjectile = false;
+	this->timer.initialize();
+
+	this->rangedAttack = false;
+	this->rangedTimer = 0.0f;
+	this->rangedCd = 6.0f;
 }
 
 Enemy::~Enemy()
@@ -211,7 +215,7 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 {
-	XMFLOAT3 projectilePos = { this->getPos().x, -20, this->getPos().z };
+	XMFLOAT3 projectilePos = { this->getPos().x, -5, this->getPos().z };
 	XMFLOAT3 extents = { 0.3f, 0.3f, 0.3f };
 
 	XMMATRIX translation = XMMatrixTranslation(projectilePos.x, projectilePos.y, projectilePos.z);
@@ -240,32 +244,46 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 
 void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 {
-	
-
-	float forceVz = forceVx * direction.z;
-	forceVx = forceVx * direction.x;
-	//forceVy *= 0.7;
-	
-	btVector3 force = { forceVx, forceVy, forceVz };
-
-	XMFLOAT3 ePos = this->getPos();
-	btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
-	
-	float fireBallDistance =  enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
-
-	if (fireBallDistance > 2)
+	if (!rangedAttack && rangedTimer <= 0)
 	{
-		btTransform transform =fireBall.projectileRigidBody->getCenterOfMassTransform();
-		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.0f, getPos().z));
-		fireBall.projectileRigidBody->setWorldTransform(transform);
-		hasProjectile = true;
-	}
-	else
-	{
+		//timer.updateCurrentTime();
+		rangedAttack = true;
+		rangedTimer = rangedCd;
+
+	
+		float forceVz = forceVx * direction.z;
+		forceVx = forceVx * direction.x;
+		//forceVy *= 0.7;
+
+		btVector3 force = { forceVx, forceVy, forceVz };
+
+		XMFLOAT3 ePos = this->getPos();
+		btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
+
+		float fireBallDistance = enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
+
+		if (fireBallDistance > 2)
+		{
+			btTransform transform = fireBall.projectileRigidBody->getCenterOfMassTransform();
+			transform.setOrigin(btVector3(getPos().x, getPos().y + 1.5f, getPos().z));
+			fireBall.projectileRigidBody->setWorldTransform(transform);
+		}
+
 		fireBall.projectileRigidBody->applyCentralForce(force);
-		fireBall.projectileRigidBody->setFriction(3);	
-		hasProjectile = false;
+		fireBall.projectileRigidBody->setFriction(3);
 	}
+	
+	if (rangedAttack)
+	{
+		if (rangedTimer > 0)
+			rangedTimer -= timer.getDeltaTime();
+		else
+		{
+			rangedAttack = false;
+			attackFlag = false;
+		}
+	}
+
 }
 
 void Enemy::updateProjectile()
