@@ -192,14 +192,14 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 		if(i < nrOfIceEnemies){
 
 		enemies[i] = new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-		enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+		enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i, getRadiusIce(), getHeightIce());
 
 		}
 
 		else if (i >= nrOfIceEnemies) {
 
 			enemies[i] = new Enemy(1, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i, getRadiusLava(), getHeightLava());
 			enemies[i]->createProjectile(bulletPhysicsHandler);
 
 		}
@@ -301,14 +301,14 @@ void SceneContainer::RespawnEnemies() {
 		if (i < nrOfIceEnemies) {
 
 			enemies[i] = new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i, getRadiusIce(), getHeightIce());
 
 		}
 
 		else if (i >= nrOfIceEnemies) {
 
 			enemies[i] = new Enemy(1, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i, getRadiusLava(), getHeightLava());
 			enemies[i]->createProjectile(bulletPhysicsHandler);
 
 		}
@@ -754,14 +754,14 @@ void SceneContainer::ReInitialize()
 		if (i < nrOfIceEnemies) {
 
 			enemies[i] = new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i, getRadiusIce(), getHeightIce());
 
 		}
 
 		else if (i >= nrOfIceEnemies) {
 
 			enemies[i] = new Enemy(1, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
-			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
+			enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i, getRadiusLava(), getHeightLava());
 			enemies[i]->createProjectile(bulletPhysicsHandler);
 
 		}
@@ -1550,23 +1550,23 @@ float SceneContainer::getHeightCharacter()
 float SceneContainer::getRadiusLava()
 {
 	float radius = (lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.zMax - lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.zMin) / 2;
-	return radius;
+	return radius / 5;
 }
 
 float SceneContainer::getHeightLava()
 {
-	float height = (lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax - lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin);
-	return height;
+	float height = ((lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax ) - (lavaEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin));
+	return height / 30;
 }
 
 float SceneContainer::getRadiusIce()
 {
 	float radius = (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.zMax - iceEnemyFile.skinnedMeshes[0].meshBoundingBox.zMin) / 2;
-	return radius;
+	return radius / 15;
 }
 
 float SceneContainer::getHeightIce()
 {
-	float height = (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax - iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin);
-	return height;
+	float height = ((iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax-10) - (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin +5));
+	return height /10.0f;
 }
