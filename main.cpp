@@ -389,6 +389,12 @@ void updateEnemies() {
 
 					if (currentEnemyTimePos >= currentAnimationLength) {
 
+						if (sceneContainer.enemies[i]->currentAnimIndex == 3) {
+
+							sceneContainer.enemies[i]->currentAnimIndex = 0;
+							sceneContainer.enemies[i]->attackFlag = false;
+						}
+
 						sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
 					}
 
@@ -594,7 +600,7 @@ void PlatformCollisionCheck(){
 
 			MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
 			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
-
+			
 		}
 
 		// Delete the sphere rigid body 
@@ -609,4 +615,6 @@ void PlatformCollisionCheck(){
 	}
 
 }
+
+
 
