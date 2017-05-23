@@ -136,15 +136,8 @@ void AI::attackMelee(MainCharacter &player, Enemy* self, float enemyTimePos)
 
 void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler, float enemyTimePos)
 {
-	
-
-	/*if (!rangedAttack && rangedTimer <= 0)
-	{*/
 		enemyTimePos = 0.0f;
-		/*rangedAttack = true;*/
 		self->attackFlag = true;
-
-		/*rangedTimer = rangedCd;*/
 
 		//----------Räkna ut kastet--------------------------------------------------------------
 		
@@ -163,25 +156,9 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 		float v0y = v0 * sin(45);	//kraften i y-led	
 
 		//---------------------------------------------------------------------------------------
-		
-
-		/*btVector3 pos = { self->getPos().x, self->getPos().y, self->getPos().z };
-		float fireBallDistance = pos.distance(self->fireBall.projectileRigidBody->getCenterOfMassPosition());*/
 	
 		self->shootProjectile(v0x, v0y, dir);
 
-	/*}*/
-
-	/*if (rangedAttack)
-	{
-		if (rangedTimer > 0)
-			rangedTimer -= timer.getDeltaTime();
-		else
-		{
-			rangedAttack = false;
-			self->attackFlag = false;
-		}
-	}*/
 }
 
 void AI::moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy *self)
