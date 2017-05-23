@@ -26,6 +26,7 @@ Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 void Enemy::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
 	//SAFE_RELEASE(vertexBuffer);
+	//this->rigidBody->forceActivationState(WANTS_DEACTIVATION);
 	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
@@ -222,11 +223,11 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	btTransform transform;
 	transform.setFromOpenGLMatrix((float*)&t);
 
-	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
-	btVector3 inertia(2, 2, 2);
+	btSphereShape* sphereShape = new btSphereShape(1);
+	btVector3 inertia(1, 1, 1);
 
 	btMotionState* motion = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, boxShape, inertia);
+	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, sphereShape, inertia);
 
 	fireBall.projectileRigidBodyExtents = extents;
 
