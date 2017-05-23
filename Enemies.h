@@ -44,7 +44,10 @@ public:
 	bool attacking;
 	bool attackFlag;
 
-	bool hasProjectile;
+	bool rangedAttack;
+	float rangedTimer;
+	float rangedCd;
+
 
 private:
 	

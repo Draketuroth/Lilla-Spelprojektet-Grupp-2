@@ -58,6 +58,7 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer &scene)
 			{
 				clickSound.play();
 				arenaMusic.play();
+				arenaMusic.setLoop(true);
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -96,6 +97,7 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer &scene, MSG windowMes
 			{
 				clickSound.play();
 				arenaMusic.play();
+				arenaMusic.setLoop(true);
 				this->state = START_GAME;
 			}
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.03f && this->floatMouse.y >= -0.47f)
@@ -136,6 +138,7 @@ int GameState::gameOver(HWND windowHandle, SceneContainer &scene)
 			{
 				clickSound.play();
 				arenaMusic.play();
+				arenaMusic.setLoop(true);
 				this->state = START_GAME;
 				restartGame(scene, windowHandle);
 				

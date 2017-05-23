@@ -132,6 +132,7 @@ int RunApplication()
 				updateEnemies();
 				updateBuffers();
 				lavamovmentUpdate();
+
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
@@ -188,7 +189,7 @@ int RunApplication()
 
 					if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
 
-					if (sceneContainer.bHandler.cubeObjects[i].breakTimer < 5){
+					if (sceneContainer.bHandler.cubeObjects[i].breakTimer < BREAK_LIMIT){
 
 						sceneContainer.bHandler.cubeObjects[i].platformBreaking();
 
@@ -196,7 +197,7 @@ int RunApplication()
 
 					else {
 
-						if (sceneContainer.bHandler.cubeObjects[i].descensionTimer < 20) {
+						if (sceneContainer.bHandler.cubeObjects[i].descensionTimer < DESCENSION_LIMIT) {
 
 							sceneContainer.bHandler.cubeObjects[i].platformDecension();
 
@@ -587,7 +588,7 @@ void PlatformCollisionCheck(){
 		btRigidBody* sphereRigidBody = new btRigidBody(info);
 
 		//int arenaCollideWith = COL_PLAYER | COL_ENEMY;
-		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, 0);
+		//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, 0);
 
 		for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
 
@@ -597,7 +598,7 @@ void PlatformCollisionCheck(){
 		}
 
 		// Delete the sphere rigid body 
-		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
+		//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
 		btMotionState* destructMotion = sphereRigidBody->getMotionState();
 		btCollisionShape* destructShape = sphereRigidBody->getCollisionShape();
 

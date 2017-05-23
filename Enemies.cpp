@@ -6,7 +6,12 @@ Enemy::Enemy()
 	this->Type = 0;
 	this->SpawnPos = { 0,0,0 };
 
-	this->hasProjectile = false;
+	this->timer.initialize();
+
+	this->rangedAttack = false;
+	this->rangedTimer = 0.0f;
+	this->rangedCd = 6.0f;
+
 }
 
 Enemy::~Enemy()
@@ -26,6 +31,7 @@ Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 void Enemy::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
 	//SAFE_RELEASE(vertexBuffer);
+	//this->rigidBody->forceActivationState(WANTS_DEACTIVATION);
 	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
@@ -212,7 +218,7 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 {
-	XMFLOAT3 projectilePos = { this->getPos().x, -20, this->getPos().z };
+	XMFLOAT3 projectilePos = { this->getPos().x, -5, this->getPos().z };
 	XMFLOAT3 extents = { 0.3f, 0.3f, 0.3f };
 
 	XMMATRIX translation = XMMatrixTranslation(projectilePos.x, projectilePos.y, projectilePos.z);
@@ -222,11 +228,11 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	btTransform transform;
 	transform.setFromOpenGLMatrix((float*)&t);
 
-	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
-	btVector3 inertia(2, 2, 2);
+	btSphereShape* sphereShape = new btSphereShape(1);
+	btVector3 inertia(1, 1, 1);
 
 	btMotionState* motion = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, boxShape, inertia);
+	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, sphereShape, inertia);
 
 	fireBall.projectileRigidBodyExtents = extents;
 
@@ -241,31 +247,49 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 
 void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 {
-	
-
-	float forceVz = forceVx * direction.z;
-	forceVx = forceVx * direction.x;
-	//forceVy *= 0.7;
-	
-	btVector3 force = { forceVx, forceVy, forceVz };
-
 	XMFLOAT3 ePos = this->getPos();
 	btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
-	
-	float fireBallDistance =  enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
+	float fireBallDistance = enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
 
-	if (fireBallDistance > 2)
+	if (fireBallDistance > 2 && !rangedAttack)
 	{
-		btTransform transform =fireBall.projectileRigidBody->getCenterOfMassTransform();
-		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.0f, getPos().z));
+		btTransform transform = fireBall.projectileRigidBody->getCenterOfMassTransform();
+		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.5f, getPos().z));
 		fireBall.projectileRigidBody->setWorldTransform(transform);
-		hasProjectile = true;
+		rangedTimer = 0.0f;
 	}
-	else
+
+	if (!rangedAttack && rangedTimer <= 0)
 	{
+		
+		rangedAttack = true;
+		rangedTimer = 6.0f;
+	
+		float forceVz = forceVx * direction.z ;
+		forceVx = forceVx * direction.x;
+		forceVy *= 1.3f;
+
+		btVector3 force = { forceVx, forceVy, forceVz };
+
+		
+
+
+		
+
 		fireBall.projectileRigidBody->applyCentralForce(force);
-		fireBall.projectileRigidBody->setFriction(3);	
-		hasProjectile = false;
+		fireBall.projectileRigidBody->setFriction(3);
+
+	}
+	timer.initialize();
+	if (rangedAttack)
+	{
+		if (rangedTimer > 0)
+			rangedTimer -= timer.getDeltaTime();
+		else
+		{
+			rangedAttack = false;
+			attackFlag = false;
+		}
 	}
 }
 

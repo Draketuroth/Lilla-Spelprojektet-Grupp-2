@@ -142,13 +142,13 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 {
 	
 
-	if (!rangedAttack && rangedTimer <= 0)
-	{
+	/*if (!rangedAttack && rangedTimer <= 0)
+	{*/
 		enemyTimePos = 0.0f;
-		rangedAttack = true;
+		/*rangedAttack = true;*/
 		self->attackFlag = true;
 
-		rangedTimer = rangedCd;
+		/*rangedTimer = rangedCd;*/
 
 		//----------Räkna ut kastet--------------------------------------------------------------
 		
@@ -174,9 +174,9 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 	
 		self->shootProjectile(v0x, v0y, dir);
 
-	}
+	/*}*/
 
-	if (rangedAttack)
+	/*if (rangedAttack)
 	{
 		if (rangedTimer > 0)
 			rangedTimer -= timer.getDeltaTime();
@@ -185,7 +185,7 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 			rangedAttack = false;
 			self->attackFlag = false;
 		}
-	}
+	}*/
 }
 
 void AI::moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy *self)
