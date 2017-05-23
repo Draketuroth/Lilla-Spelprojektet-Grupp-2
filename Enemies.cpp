@@ -1,27 +1,19 @@
 #include "Enemies.h"
 
-Enemy::Enemy()
-	:CharacterBase()
-{
-	this->Type = 0;
-	this->SpawnPos = { 0,0,0 };
-
-	this->timer.initialize();
-
-	this->rangedAttack = false;
-	this->rangedTimer = 0.0f;
-	this->rangedCd = 6.0f;
-
-}
 
 Enemy::~Enemy()
 {
 
 }
 
-Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
+Enemy::Enemy(int Type, XMFLOAT3 SpawnPos)
 	:CharacterBase(true, 5, 5.0f, 1,this->getPos(), XMMatrixIdentity())
 {
+	this->timer.initialize();
+
+	this->rangedAttack = false;
+	this->rangedTimer = 0.0f;
+	this->rangedCd = 4.0f;
 	
 	this->Type = Type;
 	this->setPos(SpawnPos);
@@ -256,14 +248,12 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 		btTransform transform = fireBall.projectileRigidBody->getCenterOfMassTransform();
 		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.5f, getPos().z));
 		fireBall.projectileRigidBody->setWorldTransform(transform);
-		rangedTimer = 0.0f;
 	}
 
 	if (!rangedAttack && rangedTimer <= 0)
 	{
-		
-		rangedAttack = true;
-		rangedTimer = 6.0f;
+		this->rangedAttack = true;
+		this->rangedTimer = rangedCd;
 	
 		float forceVz = forceVx * direction.z ;
 		forceVx = forceVx * direction.x;
@@ -271,26 +261,22 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 
 		btVector3 force = { forceVx, forceVy, forceVz };
 
-		
-
-
-		
-
 		fireBall.projectileRigidBody->applyCentralForce(force);
 		fireBall.projectileRigidBody->setFriction(3);
-
 	}
-	timer.initialize();
+
+	
 	if (rangedAttack)
 	{
-		if (rangedTimer > 0)
-			rangedTimer -= timer.getDeltaTime();
+		if (this->rangedTimer > 0)
+			this->rangedTimer -= timer.getDeltaTime();
 		else
 		{
-			rangedAttack = false;
+			this->rangedAttack = false;
 			attackFlag = false;
 		}
 	}
+	timer.updateCurrentTime();
 }
 
 void Enemy::updateProjectile()

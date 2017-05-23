@@ -14,7 +14,7 @@ struct projectile
 class Enemy: public CharacterBase
 {
 public:
-	Enemy();
+	Enemy() = delete;
 	Enemy(int Type, const XMFLOAT3 SpawnPos);
 	~Enemy();
 
