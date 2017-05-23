@@ -12,6 +12,7 @@ AI::AI()
 	
 	this->timer.initialize();
 }
+
 AI::~AI()
 {
 }
@@ -191,6 +192,7 @@ void AI::moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy *self)
 {
 	self->moveTowardsPosition(playerPosition);
 }
+
 void AI::moveAwayFromPlayer(XMFLOAT3 playerPosition, Enemy *self)
 {
 	self->avoidPlayer(playerPosition);
@@ -216,7 +218,6 @@ XMMATRIX AI::rotate(XMFLOAT3 playerPos, Enemy &self)
 
 	return R;
 }
-
 
 btVector3 AI::collisionEdge(BoundingBox sides[], Enemy* self)
 {
