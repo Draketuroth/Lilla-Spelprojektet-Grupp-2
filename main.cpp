@@ -127,7 +127,6 @@ int RunApplication()
 				windowMessage.message = WM_QUIT;
 				break;
 			case START_GAME:
-				//sceneContainer.character.setAlive(true);
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateEnemies();
