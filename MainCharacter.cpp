@@ -37,7 +37,7 @@ void MainCharacter::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
-void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer) {
+void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer, float radius, float height) {
 
 	currentAnimIndex = 0;
 
@@ -46,7 +46,7 @@ void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosit
 
 	// Base character functions
 	createBuffers(graphicDevice, vertices, animHandler, skinData);
-	CreatePlayerBoundingBox(0.10, this->getPos(), 0.4, 0.5, bulletPhysicsHandle);
+	CreatePlayerBoundingBox(0.10, this->getPos(), radius, height, bulletPhysicsHandle);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 
 	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
@@ -269,7 +269,7 @@ XMMATRIX MainCharacter::rotate(HWND windowhandle)
 
 bool MainCharacter::isGrounded()
 {
-	if (this->getPos().y < 1.7f)
+	if (this->getPos().y < 1.0f)
 	{
 		return false;
 	}

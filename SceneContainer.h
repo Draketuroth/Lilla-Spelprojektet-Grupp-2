@@ -141,7 +141,19 @@ public:
 
 	float RandomNumber(float Minimum, float Maximum);
 
-	bool respawnDelay;
+	//Bounding "box" values
+
+	//main Character
+	float getRadiusCharacter();
+	float getHeightCharacter();
+
+	//lava enemy
+	float getRadiusLava();
+	float getHeightLava();
+
+	//ice enemy
+	float getRadiusIce();
+	float getHeightIce();
 
 	//------------------------------------------------------------//
 	// RE-INTIALIZE
@@ -212,6 +224,8 @@ public:
 	vector<Vertex_Bone>lavaEnemyVertices;
 
 	float waveDelay;
+
+	bool respawnDelay; 
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS

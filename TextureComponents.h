@@ -29,6 +29,8 @@ public:
 	ID3D11ShaderResourceView* menuResources[9];
 	ID3D11ShaderResourceView* texArr[2];
 	ID3D11SamplerState* samplerArr[2];
+	
+
 
 	ID3D11SamplerState* shadowSampler;
 	ID3D11Texture2D* ShadowMap;
