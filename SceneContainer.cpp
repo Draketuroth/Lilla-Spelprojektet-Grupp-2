@@ -189,7 +189,7 @@ void SceneContainer::InitializeEnemies(ID3D11Device* graphicDevice, BulletCompon
 		initSpawnPos.y = 2;
 		initSpawnPos.z = RandomNumber(-15, 15);
 
-		if(i < nrOfIceEnemies){
+		if (i < nrOfIceEnemies){
 
 		enemies[i] = new Enemy(0, { initSpawnPos.x, initSpawnPos.y, initSpawnPos.z });
 		enemies[i]->Spawn(gHandler.gDevice, bulletPhysicsHandler, i);
@@ -873,14 +873,18 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 		
 		XMFLOAT3 vel = { velVec.getX(), velVec.getY(), velVec.getZ()};
 
+		if (enemies[i]->attackFlag == false) {
 
-		if ( vel.x < 0.1 && vel.z < 0.1)
-		{
-			enemies[i]->currentAnimIndex = 1;
-		}
-		else
-		{ 
-			enemies[i]->currentAnimIndex = 0;
+		
+			if ( vel.x < 0.1 && vel.z < 0.1)
+			{
+				enemies[i]->currentAnimIndex = 1;
+			}
+			else
+			{ 
+				enemies[i]->currentAnimIndex = 0;
+			}
+
 		}
 
 
@@ -903,19 +907,19 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 			bHandler.cubeObjects[i].breakTimer += timer.getDeltaTime();
 
 			// If the break timer is greater than five...
-			if (bHandler.cubeObjects[i].breakTimer > 5) {
+			if (bHandler.cubeObjects[i].breakTimer > BREAK_LIMIT) {
 
 				// Add delta time to platform descension timer
 				bHandler.cubeObjects[i].descensionTimer += timer.getDeltaTime();
 
 				// If descension timer is greater than 20...
-				if (bHandler.cubeObjects[i].descensionTimer >= 20) {
+				if (bHandler.cubeObjects[i].descensionTimer >= DESCENSION_LIMIT) {
 
 					// Add delta time to to ascension timer
 					bHandler.cubeObjects[i].ascensionTimer += timer.getDeltaTime();
 
 					// If ascension timer is greater than 20...
-					if (bHandler.cubeObjects[i].ascensionTimer >= 20) {
+					if (bHandler.cubeObjects[i].ascensionTimer >= ASCENSION_LIMIT) {
 
 						// Restore platform
 						bHandler.cubeObjects[i].Hit = false;

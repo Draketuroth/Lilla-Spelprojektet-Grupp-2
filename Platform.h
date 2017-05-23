@@ -12,6 +12,15 @@
 #include "BulletComponents.h"
 #include "FileImporter.h"
 
+// Default 20
+#define ASCENSION_LIMIT 20
+
+// Default 20
+#define DESCENSION_LIMIT 20
+
+// Default 5
+#define BREAK_LIMIT 5
+
 class Platform {
 
 public:

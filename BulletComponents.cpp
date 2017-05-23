@@ -41,22 +41,31 @@ void BulletComponents::ReleaseAll() {
 
 	for (UINT i = 0; i < rigidBodies.size(); i++) {
 
-		bulletDynamicsWorld->removeCollisionObject(rigidBodies[i]);
-		btMotionState* motion = rigidBodies[i]->getMotionState();
-		btCollisionShape* shape = rigidBodies[i]->getCollisionShape();
-		delete rigidBodies[i];
-		delete motion;
-		delete shape;
+		if(rigidBodies[i]->isInWorld() && i < 227){
+
+			bulletDynamicsWorld->removeCollisionObject(rigidBodies[i]);
+			btMotionState* motion = rigidBodies[i]->getMotionState();
+			btCollisionShape* shape = rigidBodies[i]->getCollisionShape();
+			delete rigidBodies[i];
+			delete motion;
+			delete shape;
+
+		}
+
 	}
 
 	for (UINT i = 0; i < enemyRigidBodies.size(); i++) {
 
-		bulletDynamicsWorld->removeCollisionObject(enemyRigidBodies[i]);
-		btMotionState* motion = enemyRigidBodies[i]->getMotionState();
-		btCollisionShape* shape = enemyRigidBodies[i]->getCollisionShape();
-		delete enemyRigidBodies[i];
-		delete motion;
-		delete shape;
+		if (enemyRigidBodies[i]->isInWorld()) {
+
+			bulletDynamicsWorld->removeCollisionObject(enemyRigidBodies[i]);
+			btMotionState* motion = enemyRigidBodies[i]->getMotionState();
+			btCollisionShape* shape = enemyRigidBodies[i]->getCollisionShape();
+			delete enemyRigidBodies[i];
+			delete motion;
+			delete shape;
+		}
+
 	}
 
 	delete bulletDispatcher;
