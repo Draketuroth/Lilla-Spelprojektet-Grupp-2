@@ -83,9 +83,9 @@ void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 
 	float time = timer.getDeltaTime();
 
-	XMFLOAT3 lookat = { playerPos.x, playerPos.y , playerPos.z };
+	XMFLOAT3 lookat = { playerPos.x, 0 , playerPos.z };
 	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
-	XMFLOAT3 oldpos = this->getPos();
+	XMFLOAT3 oldpos = { this->getPos().x, 0, this->getPos().z };
 	
 	// Calculate rotation to player
 	XMVECTOR target = XMLoadFloat3(&lookat);
@@ -96,13 +96,14 @@ void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 	XMVECTOR zAxis = XMVector3Normalize(XMVectorSubtract(target, enemyPos));
 	XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross(upVector, zAxis));
 	XMVECTOR yAxis = XMVector3Cross(zAxis, xAxis);
-	XMVECTOR zero = { 0, 0, 0 };
 
 	// Important not to forget the w component of the matrix to allow translation
 	XMVECTOR lastRow = { 0.0f, 0.0f, 0.0f , 1.0f};
 
-	// Set rotation and scale matrix
+	// Set rotation matrix
+	
 	XMMATRIX R = XMMATRIX(xAxis, yAxis, zAxis, lastRow);
+
 	updateWorldMatrix(R, scaling);
 	
 	XMMATRIX transform;
@@ -222,7 +223,7 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	transform.setFromOpenGLMatrix((float*)&t);
 
 	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
-	btVector3 inertia(0, 0, 0);
+	btVector3 inertia(2, 2, 2);
 
 	btMotionState* motion = new btDefaultMotionState(transform);
 	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, boxShape, inertia);
@@ -258,6 +259,7 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 		btTransform transform =fireBall.projectileRigidBody->getCenterOfMassTransform();
 		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.0f, getPos().z));
 		fireBall.projectileRigidBody->setWorldTransform(transform);
+		hasProjectile = true;
 	}
 	else
 	{
