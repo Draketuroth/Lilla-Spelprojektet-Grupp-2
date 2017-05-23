@@ -48,6 +48,7 @@ public:
 	float rangedTimer;
 	float rangedCd;
 
+
 private:
 	
 	int Type;
