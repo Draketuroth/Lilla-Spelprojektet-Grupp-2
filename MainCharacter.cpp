@@ -39,7 +39,6 @@ void MainCharacter::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
 void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer, float radius, float height) {
 
-	setPos(XMFLOAT3(0, 20, 0));
 	currentAnimIndex = 0;
 
 	// Main character function
