@@ -229,7 +229,7 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	transform.setFromOpenGLMatrix((float*)&t);
 
 	btSphereShape* sphereShape = new btSphereShape(1);
-	btVector3 inertia(1, 1, 1);
+	btVector3 inertia(0, 0, 0);
 
 	btMotionState* motion = new btDefaultMotionState(transform);
 	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, sphereShape, inertia);
