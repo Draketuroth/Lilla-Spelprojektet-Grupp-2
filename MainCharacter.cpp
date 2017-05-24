@@ -3,7 +3,7 @@
 #include"Window.h"
 
 MainCharacter::MainCharacter()
-	:CharacterBase(true, 10, 5.0f, 1, {0, 2, -5}, XMMatrixIdentity())
+	:CharacterBase(true, 10, 5.0f, 1, {0, 2, 0}, XMMatrixIdentity())
 {
 	currentHealth = 10;
 	cameraDistanceY = 8.0f;
@@ -20,6 +20,9 @@ MainCharacter::MainCharacter()
 	this->shootTimer = 0.0f;
 	this->deathCountdown = 0.0f;
 
+	this->renderRay = false;
+	this->rayCounter = 0.1f;
+
 	camera.SetPosition(this->getPos().x, cameraDistanceY, this->getPos().z - cameraDistanceZ);
 
 	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
@@ -34,6 +37,7 @@ MainCharacter::~MainCharacter()
 void MainCharacter::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
 	SAFE_RELEASE(vertexBuffer);
+	SAFE_RELEASE(rayBuffer);
 	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
@@ -360,7 +364,7 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 }
 
-void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler, float enemyTimePoses[30])
+void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents &gHandler, BufferComponents &bHandler, float enemyTimePoses[30])
 {
 
 	XMFLOAT3 start, end;
@@ -373,6 +377,7 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 	if (GetAsyncKeyState(MK_RBUTTON) && !this->shooting && this->shootTimer <= 0)
 	{
+		renderRay = true;
 		playerAnimTimePos = 0;
 		attackSound.setBuffer(soundBuffer[0]);
 		attackSound.play();
@@ -403,16 +408,16 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		
 		XMFLOAT3 direction;
 		XMStoreFloat3(&direction, directionVec);
-		
-		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.2f, direction.z * 50));
+		float Yvar = 1.4f;
+		btCollisionWorld::ClosestRayResultCallback rayCallBack(btVector3(newOrigin.x, Yvar, newOrigin.z), btVector3(this->getPos().x + (direction.x * 20), Yvar, this->getPos().z + (direction.z * 20)));
 		rayCallBack.m_collisionFilterGroup = COL_RAY;// Making the ray a collisiontype COL_RAY
 		rayCallBack.m_collisionFilterMask = COL_ENEMY;//Only checks collision with Enemies
-		world->rayTest(btVector3(newOrigin.x, 1.2f, newOrigin.z), btVector3(direction.x * 50, 1.5f, direction.z * 50), rayCallBack);
+		world->rayTest(btVector3(newOrigin.x, Yvar, newOrigin.z), btVector3(this->getPos().x + (direction.x * 20), Yvar, this->getPos().z + (direction.z * 20)), rayCallBack);
 		
-		start = XMFLOAT3{ newOrigin.x, 1.2f, newOrigin.z };
-		end = XMFLOAT3{ direction.x * 50, 1.2f, direction.z * 50 };
+		start = XMFLOAT3{ newOrigin.x, Yvar, newOrigin.z };
+		end = XMFLOAT3{ direction.x * 50, Yvar, direction.z * 50 };
 		//Drawing the ray for debug purposes
-		
+		cout << "Direction X: " << direction.x << "  Y:  " << direction.y << "  Z:  " << direction.z << endl;
 		if (rayCallBack.hasHit())
 		{
 			
@@ -442,13 +447,24 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 				enemyTimePoses[i] = 0.0f;
 				cout << "Enemy Deleted\n";
 			}
-			
 		}
+		XMFLOAT3 dir = XMFLOAT3(direction.x * 10, Yvar, direction.z * 10);
+		XMFLOAT3 endpos = XMFLOAT3(this->getPos().x + dir.x, this->getPos().y, this->getPos().z + dir.z);
+
+		GunBuffer(XMFLOAT3(newOrigin.x, Yvar, newOrigin.z), endpos, gHandler);
 	}
 
 	if (this->shooting)
 	{
-	
+		if (this->rayCounter > 0 && renderRay)
+		{
+			this->rayCounter -= timer.getDeltaTime();
+		}
+		else
+		{
+			this->renderRay = false;
+			this->rayCounter = 0.1f;
+		}
 		if (this->shootTimer > 0)
 		{
 			this->shootTimer -= timer.getDeltaTime();
@@ -457,7 +473,6 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 		{
 			this->shooting = false;
 			this->shotFlag = false;
-			
 		}
 	}
 	
@@ -472,6 +487,39 @@ void MainCharacter::DeathTimer()
 	timer.updateCurrentTime();
 }
 
+bool MainCharacter::GunBuffer(XMFLOAT3 start,XMFLOAT3 end, GraphicComponents &gHandler)
+{
+	HRESULT hr;
+
+
+	RayVertex gunRay[2] =
+	{
+		start, end
+	};
+
+
+
+
+
+
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(RayVertex) * 2;
+
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = &gunRay;
+	hr = gHandler.gDevice->CreateBuffer(&bufferDesc, &data, &rayBuffer);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+}
 
 
 //Don't need this

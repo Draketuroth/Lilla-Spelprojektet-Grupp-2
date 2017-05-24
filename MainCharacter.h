@@ -29,12 +29,12 @@ public:
 
 	XMMATRIX rotate(HWND windowhandle);
 	void meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemyArray, btDynamicsWorld* bulletDynamicsWorld, float enemyTimePoses[30]);
-	void rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents gHandler, BufferComponents bHandler, float enemyTimePoses[30]);
+	void rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy*> enemies, btDynamicsWorld* world, GraphicComponents &gHandler, BufferComponents &bHandler, float enemyTimePoses[30]);
 
 	bool isGrounded();
 	void DeathTimer();
 	
-
+	ID3D11Buffer* rayBuffer;
 	Camera camera;
 
 	float cameraDistanceY;
@@ -64,11 +64,19 @@ public:
 
 	float playerAnimTimePos;
 
+	bool renderRay;
+	float rayCounter;
+	
+
 	sf::Sound attackSound;
 	sf::SoundBuffer soundBuffer[2];
 
 
 	int currentHealth;
+
+	bool GunBuffer(XMFLOAT3 start, XMFLOAT3 end, GraphicComponents &gHandler);
+
+
 	
 	//Don't need this but it contains code.
 	//XMVECTOR getPlane();

@@ -82,6 +82,10 @@ public:
 	ID3D11VertexShader* gShadowIceVertex;
 	ID3D11InputLayout* gShadowIceLayout;
 
+	ID3D11VertexShader* rayVertexShader;
+	ID3D11PixelShader* rayPixelShader;
+	ID3D11InputLayout* rayInputLayout;
+
 
 
 	bool InitalizeDirect3DContext(HWND &windowHandle);	// Function called to initalize the necessary components, as listen below
@@ -96,7 +100,7 @@ public:
 	bool CreateStandardShaders();
 	bool CreatePlatformShaders();
 	bool CreateFortressShader();
-
+	bool CreateRayShaders();
 	bool CreateIceEnemyShaders();
 	bool CreateLavaEnemyShaders();
 

@@ -255,7 +255,7 @@ public:
 	void renderIceEnemies();
 	void renderLavaEnemies();
 	void renderShadowMap();
-
+	void renderRay();
 	void renderLava();
 
 	void renderProjectile();
