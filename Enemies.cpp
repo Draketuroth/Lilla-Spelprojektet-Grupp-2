@@ -243,14 +243,14 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 	btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
 	float fireBallDistance = enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
 
-	if (fireBallDistance > 2 && !rangedAttack)
+	if (fireBallDistance > 2 && !this->rangedAttack)
 	{
 		btTransform transform = fireBall.projectileRigidBody->getCenterOfMassTransform();
 		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.5f, getPos().z));
 		fireBall.projectileRigidBody->setWorldTransform(transform);
 	}
 
-	if (!rangedAttack && rangedTimer <= 0)
+	if (!this->rangedAttack && this->rangedTimer <= 0)
 	{
 		this->rangedAttack = true;
 		this->rangedTimer = rangedCd;
@@ -265,7 +265,7 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 		fireBall.projectileRigidBody->setFriction(3);
 	}
 
-	if (rangedAttack)
+	if (this->rangedAttack)
 	{
 		if (this->rangedTimer > 0){
 
@@ -275,8 +275,9 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 
 		else
 		{
+
 			this->rangedAttack = false;
-			attackFlag = false;
+			this->attackFlag = false;
 
 		}
 	}

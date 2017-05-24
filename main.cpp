@@ -403,6 +403,7 @@ void updateEnemies() {
 				else {
 
 					sceneContainer.enemies[i]->currentAnimIndex = 2;
+					sceneContainer.enemies[i]->fireBall.worldMatrix = XMMatrixTranslation(0.0f, -20.0f, 0.0f);
 
 					// Update lava enemy physics
 					XMMATRIX scaling = XMMatrixScaling(0.6, 0.6, 0.6);
