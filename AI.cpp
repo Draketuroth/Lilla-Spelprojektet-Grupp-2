@@ -5,10 +5,6 @@ AI::AI()
 	this->attacking = true;
 	this->attackTimer = 1.0;
 	this->attackCd = 1.5;
-
-	this->rangedAttack = true;
-	this->rangedTimer = 10.0;
-	this->rangedCd = 5.0;
 	
 	this->timer.initialize();
 }
@@ -32,7 +28,7 @@ void AI::iceAI(MainCharacter &player, Enemy* self, float enemyTimePos)
 	{
 		moveAwayFromPlayer(player.getPos(), self);
 	}
-	else if (self->getHealth() > 2 && distance > 2)
+	else if (self->getHealth() > 1 && distance > 2)
 	{
 		moveTowardsPlayer(player.getPos(), self);
 	}
