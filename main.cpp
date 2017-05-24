@@ -127,12 +127,12 @@ int RunApplication()
 				windowMessage.message = WM_QUIT;
 				break;
 			case START_GAME:
-				//sceneContainer.character.setAlive(true);
 				menuState.checkGameState();
 				updateCharacter(windowHandle);
 				updateEnemies();
 				updateBuffers();
 				lavamovmentUpdate();
+
 				sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->stepSimulation(deltaTime);
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
@@ -189,7 +189,7 @@ int RunApplication()
 
 					if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
 
-					if (sceneContainer.bHandler.cubeObjects[i].breakTimer < 5){
+					if (sceneContainer.bHandler.cubeObjects[i].breakTimer < BREAK_LIMIT){
 
 						sceneContainer.bHandler.cubeObjects[i].platformBreaking();
 
@@ -197,7 +197,7 @@ int RunApplication()
 
 					else {
 
-						if (sceneContainer.bHandler.cubeObjects[i].descensionTimer < 20) {
+						if (sceneContainer.bHandler.cubeObjects[i].descensionTimer < DESCENSION_LIMIT) {
 
 							sceneContainer.bHandler.cubeObjects[i].platformDecension();
 
@@ -388,6 +388,12 @@ void updateEnemies() {
 					currentAnimationLength = sceneContainer.lavaEnemyFile.skinnedMeshes[0].hierarchy[0].Animations[currentAnimIndex].Length;
 
 					if (currentEnemyTimePos >= currentAnimationLength) {
+
+						if (sceneContainer.enemies[i]->currentAnimIndex == 3) {
+
+							sceneContainer.enemies[i]->currentAnimIndex = 0;
+							sceneContainer.enemies[i]->attackFlag = false;
+						}
 
 						sceneContainer.animHandler.enemyTimePos[i] = 0.0f;
 					}
@@ -588,17 +594,17 @@ void PlatformCollisionCheck(){
 		btRigidBody* sphereRigidBody = new btRigidBody(info);
 
 		//int arenaCollideWith = COL_PLAYER | COL_ENEMY;
-		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, 0);
+		//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, 0);
 
 		for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
 
 			MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
 			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
-
+			
 		}
 
 		// Delete the sphere rigid body 
-		sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
+		//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
 		btMotionState* destructMotion = sphereRigidBody->getMotionState();
 		btCollisionShape* destructShape = sphereRigidBody->getCollisionShape();
 
@@ -609,4 +615,6 @@ void PlatformCollisionCheck(){
 	}
 
 }
+
+
 

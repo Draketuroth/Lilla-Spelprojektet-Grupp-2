@@ -5,13 +5,10 @@ AI::AI()
 	this->attacking = true;
 	this->attackTimer = 1.0;
 	this->attackCd = 1.5;
-
-	this->rangedAttack = true;
-	this->rangedTimer = 10.0;
-	this->rangedCd = 5.0;
 	
 	this->timer.initialize();
 }
+
 AI::~AI()
 {
 }
@@ -31,7 +28,7 @@ void AI::iceAI(MainCharacter &player, Enemy* self, float enemyTimePos)
 	{
 		moveAwayFromPlayer(player.getPos(), self);
 	}
-	else if (self->getHealth() > 2 && distance > 2)
+	else if (self->getHealth() > 1 && distance > 2)
 	{
 		moveTowardsPlayer(player.getPos(), self);
 	}
@@ -139,19 +136,15 @@ void AI::attackMelee(MainCharacter &player, Enemy* self, float enemyTimePos)
 
 void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bulletPhysicsHandler, float enemyTimePos)
 {
+	
 
-	if (!rangedAttack && rangedTimer <= 0)
-	{
+	/*if (!rangedAttack && rangedTimer <= 0)
+	{*/
 		enemyTimePos = 0.0f;
-		rangedAttack = true;
+		/*rangedAttack = true;*/
 		self->attackFlag = true;
 
-		rangedTimer = rangedCd;
-
-		btTransform transform = self->fireBall.projectileRigidBody->getCenterOfMassTransform();
-		transform.setOrigin(btVector3(self->getPos().x, self->getPos().y + 2, self->getPos().z));
-		self->fireBall.projectileRigidBody->setWorldTransform(transform);
-
+		/*rangedTimer = rangedCd;*/
 
 		//----------Räkna ut kastet--------------------------------------------------------------
 		
@@ -170,12 +163,16 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 		float v0y = v0 * sin(45);	//kraften i y-led	
 
 		//---------------------------------------------------------------------------------------
+		
 
+		/*btVector3 pos = { self->getPos().x, self->getPos().y, self->getPos().z };
+		float fireBallDistance = pos.distance(self->fireBall.projectileRigidBody->getCenterOfMassPosition());*/
+	
 		self->shootProjectile(v0x, v0y, dir);
 
-	}
+	/*}*/
 
-	if (rangedAttack)
+	/*if (rangedAttack)
 	{
 		if (rangedTimer > 0)
 			rangedTimer -= timer.getDeltaTime();
@@ -184,14 +181,14 @@ void AI::attackRanged(MainCharacter &player, Enemy* self, BulletComponents &bull
 			rangedAttack = false;
 			self->attackFlag = false;
 		}
-		//play enemy attack animation here
-	}
+	}*/
 }
 
 void AI::moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy *self)
 {
 	self->moveTowardsPosition(playerPosition);
 }
+
 void AI::moveAwayFromPlayer(XMFLOAT3 playerPosition, Enemy *self)
 {
 	self->avoidPlayer(playerPosition);
@@ -217,7 +214,6 @@ XMMATRIX AI::rotate(XMFLOAT3 playerPos, Enemy &self)
 
 	return R;
 }
-
 
 btVector3 AI::collisionEdge(BoundingBox sides[], Enemy* self)
 {

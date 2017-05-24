@@ -1,21 +1,19 @@
 #include "Enemies.h"
 
-Enemy::Enemy()
-	:CharacterBase()
-{
-	this->Type = 0;
-	this->SpawnPos = { 0,0,0 };
-
-}
 
 Enemy::~Enemy()
 {
 
 }
 
-Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
+Enemy::Enemy(int Type, XMFLOAT3 SpawnPos)
 	:CharacterBase(true, 5, 5.0f, 1,this->getPos(), XMMatrixIdentity())
 {
+	this->timer.initialize();
+
+	this->rangedAttack = false;
+	this->rangedTimer = 0.0f;
+	this->rangedCd = 4.0f;
 	
 	this->Type = Type;
 	this->setPos(SpawnPos);
@@ -25,6 +23,7 @@ Enemy::Enemy(int Type,XMFLOAT3 SpawnPos)
 void Enemy::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
 	//SAFE_RELEASE(vertexBuffer);
+	//this->rigidBody->forceActivationState(WANTS_DEACTIVATION);
 	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
@@ -62,10 +61,10 @@ void Enemy::setSpawnPos(XMFLOAT3 SpawnPos)
 	this->SpawnPos = SpawnPos;
 }
 
-void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, int enemyIndex)
+void Enemy::Spawn(ID3D11Device* graphicDevice, BulletComponents &bulletPhysicsHandle, int enemyIndex, float radius, float height)
 {
 	currentAnimIndex = 0;
-	CreateEnemyBoundingBox(0.10, this->getPos(), 0.25, 0.2 , bulletPhysicsHandle, enemyIndex);
+	CreateEnemyBoundingBox(0.10, this->getPos(), radius, height, bulletPhysicsHandle, enemyIndex);
 	this->rigidBody->setIslandTag(characterRigid);//This is for checking intersection ONLY between the projectile of the player and any possible enemy, not with platforms or other rigid bodies
 	
 }
@@ -82,9 +81,9 @@ void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 
 	float time = timer.getDeltaTime();
 
-	XMFLOAT3 lookat = { playerPos.x, playerPos.y , playerPos.z };
+	XMFLOAT3 lookat = { playerPos.x, 0 , playerPos.z };
 	XMVECTOR positionVec = XMLoadFloat3(&this->getPos());
-	XMFLOAT3 oldpos = this->getPos();
+	XMFLOAT3 oldpos = { this->getPos().x, 0, this->getPos().z };
 	
 	// Calculate rotation to player
 	XMVECTOR target = XMLoadFloat3(&lookat);
@@ -95,13 +94,14 @@ void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 	XMVECTOR zAxis = XMVector3Normalize(XMVectorSubtract(target, enemyPos));
 	XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross(upVector, zAxis));
 	XMVECTOR yAxis = XMVector3Cross(zAxis, xAxis);
-	XMVECTOR zero = { 0, 0, 0 };
 
 	// Important not to forget the w component of the matrix to allow translation
 	XMVECTOR lastRow = { 0.0f, 0.0f, 0.0f , 1.0f};
 
-	// Set rotation and scale matrix
+	// Set rotation matrix
+	
 	XMMATRIX R = XMMATRIX(xAxis, yAxis, zAxis, lastRow);
+
 	updateWorldMatrix(R, scaling);
 	
 	XMMATRIX transform;
@@ -210,7 +210,7 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 {
-	XMFLOAT3 projectilePos = { this->getPos().x, 4, this->getPos().z };
+	XMFLOAT3 projectilePos = { this->getPos().x, -5, this->getPos().z };
 	XMFLOAT3 extents = { 0.3f, 0.3f, 0.3f };
 
 	XMMATRIX translation = XMMatrixTranslation(projectilePos.x, projectilePos.y, projectilePos.z);
@@ -220,11 +220,11 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	btTransform transform;
 	transform.setFromOpenGLMatrix((float*)&t);
 
-	btBoxShape* boxShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
+	btSphereShape* sphereShape = new btSphereShape(1);
 	btVector3 inertia(0, 0, 0);
 
 	btMotionState* motion = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, boxShape, inertia);
+	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, sphereShape, inertia);
 
 	fireBall.projectileRigidBodyExtents = extents;
 
@@ -239,38 +239,54 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 
 void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 {
-	
-
-	float forceVz = forceVx * direction.z;
-	forceVx = forceVx * direction.x;
-	//forceVy *= 0.7;
-	
-	btVector3 force = { forceVx, forceVy, forceVz };
-
 	XMFLOAT3 ePos = this->getPos();
 	btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
-	
+	float fireBallDistance = enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
 
-	float fireBallDistance =  enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
-
-
-	if (fireBallDistance <= 4)
+	if (fireBallDistance > 2 && !rangedAttack)
 	{
-		fireBall.projectileRigidBody->applyCentralForce(force);
-		fireBall.projectileRigidBody->setFriction(3);	
+		btTransform transform = fireBall.projectileRigidBody->getCenterOfMassTransform();
+		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.5f, getPos().z));
+		fireBall.projectileRigidBody->setWorldTransform(transform);
 	}
+
+	if (!rangedAttack && rangedTimer <= 0)
+	{
+		this->rangedAttack = true;
+		this->rangedTimer = rangedCd;
 	
-	//On collision explode and teleport away.
-	//Teleport to enemy when it's time to throw again
+		float forceVz = forceVx * direction.z ;
+		forceVx = forceVx * direction.x;
+		forceVy *= 1.3f;
+
+		btVector3 force = { forceVx, forceVy, forceVz };
+
+		fireBall.projectileRigidBody->applyCentralForce(force);
+		fireBall.projectileRigidBody->setFriction(3);
+	}
+
+	if (rangedAttack)
+	{
+		if (this->rangedTimer > 0){
+
+			this->rangedTimer -= timer.getDeltaTime();
+
+		}
+
+		else
+		{
+			this->rangedAttack = false;
+			attackFlag = false;
+
+		}
+	}
+	timer.updateCurrentTime();
 }
 
 void Enemy::updateProjectile()
 {
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
-	XMMATRIX rigidBodPos;
-	XMVECTOR t, s, r;
-	XMFLOAT3 bombPos;
 
 	// Gather the rigid body matrix
 	btTransform btRigidTransform;
@@ -287,8 +303,6 @@ void Enemy::updateProjectile()
 
 	// Build the new world matrix
 	fireBall.worldMatrix = XMMatrixMultiply(scaling, transform);
-	
-	
 	
 }
 

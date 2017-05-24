@@ -5,6 +5,7 @@
 #include "Enemies.h"
 #include "BulletCollision\CollisionDispatch\btGhostObject.h"
 
+
 class MainCharacter: public CharacterBase
 {
 private:
@@ -16,7 +17,7 @@ public:
 
 	void releaseAll(btDynamicsWorld* bulletDynamicsWorld);
 
-	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer);
+	void initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer, float radius, float height);
 	void update(HWND windowhandle);
 
 	void CharacterMove(HWND windowhandle);

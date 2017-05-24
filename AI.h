@@ -12,10 +12,6 @@ private:
 	float attackTimer;
 	float attackCd;
 
-	bool rangedAttack;
-	float rangedTimer;
-	float rangedCd;
-
 	Timer timer;
 
 public:
