@@ -274,14 +274,12 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 		if (this->rangedTimer > 0){
 
 			this->rangedTimer -= timer.getDeltaTime();
-
 		}
 
 		else
 		{
 			this->rangedAttack = false;
 			attackFlag = false;
-
 		}
 	}
 	timer.updateCurrentTime();
