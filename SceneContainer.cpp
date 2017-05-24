@@ -278,7 +278,7 @@ void SceneContainer::RespawnEnemies() {
 
 	
 
-	if (nrOfEnemies % 3 == 0 && nrOfLavaEnemies < 15)
+	if (nrOfEnemies % 3 == 0 && nrOfLavaEnemies < 15 || nrOfIceEnemies == 15 && nrOfLavaEnemies < 15)
 	{
 		nrOfLavaEnemies++;
 		nrOfEnemies++;
@@ -322,7 +322,7 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 {
 	HRESULT hr;
 
-	for (UINT i = 0; i < projectileFile.standardMeshes[0].vertices.size(); i++)
+	/*for (UINT i = 0; i < projectileFile.standardMeshes[0].vertices.size(); i++)
 	{
 
 		StandardVertex vertex;
@@ -339,7 +339,7 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 		vertex.nz = projectileFile.standardMeshes[0].vertices[i].normal[2];
 
 		ExplosionVertices.push_back(vertex);
-	}
+	}*/
 
 	for (UINT i = 0; i < projectileFile.standardMeshes[1].vertices.size(); i++)
 	{
@@ -362,24 +362,24 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 	
 
 	
+/*
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
-	//D3D11_BUFFER_DESC bufferDesc;
-	//ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(StandardVertex) * ExplosionVertices.size();
 
-	//memset(&bufferDesc, 0, sizeof(bufferDesc));
-	//bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	//bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	//bufferDesc.ByteWidth = sizeof(StandardVertex) * ExplosionVertices.size();
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = &ExplosionVertices[0];
+	hr = gDevice->CreateBuffer(&bufferDesc, &data, &ExplosionVertexBuffer);
 
-	//D3D11_SUBRESOURCE_DATA data;
-	//ZeroMemory(&data, sizeof(data));
-	//data.pSysMem = &ExplosionVertices[0];
-	//hr = gDevice->CreateBuffer(&bufferDesc, &data, &ExplosionVertexBuffer);
+	if (FAILED(hr)) {
 
-	//if (FAILED(hr)) {
-
-	//	return false;
-	//}
+		return false;
+	}*/
 
 
 	D3D11_BUFFER_DESC bufferDesc2;

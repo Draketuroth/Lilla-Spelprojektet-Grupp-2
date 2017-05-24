@@ -156,7 +156,7 @@ bool HUDClass::setFont(ID3D11Device* &gDevice)
 	width = 25.0f / 256;
 	height = 32.0f / 256;
 	Vtxs = 4 * nrOfChars;
-	float posXleft = 0.0f, posYtop = 0.95f, posXright = 0.03f, posYbot = 0.9f;
+	float posXleft = 0.0f, posYtop = 0.95f, posXright = 0.025f, posYbot = 0.9f;
 	float uStart = 0, vStart = 0, uEnd = 0, vEnd = 0;
 	int index = 0;
 	
