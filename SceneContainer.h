@@ -227,6 +227,11 @@ public:
 
 	bool respawnDelay; 
 
+	/*btTransform projectileTransform;
+	projectileTransform.setIdentity();
+	projectileTransform.setOrigin(btVector3(0, -20, 0));
+	fireBall.projectileRigidBody->setWorldTransform(projectileTransform);*/
+
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
 	//------------------------------------------------------------//

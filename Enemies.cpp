@@ -223,7 +223,7 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 	transform.setFromOpenGLMatrix((float*)&t);
 
 	btSphereShape* sphereShape = new btSphereShape(1);
-	btVector3 inertia(1, 1, 1);
+	btVector3 inertia(0, 0, 0);
 
 	btMotionState* motion = new btDefaultMotionState(transform);
 	btRigidBody::btRigidBodyConstructionInfo info(0.1, motion, sphereShape, inertia);
@@ -269,15 +269,19 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 		this->hasProjectile = false;
 	}
 
-	
 	if (rangedAttack)
 	{
-		if (this->rangedTimer > 0)
+		if (this->rangedTimer > 0){
+
 			this->rangedTimer -= timer.getDeltaTime();
+
+		}
+
 		else
 		{
 			this->rangedAttack = false;
 			attackFlag = false;
+
 		}
 	}
 	timer.updateCurrentTime();
@@ -287,9 +291,6 @@ void Enemy::updateProjectile()
 {
 	XMMATRIX transform;
 	XMFLOAT4X4 data;
-	XMMATRIX rigidBodPos;
-	XMVECTOR t, s, r;
-	XMFLOAT3 bombPos;
 
 	// Gather the rigid body matrix
 	btTransform btRigidTransform;
