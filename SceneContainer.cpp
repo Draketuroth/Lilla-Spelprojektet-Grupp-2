@@ -13,7 +13,7 @@ SceneContainer::SceneContainer() {
 	character = MainCharacter();
 
 	this->nrOfIceEnemies = 2;
-	this->nrOfLavaEnemies = 2;
+	this->nrOfLavaEnemies = 0;
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
@@ -860,10 +860,13 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 		if(enemies[i]->getAlive() == true){
 
 			this->useAI(character, enemies[i], enemyTimePoses[i]);
+			this->enemies[i]->timer.updateCurrentTime();
 
 			if (enemies[i]->getType() == 1)
 			{
+				
 				enemies[i]->updateProjectile();
+				
 			}
 		}
 

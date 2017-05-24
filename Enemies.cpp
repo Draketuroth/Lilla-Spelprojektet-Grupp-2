@@ -13,7 +13,7 @@ Enemy::Enemy(int Type, XMFLOAT3 SpawnPos)
 
 	this->rangedAttack = false;
 	this->rangedTimer = 0.0f;
-	this->rangedCd = 4.0f;
+	this->rangedCd = 1.0f;
 	
 	this->Type = Type;
 	this->setPos(SpawnPos);
@@ -210,7 +210,7 @@ void Enemy::avoidPlayer(XMFLOAT3 position)
 
 void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 {
-	XMFLOAT3 projectilePos = { this->getPos().x, -5, this->getPos().z };
+	XMFLOAT3 projectilePos = { this->getPos().x, -20, this->getPos().z };
 	XMFLOAT3 extents = { 0.3f, 0.3f, 0.3f };
 
 	XMMATRIX translation = XMMatrixTranslation(projectilePos.x, projectilePos.y, projectilePos.z);
@@ -239,18 +239,26 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 
 void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 {
-	XMFLOAT3 ePos = this->getPos();
-	btVector3 enemyPos = { ePos.x, ePos.y, ePos.z };
-	float fireBallDistance = enemyPos.distance(fireBall.projectileRigidBody->getCenterOfMassPosition());
 
-	if (fireBallDistance > 2 && !rangedAttack)
+	// If enemy is not attacking, get back the projectile
+	if (!this->rangedAttack)
 	{
 		btTransform transform = fireBall.projectileRigidBody->getCenterOfMassTransform();
+		transform.setIdentity();
 		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.5f, getPos().z));
 		fireBall.projectileRigidBody->setWorldTransform(transform);
 	}
 
-	if (!rangedAttack && rangedTimer <= 0)
+	// If enemy is attacking, remove projectile after a given time
+	else if (this->rangedTimer < 0.7 && this->rangedAttack) {
+
+		btTransform projectileTransform;
+		projectileTransform.setIdentity();
+		projectileTransform.setOrigin(btVector3(0, -20, 0));
+		fireBall.projectileRigidBody->setWorldTransform(projectileTransform);
+	}
+
+	if (!this->rangedAttack && this->rangedTimer <= 0)
 	{
 		this->rangedAttack = true;
 		this->rangedTimer = rangedCd;
@@ -265,7 +273,7 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 		fireBall.projectileRigidBody->setFriction(3);
 	}
 
-	if (rangedAttack)
+	if (this->rangedAttack)
 	{
 		if (this->rangedTimer > 0){
 
@@ -275,11 +283,13 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 
 		else
 		{
+
 			this->rangedAttack = false;
-			attackFlag = false;
+			this->attackFlag = false;
 
 		}
 	}
+
 	timer.updateCurrentTime();
 }
 
@@ -305,8 +315,6 @@ void Enemy::updateProjectile()
 	fireBall.worldMatrix = XMMatrixMultiply(scaling, transform);
 	
 }
-
-
 
 //void Enemy::meleeAttacks(float distance)
 //{
