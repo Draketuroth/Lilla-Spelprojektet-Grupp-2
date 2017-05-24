@@ -56,6 +56,13 @@ void AI::fireAI(MainCharacter &player, Enemy* self, BulletComponents &bulletPhys
 	{
 		moveTowardsPlayer(player.getPos(), self);
 	}
+
+	btVector3 fireBallPosVec = self->fireBall.projectileRigidBody->getCenterOfMassPosition();
+	XMFLOAT3 fireBallPos = { fireBallPosVec.x(), fireBallPosVec.y(), fireBallPosVec.z() };
+	if (!self->hasProjectile && getDistance(fireBallPos, self->getPos()) < 5)
+	{
+		moveAwayFromPlayer(fireBallPos, self);
+	}
 }
 
 void AI::attackMelee(MainCharacter &player, Enemy* self, float enemyTimePos)
@@ -168,7 +175,7 @@ void AI::moveTowardsPlayer(XMFLOAT3 playerPosition, Enemy *self)
 
 void AI::moveAwayFromPlayer(XMFLOAT3 playerPosition, Enemy *self)
 {
-	self->avoidPlayer(playerPosition);
+	self->avoidPosition(playerPosition);
 }
 
 float AI::getDistance(XMFLOAT3 playerPos, XMFLOAT3 enemyPos)

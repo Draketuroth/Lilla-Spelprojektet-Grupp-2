@@ -32,7 +32,7 @@ public:
 	void EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling);
 
 	void moveTowardsPosition(XMFLOAT3 position);
-	void avoidPlayer(XMFLOAT3 position);
+	void avoidPosition(XMFLOAT3 position);
 
 	void createProjectile(BulletComponents &bulletPhysicsHandler);
 	void shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction);
@@ -47,6 +47,8 @@ public:
 	bool rangedAttack;
 	float rangedTimer;
 	float rangedCd;
+
+	bool hasProjectile;
 
 
 private:

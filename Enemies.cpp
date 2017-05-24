@@ -17,6 +17,8 @@ Enemy::Enemy(int Type, XMFLOAT3 SpawnPos)
 	
 	this->Type = Type;
 	this->setPos(SpawnPos);
+
+	this->hasProjectile = false;
 	
 }
 
@@ -168,7 +170,7 @@ void Enemy::moveTowardsPosition(XMFLOAT3 position)
 
 }
 
-void Enemy::avoidPlayer(XMFLOAT3 position)
+void Enemy::avoidPosition(XMFLOAT3 position)
 {
 	XMFLOAT3 myPos = this->getPos();
 	btVector3 positionAt = { myPos.x, myPos.y, myPos.z };
@@ -248,6 +250,7 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 		btTransform transform = fireBall.projectileRigidBody->getCenterOfMassTransform();
 		transform.setOrigin(btVector3(getPos().x, getPos().y + 1.5f, getPos().z));
 		fireBall.projectileRigidBody->setWorldTransform(transform);
+		this->hasProjectile = true;
 	}
 
 	if (!rangedAttack && rangedTimer <= 0)
@@ -263,6 +266,7 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 
 		fireBall.projectileRigidBody->applyCentralForce(force);
 		fireBall.projectileRigidBody->setFriction(3);
+		this->hasProjectile = false;
 	}
 
 	
