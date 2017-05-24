@@ -239,6 +239,7 @@ bool HUDClass::setFont(ID3D11Device* &gDevice)
 
 		return false;
 	}
+
 	return true;
 }
 

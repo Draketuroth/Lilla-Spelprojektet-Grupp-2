@@ -1094,9 +1094,15 @@ void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
 
+
 void SceneContainer::render() 
 {
 	clear();
+
+	if (character.renderRay)
+	{
+		renderRay();
+	}
 
 	renderShadowMap();
 	renderLava(); 
@@ -1113,6 +1119,22 @@ void SceneContainer::render()
 	renderScene();
 	drawHUD();
 	
+}
+void SceneContainer::renderRay()
+{
+	gHandler.gDeviceContext->VSSetShader(gHandler.rayVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->PSSetShader(gHandler.rayPixelShader, nullptr, 0);
+	
+	UINT32 vertexSize = sizeof(RayVertex);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &character.rayBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.rayInputLayout);
+
+	gHandler.gDeviceContext->Draw(2, 0);
+
 }
 
 bool SceneContainer::renderDeferred() {
@@ -1580,6 +1602,6 @@ float SceneContainer::getRadiusIce()
 
 float SceneContainer::getHeightIce()
 {
-	float height = ((iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax-10) - (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin +5));
+	float height = ((iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax -10) - (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin +5));
 	return height /10.0f;
 }
