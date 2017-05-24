@@ -948,6 +948,11 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 
 			incrementLevels();
 			RespawnEnemies();
+
+			if (character.getHealth() < 10)
+			{
+				character.setHealth(character.getHealth() + 1);
+			}
 		}
 	}
 	
