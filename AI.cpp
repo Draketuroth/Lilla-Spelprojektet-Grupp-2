@@ -206,19 +206,19 @@ btVector3 AI::collisionEdge(BoundingBox sides[], Enemy* self)
 
 	if (enemy.Intersects(sides[0]))
 	{
-		dir = { 0, 0, -1 };
+		dir = { 0, 0, -2 };
 	}
 	if (enemy.Intersects(sides[1]))
 	{
-		dir = { 0, 0, 1 };
+		dir = { 0, 0, 2 };
 	}
 	if (enemy.Intersects(sides[2]))
 	{
-		dir = { 1, 0, 0 };
+		dir = { 2, 0, 0 };
 	}
 	if (enemy.Intersects(sides[3]))
 	{
-		dir = { -1, 0, 0 };
+		dir = { -2, 0, 0 };
 	}
 
 	return dir;
