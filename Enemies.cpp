@@ -316,8 +316,6 @@ void Enemy::updateProjectile()
 	
 }
 
-
-
 //void Enemy::meleeAttacks(float distance)
 //{
 //	if (!attacking && attackTimer <= 0)
