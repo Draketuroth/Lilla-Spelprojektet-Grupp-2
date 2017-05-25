@@ -13,7 +13,7 @@ SceneContainer::SceneContainer() {
 	character = MainCharacter();
 
 	this->nrOfIceEnemies = 2;
-	this->nrOfLavaEnemies = 2;
+	this->nrOfLavaEnemies = 0;
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
