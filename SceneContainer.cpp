@@ -278,7 +278,7 @@ void SceneContainer::RespawnEnemies() {
 
 	
 
-	if (nrOfEnemies % 3 == 0 && nrOfLavaEnemies < 15)
+	if (nrOfEnemies % 3 == 0 && nrOfLavaEnemies < 15 || nrOfIceEnemies == 15 && nrOfLavaEnemies < 15)
 	{
 		nrOfLavaEnemies++;
 		nrOfEnemies++;
@@ -322,7 +322,7 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 {
 	HRESULT hr;
 
-	for (UINT i = 0; i < projectileFile.standardMeshes[0].vertices.size(); i++)
+	/*for (UINT i = 0; i < projectileFile.standardMeshes[0].vertices.size(); i++)
 	{
 
 		StandardVertex vertex;
@@ -339,7 +339,7 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 		vertex.nz = projectileFile.standardMeshes[0].vertices[i].normal[2];
 
 		ExplosionVertices.push_back(vertex);
-	}
+	}*/
 
 	for (UINT i = 0; i < projectileFile.standardMeshes[1].vertices.size(); i++)
 	{
@@ -362,24 +362,24 @@ bool SceneContainer::createProjectileBox(ID3D11Device* gDevice)
 	
 
 	
+/*
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
-	//D3D11_BUFFER_DESC bufferDesc;
-	//ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	memset(&bufferDesc, 0, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(StandardVertex) * ExplosionVertices.size();
 
-	//memset(&bufferDesc, 0, sizeof(bufferDesc));
-	//bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	//bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	//bufferDesc.ByteWidth = sizeof(StandardVertex) * ExplosionVertices.size();
+	D3D11_SUBRESOURCE_DATA data;
+	ZeroMemory(&data, sizeof(data));
+	data.pSysMem = &ExplosionVertices[0];
+	hr = gDevice->CreateBuffer(&bufferDesc, &data, &ExplosionVertexBuffer);
 
-	//D3D11_SUBRESOURCE_DATA data;
-	//ZeroMemory(&data, sizeof(data));
-	//data.pSysMem = &ExplosionVertices[0];
-	//hr = gDevice->CreateBuffer(&bufferDesc, &data, &ExplosionVertexBuffer);
+	if (FAILED(hr)) {
 
-	//if (FAILED(hr)) {
-
-	//	return false;
-	//}
+		return false;
+	}*/
 
 
 	D3D11_BUFFER_DESC bufferDesc2;
@@ -1094,9 +1094,15 @@ void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
 
+
 void SceneContainer::render() 
 {
 	clear();
+
+	if (character.renderRay)
+	{
+		renderRay();
+	}
 
 	renderShadowMap();
 	renderLava(); 
@@ -1113,6 +1119,22 @@ void SceneContainer::render()
 	renderScene();
 	drawHUD();
 	
+}
+void SceneContainer::renderRay()
+{
+	gHandler.gDeviceContext->VSSetShader(gHandler.rayVertexShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->PSSetShader(gHandler.rayPixelShader, nullptr, 0);
+	
+	UINT32 vertexSize = sizeof(RayVertex);
+	UINT32 offset = 0;
+
+	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &character.rayBuffer, &vertexSize, &offset);
+	gHandler.gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.rayInputLayout);
+
+	gHandler.gDeviceContext->Draw(2, 0);
+
 }
 
 bool SceneContainer::renderDeferred() {
@@ -1580,6 +1602,6 @@ float SceneContainer::getRadiusIce()
 
 float SceneContainer::getHeightIce()
 {
-	float height = ((iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax-10) - (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin +5));
+	float height = ((iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax -10) - (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin +5));
 	return height /10.0f;
 }
