@@ -278,7 +278,7 @@ void SceneContainer::RespawnEnemies() {
 
 	
 
-	if (nrOfEnemies % 3 == 0 && nrOfLavaEnemies < 15 || nrOfIceEnemies == 15 && nrOfLavaEnemies < 15)
+	if (nrOfEnemies % 2 == 0 && nrOfLavaEnemies < 15 || nrOfIceEnemies == 15 && nrOfLavaEnemies < 15)
 	{
 		nrOfLavaEnemies++;
 		nrOfEnemies++;
