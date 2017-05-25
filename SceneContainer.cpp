@@ -1602,6 +1602,9 @@ float SceneContainer::getRadiusIce()
 
 float SceneContainer::getHeightIce()
 {
-	float height = ((iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax -10) - (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin +5));
-	return height /10.0f;
+	//max höjd och min höjd ändrar värdena för att trycka ner karaktären i boxen
+	float height = ((iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMax -7) - (iceEnemyFile.skinnedMeshes[0].meshBoundingBox.yMin +4));
+	// måste delas för anars blir höjden som i maya
+	height = height / 5.0f;
+	return  height;
 }
