@@ -41,7 +41,7 @@ void BulletComponents::ReleaseAll() {
 
 	for (UINT i = 0; i < rigidBodies.size(); i++) {
 
-		if(rigidBodies[i]->isInWorld()/* && i < 227*/){
+		if(rigidBodies[i]->isInWorld()){
 
 			bulletDynamicsWorld->removeCollisionObject(rigidBodies[i]);
 			btMotionState* motion = rigidBodies[i]->getMotionState();
