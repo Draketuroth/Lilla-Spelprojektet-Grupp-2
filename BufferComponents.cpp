@@ -406,7 +406,7 @@ bool BufferComponents::DrawCubeRow(ID3D11Device* &gDevice, float xOffset, float 
 		// Platform Rigid Body only uses an identity matrix as its world matrix
 		btTransform transform;
 		XMFLOAT4X4 platFormWorldMatrix;
-		XMMATRIX platformTranslation = XMMatrixTranslation(xOffsetValue, yOffsetValue, zOffsetValue);
+		XMMATRIX platformTranslation =  XMMatrixTranslation(xOffsetValue, yOffsetValue, zOffsetValue);
 		XMStoreFloat4x4(&platFormWorldMatrix, platformTranslation);
 
 		transform.setFromOpenGLMatrix((float*)&platFormWorldMatrix);
