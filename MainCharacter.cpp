@@ -519,6 +519,8 @@ bool MainCharacter::GunBuffer(XMFLOAT3 start,XMFLOAT3 end, GraphicComponents &gH
 
 		return false;
 	}
+
+	return true;
 }
 
 

@@ -14,13 +14,14 @@ SamplerState shadowSampler : register(s1);
 //SamplerComparisonState shadowSampler : register(s1);
 Texture2D tex0 : register(t0);
 Texture2D shadowMap : register(t1);
+Texture2D tex1 : register(t2);
 
 struct PS_IN
 {
 	float3 Norm: NORMAL;
 	float2 Tex : TEXCOORD;
 	float4 Pos : SV_POSITION;
-	float3 WPos : WPOSITION;
+	float3 Random : WPOSITION;
 	float3 ViewPos : POSITION1;
 	float4 lPos : TEXCOORD1;
 };
@@ -48,6 +49,8 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	float3 texColor;
 	float4 color;
+	float4 damageColor;
+	float4 red = float4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	//float sum = 0;
 	//float x, y;
@@ -75,9 +78,31 @@ float4 PS_main(PS_IN input) : SV_Target
 
 
 	// Now the Sample state will sample the color output from the texture file so that we can return the correct color
-	texColor = tex0.Sample(texSampler, input.Tex).xyz;
 
-	color = float4(texColor, 1.0f);
+	if(input.Random.z == 0){
 
-	return color * shadowFactor;// * shadowCheck;
+		texColor = tex0.Sample(texSampler, input.Tex).xyz;
+
+		color = float4(texColor, 1.0f);
+
+	}
+
+	else {
+
+		texColor = tex1.Sample(texSampler, input.Tex).xyz;
+
+		color = float4(texColor, 1.0f);
+	}
+
+	if(input.Random.y == 1){
+
+		return color * shadowFactor;
+
+	}
+
+	else {
+
+		damageColor = lerp(color, red, 0.3);
+		return damageColor * shadowFactor;
+	}
 };

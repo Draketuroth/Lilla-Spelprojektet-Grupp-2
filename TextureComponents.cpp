@@ -18,6 +18,8 @@ TextureComponents::~TextureComponents() {
 void TextureComponents::ReleaseAll() {
 
 	SAFE_RELEASE(platformResource);
+	SAFE_RELEASE(platformVariation);
+
 	SAFE_RELEASE(fortressResource);
 	SAFE_RELEASE(iceEnemyResource);
 	SAFE_RELEASE(lavaEnemyResource);
@@ -92,6 +94,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 	CoInitialize(NULL); 
 	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\platformTexture.png", NULL, &platformResource, 1024);
+	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\platformTextureStone.png", NULL, &platformVariation, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\file1.png", NULL, &fortressResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Format\\Textures\\playerTexture.png", NULL, &playerResource, 1024);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\small.jpg", NULL, &iceEnemyResource, 1024);
@@ -115,6 +118,7 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	if (SUCCEEDED(hr) && texture != 0) {
 
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformResource);
+		gDevice->CreateShaderResourceView(texture, nullptr, &platformVariation);
 		gDevice->CreateShaderResourceView(texture, nullptr, &fortressResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &playerResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &iceEnemyResource);

@@ -520,10 +520,14 @@ bool BufferComponents::CreateInstanceBuffer(ID3D11Device* &gDevice) {
 	// Set the number of instances in the array
 	int instanceCount = nrOfCubes;
 
+	srand(time(NULL));
+
 	// Load the instance array with data
 	for (int i = 0; i < instanceCount; i++) {
 
 		instances.worldMatrix[i] = cubeObjects[i].worldMatrix;
+		instances.textureFlag[i] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		randomNumbers[i] = rand() % 2;
 	}
 
 	// Setup the instance buffer description

@@ -13,7 +13,7 @@ SceneContainer::SceneContainer() {
 	character = MainCharacter();
 
 	this->nrOfIceEnemies = 2;
-	this->nrOfLavaEnemies = 0;
+	this->nrOfLavaEnemies = 2;
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
@@ -729,6 +729,8 @@ void SceneContainer::ReRelease() {
 void SceneContainer::ReInitialize()
 {
 
+	srand(time(NULL));
+
 	enemies.clear();
 	enemies.resize(nrOfEnemies);
 
@@ -776,6 +778,8 @@ void SceneContainer::ReInitialize()
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
+		bHandler.randomNumbers[i] = rand() % 2;
+
 		bHandler.cubeObjects[i].descensionTimer = 0;
 		bHandler.cubeObjects[i].breakTimer = 0;
 		bHandler.cubeObjects[i].ascensionTimer = 0;
@@ -1027,6 +1031,7 @@ void SceneContainer::drawPlatforms() {
 
 	tHandler.texArr[0] = tHandler.platformResource;
 	tHandler.texArr[1] = tHandler.shadowSRV;
+	tHandler.texArr[2] = tHandler.platformVariation;
 	tHandler.samplerArr[0] = tHandler.texSampler;
 	tHandler.samplerArr[1] = tHandler.shadowSampler;
 
@@ -1040,7 +1045,7 @@ void SceneContainer::drawPlatforms() {
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
 	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.platformResource);
 	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 2, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 3, tHandler.texArr);
 	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(StandardVertex);
@@ -1094,7 +1099,6 @@ void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
 
-
 void SceneContainer::render() 
 {
 	clear();
@@ -1120,6 +1124,7 @@ void SceneContainer::render()
 	drawHUD();
 	
 }
+
 void SceneContainer::renderRay()
 {
 	gHandler.gDeviceContext->VSSetShader(gHandler.rayVertexShader, nullptr, 0);

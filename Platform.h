@@ -38,6 +38,7 @@ public:
 	XMMATRIX originMatrix;
 	XMMATRIX worldMatrix;
 	bool renderCheck;
+	int textureFlag;
 	int ID;
 	bool Hit;
 	btVector3 startPos;
