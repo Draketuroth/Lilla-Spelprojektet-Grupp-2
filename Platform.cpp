@@ -4,6 +4,8 @@
 Platform::Platform() {
 
 	lerpScalar = 0;
+
+	Restored = false;
 }
 
 Platform::~Platform() {
@@ -61,7 +63,7 @@ void Platform::platformDecension()
 
 }
 
-void Platform::platformAcension()
+int Platform::platformAcension()
 {
 
 	btTransform rigidCube;
@@ -88,7 +90,7 @@ void Platform::platformAcension()
 	btVector3 startPos(startPos.x(), -11, startPos.z());
 	btVector3 endPos = { this->startPos.x(),this->startPos.y(), this->startPos.z() };
 
-	if (pos.y < this->startPos.y())
+	if (pos.y <= this->startPos.y())
 	{
 		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
 		lerpScalar += 0.002f;
@@ -107,6 +109,8 @@ void Platform::platformAcension()
 	{
 		lerpScalar = 0;
 	}
+
+	return lerpScalar;
 }
 
 void Platform::platformBreaking()
@@ -162,4 +166,38 @@ void Platform::platformBreaking()
 	rigidBody->getMotionState()->setWorldTransform(plat);
 
 
+}
+
+bool Platform::checkState() {
+
+	btTransform rigidCube;
+	XMFLOAT4X4 data;
+	XMMATRIX transform;
+	XMFLOAT3 pos;
+
+	XMVECTOR t;
+	XMVECTOR s;
+	XMVECTOR r;
+
+	rigidBody->getMotionState()->getWorldTransform(rigidCube);
+	rigidCube.getOpenGLMatrix((float*)&data);
+
+	transform = XMLoadFloat4x4(&data);
+	XMMatrixDecompose(&s, &r, &t, transform);
+
+	XMStoreFloat3(&pos, t);
+
+	btScalar rigidXvalue = pos.x;
+	btScalar rigidYvalue = pos.y;
+	btScalar rigidZvalue = pos.z;
+
+	if (pos.y >= this->startPos.y()) {
+
+		return true;
+	}
+
+	else {
+
+		return false;
+	}
 }

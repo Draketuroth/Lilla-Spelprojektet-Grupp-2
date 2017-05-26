@@ -173,6 +173,11 @@ int RunApplication()
 					if (sceneContainer.enemies[i]->getAlive() == false) {
 
 						sceneContainer.enemies[i]->releaseAll(sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld);
+
+						if (i >= sceneContainer.nrOfIceEnemies) {
+
+							sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeRigidBody(sceneContainer.enemies[i]->fireBall.projectileRigidBody);
+						}
 					}
 
 				}
@@ -191,6 +196,7 @@ int RunApplication()
 
 					if (sceneContainer.bHandler.cubeObjects[i].breakTimer < BREAK_LIMIT){
 
+						sceneContainer.bHandler.cubeObjects[i].Damaged = true;
 						sceneContainer.bHandler.cubeObjects[i].platformBreaking();
 
 					}
@@ -199,13 +205,15 @@ int RunApplication()
 
 						if (sceneContainer.bHandler.cubeObjects[i].descensionTimer < DESCENSION_LIMIT) {
 
+							sceneContainer.bHandler.cubeObjects[i].Damaged = true;
 							sceneContainer.bHandler.cubeObjects[i].platformDecension();
 
 						}
 
 						else {
 
-							sceneContainer.bHandler.cubeObjects[i].platformAcension();
+							sceneContainer.bHandler.cubeObjects[i].Damaged = false;
+							sceneContainer.bHandler.cubeObjects[i].ascensionTimer = sceneContainer.bHandler.cubeObjects[i].platformAcension();
 
 						}
 
@@ -223,7 +231,8 @@ int RunApplication()
 				
 						if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
 
-							sceneContainer.bHandler.cubeObjects[i].platformAcension();
+							sceneContainer.bHandler.cubeObjects[i].Damaged = false;
+							sceneContainer.bHandler.cubeObjects[i].ascensionTimer = sceneContainer.bHandler.cubeObjects[i].platformAcension();
 
 						}
 					}
@@ -553,7 +562,7 @@ void updateBuffers()
 		platformTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].worldMatrix);
 		platformTransformPointer->textureFlag[i].z = sceneContainer.bHandler.randomNumbers[i];
 
-		if (sceneContainer.bHandler.cubeObjects[i].Hit == true) {
+		if (sceneContainer.bHandler.cubeObjects[i].Damaged == true) {
 
 			platformTransformPointer->textureFlag[i].y = 0;
 		}

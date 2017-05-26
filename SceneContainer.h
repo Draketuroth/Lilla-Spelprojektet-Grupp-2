@@ -224,8 +224,8 @@ public:
 	vector<Vertex_Bone>lavaEnemyVertices;
 
 	float waveDelay;
-
-	bool respawnDelay; 
+	int restoredCounter;
+	bool respawnDelay;
 
 	/*btTransform projectileTransform;
 	projectileTransform.setIdentity();

@@ -262,10 +262,12 @@ void SceneContainer::RespawnEnemies() {
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
+		bHandler.cubeObjects[i].Damaged = false;
+		bHandler.cubeObjects[i].Restored = false;
 		bHandler.cubeObjects[i].descensionTimer = 0;
 		bHandler.cubeObjects[i].breakTimer = 0;
 		bHandler.cubeObjects[i].ascensionTimer = 0;
-		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+		bHandler.cubeObjects[i].rigidBody->setWorldTransform(bHandler.cubeObjects[i].originMatrix);
 		
 	}
 
@@ -778,12 +780,14 @@ void SceneContainer::ReInitialize()
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
+		bHandler.cubeObjects[i].Damaged = false;
+		bHandler.cubeObjects[i].Restored = false;
 		bHandler.randomNumbers[i] = rand() % 2;
 
 		bHandler.cubeObjects[i].descensionTimer = 0;
 		bHandler.cubeObjects[i].breakTimer = 0;
 		bHandler.cubeObjects[i].ascensionTimer = 0;
-		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+		bHandler.cubeObjects[i].rigidBody->setWorldTransform(bHandler.cubeObjects[i].originMatrix);
 	}
 
 	// Recreate the lava plane rigid body
@@ -923,17 +927,18 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 				if (bHandler.cubeObjects[i].descensionTimer >= DESCENSION_LIMIT) {
 
 					// Add delta time to to ascension timer
-					bHandler.cubeObjects[i].ascensionTimer += timer.getDeltaTime();
+					//bHandler.cubeObjects[i].ascensionTimer += timer.getDeltaTime();
 
 					// If ascension timer is greater than 20...
-					if (bHandler.cubeObjects[i].ascensionTimer >= ASCENSION_LIMIT) {
+					if (bHandler.cubeObjects[i].ascensionTimer >= 1) {
 
 						// Restore platform
 						bHandler.cubeObjects[i].Hit = false;
+						bHandler.cubeObjects[i].Damaged = false;
 						bHandler.cubeObjects[i].descensionTimer = 0;
 						bHandler.cubeObjects[i].breakTimer = 0;
 						bHandler.cubeObjects[i].ascensionTimer = 0;
-						bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+
 					}
 
 				}
@@ -945,13 +950,25 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 
 	if (deadEnemies == nrOfEnemies)
 	{
-		delayWave(timer);
+		//delayWave(timer);
 		respawnDelay = true;
 
-		if (waveDelay <= 0)
+		for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+		
+			if (bHandler.cubeObjects[i].checkState() == true && bHandler.cubeObjects[i].Restored == false) {
+
+				bHandler.cubeObjects[i].Restored = true;
+				restoredCounter += 1;
+			}
+		
+		}
+
+		cout << restoredCounter << endl;
+
+		if (restoredCounter == bHandler.nrOfCubes)
 		{
 			respawnDelay = false;
-			waveDelay = 10.0f;
+			restoredCounter = 0;
 
 			incrementLevels();
 			RespawnEnemies();
@@ -1115,8 +1132,8 @@ void SceneContainer::render()
 
 	if(nrOfLavaEnemies > 0){
 
-	renderLavaEnemies();
-	renderProjectile();
+		renderLavaEnemies();
+		renderProjectile();
 	
 	}
 
