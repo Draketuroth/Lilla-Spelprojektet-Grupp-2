@@ -254,7 +254,7 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 
 		btTransform projectileTransform;
 		projectileTransform.setIdentity();
-		projectileTransform.setOrigin(btVector3(0, -20, 0));
+		projectileTransform.setOrigin(btVector3(0, -100, 0));
 		fireBall.projectileRigidBody->setWorldTransform(projectileTransform);
 	}
 

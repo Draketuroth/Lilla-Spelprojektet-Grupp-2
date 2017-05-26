@@ -29,17 +29,21 @@ public:
 	~Platform();
 
 	void platformDecension();
-	void platformAcension();
+	int platformAcension();
 	void platformBreaking();
+	bool checkState();
 
 	float lerpScalar;
 
 	btRigidBody* rigidBody;
-	XMMATRIX originMatrix;
+	btTransform originMatrix;
 	XMMATRIX worldMatrix;
 	bool renderCheck;
+	int textureFlag;
 	int ID;
 	bool Hit;
+	bool Damaged;
+	bool Restored;
 	btVector3 startPos;
 	float platformDelay;
 	float breakTimer;

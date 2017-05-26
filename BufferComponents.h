@@ -13,6 +13,8 @@
 #include "FileImporter.h"
 #include "Platform.h"
 
+#include <time.h>
+
 using namespace DirectX;
 
 // We require a combined transformation matrix from all the previously created matrices and a matrix to preserve the world positions throughout the pipeline
@@ -32,6 +34,7 @@ struct GS_CONSTANT_BUFFER {
 struct PLATFORM_INSTANCE_BUFFER {
 
 	XMMATRIX worldMatrix[400];
+	XMFLOAT4 textureFlag[400];
 };
 
 struct PLAYER_TRANSFORM {
@@ -96,6 +99,8 @@ public:
 	ID3D11Buffer* gBufferArr[3];
 
 	Platform cubeObjects[CUBECAPACITY];
+	int randomNumbers[400];
+
 	int nrOfCubes;
 	XMFLOAT3 cubeScaling;
 	XMFLOAT3 fortressScaling;

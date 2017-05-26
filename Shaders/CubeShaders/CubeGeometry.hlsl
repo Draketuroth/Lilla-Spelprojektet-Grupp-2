@@ -23,6 +23,7 @@ cbuffer GS_CONSTANT_BUFFER : register(b0) {
 cbuffer PLATFORM_INSTANCE_BUFFER : register(b1) {
 
 	matrix worldMatrix[400];
+	float4 textureFlag[400];
 };
 
 struct GS_IN
@@ -40,7 +41,7 @@ struct GS_OUT
 	float4 Norm: NORMAL;
 	float2 Tex: TEXCOORD;
 	float4 Pos : SV_POSITION;
-	float3 WPos : WPOSITION;
+	float3 Random : WPOSITION;
 	float3 ViewPos : POSITION1;
 	float4 lPos : TEXCOORD1;
 	
@@ -56,7 +57,10 @@ struct GS_OUT
 		for (i = 0; i < 3; i++)
 		{
 			float3 worldPosition = mul(float4(input[i].Pos, 1.0f), worldMatrix[input[i].InstanceId]).xyz;
-			output.WPos = worldPosition;
+			output.Random = float3(0.0f, 0.0f, 0.0f);
+			output.Random.y = textureFlag[input[i].InstanceId].y;
+			output.Random.z = textureFlag[input[i].InstanceId].z;
+			//output.WPos = worldPosition;
 
 			output.Pos = mul(float4(input[i].Pos.xyz, 1.0f), worldMatrix[input[i].InstanceId]);
 

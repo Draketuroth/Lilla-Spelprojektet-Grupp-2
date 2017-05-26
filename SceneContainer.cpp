@@ -13,7 +13,7 @@ SceneContainer::SceneContainer() {
 	character = MainCharacter();
 
 	this->nrOfIceEnemies = 2;
-	this->nrOfLavaEnemies = 0;
+	this->nrOfLavaEnemies = 2;
 	this->nrOfEnemies = nrOfIceEnemies + nrOfLavaEnemies;
 
 	bulletPhysicsHandler = BulletComponents();
@@ -262,10 +262,12 @@ void SceneContainer::RespawnEnemies() {
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
+		bHandler.cubeObjects[i].Damaged = false;
+		bHandler.cubeObjects[i].Restored = false;
 		bHandler.cubeObjects[i].descensionTimer = 0;
 		bHandler.cubeObjects[i].breakTimer = 0;
 		bHandler.cubeObjects[i].ascensionTimer = 0;
-		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+		bHandler.cubeObjects[i].rigidBody->setWorldTransform(bHandler.cubeObjects[i].originMatrix);
 		
 	}
 
@@ -729,6 +731,8 @@ void SceneContainer::ReRelease() {
 void SceneContainer::ReInitialize()
 {
 
+	srand(time(NULL));
+
 	enemies.clear();
 	enemies.resize(nrOfEnemies);
 
@@ -776,10 +780,14 @@ void SceneContainer::ReInitialize()
 	for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
 
 		bHandler.cubeObjects[i].Hit = false;
+		bHandler.cubeObjects[i].Damaged = false;
+		bHandler.cubeObjects[i].Restored = false;
+		bHandler.randomNumbers[i] = rand() % 2;
+
 		bHandler.cubeObjects[i].descensionTimer = 0;
 		bHandler.cubeObjects[i].breakTimer = 0;
 		bHandler.cubeObjects[i].ascensionTimer = 0;
-		bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+		bHandler.cubeObjects[i].rigidBody->setWorldTransform(bHandler.cubeObjects[i].originMatrix);
 	}
 
 	// Recreate the lava plane rigid body
@@ -919,17 +927,18 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 				if (bHandler.cubeObjects[i].descensionTimer >= DESCENSION_LIMIT) {
 
 					// Add delta time to to ascension timer
-					bHandler.cubeObjects[i].ascensionTimer += timer.getDeltaTime();
+					//bHandler.cubeObjects[i].ascensionTimer += timer.getDeltaTime();
 
 					// If ascension timer is greater than 20...
-					if (bHandler.cubeObjects[i].ascensionTimer >= ASCENSION_LIMIT) {
+					if (bHandler.cubeObjects[i].ascensionTimer >= 1) {
 
 						// Restore platform
 						bHandler.cubeObjects[i].Hit = false;
+						bHandler.cubeObjects[i].Damaged = false;
 						bHandler.cubeObjects[i].descensionTimer = 0;
 						bHandler.cubeObjects[i].breakTimer = 0;
 						bHandler.cubeObjects[i].ascensionTimer = 0;
-						bHandler.cubeObjects[i].worldMatrix = bHandler.cubeObjects[i].originMatrix;
+
 					}
 
 				}
@@ -941,13 +950,25 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 
 	if (deadEnemies == nrOfEnemies)
 	{
-		delayWave(timer);
+		//delayWave(timer);
 		respawnDelay = true;
 
-		if (waveDelay <= 0)
+		for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+		
+			if (bHandler.cubeObjects[i].checkState() == true && bHandler.cubeObjects[i].Restored == false) {
+
+				bHandler.cubeObjects[i].Restored = true;
+				restoredCounter += 1;
+			}
+		
+		}
+
+		cout << restoredCounter << endl;
+
+		if (restoredCounter == bHandler.nrOfCubes)
 		{
 			respawnDelay = false;
-			waveDelay = 10.0f;
+			restoredCounter = 0;
 
 			incrementLevels();
 			RespawnEnemies();
@@ -1027,6 +1048,7 @@ void SceneContainer::drawPlatforms() {
 
 	tHandler.texArr[0] = tHandler.platformResource;
 	tHandler.texArr[1] = tHandler.shadowSRV;
+	tHandler.texArr[2] = tHandler.platformVariation;
 	tHandler.samplerArr[0] = tHandler.texSampler;
 	tHandler.samplerArr[1] = tHandler.shadowSampler;
 
@@ -1040,7 +1062,7 @@ void SceneContainer::drawPlatforms() {
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
 	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.platformResource);
 	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 2, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 3, tHandler.texArr);
 	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(StandardVertex);
@@ -1094,7 +1116,6 @@ void SceneContainer::resetRenderTarget(GraphicComponents &gHandler) {
 	gHandler.gDeviceContext->OMSetRenderTargets(1, &gHandler.gBackbufferRTV, nullDepthView);
 }
 
-
 void SceneContainer::render() 
 {
 	clear();
@@ -1111,8 +1132,8 @@ void SceneContainer::render()
 
 	if(nrOfLavaEnemies > 0){
 
-	renderLavaEnemies();
-	renderProjectile();
+		renderLavaEnemies();
+		renderProjectile();
 	
 	}
 
@@ -1120,6 +1141,7 @@ void SceneContainer::render()
 	drawHUD();
 	
 }
+
 void SceneContainer::renderRay()
 {
 	gHandler.gDeviceContext->VSSetShader(gHandler.rayVertexShader, nullptr, 0);
