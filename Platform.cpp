@@ -6,6 +6,7 @@ Platform::Platform() {
 	lerpScalar = 0;
 
 	Restored = false;
+
 }
 
 Platform::~Platform() {

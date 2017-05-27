@@ -18,6 +18,7 @@ bool WindowInitialize(HWND &windowHandle) {
 
 	}
 
+	// Load cursor bitmap
 	HBITMAP hSourceBitmap = (HBITMAP)LoadImage(0, L"Format\\Textures\\cursor.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 
 	if (!hSourceBitmap){
@@ -26,6 +27,7 @@ bool WindowInitialize(HWND &windowHandle) {
 
 	}
 
+	// Create cursor from the loaded bitmap
 	HCURSOR crossHairCursor = CreateCursorFromBitmap(hSourceBitmap, RGB(0, 0, 0), 0, 0);
 
 	WNDCLASSEX windowClass = { 0 };	// We start by registering the window class to be used to specify both the behavior and appearence of the window

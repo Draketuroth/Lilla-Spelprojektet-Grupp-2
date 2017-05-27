@@ -69,7 +69,9 @@ public:
 	
 
 	sf::Sound attackSound;
-	sf::SoundBuffer soundBuffer[2];
+	sf::Sound hitSound;
+	sf::Sound enemyDeathSound;
+	sf::SoundBuffer soundBuffer[5];
 
 
 	int currentHealth;

@@ -160,6 +160,9 @@ public:
 	void PlatformCollisionCheck();
 	void PlatformManagement();
 
+	sf::Sound platformCrumbling;
+	sf::SoundBuffer platformSoundBuffer[2];
+
 	//------------------------------------------------------------//
 	// RE-INTIALIZE
 	//------------------------------------------------------------//

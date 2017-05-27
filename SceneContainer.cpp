@@ -18,6 +18,8 @@ SceneContainer::SceneContainer() {
 
 	bulletPhysicsHandler = BulletComponents();
 
+	platformSoundBuffer[0].loadFromFile("Sounds//platformCrumbling.wav");
+
 	this->waveDelay = 10.0f;
 	this->level = 1;
 

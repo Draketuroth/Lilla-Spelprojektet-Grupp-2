@@ -27,6 +27,9 @@ MainCharacter::MainCharacter()
 
 	soundBuffer[0].loadFromFile("Sounds//revolver.wav");
 	soundBuffer[1].loadFromFile("Sounds//sword.wav");
+	soundBuffer[2].loadFromFile("Sounds//playerHit.wav");
+	soundBuffer[3].loadFromFile("Sounds//iceEnemyDeath.wav");
+	soundBuffer[4].loadFromFile("Sounds//lavaEnemyDeath.wav");
 }
 
 MainCharacter::~MainCharacter()
@@ -325,6 +328,10 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 			if (enemyBox.Intersects(meleeBox))
 			{
 				cout << "HIT!" << endl;
+
+				hitSound.setBuffer(soundBuffer[2]);
+				hitSound.play();
+
 				int h = enemyArray[i]->getHealth();
 				enemyArray[i]->setHealth(enemyArray[i]->getHealth() - 1);
 				h = enemyArray[i]->getHealth();
@@ -343,6 +350,18 @@ void MainCharacter::meleeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 
 				if (enemyArray[i]->getHealth() <= 0 && enemyArray[i]->getAlive() == true)
 				{
+					if (enemyArray[i]->getType() == 1) {
+
+						enemyDeathSound.setBuffer(soundBuffer[4]);
+						enemyDeathSound.play();
+					}
+
+					else if (enemyArray[i]->getType() == 0) {
+
+						enemyDeathSound.setBuffer(soundBuffer[3]);
+						enemyDeathSound.play();
+					}
+
 					enemyArray[i]->setAlive(false);
 					enemyTimePoses[i] = 0.0f;
 					cout << "ENEMY DEAD" << endl;
@@ -443,6 +462,19 @@ void MainCharacter::rangeAttack(HWND windowHandle, int nrOfEnemies, vector<Enemy
 			}
 			if (enemies[i]->getHealth() == 0)
 			{
+
+				if (enemies[i]->getType() == 1) {
+
+					enemyDeathSound.setBuffer(soundBuffer[4]);
+					enemyDeathSound.play();
+				}
+
+				else if (enemies[i]->getType() == 0) {
+
+					enemyDeathSound.setBuffer(soundBuffer[3]);
+					enemyDeathSound.play();
+				}
+
 				enemies[i]->setAlive(false);
 				enemyTimePoses[i] = 0.0f;
 				cout << "Enemy Deleted\n";
