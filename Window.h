@@ -20,4 +20,8 @@ bool WindowInitialize(HWND &windowHandle);	// Function to run the application
 
 void showFPS(HWND windowHandle, float deltaTime);
 
+void GetMaskBitMaps(HBITMAP hSourceBitmap, COLORREF clrTransparent, HBITMAP &hAndMaskBitmap, HBITMAP &hXorMaskBitmap);
+
+HCURSOR CreateCursorFromBitmap(HBITMAP hSourceBitMap, COLORREF clrTransparent, DWORD xHotspot, DWORD yHotspot);
+
 #endif WINDOW_H

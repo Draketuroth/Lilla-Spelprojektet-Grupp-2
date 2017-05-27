@@ -228,33 +228,43 @@ void SceneContainer::RespawnEnemies() {
 	// Remove enemy rigid bodies
 	for (UINT i = 0; i < nrOfIceEnemies; i++)
 	{
+		if(enemies[i]->rigidBody->isInWorld()){
 
-		// Remove ice enemy rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
-		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
-		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
-		delete enemies[i]->rigidBody;
-		delete enemyMotion;
-		delete enemyShape;
+			// Remove ice enemy rigid body
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+			btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+			btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+			delete enemies[i]->rigidBody;
+			delete enemyMotion;
+			delete enemyShape;
+
+		}
 	}
 
 	for (UINT i = nrOfIceEnemies; i < nrOfEnemies; i++) {
 
-		// Remove lava enemy rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
-		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
-		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
-		delete enemies[i]->rigidBody;
-		delete enemyMotion;
-		delete enemyShape;
+		if (enemies[i]->rigidBody->isInWorld()) {
+			// Remove lava enemy rigid body
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+			btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+			btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+			delete enemies[i]->rigidBody;
+			delete enemyMotion;
+			delete enemyShape;
 
-		// Remove lava enemy projectile rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
-		btMotionState* projectileMotion = enemies[i]->fireBall.projectileRigidBody->getMotionState();
-		btCollisionShape* projectileShape = enemies[i]->fireBall.projectileRigidBody->getCollisionShape();
-		delete enemies[i]->fireBall.projectileRigidBody;
-		delete projectileMotion;
-		delete projectileShape;
+		}
+
+		if(enemies[i]->fireBall.projectileRigidBody->isInWorld()){
+
+			// Remove lava enemy projectile rigid body
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
+			btMotionState* projectileMotion = enemies[i]->fireBall.projectileRigidBody->getMotionState();
+			btCollisionShape* projectileShape = enemies[i]->fireBall.projectileRigidBody->getCollisionShape();
+			delete enemies[i]->fireBall.projectileRigidBody;
+			delete projectileMotion;
+			delete projectileShape;
+
+		}
 		
 	}
 
@@ -263,7 +273,6 @@ void SceneContainer::RespawnEnemies() {
 
 		bHandler.cubeObjects[i].Hit = false;
 		bHandler.cubeObjects[i].Damaged = false;
-		bHandler.cubeObjects[i].Restored = false;
 		bHandler.cubeObjects[i].descensionTimer = 0;
 		bHandler.cubeObjects[i].breakTimer = 0;
 		bHandler.cubeObjects[i].ascensionTimer = 0;
@@ -273,12 +282,11 @@ void SceneContainer::RespawnEnemies() {
 
 	// Clear enemy rigid bodies vector
 	bulletPhysicsHandler.enemyRigidBodies.clear();
+	bulletPhysicsHandler.projectileRigidBodies.clear();
 
 	// Recreate enemies and their rigid bodies
 
 	XMFLOAT3 initSpawnPos;
-
-	
 
 	if (nrOfEnemies % 2 == 0 && nrOfLavaEnemies < 15 || nrOfIceEnemies == 15 && nrOfLavaEnemies < 15)
 	{
@@ -656,34 +664,45 @@ void SceneContainer::ReRelease() {
 
 	for (UINT i = 0; i < nrOfIceEnemies; i++) 
 	{
+		if(enemies[i]->rigidBody->isInWorld()){
 
-		// Remove ice enemy rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
-		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
-		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
-		delete enemies[i]->rigidBody;
-		delete enemyMotion;
-		delete enemyShape;
+			// Remove ice enemy rigid body
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+			btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+			btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+			delete enemies[i]->rigidBody;
+			delete enemyMotion;
+			delete enemyShape;
+
+		}
 
 	}
 
 	for (UINT i = nrOfIceEnemies; i < nrOfEnemies; i++) {
 
-		// Remove lava enemy enemy rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
-		btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
-		btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
-		delete enemies[i]->rigidBody;
-		delete enemyMotion;
-		delete enemyShape;
+		if (enemies[i]->rigidBody->isInWorld()) {
 
-		// Remove projectile rigid body
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
-		btMotionState* projectileMotion = enemies[i]->fireBall.projectileRigidBody->getMotionState();
-		btCollisionShape* projectileShape = enemies[i]->fireBall.projectileRigidBody->getCollisionShape();
-		delete enemies[i]->fireBall.projectileRigidBody;
-		delete projectileMotion;
-		delete projectileShape;
+			// Remove lava enemy enemy rigid body
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->rigidBody);
+			btMotionState* enemyMotion = enemies[i]->rigidBody->getMotionState();
+			btCollisionShape* enemyShape = enemies[i]->rigidBody->getCollisionShape();
+			delete enemies[i]->rigidBody;
+			delete enemyMotion;
+			delete enemyShape;
+
+		}
+
+		if(enemies[i]->fireBall.projectileRigidBody->isInWorld()) {
+
+			// Remove projectile rigid body
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(enemies[i]->fireBall.projectileRigidBody);
+			btMotionState* projectileMotion = enemies[i]->fireBall.projectileRigidBody->getMotionState();
+			btCollisionShape* projectileShape = enemies[i]->fireBall.projectileRigidBody->getCollisionShape();
+			delete enemies[i]->fireBall.projectileRigidBody;
+			delete projectileMotion;
+			delete projectileShape;
+
+		}
 	}
 
 	for (UINT i = 0; i < nrOfEnemies; i++) {
@@ -701,30 +720,39 @@ void SceneContainer::ReRelease() {
 	// Remove platform rigid bodies
 	for(UINT i = 0; i < bHandler.nrOfCubes; i++)
 	{
+		if(bHandler.cubeObjects[i].rigidBody->isInWorld()){
 
-		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(bHandler.cubeObjects[i].rigidBody);
-		btMotionState* cubeMotion = bHandler.cubeObjects[i].rigidBody->getMotionState();
-		btCollisionShape* cubeShape = bHandler.cubeObjects[i].rigidBody->getCollisionShape();
-		delete bHandler.cubeObjects[i].rigidBody;
-		delete cubeMotion;
-		delete cubeShape;
+			bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(bHandler.cubeObjects[i].rigidBody);
+			btMotionState* cubeMotion = bHandler.cubeObjects[i].rigidBody->getMotionState();
+			btCollisionShape* cubeShape = bHandler.cubeObjects[i].rigidBody->getCollisionShape();
+			delete bHandler.cubeObjects[i].rigidBody;
+			delete cubeMotion;
+			delete cubeShape;
+
+		}
 
 	}
 
 	// Remove lava plane rigid body
-	bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(bHandler.lavaPitRigidBody);
-	btMotionState* planeMotion = bHandler.lavaPitRigidBody->getMotionState();
-	btCollisionShape* planeShape = bHandler.lavaPitRigidBody->getCollisionShape();
-	delete bHandler.lavaPitRigidBody;
-	delete planeMotion;
-	delete planeShape;
+
+	if (bHandler.lavaPitRigidBody->isInWorld()) {
+
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(bHandler.lavaPitRigidBody);
+		btMotionState* planeMotion = bHandler.lavaPitRigidBody->getMotionState();
+		btCollisionShape* planeShape = bHandler.lavaPitRigidBody->getCollisionShape();
+		delete bHandler.lavaPitRigidBody;
+		delete planeMotion;
+		delete planeShape;
+
+	}
 
 	//----------------------------------------------------------------------------------------------------------------------------------//
-	// CLEAR THE RIGID BODIES FROM THE DYNAMICS WORLD
+	// CLEAR THE RIGID BODIES VECTORS
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	bulletPhysicsHandler.rigidBodies.clear();
 	bulletPhysicsHandler.enemyRigidBodies.clear();
+	bulletPhysicsHandler.projectileRigidBodies.clear();
 
 }
 
@@ -781,7 +809,6 @@ void SceneContainer::ReInitialize()
 
 		bHandler.cubeObjects[i].Hit = false;
 		bHandler.cubeObjects[i].Damaged = false;
-		bHandler.cubeObjects[i].Restored = false;
 		bHandler.randomNumbers[i] = rand() % 2;
 
 		bHandler.cubeObjects[i].descensionTimer = 0;
@@ -950,25 +977,13 @@ void SceneContainer::update(HWND &windowHandle, float enemyTimePoses[30], Timer 
 
 	if (deadEnemies == nrOfEnemies)
 	{
-		//delayWave(timer);
+		delayWave(timer);
 		respawnDelay = true;
 
-		for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
-		
-			if (bHandler.cubeObjects[i].checkState() == true && bHandler.cubeObjects[i].Restored == false) {
-
-				bHandler.cubeObjects[i].Restored = true;
-				restoredCounter += 1;
-			}
-		
-		}
-
-		cout << restoredCounter << endl;
-
-		if (restoredCounter == bHandler.nrOfCubes)
+		if (waveDelay <= 0)
 		{
 			respawnDelay = false;
-			restoredCounter = 0;
+			waveDelay = 10.0f;
 
 			incrementLevels();
 			RespawnEnemies();
@@ -1022,7 +1037,105 @@ void SceneContainer::incrementLevels()
 
 }
 
-void SceneContainer::drawFortress() {
+void SceneContainer::PlatformCollisionCheck() {
+
+	// Create sphere rigid body
+	for (UINT i = nrOfIceEnemies; i < nrOfEnemies; i++) {
+
+		// Create new sphere shape
+		btSphereShape* sphereShape = new btSphereShape(1);
+
+		// Get projectile transform
+		btTransform projectileTransform = enemies[i]->fireBall.projectileRigidBody->getWorldTransform();
+
+		// Set the motion state
+		btMotionState* motion = new btDefaultMotionState(projectileTransform);
+
+		// Definition of the rigid body
+		btScalar mass(0.0f);
+		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, sphereShape);
+
+		// Create the rigid body
+		btRigidBody* sphereRigidBody = new btRigidBody(info);
+
+		int arenaCollideWith = COL_PLAYER | COL_ENEMY;
+		bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, 0);
+
+		for (UINT j = 0; j < bHandler.nrOfCubes; j++) {
+
+			MyPlatformContactResultCallback platformCallBack(&bHandler.cubeObjects[j]);
+			bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, bHandler.cubeObjects[j].rigidBody, platformCallBack);
+
+		}
+
+		// Delete the sphere rigid body 
+		bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
+		btMotionState* destructMotion = sphereRigidBody->getMotionState();
+		btCollisionShape* destructShape = sphereRigidBody->getCollisionShape();
+
+		delete sphereRigidBody;
+		delete destructMotion;
+		delete destructShape;
+
+	}
+
+}
+
+void SceneContainer::PlatformManagement() {
+
+	if (respawnDelay == false) {
+
+		for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+
+			if (bHandler.cubeObjects[i].Hit == true) {
+
+				if (bHandler.cubeObjects[i].breakTimer < BREAK_LIMIT) {
+
+					bHandler.cubeObjects[i].Damaged = true;
+					bHandler.cubeObjects[i].platformBreaking();
+
+				}
+
+				else {
+
+					if (bHandler.cubeObjects[i].descensionTimer < DESCENSION_LIMIT) {
+
+						bHandler.cubeObjects[i].Damaged = true;
+						bHandler.cubeObjects[i].platformDecension();
+
+					}
+
+					else {
+
+						bHandler.cubeObjects[i].Damaged = false;
+						bHandler.cubeObjects[i].ascensionTimer = bHandler.cubeObjects[i].platformAcension();
+
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	// Restore the platforms for the next round
+	else {
+
+		for (UINT i = 0; i < bHandler.nrOfCubes; i++) {
+
+			if (bHandler.cubeObjects[i].Hit == true) {
+
+				bHandler.cubeObjects[i].Damaged = false;
+				bHandler.cubeObjects[i].platformAcension();
+
+			}
+		}
+
+	}
+}
+
+void SceneContainer::renderFortress() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gFortressVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -1044,7 +1157,7 @@ void SceneContainer::drawFortress() {
 	character.draw(gHandler.gDeviceContext, FortressFile.standardMeshes[0].vertices.size());
 }
 
-void SceneContainer::drawPlatforms() {
+void SceneContainer::renderPlatforms() {
 
 	tHandler.texArr[0] = tHandler.platformResource;
 	tHandler.texArr[1] = tHandler.shadowSRV;
@@ -1079,7 +1192,7 @@ void SceneContainer::drawPlatforms() {
 
 }
 
-void SceneContainer::drawDebugCubes() {
+void SceneContainer::renderDebugCubes() {
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gDebugVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -1138,7 +1251,7 @@ void SceneContainer::render()
 	}
 
 	renderScene();
-	drawHUD();
+	renderHUD();
 	
 }
 
@@ -1230,8 +1343,8 @@ bool SceneContainer::renderSceneToTexture() {
 
 void SceneContainer::renderScene() {
 
-	drawPlatforms();
-	drawFortress();
+	renderPlatforms();
+	renderFortress();
 }
 
 void SceneContainer::renderCharacters()
@@ -1506,7 +1619,7 @@ void SceneContainer::renderShadowMap()
 
 }
 
-void SceneContainer::drawHUD()
+void SceneContainer::renderHUD()
 {
 
 

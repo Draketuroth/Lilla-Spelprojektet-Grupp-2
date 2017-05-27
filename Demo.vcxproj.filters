@@ -159,9 +159,6 @@
     <ClCompile Include="GraphicComponents.cpp">
       <Filter>Source Files\Pipeline Components</Filter>
     </ClCompile>
-    <ClCompile Include="TextureComponents.cpp">
-      <Filter>Source Files\Pipeline Components</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
@@ -221,6 +218,9 @@
     </ClCompile>
     <ClCompile Include="Platform.cpp">
       <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureComponents.cpp">
+      <Filter>Source Files\Pipeline Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

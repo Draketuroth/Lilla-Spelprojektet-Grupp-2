@@ -68,6 +68,20 @@ void BulletComponents::ReleaseAll() {
 
 	}
 
+	for (UINT i = 0; i < projectileRigidBodies.size(); i++) {
+
+		if (projectileRigidBodies[i]->isInWorld()) {
+
+			bulletDynamicsWorld->removeCollisionObject(projectileRigidBodies[i]);
+			btMotionState* motion = projectileRigidBodies[i]->getMotionState();
+			btCollisionShape* shape = projectileRigidBodies[i]->getCollisionShape();
+			delete projectileRigidBodies[i];
+			delete motion;
+			delete shape;
+		}
+
+	}
+
 	delete bulletDispatcher;
 	delete bulletCollisionConfig;
 	delete bulletConstraintSolver;

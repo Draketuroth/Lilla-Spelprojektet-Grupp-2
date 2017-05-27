@@ -18,6 +18,16 @@ bool WindowInitialize(HWND &windowHandle) {
 
 	}
 
+	HBITMAP hSourceBitmap = (HBITMAP)LoadImage(0, L"Format\\Textures\\cursor.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+
+	if (!hSourceBitmap){
+
+		return false;
+
+	}
+
+	HCURSOR crossHairCursor = CreateCursorFromBitmap(hSourceBitmap, RGB(0, 0, 0), 0, 0);
+
 	WNDCLASSEX windowClass = { 0 };	// We start by registering the window class to be used to specify both the behavior and appearence of the window
 
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;	// We require this to specify this option if height or width is ever changed by the user
@@ -25,7 +35,7 @@ bool WindowInitialize(HWND &windowHandle) {
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.hInstance = applicationHandle;	// Handle to the instance holding the window procedure
 	windowClass.hIcon = LoadIcon(0, IDI_APPLICATION);	// Load the default window icon
-	windowClass.hCursor = LoadCursor(0, IDC_ARROW);		// Load the default arrow curser
+	windowClass.hCursor = crossHairCursor;		// Load the default arrow curser
 	windowClass.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));	// HBRUSH can be used to set the background color of the window
 	windowClass.lpszMenuName = NULL;	// The window has no menu 
 	windowClass.lpszClassName = L"WindowClass";	// Name for the window class
@@ -40,8 +50,7 @@ bool WindowInitialize(HWND &windowHandle) {
 		return false;
 	}
 
-	HCURSOR customCursor = LoadCursor(0, IDC_CROSS);
-	SetCursor(customCursor);
+	SetCursor(crossHairCursor);
 
 	RECT wRC = { 0, 0, WIDTH, HEIGHT };
 	AdjustWindowRect(&wRC, WS_OVERLAPPEDWINDOW, FALSE);
@@ -98,6 +107,95 @@ void showFPS(HWND windowHandle, float deltaTime) {
 	}
 }
 
+void GetMaskBitmaps(HBITMAP hSourceBitmap, COLORREF clrTransparent,
+	HBITMAP &hAndMaskBitmap, HBITMAP &hXorMaskBitmap)
+{
+	HDC hDC = ::GetDC(NULL);
+	HDC hMainDC = ::CreateCompatibleDC(hDC);
+	HDC hAndMaskDC = ::CreateCompatibleDC(hDC);
+	HDC hXorMaskDC = ::CreateCompatibleDC(hDC);
+
+	//Get the dimensions of the source bitmap
+	BITMAP bm;
+	::GetObject(hSourceBitmap, sizeof(BITMAP), &bm);
+
+
+	hAndMaskBitmap = ::CreateCompatibleBitmap(hDC, bm.bmWidth, bm.bmHeight);
+	hXorMaskBitmap = ::CreateCompatibleBitmap(hDC, bm.bmWidth, bm.bmHeight);
+
+	//Select the bitmaps to DC
+	HBITMAP hOldMainBitmap = (HBITMAP)::SelectObject(hMainDC, hSourceBitmap);
+	HBITMAP hOldAndMaskBitmap = (HBITMAP)::SelectObject(hAndMaskDC, hAndMaskBitmap);
+	HBITMAP hOldXorMaskBitmap = (HBITMAP)::SelectObject(hXorMaskDC, hXorMaskBitmap);
+
+	//Scan each pixel of the souce bitmap and create the masks
+	COLORREF MainBitPixel;
+	for (int x = 0; x<bm.bmWidth; ++x)
+	{
+		for (int y = 0; y<bm.bmHeight; ++y)
+		{
+			MainBitPixel = ::GetPixel(hMainDC, x, y);
+			if (MainBitPixel == clrTransparent)
+			{
+				::SetPixel(hAndMaskDC, x, y, RGB(255, 255, 255));
+				::SetPixel(hXorMaskDC, x, y, RGB(0, 0, 0));
+			}
+			else
+			{
+				::SetPixel(hAndMaskDC, x, y, RGB(0, 0, 0));
+				::SetPixel(hXorMaskDC, x, y, MainBitPixel);
+			}
+		}
+	}
+
+	::SelectObject(hMainDC, hOldMainBitmap);
+	::SelectObject(hAndMaskDC, hOldAndMaskBitmap);
+	::SelectObject(hXorMaskDC, hOldXorMaskBitmap);
+
+	::DeleteDC(hXorMaskDC);
+	::DeleteDC(hAndMaskDC);
+	::DeleteDC(hMainDC);
+
+	::ReleaseDC(NULL, hDC);
+}
+
+HCURSOR CreateCursorFromBitmap(HBITMAP hSourceBitmap,
+	COLORREF clrTransparent,
+	DWORD   xHotspot, DWORD   yHotspot)
+{
+	HCURSOR hRetCursor = NULL;
+
+	do
+	{
+		if (NULL == hSourceBitmap)
+		{
+			break;
+		}
+
+		//Create the AND and XOR masks for the bitmap
+		HBITMAP hAndMask = NULL;
+		HBITMAP hXorMask = NULL;
+		GetMaskBitmaps(hSourceBitmap, clrTransparent, hAndMask, hXorMask);
+		if (NULL == hAndMask || NULL == hXorMask)
+		{
+			break;
+		}
+
+		//Create the cursor using the masks and the hotspot values provided
+		ICONINFO iconinfo = { 0 };
+		iconinfo.fIcon = FALSE;
+		iconinfo.xHotspot = xHotspot;
+		iconinfo.yHotspot = yHotspot;
+		iconinfo.hbmMask = hAndMask;
+		iconinfo.hbmColor = hXorMask;
+
+		hRetCursor = ::CreateIconIndirect(&iconinfo);
+
+	} while (0);
+
+	return hRetCursor;
+}
+
 LRESULT CALLBACK WindowProcedure(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam) {
 
 	switch (message) {
@@ -123,3 +221,4 @@ LRESULT CALLBACK WindowProcedure(HWND windowHandle, UINT message, WPARAM wParam,
 
 	return 0;
 }
+

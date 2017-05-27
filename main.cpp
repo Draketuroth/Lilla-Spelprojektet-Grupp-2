@@ -37,7 +37,6 @@ void updateCharacter(HWND windowhandle);
 void updateEnemies();
 void updateBuffers();
 void updateLava();
-void PlatformCollisionCheck();
 void lavamovmentUpdate();
 
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -176,7 +175,9 @@ int RunApplication()
 
 						if (i >= sceneContainer.nrOfIceEnemies) {
 
-							sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeRigidBody(sceneContainer.enemies[i]->fireBall.projectileRigidBody);
+							// Removing the rigid body from the world should cause more memory leaks in the Bullet Release...we just want to deactive the rigidbody
+							sceneContainer.enemies[i]->fireBall.projectileRigidBody->setActivationState(WANTS_DEACTIVATION);
+							//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeRigidBody(sceneContainer.enemies[i]->fireBall.projectileRigidBody);
 						}
 					}
 
@@ -186,58 +187,11 @@ int RunApplication()
 				// PROJECTILE HIT VS PLATFORM
 				//----------------------------------------------------------------------------------------------------------------------------------//
 
-				PlatformCollisionCheck();
+				// Platform collision check
+				sceneContainer.PlatformCollisionCheck();
 
-				if(sceneContainer.respawnDelay == false){
-
-				for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
-
-					if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
-
-					if (sceneContainer.bHandler.cubeObjects[i].breakTimer < BREAK_LIMIT){
-
-						sceneContainer.bHandler.cubeObjects[i].Damaged = true;
-						sceneContainer.bHandler.cubeObjects[i].platformBreaking();
-
-					}
-
-					else {
-
-						if (sceneContainer.bHandler.cubeObjects[i].descensionTimer < DESCENSION_LIMIT) {
-
-							sceneContainer.bHandler.cubeObjects[i].Damaged = true;
-							sceneContainer.bHandler.cubeObjects[i].platformDecension();
-
-						}
-
-						else {
-
-							sceneContainer.bHandler.cubeObjects[i].Damaged = false;
-							sceneContainer.bHandler.cubeObjects[i].ascensionTimer = sceneContainer.bHandler.cubeObjects[i].platformAcension();
-
-						}
-
-					}
-
-					}
-				}
-
-			}
-
-				// Restore the platforms for the next round
-				else {
-
-					for (UINT i = 0; i < sceneContainer.bHandler.nrOfCubes; i++) {
-				
-						if(sceneContainer.bHandler.cubeObjects[i].Hit == true){
-
-							sceneContainer.bHandler.cubeObjects[i].Damaged = false;
-							sceneContainer.bHandler.cubeObjects[i].ascensionTimer = sceneContainer.bHandler.cubeObjects[i].platformAcension();
-
-						}
-					}
-
-				}
+				// Platform update
+				sceneContainer.PlatformManagement();
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
@@ -416,7 +370,7 @@ void updateEnemies() {
 
 					// Update lava enemy physics
 					XMMATRIX scaling = XMMatrixScaling(0.6, 0.6, 0.6);
-					sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
+					//sceneContainer.enemies[i]->EnemyPhysics(sceneContainer.character.getPos(), scaling);
 
 					// Update enemy animation time pose
 					sceneContainer.animHandler.enemyTimePos[i] += timer.getDeltaTime() * 30;
@@ -590,50 +544,6 @@ void updateBuffers()
 	}
 
 	sceneContainer.gHandler.gDeviceContext->Unmap(sceneContainer.bHandler.gProjectileTransformBuffer, 0);
-
-}
-
-void PlatformCollisionCheck(){
-
-	// Create sphere rigid body
-	for (UINT i = sceneContainer.nrOfIceEnemies; i < sceneContainer.nrOfEnemies; i++) {
-
-		// Create new sphere shape
-		btSphereShape* sphereShape = new btSphereShape(1);
-
-		// Get projectile transform
-		btTransform projectileTransform = sceneContainer.enemies[i]->fireBall.projectileRigidBody->getWorldTransform();
-
-		// Set the motion state
-		btMotionState* motion = new btDefaultMotionState(projectileTransform);
-
-		// Definition of the rigid body
-		btScalar mass(0.0f);
-		btRigidBody::btRigidBodyConstructionInfo info(mass, motion, sphereShape);
-
-		// Create the rigid body
-		btRigidBody* sphereRigidBody = new btRigidBody(info);
-
-		//int arenaCollideWith = COL_PLAYER | COL_ENEMY;
-		//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(sphereRigidBody, COL_LEVEL, 0);
-
-		for (UINT j = 0; j < sceneContainer.bHandler.nrOfCubes; j++) {
-
-			MyPlatformContactResultCallback platformCallBack(&sceneContainer.bHandler.cubeObjects[j]);
-			sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->contactPairTest(sphereRigidBody, sceneContainer.bHandler.cubeObjects[j].rigidBody, platformCallBack);
-			
-		}
-
-		// Delete the sphere rigid body 
-		//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeCollisionObject(sphereRigidBody);
-		btMotionState* destructMotion = sphereRigidBody->getMotionState();
-		btCollisionShape* destructShape = sphereRigidBody->getCollisionShape();
-
-		delete sphereRigidBody;
-		delete destructMotion;
-		delete destructShape;
-
-	}
 
 }
 

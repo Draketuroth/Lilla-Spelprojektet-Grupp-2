@@ -99,8 +99,6 @@ struct MyPlatformContactResultCallback : public btCollisionWorld::ContactResultC
 	Platform* platform;
 };
 
-
-
 class SceneContainer {
 
 private:
@@ -154,6 +152,13 @@ public:
 	//ice enemy
 	float getRadiusIce();
 	float getHeightIce();
+
+	//------------------------------------------------------------//
+	// PLATFORM SPECIFIC FUNCTIONS
+	//------------------------------------------------------------//
+
+	void PlatformCollisionCheck();
+	void PlatformManagement();
 
 	//------------------------------------------------------------//
 	// RE-INTIALIZE
@@ -224,22 +229,16 @@ public:
 	vector<Vertex_Bone>lavaEnemyVertices;
 
 	float waveDelay;
-	int restoredCounter;
 	bool respawnDelay;
-
-	/*btTransform projectileTransform;
-	projectileTransform.setIdentity();
-	projectileTransform.setOrigin(btVector3(0, -20, 0));
-	fireBall.projectileRigidBody->setWorldTransform(projectileTransform);*/
 
 	//------------------------------------------------------------//
 	// RENDER FUNCTIONS
 	//------------------------------------------------------------//
 
-	void drawFortress();
-	void drawPlatforms();
-	void drawDebugCubes();
-	void drawHUD();
+	void renderFortress();
+	void renderPlatforms();
+	void renderDebugCubes();
+	void renderHUD();
 	
 	void clear();
 	void resetRenderTarget(GraphicComponents &gHandler);
@@ -261,14 +260,10 @@ public:
 	void renderProjectile();
 
 	void createSideBoundingBoxes();
-	
-
-	
 
 	void delayWave(Timer timer);
 	void incrementLevels();
 
-	void spawnEnemies();
 };
 
 

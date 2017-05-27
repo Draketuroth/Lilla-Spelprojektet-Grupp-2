@@ -22,9 +22,9 @@ Enemy::Enemy(int Type, XMFLOAT3 SpawnPos)
 
 void Enemy::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
-	//SAFE_RELEASE(vertexBuffer);
-	//this->rigidBody->forceActivationState(WANTS_DEACTIVATION);
-	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
+	// Removing the rigid body from the world should cause more memory leaks in the Bullet Release...we just want to deactive the rigidbody
+	this->rigidBody->setActivationState(WANTS_DEACTIVATION);
+	//bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
 float Enemy::getAngle(XMFLOAT3 playerPos)
@@ -101,6 +101,7 @@ void Enemy::EnemyPhysics(XMFLOAT3 playerPos, XMMATRIX scaling)
 	// Set rotation matrix
 	
 	XMMATRIX R = XMMATRIX(xAxis, yAxis, zAxis, lastRow);
+
 
 	updateWorldMatrix(R, scaling);
 	
@@ -233,7 +234,7 @@ void Enemy::createProjectile(BulletComponents &bulletPhysicsHandler)
 
 	int projCollideWith = COL_PLAYER | COL_LEVEL;
 	bulletPhysicsHandler.bulletDynamicsWorld->addRigidBody(fireBall.projectileRigidBody, COL_PROJ, projCollideWith);
-	bulletPhysicsHandler.rigidBodies.push_back(fireBall.projectileRigidBody);
+	bulletPhysicsHandler.projectileRigidBodies.push_back(fireBall.projectileRigidBody);
 
 }
 
