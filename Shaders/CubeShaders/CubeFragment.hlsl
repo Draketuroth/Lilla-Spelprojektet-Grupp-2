@@ -52,6 +52,7 @@ float4 PS_main(PS_IN input) : SV_Target
 	float4 color;
 	float4 damageColor;
 	float4 red = float4(1.0f, 0.0f, 0.0f, 1.0f);
+	color = float4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	//float sum = 0;
 	//float x, y;
