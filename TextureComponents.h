@@ -19,8 +19,9 @@ public:
 	~TextureComponents();
 	void ReleaseAll();
 
-	ID3D11ShaderResourceView* platformResource;
-	ID3D11ShaderResourceView* platformVariation;
+	ID3D11ShaderResourceView* platformGrass;
+	ID3D11ShaderResourceView* platformStone;
+	ID3D11ShaderResourceView* platformStoneCracks;
 	ID3D11ShaderResourceView* fortressResource;
 	ID3D11ShaderResourceView* iceEnemyResource;
 	ID3D11ShaderResourceView* lavaEnemyResource;
@@ -28,7 +29,7 @@ public:
 	ID3D11ShaderResourceView* LavaResource;
 	ID3D11ShaderResourceView* projectileResource;
 	ID3D11ShaderResourceView* menuResources[9];
-	ID3D11ShaderResourceView* texArr[3];
+	ID3D11ShaderResourceView* texArr[4];
 	ID3D11SamplerState* samplerArr[2];
 	
 

@@ -14,7 +14,7 @@ Platform::~Platform() {
 
 }
 
-void Platform::platformDecension()
+void Platform::platformDecension(float deltaTime, float scalar)
 {
 
 	btTransform rigidCube;
@@ -44,7 +44,7 @@ void Platform::platformDecension()
 	if (pos.y > -11)
 	{
 		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
-		lerpScalar += 0.001f;
+		lerpScalar += deltaTime * scalar;
 		btMatrix3x3 movementMatrix;
 		movementMatrix.setIdentity();
 		btTransform plat{ movementMatrix,lerpResult };
@@ -64,7 +64,7 @@ void Platform::platformDecension()
 
 }
 
-int Platform::platformAcension()
+int Platform::platformAcension(float deltaTime, float scalar)
 {
 
 	btTransform rigidCube;
@@ -94,7 +94,7 @@ int Platform::platformAcension()
 	if (pos.y <= this->startPos.y())
 	{
 		btVector3 lerpResult = lerp(startPos, endPos, lerpScalar);
-		lerpScalar += 0.002f;
+		lerpScalar += deltaTime * scalar;
 		btMatrix3x3 movementMatrix;
 		movementMatrix.setIdentity();
 		btTransform plat{ movementMatrix,lerpResult };

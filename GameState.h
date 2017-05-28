@@ -41,6 +41,7 @@ public:
 	sf::SoundBuffer soundBuffer;
 
 	sf::Music arenaMusic;
+	sf::Music menuMusic;
 	sf::Sound clickSound;
 
 

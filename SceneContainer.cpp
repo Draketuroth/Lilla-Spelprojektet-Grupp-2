@@ -1083,7 +1083,7 @@ void SceneContainer::PlatformCollisionCheck() {
 
 }
 
-void SceneContainer::PlatformManagement() {
+void SceneContainer::PlatformManagement(Timer timer) {
 
 	if (respawnDelay == false) {
 
@@ -1096,21 +1096,31 @@ void SceneContainer::PlatformManagement() {
 					bHandler.cubeObjects[i].Damaged = true;
 					bHandler.cubeObjects[i].platformBreaking();
 
+
 				}
 
 				else {
 
 					if (bHandler.cubeObjects[i].descensionTimer < DESCENSION_LIMIT) {
 
+						if (bHandler.cubeObjects[i].descensionTimer < 1) {
+
+							if (platformCrumbling.getStatus() != 2) {
+
+								platformCrumbling.setBuffer(platformSoundBuffer[0]);
+								platformCrumbling.play();
+							}
+						}
+
 						bHandler.cubeObjects[i].Damaged = true;
-						bHandler.cubeObjects[i].platformDecension();
+						bHandler.cubeObjects[i].platformDecension(timer.getDeltaTime(), 0.1);
 
 					}
 
 					else {
 
 						bHandler.cubeObjects[i].Damaged = false;
-						bHandler.cubeObjects[i].ascensionTimer = bHandler.cubeObjects[i].platformAcension();
+						bHandler.cubeObjects[i].ascensionTimer = bHandler.cubeObjects[i].platformAcension(timer.getDeltaTime(), 0.2);
 
 					}
 
@@ -1129,7 +1139,7 @@ void SceneContainer::PlatformManagement() {
 			if (bHandler.cubeObjects[i].Hit == true) {
 
 				bHandler.cubeObjects[i].Damaged = false;
-				bHandler.cubeObjects[i].platformAcension();
+				bHandler.cubeObjects[i].platformAcension(timer.getDeltaTime(), 0.4);
 
 			}
 		}
@@ -1161,9 +1171,10 @@ void SceneContainer::renderFortress() {
 
 void SceneContainer::renderPlatforms() {
 
-	tHandler.texArr[0] = tHandler.platformResource;
+	tHandler.texArr[0] = tHandler.platformGrass;
 	tHandler.texArr[1] = tHandler.shadowSRV;
-	tHandler.texArr[2] = tHandler.platformVariation;
+	tHandler.texArr[2] = tHandler.platformStone;
+	tHandler.texArr[3] = tHandler.platformStoneCracks;
 	tHandler.samplerArr[0] = tHandler.texSampler;
 	tHandler.samplerArr[1] = tHandler.shadowSampler;
 
@@ -1177,7 +1188,7 @@ void SceneContainer::renderPlatforms() {
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPlatformPixelShader, nullptr, 0);
 	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.platformResource);
 	//gHandler.gDeviceContext->PSSetSamplers(0, 1, &tHandler.texSampler);
-	gHandler.gDeviceContext->PSSetShaderResources(0, 3, tHandler.texArr);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 4, tHandler.texArr);
 	gHandler.gDeviceContext->PSSetSamplers(0, 2, tHandler.samplerArr);
 
 	UINT32 vertexSize = sizeof(StandardVertex);
@@ -1337,7 +1348,7 @@ bool SceneContainer::renderSceneToTexture() {
 	// Don't forget to set the constant buffer to the geometry shader
 	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
 	
-	deferredShaders.Render(gHandler.gDeviceContext, tHandler.texSampler, tHandler.platformResource, indexCounter);
+	deferredShaders.Render(gHandler.gDeviceContext, tHandler.texSampler, tHandler.platformGrass, indexCounter);
 
 	return true;
 	

@@ -6,6 +6,7 @@ GameState::GameState()
 
 	soundBuffer.loadFromFile("Sounds//click.wav");
 	arenaMusic.openFromFile("Sounds//music.wav");
+	menuMusic.openFromFile("Sounds//theme.wav");
 	clickSound.setBuffer(soundBuffer);
 
 }
@@ -34,8 +35,15 @@ int GameState::menuHandler(HWND windowHandle, SceneContainer &scene, MSG windowM
 
 int GameState::mainMenu(HWND windowHandle, SceneContainer &scene)
 {
+
 	if (this->state == MAIN_MENU)
 	{
+
+		if (menuMusic.getStatus() != 2) {
+
+			menuMusic.play();
+		}
+
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -56,8 +64,11 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer &scene)
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
+				menuMusic.stop();
+
 				clickSound.play();
 				arenaMusic.play();
+
 				arenaMusic.setLoop(true);
 				this->state = START_GAME;
 			}
@@ -74,6 +85,11 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer &scene, MSG windowMes
 {
 	if (this->state == PAUSE_MENU)
 	{
+		if (menuMusic.getStatus() != 2) {
+
+			menuMusic.play();
+		}
+
 		arenaMusic.pause();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
@@ -95,6 +111,8 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer &scene, MSG windowMes
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
+				menuMusic.stop();
+
 				clickSound.play();
 				arenaMusic.play();
 				arenaMusic.setLoop(true);
@@ -114,6 +132,11 @@ int GameState::gameOver(HWND windowHandle, SceneContainer &scene)
 {
 	if (this->state == GAME_OVER)
 	{
+		if (menuMusic.getStatus() != 2) {
+
+			menuMusic.play();
+		}
+
 		arenaMusic.stop();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
@@ -136,6 +159,8 @@ int GameState::gameOver(HWND windowHandle, SceneContainer &scene)
 			getMousePos(windowHandle, scene);
 			if (this->floatMouse.x <= 0.3f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 			{
+				menuMusic.stop();
+
 				clickSound.play();
 				arenaMusic.play();
 				arenaMusic.setLoop(true);

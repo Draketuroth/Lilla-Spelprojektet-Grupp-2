@@ -12,9 +12,10 @@
 SamplerState texSampler: register(s0);
 SamplerState shadowSampler : register(s1);
 //SamplerComparisonState shadowSampler : register(s1);
-Texture2D tex0 : register(t0);
+Texture2D platformGrassTexture : register(t0);
 Texture2D shadowMap : register(t1);
-Texture2D tex1 : register(t2);
+Texture2D platformStoneTexture : register(t2);
+Texture2D platformStoneCracksTexture : register(t3);
 
 struct PS_IN
 {
@@ -81,15 +82,22 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	if(input.Random.z == 0){
 
-		texColor = tex0.Sample(texSampler, input.Tex).xyz;
+		texColor = platformGrassTexture.Sample(texSampler, input.Tex).xyz;
 
 		color = float4(texColor, 1.0f);
 
 	}
 
-	else {
+	if(input.Random.z == 1){
 
-		texColor = tex1.Sample(texSampler, input.Tex).xyz;
+		texColor = platformStoneTexture.Sample(texSampler, input.Tex).xyz;
+
+		color = float4(texColor, 1.0f);
+	}
+
+	if (input.Random.z == 2) {
+
+		texColor = platformStoneCracksTexture.Sample(texSampler, input.Tex).xyz;
 
 		color = float4(texColor, 1.0f);
 	}

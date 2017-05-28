@@ -78,7 +78,7 @@ VS_OUT VS_main(VS_IN input){
 
 	// For the normal to properly work and to later be used correctly when creating the basic diffuse shading, it's required to be computed in world coordinates
 
-	output.Norm = mul(float4(input.Norm, 1.0f), worldPosition);
+	output.Norm = mul(float4(input.Norm, 1.0f).xyz, worldPosition);
 
 	output.Tex = input.Tex;
 

@@ -158,7 +158,7 @@ public:
 	//------------------------------------------------------------//
 
 	void PlatformCollisionCheck();
-	void PlatformManagement();
+	void PlatformManagement(Timer timer);
 
 	sf::Sound platformCrumbling;
 	sf::SoundBuffer platformSoundBuffer[2];

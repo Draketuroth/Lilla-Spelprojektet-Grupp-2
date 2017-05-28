@@ -28,8 +28,8 @@ public:
 	Platform();
 	~Platform();
 
-	void platformDecension();
-	int platformAcension();
+	void platformDecension(float deltaTime, float scalar);
+	int platformAcension(float deltaTime, float scalar);
 	void platformBreaking();
 	bool checkState();
 

@@ -176,6 +176,12 @@ int RunApplication()
 						if (i >= sceneContainer.nrOfIceEnemies) {
 
 							// Removing the rigid body from the world should cause more memory leaks in the Bullet Release...we just want to deactive the rigidbody
+
+							btTransform projectileTransform;
+							projectileTransform.setIdentity();
+							projectileTransform.setOrigin(btVector3(0, -100, 0));
+							sceneContainer.enemies[i]->fireBall.projectileRigidBody->setWorldTransform(projectileTransform);
+
 							sceneContainer.enemies[i]->fireBall.projectileRigidBody->setActivationState(WANTS_DEACTIVATION);
 							//sceneContainer.bulletPhysicsHandler.bulletDynamicsWorld->removeRigidBody(sceneContainer.enemies[i]->fireBall.projectileRigidBody);
 						}
@@ -191,7 +197,7 @@ int RunApplication()
 				sceneContainer.PlatformCollisionCheck();
 
 				// Platform update
-				sceneContainer.PlatformManagement();
+				sceneContainer.PlatformManagement(timer);
 
 				//----------------------------------------------------------------------------------------------------------------------------------//
 				// RENDER
