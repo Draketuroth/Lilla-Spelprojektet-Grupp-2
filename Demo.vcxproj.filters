@@ -325,9 +325,6 @@
     <FxCompile Include="Shaders\CubeShaders\CubeFragment.hlsl">
       <Filter>Source Files\HLSL\CubeShaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\CubeShaders\CubeGeometry.hlsl">
-      <Filter>Source Files\HLSL\CubeShaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shaders\CubeShaders\CubeVertex.hlsl">
       <Filter>Source Files\HLSL\CubeShaders</Filter>
     </FxCompile>

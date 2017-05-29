@@ -46,7 +46,6 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gPlatformLayout);
 	SAFE_RELEASE(gPlatformVertexShader);
 	SAFE_RELEASE(gPlatformPixelShader);
-	SAFE_RELEASE(gPlatformGeometryShader);
 
 	SAFE_RELEASE(gFortressLayout);
 	SAFE_RELEASE(gFortressVertexShader);
@@ -604,42 +603,6 @@ bool GraphicComponents::CreatePlatformShaders() {
 	}
 
 	psBlob->Release();
-
-	ID3DBlob* gsBlob = nullptr;
-	ID3DBlob* gsErrorBlob = nullptr;
-	hr = D3DCompileFromFile(
-		L"Shaders\\CubeShaders\\CubeGeometry.hlsl",
-		nullptr,
-		nullptr,
-		"GS_main",
-		"gs_5_0",
-		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG,
-		0,
-		&gsBlob,
-		&gsErrorBlob
-	);
-
-	if (FAILED(hr)) {
-
-		cout << "Geometry Shader Error: Geometry Shader could not be compiled or loaded from file" << endl;
-
-		if (gsErrorBlob) {
-
-			OutputDebugStringA((char*)gsBlob->GetBufferPointer());
-			gsErrorBlob->Release();
-		}
-
-	}
-
-	hr = gDevice->CreateGeometryShader(gsBlob->GetBufferPointer(), gsBlob->GetBufferSize(), nullptr, &gPlatformGeometryShader);
-
-	if (FAILED(hr)) {
-
-		cout << "Cube Geometry Shader Error: Geometry Shader could not be created" << endl;
-		return false;
-	}
-
-	gsBlob->Release();
 
 	return true;
 }

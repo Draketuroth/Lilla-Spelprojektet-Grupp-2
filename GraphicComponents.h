@@ -35,7 +35,6 @@ public:
 	ID3D11InputLayout* gPlatformLayout;
 	ID3D11VertexShader* gPlatformVertexShader;
 	ID3D11PixelShader* gPlatformPixelShader;
-	ID3D11GeometryShader* gPlatformGeometryShader;
 
 	ID3D11InputLayout* gFortressLayout;
 	ID3D11VertexShader* gFortressVertexShader;
