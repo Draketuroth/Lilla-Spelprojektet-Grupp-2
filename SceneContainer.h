@@ -161,6 +161,7 @@ public:
 	void PlatformManagement(Timer timer);
 
 	sf::Sound platformCrumbling;
+	sf::Sound platformRumble;
 	sf::SoundBuffer platformSoundBuffer[2];
 
 	//------------------------------------------------------------//

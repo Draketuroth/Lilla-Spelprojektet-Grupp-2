@@ -19,6 +19,7 @@ SceneContainer::SceneContainer() {
 	bulletPhysicsHandler = BulletComponents();
 
 	platformSoundBuffer[0].loadFromFile("Sounds//platformCrumbling.wav");
+	platformSoundBuffer[1].loadFromFile("Sounds//rumble.wav");
 
 	this->waveDelay = 10.0f;
 	this->level = 1;
@@ -1092,6 +1093,12 @@ void SceneContainer::PlatformManagement(Timer timer) {
 			if (bHandler.cubeObjects[i].Hit == true) {
 
 				if (bHandler.cubeObjects[i].breakTimer < BREAK_LIMIT) {
+
+					if (platformRumble.getStatus() != 2) {
+
+						platformRumble.setBuffer(platformSoundBuffer[1]);
+						platformRumble.play();
+					}
 
 					bHandler.cubeObjects[i].Damaged = true;
 					bHandler.cubeObjects[i].platformBreaking();
