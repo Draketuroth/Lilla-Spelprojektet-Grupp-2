@@ -1178,8 +1178,8 @@ void SceneContainer::renderFortress() {
 
 void SceneContainer::renderPlatforms() {
 
-	tHandler.texArr[0] = tHandler.platformGrass;
-	tHandler.texArr[1] = tHandler.shadowSRV;
+	tHandler.texArr[0] = tHandler.shadowSRV;
+	tHandler.texArr[1] = tHandler.platformGrass;
 	tHandler.texArr[2] = tHandler.platformStone;
 	tHandler.texArr[3] = tHandler.platformStoneCracks;
 	tHandler.samplerArr[0] = tHandler.texSampler;

@@ -521,7 +521,7 @@ void updateBuffers()
 	{
 		platformTransformPointer->worldMatrix[i] = XMMatrixTranspose(sceneContainer.bHandler.cubeObjects[i].worldMatrix);
 		platformTransformPointer->textureFlag[i].z = sceneContainer.bHandler.randomNumbers[i];
-		assert(platformTransformPointer->textureFlag[i].z >= 0 && platformTransformPointer->textureFlag[i].z <= 2);
+		assert(platformTransformPointer->textureFlag[i].z >= 1 && platformTransformPointer->textureFlag[i].z <= 3);
 
 		if (sceneContainer.bHandler.cubeObjects[i].Damaged == true) {
 

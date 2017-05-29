@@ -527,7 +527,7 @@ bool BufferComponents::CreateInstanceBuffer(ID3D11Device* &gDevice) {
 
 		instances.worldMatrix[i] = cubeObjects[i].worldMatrix;
 		instances.textureFlag[i] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		randomNumbers[i] = rand() % 3;
+		randomNumbers[i] = rand() % 3 + 1;
 	}
 
 	// Setup the instance buffer description

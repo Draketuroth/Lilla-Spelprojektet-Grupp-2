@@ -12,8 +12,8 @@
 SamplerState texSampler: register(s0);
 SamplerState shadowSampler : register(s1);
 //SamplerComparisonState shadowSampler : register(s1);
-Texture2D platformGrassTexture : register(t0);
-Texture2D shadowMap : register(t1);
+Texture2D shadowMap : register(t0);
+Texture2D platformGrassTexture : register(t1);
 Texture2D platformStoneTexture : register(t2);
 Texture2D platformStoneCracksTexture : register(t3);
 
@@ -47,11 +47,13 @@ float4 PS_main(PS_IN input) : SV_Target
 	float dx = 1.0f/1920;
 	float dy = 1.0f/1080;
 
-	float3 textureArray[3];
+	float3 texGrassColor;
+	float3 texStoneColor;
+	float3 texCracksColor;
 
-	textureArray[0] = platformGrassTexture.Sample(texSampler, input.Tex).xyz;
-	textureArray[1] = platformStoneTexture.Sample(texSampler, input.Tex).xyz;
-	textureArray[2] = platformStoneCracksTexture.Sample(texSampler, input.Tex).xyz;
+	texGrassColor = platformGrassTexture.Sample(texSampler, input.Tex).xyz;
+	texStoneColor = platformStoneTexture.Sample(texSampler, input.Tex).xyz;
+	texCracksColor = platformStoneCracksTexture.Sample(texSampler, input.Tex).xyz;
 
 	float4 color = float4(0.0f, 0.0f, 0.0f, 1.0f);
 	float4 damageColor;
@@ -70,11 +72,24 @@ float4 PS_main(PS_IN input) : SV_Target
 
 	// Now the Sample state will sample the color output from the texture file so that we can return the correct color
 
-	color = float4(textureArray[input.Random.z], 1.0f) * shadowFactor;
+	if(input.Random.z == 1){
 
-	return color;
+		color = float4(texGrassColor, 1.0f);
 
-	/*if(input.Random.y == 1){
+	}
+
+	if(input.Random.z == 2){
+
+		color = float4(texStoneColor, 1.0f);
+	}
+
+	if (input.Random.z == 3) {
+
+		color = float4(texCracksColor, 1.0f);
+
+	}
+
+	if(input.Random.y == 1){
 
 		return color * shadowFactor;
 
@@ -84,6 +99,6 @@ float4 PS_main(PS_IN input) : SV_Target
 
 		damageColor = lerp(color, red, 0.3);
 		return damageColor * shadowFactor;
-	}*/
+	}
 
 };
