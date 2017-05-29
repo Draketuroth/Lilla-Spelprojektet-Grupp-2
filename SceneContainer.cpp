@@ -1185,7 +1185,7 @@ void SceneContainer::renderPlatforms() {
 	tHandler.samplerArr[0] = tHandler.texSampler;
 	tHandler.samplerArr[1] = tHandler.shadowSampler;
 
-	ID3D11ShaderResourceView* nullResouce[4] = { nullptr };
+	ID3D11ShaderResourceView* nullResource[4] = { nullptr };
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gPlatformVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
@@ -1209,7 +1209,7 @@ void SceneContainer::renderPlatforms() {
 	
 	gHandler.gDeviceContext->DrawInstanced(PlatformFile.standardMeshes[0].vertices.size(), bHandler.nrOfCubes, 0, 0);
 
-	gHandler.gDeviceContext->PSSetShaderResources(0, 4, nullResouce);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 4, nullResource);
 
 
 }
