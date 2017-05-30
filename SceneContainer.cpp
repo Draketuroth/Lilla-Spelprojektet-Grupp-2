@@ -812,7 +812,7 @@ void SceneContainer::ReInitialize()
 
 		bHandler.cubeObjects[i].Hit = false;
 		bHandler.cubeObjects[i].Damaged = false;
-		bHandler.randomNumbers[i] = rand() % 2;
+		bHandler.randomNumbers[i] = rand() % 3 + 1;
 
 		bHandler.cubeObjects[i].descensionTimer = 0;
 		bHandler.cubeObjects[i].breakTimer = 0;
