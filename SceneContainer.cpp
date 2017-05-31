@@ -1367,10 +1367,12 @@ void SceneContainer::renderCharacters()
 	ID3D11ShaderResourceView* nullResouce[2] = { nullptr };
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
-	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	gHandler.gDeviceContext->GSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gCharacterBoneBuffer);
-	gHandler.gDeviceContext->GSSetShader(gHandler.gGeometryShader, nullptr, 0);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &bHandler.gPlayerTransformBuffer);
+
+	ID3D11GeometryShader* nullShader = { nullptr };
+	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
 
 	gHandler.gDeviceContext->PSSetShader(gHandler.gPixelShader, nullptr, 0);
 	//gHandler.gDeviceContext->PSSetShaderResources(0, 1, &tHandler.defaultResource);

@@ -148,6 +148,12 @@
     <Filter Include="Source Files\HLSL\RayShaders">
       <UniqueIdentifier>{5a8dadee-4ab8-4d4a-871c-3da2c33d93d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DebugHelper">
+      <UniqueIdentifier>{4fba928a-bd40-4c1e-b6a8-6ca105aa4907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DebugHelper">
+      <UniqueIdentifier>{25b148de-e3b7-4e73-8c18-3b1484176b9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -221,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="TextureComponents.cpp">
       <Filter>Source Files\Pipeline Components</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugHelper.cpp">
+      <Filter>Source Files\DebugHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +310,9 @@
     </ClInclude>
     <ClInclude Include="Platform.h">
       <Filter>Header Files\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugHelper.h">
+      <Filter>Header Files\DebugHelper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

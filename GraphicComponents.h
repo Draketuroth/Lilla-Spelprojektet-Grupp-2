@@ -5,7 +5,7 @@
 #include <d3dcompiler.h>	// We also need the D3DCompiler header to compile shaders
 #include <iostream>
 #include <DirectXMath.h>
-#include "MacroDefinitions.h"
+#include "DebugHelper.h"
 #include "BufferComponents.h"
 
 using namespace std;
@@ -25,8 +25,7 @@ public:
 
 	ID3D11InputLayout* gVertexLayout;
 	ID3D11VertexShader* gVertexShader;	
-	ID3D11PixelShader* gPixelShader;	
-	ID3D11GeometryShader* gGeometryShader;
+	ID3D11PixelShader* gPixelShader;
 
 	ID3D11InputLayout* gMenuLayout;
 	ID3D11VertexShader* gMenuVertex;
@@ -102,8 +101,6 @@ public:
 	bool CreateRayShaders();
 	bool CreateIceEnemyShaders();
 	bool CreateLavaEnemyShaders();
-
-	void reportLiveObjects();
 
 	bool CreateLavaShaders(); 
 	bool CreateHUDShaders();

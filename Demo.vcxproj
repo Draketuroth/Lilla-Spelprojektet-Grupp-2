@@ -142,6 +142,7 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
+    <ClCompile Include="DebugHelper.cpp" />
     <ClCompile Include="DeferredBuffersClass.cpp" />
     <ClCompile Include="DeferredShaderClass.cpp" />
     <ClCompile Include="Enemies.cpp" />
@@ -174,6 +175,7 @@
     </ClInclude>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterBase.h" />
+    <ClInclude Include="DebugHelper.h" />
     <ClInclude Include="DeferredBuffersClass.h" />
     <ClInclude Include="DeferredShaderClass.h" />
     <ClInclude Include="Enemies.h" />

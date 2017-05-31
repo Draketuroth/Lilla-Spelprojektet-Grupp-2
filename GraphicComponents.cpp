@@ -11,7 +11,6 @@ GraphicComponents::GraphicComponents() {
 	gVertexLayout = nullptr;
 	gVertexShader = nullptr;
 	gPixelShader = nullptr;
-	gGeometryShader = nullptr;
 
 	gIceEnemyVertexLayout = nullptr;
 	gIceEnemyVertexShader = nullptr;
@@ -36,7 +35,6 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gVertexLayout);
 	SAFE_RELEASE(gVertexShader);
 	SAFE_RELEASE(gPixelShader);
-	SAFE_RELEASE(gGeometryShader);
 
 	SAFE_RELEASE(gPlatformLayout);
 	SAFE_RELEASE(gPlatformVertexShader);
@@ -87,7 +85,9 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gBackbufferRTV);
 
 	// Before releasing the Graphic Device, we must report any live objects with a debug device in order to get detailed information 
-	//reportLiveObjects();
+#ifdef _DEBUG
+	reportLiveObjects(gDevice);
+#endif
 
 	SAFE_RELEASE(gDevice);
 
@@ -260,6 +260,8 @@ bool GraphicComponents::CreateDepthStencil()
 		return false;
 	}
 
+	setDebugName(depthStencil, "STANDARD_DEPTH_STENCIL");
+
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 
@@ -280,6 +282,8 @@ bool GraphicComponents::CreateDepthStencil()
 
 		return false;
 	}
+
+	setDebugName(depthView, "STANDARD_DEPTH_VIEW");
 
 	// Depth State Description
 	//----------------------------------------------------------------------------------------------------------------------------------//
@@ -318,6 +322,8 @@ bool GraphicComponents::CreateDepthStencil()
 		return false;
 	}
 
+	setDebugName(depthState, "STANDARD_DEPTH_STATE");
+
 	//----------------------------------------------------------------------------------------------------------------------------------//
 
 	return true;
@@ -351,6 +357,8 @@ bool GraphicComponents::CreateRenderTargetView(){
 	}
 
 	backBuffer->Release();
+
+	setDebugName(gBackbufferRTV, "STANDARD_BACK_BUFFER_RTV");
 	
 	gDeviceContext->OMSetDepthStencilState(depthState, 1);
 	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, depthView);
@@ -412,6 +420,8 @@ bool GraphicComponents::CreateStandardShaders() {
 		return false;
 	}
 
+	setDebugName(gVertexShader, "PLAYER_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -463,6 +473,8 @@ bool GraphicComponents::CreateStandardShaders() {
 
 	hr = gDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &gPixelShader);
 
+	setDebugName(gPixelShader, "PLAYER_PIXEL_SHADER");
+
 	if (FAILED(hr)) {
 
 		cout << "Pixel Shader Error: Pixel Shader could not be created" << endl;
@@ -470,42 +482,6 @@ bool GraphicComponents::CreateStandardShaders() {
 	}
 
 	psBlob->Release();
-
-	ID3DBlob* gsBlob = nullptr;
-	ID3DBlob* gsErrorBlob = nullptr;
-	hr = D3DCompileFromFile(
-		L"Shaders\\StandardShaders\\Geometry.hlsl",
-		nullptr,
-		nullptr,
-		"GS_main",
-		"gs_5_0",
-		D3DCOMPILE_DEBUG,
-		0,
-		&gsBlob,
-		&gsErrorBlob
-	);
-
-	if (FAILED(hr)) {
-
-		cout << "Geometry Shader Error: Geometry Shader could not be compiled or loaded from file" << endl;
-
-		if (gsErrorBlob) {
-
-			OutputDebugStringA((char*)gsBlob->GetBufferPointer());
-			gsErrorBlob->Release();
-		}
-
-	}
-
-	hr = gDevice->CreateGeometryShader(gsBlob->GetBufferPointer(), gsBlob->GetBufferSize(), nullptr, &gGeometryShader);
-
-	if (FAILED(hr)) {
-
-		cout << "Geometry Shader Error: Geometry Shader could not be created" << endl;
-		return false;
-	}
-
-	gsBlob->Release();
 
 	return true;
 }
@@ -929,20 +905,6 @@ bool GraphicComponents::CreateProjectileShaders()
 	psBlob->Release();
 
 	return true;
-}
-
-void GraphicComponents::reportLiveObjects() {
-
-#ifdef _DEBUG
-
-	ID3D11Debug* DebugDevice = nullptr;
-	HRESULT result = gDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&DebugDevice));
-
-	result = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-
-	SAFE_RELEASE(DebugDevice);
-
-#endif
 }
 
 
