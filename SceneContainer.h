@@ -12,10 +12,6 @@
 #include "WICTextureLoader.h"
 #include "Window.h"
 
-#include "DeferredBuffersClass.h"
-#include "DeferredShaderClass.h"
-#include "LightShaderClass.h"
-
 #include "GraphicComponents.h"
 #include "BufferComponents.h"
 #include "TextureComponents.h"
@@ -188,10 +184,6 @@ public:
 	BufferComponents bHandler;
 	TextureComponents tHandler;
 
-	DeferredBuffersClass deferredObject;
-	DeferredShaderClass deferredShaders;
-	LightShaderClass lightShaders;
-
 	MainCharacter character;
 	AnimationHandler animHandler;
 	Lava lava; 
@@ -246,10 +238,6 @@ public:
 	void resetRenderTarget(GraphicComponents &gHandler);
 
 	void render();
-
-	bool renderDeferred();
-
-	bool renderSceneToTexture();
 
 	void renderScene();
 	void renderCharacters();

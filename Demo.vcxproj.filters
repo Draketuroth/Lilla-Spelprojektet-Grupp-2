@@ -174,12 +174,6 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
-    <ClCompile Include="DeferredBuffersClass.cpp">
-      <Filter>Source Files\Deferred Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="DeferredShaderClass.cpp">
-      <Filter>Source Files\Deferred Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files\Global</Filter>
     </ClCompile>
@@ -191,9 +185,6 @@
     </ClCompile>
     <ClCompile Include="MainCharacter.cpp">
       <Filter>Source Files\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="LightShaderClass.cpp">
-      <Filter>Source Files\Deferred Renderer</Filter>
     </ClCompile>
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\GameState</Filter>

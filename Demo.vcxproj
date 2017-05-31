@@ -143,8 +143,6 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="DebugHelper.cpp" />
-    <ClCompile Include="DeferredBuffersClass.cpp" />
-    <ClCompile Include="DeferredShaderClass.cpp" />
     <ClCompile Include="Enemies.cpp" />
     <ClCompile Include="AnimationHandler.cpp" />
     <ClCompile Include="FileImporter.cpp" />
@@ -152,7 +150,6 @@
     <ClCompile Include="GraphicComponents.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Lava.cpp" />
-    <ClCompile Include="LightShaderClass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainCharacter.cpp" />
     <ClCompile Include="SceneContainer.cpp" />

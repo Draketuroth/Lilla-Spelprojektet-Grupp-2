@@ -3,16 +3,12 @@
 
 void reportLiveObjects(ID3D11Device* gDevice) {
 
-#ifdef DEBUG
-
 	ID3D11Debug* DebugDevice = nullptr;
 	HRESULT result = gDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&DebugDevice));
 
 	result = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 
 	SAFE_RELEASE(DebugDevice);
-
-#endif
 
 }
 

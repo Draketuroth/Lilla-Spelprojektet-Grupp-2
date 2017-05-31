@@ -32,7 +32,6 @@ public:
 	ID3D11ShaderResourceView* texArr[4];
 	ID3D11SamplerState* samplerArr[2];
 
-
 	ID3D11SamplerState* shadowSampler;
 	ID3D11Texture2D* ShadowMap;
 	ID3D11DepthStencilView* shadowDepthView;

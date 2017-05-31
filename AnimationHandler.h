@@ -204,7 +204,6 @@ public:
 private:
 
 	Blend vertexBlend;
-	unordered_map<unsigned int, ControlPoint*>controlPoints;
 	vector<int>indices;
 	string animationName;
 

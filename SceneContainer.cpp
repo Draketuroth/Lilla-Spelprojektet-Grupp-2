@@ -50,10 +50,6 @@ void SceneContainer::releaseAll() {
 	SAFE_RELEASE(ExplosionVertexBuffer);
 	SAFE_RELEASE(projectileVertexBuffer);
 
-	deferredObject.ReleaseAll();
-	deferredShaders.ReleaseAll();
-	lightShaders.ReleaseAll();
-
 	lava.ReleaseAll();
 	HUD.ReleaseAll();
 	animHandler.ReleaseAll();
@@ -130,36 +126,6 @@ bool SceneContainer::initialize(HWND &windowHandle) {
 			L"ERROR",
 			MB_OK);
 		PostQuitMessage(0);
-	}
-
-	if (!deferredObject.Initialize(gHandler.gDevice)) {
-
-		MessageBox(
-			NULL,
-			L"CRITICAL ERROR: Deferred buffer couldn't be initialized\nClosing application...",
-			L"ERROR",
-			MB_OK);
-			PostQuitMessage(0);
-	}
-
-	if (!deferredShaders.InitializeShader(gHandler.gDevice)) {
-
-		MessageBox(
-			NULL,
-			L"CRITICAL ERROR: Deferred shader couldn't be initialized\nClosing application...",
-			L"ERROR",
-			MB_OK);
-			PostQuitMessage(0);
-	}
-
-	if (!lightShaders.Initialize(gHandler.gDevice)) {
-
-		MessageBox(
-			NULL,
-			L"CRITICAL ERROR: Light shaders couldn't be initialized\nClosing application...",
-			L"ERROR",
-			MB_OK);
-			PostQuitMessage(0);
 	}
 
 	character.initialize(gHandler.gDevice, XMFLOAT3(2, 2, 5), bulletPhysicsHandler, animHandler, mainCharacterFile, getRadiusCharacter(), getHeightCharacter());
@@ -1286,75 +1252,6 @@ void SceneContainer::renderRay()
 
 }
 
-bool SceneContainer::renderDeferred() {
-
-	bool result;
-
-	// Step 1: Render the scene to the render buffers
-	result = renderSceneToTexture();
-
-	if (!result) {
-
-		return false;
-	}
-
-	// Step 2: Unbinding
-
-	//gHandler.gDeviceContext->ClearState();
-
-	ID3D11GeometryShader* nullShader = { nullptr };
-	gHandler.gDeviceContext->GSSetShader(nullShader, nullptr, 0);
-
-	ID3D11RenderTargetView* nullRenderTargets = { nullptr };
-	ID3D11DepthStencilView* nullDepthStencilView = { nullptr };
-	gHandler.gDeviceContext->OMSetRenderTargets(1, &nullRenderTargets, nullDepthStencilView);
-
-	ID3D11ShaderResourceView* nullShaderResourceView = { nullptr };
-	gHandler.gDeviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
-
-	// Step 3: Switch back to backbuffer as render target
-	// Turn the render target back to the original back buffer and not the render buffers anymore
-	// Turns off the z-buffer for 2D rendering
-	resetRenderTarget(gHandler);
-
-	// Step 4: 2D rendering of light calculations
-
-	lightShaders.SetShaderParameters(gHandler.gDeviceContext,
-									deferredObject.d_shaderResourceViewArray[0],
-									deferredObject.d_shaderResourceViewArray[1],
-									deferredObject.d_shaderResourceViewArray[2],
-									deferredObject.d_depthResourceView);
-
-	gHandler.gDeviceContext->PSSetConstantBuffers(1, 1, &bHandler.gConstantBuffer);
-									
-	lightShaders.Render(gHandler.gDeviceContext, deferredObject.ImportStruct.size());
-
-	return true;
-}
-
-bool SceneContainer::renderSceneToTexture() {
-
-	// Set the render buffers to be the render target
-	deferredObject.SetRenderTargets(gHandler.gDeviceContext);
-
-	// Clear the render buffers
-	deferredObject.ClearRenderTargets(gHandler.gDeviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Set the object vertex buffer to prepare it for drawing
-	deferredObject.SetObjectBuffer(gHandler.gDeviceContext);
-
-	// Render the object using the deferred shader
-	int indexCounter = deferredObject.ImportStruct.size();
-
-	// Don't forget to set the constant buffer to the geometry shader
-	gHandler.gDeviceContext->GSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
-	
-	deferredShaders.Render(gHandler.gDeviceContext, tHandler.texSampler, tHandler.platformGrass, indexCounter);
-
-	return true;
-	
-}
-
 void SceneContainer::renderScene() {
 
 	renderPlatforms();
@@ -1567,15 +1464,13 @@ void SceneContainer::renderShadowMap()
 
 	gHandler.gDeviceContext->OMSetRenderTargets(0, nullptr, tHandler.shadowDepthView);
 
-	bHandler.gBufferArr[0] = bHandler.gConstantBuffer;
-	bHandler.gBufferArr[1] = bHandler.gPlayerTransformBuffer;
-	bHandler.gBufferArr[2] = animHandler.gCharacterBoneBuffer;
-
 	// Character pass-------------------------------------------------------------------------------------//
 	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->GSSetShader(nullptr, nullptr, 0);
 	gHandler.gDeviceContext->PSSetShader(nullptr, nullptr, 0);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &bHandler.gConstantBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gPlayerTransformBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &animHandler.gCharacterBoneBuffer);
 
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
@@ -1588,11 +1483,9 @@ void SceneContainer::renderShadowMap()
 
 	//Lava enemy pass------------------------------------------------------------------------------------------------//
 
-	bHandler.gBufferArr[1] = bHandler.gLavaEnemyTransformBuffer;
-	bHandler.gBufferArr[2] = animHandler.gLavaEnemyBoneBuffer;
-
 	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowLavaVertex, nullptr, 0);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gLavaEnemyTransformBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &animHandler.gLavaEnemyBoneBuffer);
 
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowLavaLayout);
@@ -1602,11 +1495,10 @@ void SceneContainer::renderShadowMap()
 
 	//--------------------------------------------------------------------------------------------------------------//
 	//Ice enemy pass-----------------------------------------------------------------------------------------------//
-	bHandler.gBufferArr[1] = bHandler.gIceEnemyTransformBuffer;
-	bHandler.gBufferArr[2] = animHandler.gIceEnemyBoneBuffer;
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowIceVertex, nullptr, 0);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gIceEnemyTransformBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &animHandler.gIceEnemyBoneBuffer);
 
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyIceVertexBuffer, &vertexSize, &offset);
 	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowIceLayout);
@@ -1614,10 +1506,9 @@ void SceneContainer::renderShadowMap()
 	gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfIceEnemies, 0, 0);
 
 	//Platform pass--------------------------------------------------------------------------------------------------//
-	bHandler.gBufferArr[1] = bHandler.gInstanceBuffer;
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gShadowPlatformVertex, nullptr, 0);
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 2, bHandler.gBufferArr);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &bHandler.gInstanceBuffer);
 
 	vertexSize = sizeof(StandardVertex);
 	offset = 0;

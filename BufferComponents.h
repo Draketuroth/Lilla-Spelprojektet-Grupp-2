@@ -96,8 +96,6 @@ public:
 
 	ID3D11Buffer* gFortressBuffer;
 
-	ID3D11Buffer* gBufferArr[3];
-
 	Platform cubeObjects[CUBECAPACITY];
 	int randomNumbers[400];
 

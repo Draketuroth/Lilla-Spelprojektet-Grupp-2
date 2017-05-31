@@ -70,7 +70,7 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gDebugPixelShader);
 	SAFE_RELEASE(gDebugVertexShader);
 
-	SAFE_RELEASE(gShadowVertexLayout);
+	SAFE_RELEASE(gShadowVertexShader);
 	SAFE_RELEASE(gShadowVertexLayout);
 
 	SAFE_RELEASE(gShadowPlatformVertex);
@@ -94,7 +94,12 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gDeviceContext);
 	SAFE_RELEASE(gBackbufferRTV);
 
+	SAFE_RELEASE(gProjectileVertexShader);
+	SAFE_RELEASE(gProjectileVertexLayout);
+	SAFE_RELEASE(gProjectilePixelShader);
+
 	// Before releasing the Graphic Device, we must report any live objects with a debug device in order to get detailed information 
+
 #ifdef _DEBUG
 	reportLiveObjects(gDevice);
 #endif
@@ -216,7 +221,7 @@ bool GraphicComponents::CreateSwapChainAndDevice(HWND &windowHandle) {
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
-		NULL, /*D3D11_CREATE_DEVICE_DEBUG*/
+		D3D11_CREATE_DEVICE_DEBUG,
 		NULL,
 		NULL,
 		D3D11_SDK_VERSION,
