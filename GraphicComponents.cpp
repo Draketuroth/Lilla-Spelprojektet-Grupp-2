@@ -100,9 +100,9 @@ void GraphicComponents::ReleaseAll() {
 
 	// Before releasing the Graphic Device, we must report any live objects with a debug device in order to get detailed information 
 
-#ifdef _DEBUG
-	reportLiveObjects(gDevice);
-#endif
+//#ifdef _DEBUG
+//	reportLiveObjects(gDevice);
+//#endif
 
 	SAFE_RELEASE(gDevice);
 
