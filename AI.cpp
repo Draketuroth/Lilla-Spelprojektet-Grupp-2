@@ -7,6 +7,8 @@ AI::AI()
 	this->attackCd = 1.5;
 	
 	this->timer.initialize();
+
+	soundBuffer.loadFromFile("Sounds//enemyHit.wav");
 }
 
 AI::~AI()
@@ -95,6 +97,7 @@ void AI::attackMelee(MainCharacter &player, Enemy* self, float enemyTimePos)
 		BoundingBox playerBox = player.getBoundingBox();
 		if (playerBox.Intersects(meleeBox) && player.getAlive() == true)
 		{
+
 			cout << "PLAYER GOT HIT" << endl;
 
 			player.setHealth(player.getHealth() - 1);
@@ -127,6 +130,9 @@ void AI::attackMelee(MainCharacter &player, Enemy* self, float enemyTimePos)
 			attackTimer -= timer.getDeltaTime();
 		else
 		{
+			meleeSound.setBuffer(soundBuffer);
+			meleeSound.play();
+
 			attacking = false;
 			self->attackFlag = false;
 		}

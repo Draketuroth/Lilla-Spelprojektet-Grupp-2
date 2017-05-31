@@ -71,6 +71,7 @@ float4 PS_main(PS_IN input) : SV_Target
 	float shadowFactor = lerp(lerp(s0, s1, lerps.x), lerp(s2, s3, lerps.x), lerps.y);
 
 	// Now the Sample state will sample the color output from the texture file so that we can return the correct color
+	
 	[branch]
 	if(input.Random.z == 1){
 

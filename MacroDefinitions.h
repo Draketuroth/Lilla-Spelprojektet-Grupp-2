@@ -12,7 +12,7 @@
 #define PLATROWS 15
 #define PLATCOLLS 15
 
-#define LaunchInWindowedMode TRUE;
+#define LaunchInWindowedMode FALSE;
 #define SAFE_RELEASE( x ) if( x ) ( x )->Release(), ( x ) = nullptr;
 
 #define ANIMATIONCOUNT 2

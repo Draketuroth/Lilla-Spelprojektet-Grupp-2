@@ -17,6 +17,9 @@ Enemy::Enemy(int Type, XMFLOAT3 SpawnPos)
 	
 	this->Type = Type;
 	this->setPos(SpawnPos);
+
+	soundBuffer.loadFromFile("Sounds//enemyThrow.wav");
+	enemyThrow.setBuffer(soundBuffer);
 	
 }
 
@@ -261,6 +264,8 @@ void Enemy::shootProjectile(float forceVx, float forceVy, XMFLOAT3 direction)
 
 	if (!this->rangedAttack && this->rangedTimer <= 0)
 	{
+		enemyThrow.play();
+
 		this->rangedAttack = true;
 		this->rangedTimer = rangedCd;
 	

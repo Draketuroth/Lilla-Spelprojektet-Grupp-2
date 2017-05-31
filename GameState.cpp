@@ -4,10 +4,12 @@ GameState::GameState()
 {
 	this->state = MAIN_MENU;
 
-	soundBuffer.loadFromFile("Sounds//click.wav");
+	soundBuffer[0].loadFromFile("Sounds//click.wav");
+	soundBuffer[1].loadFromFile("Sounds//bubbles.wav");
 	arenaMusic.openFromFile("Sounds//music.wav");
 	menuMusic.openFromFile("Sounds//theme.wav");
-	clickSound.setBuffer(soundBuffer);
+	clickSound.setBuffer(soundBuffer[0]);
+	bubbleSound.setBuffer(soundBuffer[1]);
 
 }
 
@@ -68,7 +70,9 @@ int GameState::mainMenu(HWND windowHandle, SceneContainer &scene)
 
 				clickSound.play();
 				arenaMusic.play();
+				bubbleSound.play();
 
+				bubbleSound.setLoop(true);
 				arenaMusic.setLoop(true);
 				this->state = START_GAME;
 			}
@@ -91,6 +95,7 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer &scene, MSG windowMes
 		}
 
 		arenaMusic.pause();
+		bubbleSound.pause();
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -115,6 +120,9 @@ int GameState::pauseMenu(HWND windowHandle, SceneContainer &scene, MSG windowMes
 
 				clickSound.play();
 				arenaMusic.play();
+				bubbleSound.play();
+
+				bubbleSound.setLoop(true);
 				arenaMusic.setLoop(true);
 				this->state = START_GAME;
 			}
@@ -138,6 +146,8 @@ int GameState::gameOver(HWND windowHandle, SceneContainer &scene)
 		}
 
 		arenaMusic.stop();
+		bubbleSound.stop();
+
 		getMousePos(windowHandle, scene);
 		if (this->floatMouse.x <= 0.35f && this->floatMouse.x >= -0.3f && this->floatMouse.y <= 0.65f && this->floatMouse.y >= 0.13f)
 		{
@@ -163,6 +173,9 @@ int GameState::gameOver(HWND windowHandle, SceneContainer &scene)
 
 				clickSound.play();
 				arenaMusic.play();
+				bubbleSound.play();
+
+				bubbleSound.setLoop(true);
 				arenaMusic.setLoop(true);
 				this->state = START_GAME;
 				restartGame(scene, windowHandle);

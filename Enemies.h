@@ -48,6 +48,8 @@ public:
 	float rangedTimer;
 	float rangedCd;
 
+	sf::Sound enemyThrow;
+	sf::SoundBuffer soundBuffer;
 
 private:
 	

@@ -38,11 +38,12 @@ public:
 	void restartGame(SceneContainer &scene, HWND windowHandle);
 	void renderMenus(SceneContainer &scene);
 
-	sf::SoundBuffer soundBuffer;
+	sf::SoundBuffer soundBuffer[2];
 
 	sf::Music arenaMusic;
 	sf::Music menuMusic;
 	sf::Sound clickSound;
+	sf::Sound bubbleSound;
 
 
 };

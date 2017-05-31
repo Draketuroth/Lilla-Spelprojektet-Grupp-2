@@ -45,7 +45,8 @@ void MainCharacter::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 }
 
 void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer, float radius, float height) {
-
+	
+	
 	currentAnimIndex = 0;
 
 	// Main character function
@@ -151,10 +152,11 @@ void MainCharacter::CheckInput() {
 		this->rigidBody->setFriction(3);
 		this->rigidBody->applyCentralForce(btVector3(7, 0, 0));	
 	}
-	if (GetAsyncKeyState(0x20))
+
+	/*if (GetAsyncKeyState(0x20))
 	{
 		this->rigidBody->applyCentralForce(btVector3(0, 2, 0));
-	}
+	}*/
 
 	float maxSpeed = 4;
 	float minSpeed = -4;

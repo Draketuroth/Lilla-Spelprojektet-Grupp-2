@@ -33,6 +33,9 @@ public:
 
 	btVector3 collisionEdge(BoundingBox sides[], Enemy* self);
 
+	sf::Sound meleeSound;
+	sf::SoundBuffer soundBuffer;
+
 };
 
 
