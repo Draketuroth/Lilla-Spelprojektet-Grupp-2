@@ -53,10 +53,10 @@ int main() {
 
 	// Memory leak detection
 
-//#ifdef _DEBUG
-//	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(89932);
-//#endif
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(10018);
+#endif
 
 	// We always want to keep our eyes open for terminal errors, which mainly occur when the window isn't created
 	
@@ -268,7 +268,7 @@ void updateCharacter(HWND windowhandle)
 
 	}
 
-	else {
+	else{
 
 		sceneContainer.character.currentAnimIndex = 2;
 

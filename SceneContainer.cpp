@@ -39,7 +39,7 @@ void SceneContainer::releaseAll() {
 	for(UINT i = 0; i < nrOfEnemies; i++){
 
 		enemies[i]->releaseAll(bulletPhysicsHandler.bulletDynamicsWorld);
-
+		delete enemies[i];
 	}
 
 	SAFE_RELEASE(enemyIceVertexBuffer);
@@ -286,6 +286,12 @@ void SceneContainer::RespawnEnemies() {
 	// Clear enemy rigid bodies vector
 	bulletPhysicsHandler.enemyRigidBodies.clear();
 	bulletPhysicsHandler.projectileRigidBodies.clear();
+
+	// Forgot to delete enemies on respawn before making new enemies
+	for (UINT i = 0; i < nrOfEnemies; i++) {
+
+		delete enemies[i];
+	}
 
 	// Recreate enemies and their rigid bodies
 

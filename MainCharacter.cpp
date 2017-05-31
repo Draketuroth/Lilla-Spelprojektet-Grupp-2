@@ -41,7 +41,7 @@ void MainCharacter::releaseAll(btDynamicsWorld* bulletDynamicsWorld) {
 
 	SAFE_RELEASE(vertexBuffer);
 	SAFE_RELEASE(rayBuffer);
-	bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
+	//bulletDynamicsWorld->removeCollisionObject(this->rigidBody);
 }
 
 void MainCharacter::initialize(ID3D11Device* &graphicDevice, XMFLOAT3 spawnPosition, BulletComponents &bulletPhysicsHandle, AnimationHandler &animHandler, FileImporter &importer, float radius, float height) {
