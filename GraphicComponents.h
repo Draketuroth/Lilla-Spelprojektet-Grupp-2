@@ -103,6 +103,8 @@ public:
 	bool CreateIceEnemyShaders();
 	bool CreateLavaEnemyShaders();
 
+	void reportLiveObjects();
+
 	bool CreateLavaShaders(); 
 	bool CreateHUDShaders();
 

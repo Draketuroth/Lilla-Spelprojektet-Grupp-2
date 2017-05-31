@@ -26,7 +26,6 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(lavaEnemyResource);
 	SAFE_RELEASE(texSampler);
 	
-	SAFE_RELEASE(HUDResource);
 	SAFE_RELEASE(blendState);
 	SAFE_RELEASE(playerResource);
 	SAFE_RELEASE(LavaResource);
@@ -37,6 +36,8 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(shadowSRV);
 	SAFE_RELEASE(shadowDepthView);
 	SAFE_RELEASE(ShadowMap);
+
+	SAFE_RELEASE(HUDResource);
 	SAFE_RELEASE(HUDPortrait);
 	SAFE_RELEASE(HUDHealth);
 
@@ -69,8 +70,6 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	hr = gDevice->CreateSamplerState(&sampDesc, &texSampler);
 
-
-
 	D3D11_BLEND_DESC blendDesc;
 	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
 	blendDesc.RenderTarget[0].BlendEnable = true;
@@ -83,8 +82,6 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	hr = gDevice->CreateBlendState(&blendDesc, &blendState);
-
-
 
 	if (FAILED(hr)) {
 
@@ -116,13 +113,11 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\HP_frame.png", NULL, &HUDPortrait, 300);
 	CreateWICTextureFromFile(gDevice, NULL, L"Textures\\HP_rect.png", NULL, &HUDHealth, 213);
 
-	ID3D11ShaderResourceView* projectileResource;
 	if (SUCCEEDED(hr) && texture != 0) {
 
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformGrass);
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformStone);
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformStoneCracks);
-
 		gDevice->CreateShaderResourceView(texture, nullptr, &fortressResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &playerResource);
 		gDevice->CreateShaderResourceView(texture, nullptr, &iceEnemyResource);

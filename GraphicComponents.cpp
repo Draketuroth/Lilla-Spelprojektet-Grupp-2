@@ -33,11 +33,6 @@ GraphicComponents::~GraphicComponents() {
 
 void GraphicComponents::ReleaseAll() {
 
-	SAFE_RELEASE(gSwapChain);
-	SAFE_RELEASE(gDevice);
-	SAFE_RELEASE(gDeviceContext);
-	SAFE_RELEASE(gBackbufferRTV);
-
 	SAFE_RELEASE(gVertexLayout);
 	SAFE_RELEASE(gVertexShader);
 	SAFE_RELEASE(gPixelShader);
@@ -78,6 +73,7 @@ void GraphicComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gShadowVertexLayout);
 	SAFE_RELEASE(gShadowVertexLayout);
+
 	SAFE_RELEASE(gHUDVertexShader);
 	SAFE_RELEASE(gHUDVertexLayout);
 	SAFE_RELEASE(gHUDPixelShader);
@@ -85,6 +81,15 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(rayInputLayout);
 	SAFE_RELEASE(rayPixelShader);
 	SAFE_RELEASE(rayVertexShader);
+
+	SAFE_RELEASE(gSwapChain);
+	SAFE_RELEASE(gDeviceContext);
+	SAFE_RELEASE(gBackbufferRTV);
+
+	// Before releasing the Graphic Device, we must report any live objects with a debug device in order to get detailed information 
+	//reportLiveObjects();
+
+	SAFE_RELEASE(gDevice);
 
 }
 
@@ -924,6 +929,20 @@ bool GraphicComponents::CreateProjectileShaders()
 	psBlob->Release();
 
 	return true;
+}
+
+void GraphicComponents::reportLiveObjects() {
+
+#ifdef _DEBUG
+
+	ID3D11Debug* DebugDevice = nullptr;
+	HRESULT result = gDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&DebugDevice));
+
+	result = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+
+	SAFE_RELEASE(DebugDevice);
+
+#endif
 }
 
 

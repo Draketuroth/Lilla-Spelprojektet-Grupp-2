@@ -31,6 +31,7 @@ public:
 	ID3D11ShaderResourceView* menuResources[9];
 	ID3D11ShaderResourceView* texArr[4];
 	ID3D11SamplerState* samplerArr[2];
+
 	
 
 

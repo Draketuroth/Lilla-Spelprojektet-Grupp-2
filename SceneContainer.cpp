@@ -632,20 +632,6 @@ bool SceneContainer::createLavaEnemyBoneBuffer(ID3D11Device* &graphicDevice, LAV
 	return true;
 }
 
-void SceneContainer::reportLiveObjects() {
-
-#ifdef _DEBUG
-
-	ID3D11Debug* DebugDevice = nullptr;
-	HRESULT result = gHandler.gDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&DebugDevice));
-
-	result = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-
-	SAFE_RELEASE(DebugDevice);
-
-#endif
-}
-
 float SceneContainer::RandomNumber(float Minimum, float Maximum) {
 
 	return ((float(rand()) / float(RAND_MAX)) * (Maximum - Minimum)) + Minimum;
@@ -1405,7 +1391,6 @@ void SceneContainer::renderCharacters()
 	character.resetWorldMatrix();
 
 	gHandler.gDeviceContext->PSSetShaderResources(0, 2, nullResouce);
-
 
 }
 
