@@ -5,7 +5,7 @@
 #include <d3dcompiler.h>	// We also need the D3DCompiler header to compile shaders
 #include <DirectXMath.h>
 #include <iostream>
-#include "MacroDefinitions.h"
+#include "DebugHelper.h"
 #include "WICTextureLoader.h"
 
 using namespace std;
@@ -31,8 +31,6 @@ public:
 	ID3D11ShaderResourceView* menuResources[9];
 	ID3D11ShaderResourceView* texArr[4];
 	ID3D11SamplerState* samplerArr[2];
-
-	
 
 
 	ID3D11SamplerState* shadowSampler;

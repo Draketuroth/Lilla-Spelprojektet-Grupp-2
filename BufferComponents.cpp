@@ -176,6 +176,8 @@ bool BufferComponents::CreateDebugVertexBuffer(ID3D11Device* &gDevice)
 		return false;
 	}
 
+	setDebugName(gDebugVertexBuffer, "SKELETON_DEBUG_VERTEX_BUFFER");
+
 	// Create Indices
 	unsigned int indices[] = {
 
@@ -232,6 +234,8 @@ bool BufferComponents::CreateDebugVertexBuffer(ID3D11Device* &gDevice)
 		return false;
 	}
 
+	setDebugName(gDebugIndexBuffer, "SKELETON_DEBUG_INDEX_BUFFER");
+
 	return true;
 }
 
@@ -278,6 +282,8 @@ bool BufferComponents::CreatePlatformVertexBuffer(ID3D11Device* &gDevice, FileIm
 
 		return false;
 	}
+
+	setDebugName(gCubeVertexBuffer, "PLATFORM_VERTEX_BUFFER");
 
 	return true;
 }
@@ -327,6 +333,8 @@ bool BufferComponents::CreateFortressBuffer(ID3D11Device* &gDevice, FileImporter
 
 		return false;
 	}
+
+	setDebugName(gFortressBuffer, "PLATFORM_VERTEX_BUFFER");
 
 	return true;
 }
@@ -556,6 +564,8 @@ bool BufferComponents::CreateInstanceBuffer(ID3D11Device* &gDevice) {
 		return false;
 	}
 
+	setDebugName(gInstanceBuffer, "ENEMY_INSTANCE_BUFFER");
+
 	return true;
 }
 
@@ -680,6 +690,8 @@ bool BufferComponents::CreateConstantBuffer(ID3D11Device* &gDevice) {	// Functio
 		return false;
 	}
 
+	setDebugName(gConstantBuffer, "STANDARD_CONSTANT_BUFFER");
+
 	return true;
 }
 
@@ -712,6 +724,8 @@ bool BufferComponents::CreatePlayerTransformBuffer(ID3D11Device* &gDevice) {
 
 		return false;
 	}
+
+	setDebugName(gPlayerTransformBuffer, "PLAYER_TRANSFORM_BUFFER");
 
 	return true;
 }
@@ -750,6 +764,8 @@ bool BufferComponents::CreateIceEnemyTransformBuffer(ID3D11Device* &gDevice, int
 		return false;
 	}
 
+	setDebugName(gIceEnemyTransformBuffer, "ICE_ENEMY_TRANSFORM_BUFFER");
+
 	return true;
 }
 
@@ -787,6 +803,8 @@ bool BufferComponents::CreateLavaEnemyTransformBuffer(ID3D11Device* &gDevice, in
 		return false;
 	}
 
+	setDebugName(gLavaEnemyTransformBuffer, "LAVA_ENEMY_TRANSFORM_BUFFER");
+
 	return true;
 }
 
@@ -822,6 +840,8 @@ bool BufferComponents::CreateProjectileTransformBuffer(ID3D11Device *& gDevice, 
 
 		return false;
 	}
+
+	setDebugName(gProjectileTransformBuffer, "PROJECTILE_TRANSFORM_BUFFER");
 
 	return true;
 }

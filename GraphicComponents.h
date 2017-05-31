@@ -75,7 +75,7 @@ public:
 	ID3D11InputLayout* gShadowPlatformLayout;
 
 	ID3D11VertexShader* gShadowLavaVertex;
-	ID3D11InputLayout* gShadowLayaLayout;
+	ID3D11InputLayout* gShadowLavaLayout;
 
 	ID3D11VertexShader* gShadowIceVertex;
 	ID3D11InputLayout* gShadowIceLayout;

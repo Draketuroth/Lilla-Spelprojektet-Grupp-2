@@ -24,6 +24,7 @@ GraphicComponents::GraphicComponents() {
 	gProjectileVertexLayout = nullptr;
 	gProjectileVertexShader = nullptr;
 	gProjectilePixelShader = nullptr;
+
 }
 
 GraphicComponents::~GraphicComponents() {
@@ -71,6 +72,15 @@ void GraphicComponents::ReleaseAll() {
 
 	SAFE_RELEASE(gShadowVertexLayout);
 	SAFE_RELEASE(gShadowVertexLayout);
+
+	SAFE_RELEASE(gShadowPlatformVertex);
+	SAFE_RELEASE(gShadowPlatformLayout);
+
+	SAFE_RELEASE(gShadowLavaVertex);
+	SAFE_RELEASE(gShadowLavaLayout);
+
+	SAFE_RELEASE(gShadowIceVertex);
+	SAFE_RELEASE(gShadowIceLayout);
 
 	SAFE_RELEASE(gHUDVertexShader);
 	SAFE_RELEASE(gHUDVertexLayout);
@@ -440,6 +450,8 @@ bool GraphicComponents::CreateStandardShaders() {
 		cout << "Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
 
+	setDebugName(gVertexLayout, "PLAYER_VERTEX_LAYOUT");
+
 	vsBlob->Release();
 
 
@@ -527,6 +539,8 @@ bool GraphicComponents::CreatePlatformShaders() {
 		return false;
 	}
 
+	setDebugName(gPlatformVertexShader, "PLATFORM_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -543,6 +557,8 @@ bool GraphicComponents::CreatePlatformShaders() {
 
 		cout << "Cube Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gPlatformLayout, "PLATFORM_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -582,6 +598,8 @@ bool GraphicComponents::CreatePlatformShaders() {
 		cout << "Cube Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
+
+	setDebugName(gPlatformPixelShader, "PLATFORM_PIXEL_SHADER");
 
 	psBlob->Release();
 
@@ -629,6 +647,8 @@ bool GraphicComponents::CreateFortressShader() {
 		return false;
 	}
 
+	setDebugName(gFortressVertexShader, "FORTRESS_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -644,6 +664,8 @@ bool GraphicComponents::CreateFortressShader() {
 
 		cout << "Fortress Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gFortressLayout, "FORTRESS_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -683,6 +705,8 @@ bool GraphicComponents::CreateFortressShader() {
 		cout << "Fortress Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
+
+	setDebugName(gFortressPixelShader, "FORTRESS_PIXEL_SHADER");
 
 	psBlob->Release();
 
@@ -726,6 +750,8 @@ bool GraphicComponents::CreateLavaShaders()
 		return false; 
 	}
 
+	setDebugName(gLavaVertexShader, "LAVA_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vetrexInputDesc[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
@@ -737,6 +763,8 @@ bool GraphicComponents::CreateLavaShaders()
 	if (FAILED(hr)) {
 		cout << "Vertex Shader Lava Error: Shader Input Layout could not be created" << endl; 
 	}
+
+	setDebugName(gLavaVertexLayout, "LAVA_VERTEX_LAYOUT");
 
 	vsBlob->Release(); 
 
@@ -774,6 +802,8 @@ bool GraphicComponents::CreateLavaShaders()
 		return false; 
 	}
 
+	setDebugName(gLavaPixelShader, "LAVA_PIXEL_SHADER");
+
 	psBlob->Release(); 
 
 	ID3DBlob* gsBlob = nullptr; 
@@ -807,6 +837,8 @@ bool GraphicComponents::CreateLavaShaders()
 		cout << "Geometry Shader Lava Error: Geometry Shader could not be created" << endl; 
 		return false; 
 	}
+
+	setDebugName(gLavaGeometryShader, "LAVA_GEOMETRY_SHADER");
 
 	gsBlob->Release(); 
 
@@ -852,6 +884,8 @@ bool GraphicComponents::CreateProjectileShaders()
 		return false;
 	}
 
+	setDebugName(gProjectileVertexShader, "PROJECTILE_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vetrexInputDesc[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -865,6 +899,8 @@ bool GraphicComponents::CreateProjectileShaders()
 	if (FAILED(hr)) {
 		cout << "Vertex Shader Projectile Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gProjectileVertexLayout, "PROJECTILE_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -902,11 +938,12 @@ bool GraphicComponents::CreateProjectileShaders()
 		return false;
 	}
 
+	setDebugName(gProjectilePixelShader, "PROJECTILE_PIXEL_SHADER");
+
 	psBlob->Release();
 
 	return true;
 }
-
 
 bool GraphicComponents::CreateMenuShaders()
 {
@@ -948,6 +985,8 @@ bool GraphicComponents::CreateMenuShaders()
 		return false;
 	}
 
+	setDebugName(gMenuVertex, "MENU_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -961,6 +1000,8 @@ bool GraphicComponents::CreateMenuShaders()
 
 		cout << "Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gMenuLayout, "MENU_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -1001,6 +1042,8 @@ bool GraphicComponents::CreateMenuShaders()
 		cout << "Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
+
+	setDebugName(gMenuPixel, "MENU_PIXEL_SHADER");
 
 	psBlob->Release();
 
@@ -1047,6 +1090,8 @@ bool GraphicComponents::CreateIceEnemyShaders()
 		return false;
 	}
 
+	setDebugName(gIceEnemyVertexShader, "ICE_ENEMY_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1064,6 +1109,8 @@ bool GraphicComponents::CreateIceEnemyShaders()
 
 		cout << "Ice Enemy Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gIceEnemyVertexLayout, "ICE_ENEMY_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -1104,6 +1151,8 @@ bool GraphicComponents::CreateIceEnemyShaders()
 		cout << "Ice Enemy Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
+
+	setDebugName(gIceEnemyPixelShader, "ICE ENEMY PIXEL SHADER");
 
 	psBlob->Release();
 
@@ -1150,6 +1199,8 @@ bool GraphicComponents::CreateLavaEnemyShaders() {
 		return false;
 	}
 
+	setDebugName(gLavaEnemyVertexShader, "LAVA_ENEMY_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1167,6 +1218,8 @@ bool GraphicComponents::CreateLavaEnemyShaders() {
 
 		cout << "Lava Enemy Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gLavaEnemyVertexLayout, "LAVA_ENEMY_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -1207,6 +1260,8 @@ bool GraphicComponents::CreateLavaEnemyShaders() {
 		cout << "Lava Enemy Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
+
+	setDebugName(gLavaEnemyPixelShader, "LAVA_ENEMY_PIXEL_SHADER");
 
 	psBlob->Release();
 
@@ -1253,6 +1308,8 @@ bool GraphicComponents::CreateDebugShaders()
 		return false;
 	}
 
+	setDebugName(gDebugVertexShader, "SKELETON_DEBUG_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1268,6 +1325,8 @@ bool GraphicComponents::CreateDebugShaders()
 
 		cout << "Debug Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gDebugVertexLayout, "SKELETON_DEBUG_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -1306,6 +1365,8 @@ bool GraphicComponents::CreateDebugShaders()
 		cout << "Debug Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
+
+	setDebugName(gDebugPixelShader, "SKELETON_DEBUG_PIXEL_SHADER");
 
 	psBlob->Release();
 
@@ -1353,6 +1414,8 @@ bool GraphicComponents::CreateShadowShaders()
 		return false;
 	}
 
+	setDebugName(gShadowVertexShader, "PLAYER_SHADOW_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1369,6 +1432,9 @@ bool GraphicComponents::CreateShadowShaders()
 
 		cout << "Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gShadowVertexLayout, "PLAYER_SHADOW_VERTEX_LAYOUT");
+
 	//------------------------------------------------------------------------------------------------------------------------------//
 	//vsBlob->Release();
 
@@ -1410,6 +1476,8 @@ bool GraphicComponents::CreateShadowShaders()
 		return false;
 	}
 
+	setDebugName(gShadowPlatformVertex, "PLATFORM_SHADOW_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc1[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1426,6 +1494,8 @@ bool GraphicComponents::CreateShadowShaders()
 
 	//vsBlob->Release();
 	//------------------------------------------------------------------------------------------------------------------------------//
+
+	setDebugName(gShadowPlatformLayout, "PLATFORM_SHADOW_VERTEX_LAYOUT");
 
 	//Shadow map Lava enemy---------------------------------------------------------------------------------------------------------//
 	
@@ -1466,6 +1536,8 @@ bool GraphicComponents::CreateShadowShaders()
 		return false;
 	}
 
+	setDebugName(gShadowLavaVertex, "LAVA_ENEMY_SHADOW_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc2[] = {
 
 		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1477,12 +1549,15 @@ bool GraphicComponents::CreateShadowShaders()
 	};
 
 	int inputLayoutSize2 = sizeof(vertexInputDesc2) / sizeof(D3D11_INPUT_ELEMENT_DESC);
-	gDevice->CreateInputLayout(vertexInputDesc2, inputLayoutSize2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gShadowLayaLayout);
+	gDevice->CreateInputLayout(vertexInputDesc2, inputLayoutSize2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &gShadowLavaLayout);
 
 	if (FAILED(hr)) {
 
 		cout << "Shadow Lava Enemy Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gShadowLavaLayout, "LAVA_ENEMY_SHADOW_VERTEX_LAYOUT");
+
 	//vsBlob->Release();
 
 
@@ -1523,6 +1598,8 @@ bool GraphicComponents::CreateShadowShaders()
 		return false;
 	}
 
+	setDebugName(gShadowIceVertex, "ICE_ENEMY_SHADOW_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc3[] = {
 
 		{ "POSITION",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1540,8 +1617,10 @@ bool GraphicComponents::CreateShadowShaders()
 
 		cout << "Shadow Lava Enemy Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
-	vsBlob->Release();
 
+	setDebugName(gShadowIceLayout, "ICE_ENEMY_SHADOW_VERTEX_LAYOUT");
+
+	vsBlob->Release();
 
 	return true;
 }
@@ -1586,6 +1665,8 @@ bool GraphicComponents::CreateHUDShaders()
 		return false;
 	}
 
+	setDebugName(gHUDVertexShader, "HUD_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1601,6 +1682,8 @@ bool GraphicComponents::CreateHUDShaders()
 
 		cout << "HUD Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(gHUDVertexLayout, "HUD_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -1639,6 +1722,8 @@ bool GraphicComponents::CreateHUDShaders()
 		cout << "Debug Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
+
+	setDebugName(gHUDPixelShader, "HUD_PIXEL_SHADER");
 
 	psBlob->Release();		
 
@@ -1686,6 +1771,8 @@ bool GraphicComponents::CreateRayShaders()
 		return false;
 	}
 
+	setDebugName(rayVertexShader, "RAY_VERTEX_SHADER");
+
 	D3D11_INPUT_ELEMENT_DESC vertexInputDesc[] = {
 
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
@@ -1698,6 +1785,8 @@ bool GraphicComponents::CreateRayShaders()
 
 		cout << "Vertex Shader Error: Shader Input Layout could not be created" << endl;
 	}
+
+	setDebugName(rayInputLayout, "RAY_VERTEX_LAYOUT");
 
 	vsBlob->Release();
 
@@ -1738,6 +1827,8 @@ bool GraphicComponents::CreateRayShaders()
 		cout << "Pixel Shader Error: Pixel Shader could not be created" << endl;
 		return false;
 	}
+
+	setDebugName(rayPixelShader, "RAY_PIXEL_SHADER");
 
 	psBlob->Release();
 

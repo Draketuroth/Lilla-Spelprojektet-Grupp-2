@@ -5,7 +5,7 @@
 #include <d3dcompiler.h>	// We also need the D3DCompiler header to compile shaders
 #include <DirectXMath.h>
 #include <iostream>
-#include "MacroDefinitions.h"
+#include "DebugHelper.h"
 #include "VertexType.h"
 #include <vector>
 

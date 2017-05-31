@@ -45,6 +45,7 @@ void TextureComponents::ReleaseAll() {
 	{
 		SAFE_RELEASE(this->menuResources[i]);
 	}
+
 }
 
 bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
@@ -68,7 +69,15 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	sampDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
 	hr = gDevice->CreateSamplerState(&sampDesc, &texSampler);
+
+	if (FAILED(hr)) {
+
+		return false;
+	}
+
+	setDebugName(texSampler, "STANDARD_TEXTURE_SAMPLER");
 
 	D3D11_BLEND_DESC blendDesc;
 	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
@@ -87,6 +96,8 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 
 		return false;
 	}
+
+	setDebugName(blendState, "BLEND_STATE");
 
 	ID3D11Texture2D* texture = nullptr;
 
@@ -116,26 +127,48 @@ bool TextureComponents::CreateTexture(ID3D11Device* &gDevice) {
 	if (SUCCEEDED(hr) && texture != 0) {
 
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformGrass);
+		setDebugName(platformGrass, "PLATFORM_GRASS_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformStone);
+		setDebugName(platformStone, "PLATFORM_STONE_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &platformStoneCracks);
+		setDebugName(platformStoneCracks, "PLATFORM_STONE_CRACKS_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &fortressResource);
+		setDebugName(fortressResource, "FORTRESS_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &playerResource);
+		setDebugName(playerResource, "PLAYER_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &iceEnemyResource);
+		setDebugName(iceEnemyResource, "ICE_ENEMY_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &lavaEnemyResource);
+		setDebugName(lavaEnemyResource, "LAVA_ENEMY_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &LavaResource);
+		setDebugName(LavaResource, "LAVA_PIT_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &projectileResource);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[0]);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[1]);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[2]);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[3]);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[4]);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[5]);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[6]);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[7]);
-		gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[8]);
+		setDebugName(projectileResource, "PROJECTILE_TEXTURE");
+
+		for(UINT i = 0; i < 9; i++){
+
+			gDevice->CreateShaderResourceView(texture, nullptr, &menuResources[i]);
+			setDebugName(menuResources[i], "MENU_TEXTURE " + i);
+
+		}
+
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &HUDResource);
+		setDebugName(HUDResource, "HUD_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &HUDPortrait);
+		setDebugName(HUDPortrait, "HUD_PORTRAIT_TEXTURE");
+
 		gDevice->CreateShaderResourceView(texture, nullptr, &HUDHealth);
+		setDebugName(HUDHealth, "HUD_HEALTH_TEXTURE");
 
 		if (FAILED(hr)) {
 
@@ -173,6 +206,9 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	{
 		return false;
 	}
+
+	setDebugName(shadowSampler, "SHADOW_SAMPLER");
+
 	//Shadow map texture desc
 	D3D11_TEXTURE2D_DESC texDesc = {};
 	texDesc.Width = WIDTH;
@@ -189,6 +225,8 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	{
 		return false;
 	}
+
+	setDebugName(ShadowMap, "SHADOW_TEXTURE");
 	
 	//Depth stencil view description
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
@@ -201,6 +239,8 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 		return false;
 	}
 
+	setDebugName(shadowDepthView, "SHADOW_DEPTH_VIEW");
+
 	//Shader resource view description
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = srvformat;
@@ -212,6 +252,8 @@ bool TextureComponents::CreateShadowMap(ID3D11Device* &gDevice)
 	{
 		return false;
 	}
+
+	setDebugName(shadowSRV, "SHADOW_RESOURCE_VIEW");
 
 	return true;
 }

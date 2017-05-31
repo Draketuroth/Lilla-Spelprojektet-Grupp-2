@@ -1589,7 +1589,7 @@ void SceneContainer::renderShadowMap()
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 3, bHandler.gBufferArr);
 
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
-	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowLayaLayout);
+	gHandler.gDeviceContext->IASetInputLayout(gHandler.gShadowLavaLayout);
 
 	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), this->nrOfLavaEnemies, 0, 0);
 
