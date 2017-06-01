@@ -68,7 +68,7 @@ VS_OUT VS_main(VS_IN input)
 	output.WPos = worldPosition;
 
 	//Light coordinate
-	output.lPos = mul(position, mul(worldPosition, lightViewProj));
+	output.lPos = mul(float4(position, 1.0f), lightViewProj);
 
 	// To store and calculate the WorldViewProj, the input position must be multiplied with the WorldViewProj matrix
 
