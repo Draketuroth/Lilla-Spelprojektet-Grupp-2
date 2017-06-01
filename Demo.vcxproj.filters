@@ -46,12 +46,6 @@
     <Filter Include="Source Files\HLSL\StandardShaders">
       <UniqueIdentifier>{ab6384ef-2b56-4501-be6d-d8b3b8178836}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Deferred Renderer">
-      <UniqueIdentifier>{118584c7-334b-4de3-b483-185368df9cc0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Deferred Renderer">
-      <UniqueIdentifier>{81ccada0-36f2-4186-a0d2-6fad0b3f45a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\HLSL\DeferredShader_Default">
       <UniqueIdentifier>{fa934e68-dc32-419e-8461-46cf20535760}</UniqueIdentifier>
     </Filter>
@@ -248,12 +242,6 @@
     <ClInclude Include="Window.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
-    <ClInclude Include="DeferredBuffersClass.h">
-      <Filter>Header Files\Deferred Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="DeferredShaderClass.h">
-      <Filter>Header Files\Deferred Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Header Files\Global</Filter>
     </ClInclude>
@@ -265,9 +253,6 @@
     </ClInclude>
     <ClInclude Include="MainCharacter.h">
       <Filter>Header Files\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="LightShaderClass.h">
-      <Filter>Header Files\Deferred Renderer</Filter>
     </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>Header Files\GameState</Filter>
