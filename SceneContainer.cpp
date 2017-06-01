@@ -1267,7 +1267,7 @@ void SceneContainer::renderCharacters()
 	tHandler.samplerArr[0] = tHandler.texSampler;
 	tHandler.samplerArr[1] = tHandler.shadowSampler;
 
-	ID3D11ShaderResourceView* nullResouce[2] = { nullptr };
+	ID3D11ShaderResourceView* nullResource[2] = { nullptr };
 
 	gHandler.gDeviceContext->VSSetShader(gHandler.gVertexShader, nullptr, 0);
 	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &animHandler.gCharacterBoneBuffer);
@@ -1295,7 +1295,7 @@ void SceneContainer::renderCharacters()
 
 	character.resetWorldMatrix();
 
-	gHandler.gDeviceContext->PSSetShaderResources(0, 2, nullResouce);
+	gHandler.gDeviceContext->PSSetShaderResources(0, 2, nullResource);
 
 }
 
@@ -1322,7 +1322,7 @@ void SceneContainer::renderIceEnemies()
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
 
-	ID3D11Buffer* nullBuffer = { nullptr };
+	ID3D11Buffer* nullBuffer = nullptr;
 	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyIceVertexBuffer, &vertexSize, &offset);
@@ -1331,11 +1331,9 @@ void SceneContainer::renderIceEnemies()
 
 	gHandler.gDeviceContext->DrawInstanced(this->iceEnemyVertices.size(), this->nrOfIceEnemies, 0, 0);
 
-	ID3D11Buffer* nullbuffer = nullptr;
-
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullbuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullbuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &nullBuffer);
 	
 }
 
@@ -1362,7 +1360,7 @@ void SceneContainer::renderLavaEnemies()
 	UINT32 vertexSize = sizeof(Vertex_Bone);
 	UINT32 offset = 0;
 
-	ID3D11Buffer* nullBuffer = { nullptr };
+	ID3D11Buffer* nullBuffer = nullptr;
 	gHandler.gDeviceContext->IASetIndexBuffer(nullBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	gHandler.gDeviceContext->IASetVertexBuffers(0, 1, &enemyLavaVertexBuffer, &vertexSize, &offset);
@@ -1371,11 +1369,9 @@ void SceneContainer::renderLavaEnemies()
 
 	gHandler.gDeviceContext->DrawInstanced(this->lavaEnemyVertices.size(), this->nrOfLavaEnemies, 0, 0);
 
-	ID3D11Buffer* nullbuffer = nullptr;
-
-	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullbuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullbuffer);
-	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &nullbuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(0, 1, &nullBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(1, 1, &nullBuffer);
+	gHandler.gDeviceContext->VSSetConstantBuffers(2, 1, &nullBuffer);
 
 
 }

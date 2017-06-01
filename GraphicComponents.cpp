@@ -58,53 +58,53 @@ void GraphicComponents::ReleaseAll() {
 	SAFE_RELEASE(gMenuVertex);
 	SAFE_RELEASE(gMenuPixel);
 
-	SAFE_RELEASE(gIceEnemyPixelShader);
 	SAFE_RELEASE(gIceEnemyVertexLayout);
 	SAFE_RELEASE(gIceEnemyVertexShader);
+	SAFE_RELEASE(gIceEnemyPixelShader);
 
-	SAFE_RELEASE(gLavaEnemyPixelShader);
 	SAFE_RELEASE(gLavaEnemyVertexLayout);
 	SAFE_RELEASE(gLavaEnemyVertexShader);
+	SAFE_RELEASE(gLavaEnemyPixelShader);
 
 	SAFE_RELEASE(gDebugVertexLayout);
-	SAFE_RELEASE(gDebugPixelShader);
 	SAFE_RELEASE(gDebugVertexShader);
+	SAFE_RELEASE(gDebugPixelShader);
 
-	SAFE_RELEASE(gShadowVertexShader);
 	SAFE_RELEASE(gShadowVertexLayout);
+	SAFE_RELEASE(gShadowVertexShader);
 
-	SAFE_RELEASE(gShadowPlatformVertex);
 	SAFE_RELEASE(gShadowPlatformLayout);
+	SAFE_RELEASE(gShadowPlatformVertex);
 
-	SAFE_RELEASE(gShadowLavaVertex);
 	SAFE_RELEASE(gShadowLavaLayout);
+	SAFE_RELEASE(gShadowLavaVertex);
 
-	SAFE_RELEASE(gShadowIceVertex);
 	SAFE_RELEASE(gShadowIceLayout);
+	SAFE_RELEASE(gShadowIceVertex);
 
-	SAFE_RELEASE(gHUDVertexShader);
 	SAFE_RELEASE(gHUDVertexLayout);
+	SAFE_RELEASE(gHUDVertexShader);
 	SAFE_RELEASE(gHUDPixelShader);
 
 	SAFE_RELEASE(rayInputLayout);
-	SAFE_RELEASE(rayPixelShader);
 	SAFE_RELEASE(rayVertexShader);
+	SAFE_RELEASE(rayPixelShader);
 
-	SAFE_RELEASE(gSwapChain);
+	SAFE_RELEASE(gSwapChain); 
 	SAFE_RELEASE(gDeviceContext);
 	SAFE_RELEASE(gBackbufferRTV);
 
-	SAFE_RELEASE(gProjectileVertexShader);
 	SAFE_RELEASE(gProjectileVertexLayout);
+	SAFE_RELEASE(gProjectileVertexShader);
 	SAFE_RELEASE(gProjectilePixelShader);
 
 	// Before releasing the Graphic Device, we must report any live objects with a debug device in order to get detailed information 
 
 #ifdef _DEBUG
-	reportLiveObjects(gDevice);
+	/*reportLiveObjects(gDevice);*/
 #endif
 
-	SAFE_RELEASE(gDevice);
+	SAFE_RELEASE(gDevice); 
 
 }
 

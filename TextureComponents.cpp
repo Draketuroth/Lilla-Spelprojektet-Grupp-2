@@ -3,11 +3,6 @@
 
 TextureComponents::TextureComponents() {
 
-	ID3D11ShaderResourceView* standardResource = nullptr;
-	ID3D11SamplerState* texSampler = nullptr;
-
-	ID3D11ShaderResourceView* LavaResurce = nullptr; 
-
 }
 
 TextureComponents::~TextureComponents() {
@@ -17,6 +12,16 @@ TextureComponents::~TextureComponents() {
 
 void TextureComponents::ReleaseAll() {
 
+	for (UINT i = 0; i < 4; i++) {
+
+		texArr[i] = nullptr;
+	}
+
+	for (UINT i = 0; i < 2; i++) {
+
+		samplerArr[i] = nullptr;
+	}
+
 	SAFE_RELEASE(platformGrass);
 	SAFE_RELEASE(platformStone);
 	SAFE_RELEASE(platformStoneCracks);
@@ -24,15 +29,15 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(fortressResource);
 	SAFE_RELEASE(iceEnemyResource);
 	SAFE_RELEASE(lavaEnemyResource);
-	SAFE_RELEASE(texSampler);
-	
-	SAFE_RELEASE(blendState);
 	SAFE_RELEASE(playerResource);
+
 	SAFE_RELEASE(LavaResource);
+
 	SAFE_RELEASE(projectileResource);
+	SAFE_RELEASE(texSampler);
+	SAFE_RELEASE(blendState);
 	
 	SAFE_RELEASE(shadowSampler);
-
 	SAFE_RELEASE(shadowSRV);
 	SAFE_RELEASE(shadowDepthView);
 	SAFE_RELEASE(ShadowMap);
@@ -41,7 +46,7 @@ void TextureComponents::ReleaseAll() {
 	SAFE_RELEASE(HUDPortrait);
 	SAFE_RELEASE(HUDHealth);
 
-	for (size_t i = 0; i < 9; i++)
+	for (UINT i = 0; i < 9; i++)
 	{
 		SAFE_RELEASE(this->menuResources[i]);
 	}

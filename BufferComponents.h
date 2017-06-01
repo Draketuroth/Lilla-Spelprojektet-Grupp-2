@@ -80,21 +80,21 @@ public:
 	XMVECTOR lookAt;
 	XMVECTOR up;
 
-	ID3D11Buffer* gConstantBuffer;	// Constant buffer to provide the vertex shader with updated transformation data per frame
-	ID3D11Buffer* gInstanceBuffer;
-	ID3D11Buffer* gPlayerTransformBuffer;
+	ID3D11Buffer* gConstantBuffer; // Released
+	ID3D11Buffer* gInstanceBuffer; // Released
+	ID3D11Buffer* gPlayerTransformBuffer; // Released
 
-	ID3D11Buffer* gIceEnemyTransformBuffer;
-	ID3D11Buffer* gLavaEnemyTransformBuffer;
+	ID3D11Buffer* gIceEnemyTransformBuffer; // Released
+	ID3D11Buffer* gLavaEnemyTransformBuffer; // Released
 
-	ID3D11Buffer* gProjectileTransformBuffer;
+	ID3D11Buffer* gProjectileTransformBuffer; // Released
 
-	ID3D11Buffer* gCubeVertexBuffer;
+	ID3D11Buffer* gCubeVertexBuffer; // Released
 
-	ID3D11Buffer* gDebugVertexBuffer;
-	ID3D11Buffer* gDebugIndexBuffer;
+	ID3D11Buffer* gDebugVertexBuffer; // Released
+	ID3D11Buffer* gDebugIndexBuffer; // Released
 
-	ID3D11Buffer* gFortressBuffer;
+	ID3D11Buffer* gFortressBuffer; // Released
 
 	Platform cubeObjects[CUBECAPACITY];
 	int randomNumbers[400];
@@ -128,12 +128,9 @@ public:
 	float spaceX;
 	float spaceZ;
 
-
 	float incrementSpace(float offset);
 	float centerPlatformsColls(float offset);
 	float centerPlatformsRows(float offset);
-
-
 
 private:
 
