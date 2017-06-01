@@ -173,8 +173,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="DebugHelper.h" />
-    <ClInclude Include="DeferredBuffersClass.h" />
-    <ClInclude Include="DeferredShaderClass.h" />
     <ClInclude Include="Enemies.h" />
     <ClInclude Include="AnimationHandler.h" />
     <ClInclude Include="FileImporter.h" />
@@ -182,7 +180,6 @@
     <ClInclude Include="GraphicComponents.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Lava.h" />
-    <ClInclude Include="LightShaderClass.h" />
     <ClInclude Include="MacroDefinitions.h" />
     <ClInclude Include="MainCharacter.h" />
     <ClInclude Include="Platform.h" />
