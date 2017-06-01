@@ -18,71 +18,71 @@ public:
 	~GraphicComponents();
 	void ReleaseAll();
 
-	IDXGISwapChain* gSwapChain;	// Swap Chain responsible for switching between a collection of buffers and show images to the user
-	ID3D11Device* gDevice;	// Graphic Device
-	ID3D11DeviceContext* gDeviceContext;	// Graphic Contect
-	ID3D11RenderTargetView* gBackbufferRTV;	// Render Target View
+	IDXGISwapChain* gSwapChain;	// Released
+	ID3D11Device* gDevice; // Released
+	ID3D11DeviceContext* gDeviceContext; // Released
+	ID3D11RenderTargetView* gBackbufferRTV;	// Released
 
-	ID3D11InputLayout* gVertexLayout;
-	ID3D11VertexShader* gVertexShader;	
-	ID3D11PixelShader* gPixelShader;
+	ID3D11InputLayout* gVertexLayout; // Released
+	ID3D11VertexShader* gVertexShader; // Releasrd
+	ID3D11PixelShader* gPixelShader; // Released
 
-	ID3D11InputLayout* gMenuLayout;
-	ID3D11VertexShader* gMenuVertex;
-	ID3D11PixelShader* gMenuPixel;
+	ID3D11InputLayout* gMenuLayout; // Released
+	ID3D11VertexShader* gMenuVertex; // Released
+	ID3D11PixelShader* gMenuPixel; // Released
 
-	ID3D11InputLayout* gPlatformLayout;
-	ID3D11VertexShader* gPlatformVertexShader;
-	ID3D11PixelShader* gPlatformPixelShader;
+	ID3D11InputLayout* gPlatformLayout; // Released
+	ID3D11VertexShader* gPlatformVertexShader; // Released
+	ID3D11PixelShader* gPlatformPixelShader; // Released
 
-	ID3D11InputLayout* gFortressLayout;
-	ID3D11VertexShader* gFortressVertexShader;
-	ID3D11PixelShader* gFortressPixelShader;
+	ID3D11InputLayout* gFortressLayout; // Released
+	ID3D11VertexShader* gFortressVertexShader; // Released
+	ID3D11PixelShader* gFortressPixelShader; // Released
 
-	ID3D11InputLayout* gLavaVertexLayout;
-	ID3D11VertexShader* gLavaVertexShader;
-	ID3D11PixelShader* gLavaPixelShader;
-	ID3D11GeometryShader* gLavaGeometryShader;
+	ID3D11InputLayout* gLavaVertexLayout; // Released
+	ID3D11VertexShader* gLavaVertexShader; // Released
+	ID3D11PixelShader* gLavaPixelShader; // Released
+	ID3D11GeometryShader* gLavaGeometryShader; // Released
 
 	ID3D11InputLayout* gProjectileVertexLayout;
 	ID3D11VertexShader* gProjectileVertexShader;
 	ID3D11PixelShader* gProjectilePixelShader;
 
-	ID3D11Texture2D* depthStencil;	// Depth-stencil texture
-	ID3D11DepthStencilState* depthState;	// Depth-stencil state used for the output merger
-	ID3D11DepthStencilView* depthView;	// Depth-stencil view to access the depth stencil texture
+	ID3D11Texture2D* depthStencil; // Released
+	ID3D11DepthStencilState* depthState; // Released
+	ID3D11DepthStencilView* depthView; // Released
 
-	ID3D11InputLayout* gIceEnemyVertexLayout;
-	ID3D11VertexShader* gIceEnemyVertexShader;
-	ID3D11PixelShader* gIceEnemyPixelShader;
+	ID3D11InputLayout* gIceEnemyVertexLayout; // Released
+	ID3D11VertexShader* gIceEnemyVertexShader; // Released
+	ID3D11PixelShader* gIceEnemyPixelShader; // Released
 
-	ID3D11InputLayout* gLavaEnemyVertexLayout;
-	ID3D11VertexShader* gLavaEnemyVertexShader;
-	ID3D11PixelShader* gLavaEnemyPixelShader;
+	ID3D11InputLayout* gLavaEnemyVertexLayout; // Released
+	ID3D11VertexShader* gLavaEnemyVertexShader; // Released
+	ID3D11PixelShader* gLavaEnemyPixelShader; // Released
 
-	ID3D11InputLayout* gDebugVertexLayout;
-	ID3D11VertexShader* gDebugVertexShader;
-	ID3D11PixelShader* gDebugPixelShader;
+	ID3D11InputLayout* gDebugVertexLayout; // Released
+	ID3D11VertexShader* gDebugVertexShader; // Released
+	ID3D11PixelShader* gDebugPixelShader; // Released
 
-	ID3D11InputLayout* gHUDVertexLayout;
-	ID3D11VertexShader* gHUDVertexShader;
-	ID3D11PixelShader* gHUDPixelShader;
+	ID3D11InputLayout* gHUDVertexLayout; // Released
+	ID3D11VertexShader* gHUDVertexShader; // Released
+	ID3D11PixelShader* gHUDPixelShader; // Released
 
-	ID3D11VertexShader* gShadowVertexShader;//Player shadow map
-	ID3D11InputLayout* gShadowVertexLayout;
+	ID3D11VertexShader* gShadowVertexShader; // Released
+	ID3D11InputLayout* gShadowVertexLayout; // Released
 
-	ID3D11VertexShader* gShadowPlatformVertex;//Shadow map for platform
-	ID3D11InputLayout* gShadowPlatformLayout;
+	ID3D11VertexShader* gShadowPlatformVertex; // Released
+	ID3D11InputLayout* gShadowPlatformLayout; // Released
 
-	ID3D11VertexShader* gShadowLavaVertex;
-	ID3D11InputLayout* gShadowLavaLayout;
+	ID3D11VertexShader* gShadowLavaVertex; // Released
+	ID3D11InputLayout* gShadowLavaLayout; // Released
 
-	ID3D11VertexShader* gShadowIceVertex;
-	ID3D11InputLayout* gShadowIceLayout;
+	ID3D11VertexShader* gShadowIceVertex; // Released
+	ID3D11InputLayout* gShadowIceLayout; // Released
 
-	ID3D11VertexShader* rayVertexShader;
-	ID3D11PixelShader* rayPixelShader;
-	ID3D11InputLayout* rayInputLayout;
+	ID3D11VertexShader* rayVertexShader; // Released
+	ID3D11PixelShader* rayPixelShader; // Released
+	ID3D11InputLayout* rayInputLayout; // Released
 
 
 
